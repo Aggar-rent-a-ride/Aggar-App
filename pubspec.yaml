@@ -60,7 +60,13 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-
+flutter_assets:
+  assets_path:
+    - assets/images/
+    - assets/icons/
+  output_path: lib/core/utils/
+  filename: app_assets.dart
+  classname: AppAssets
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
