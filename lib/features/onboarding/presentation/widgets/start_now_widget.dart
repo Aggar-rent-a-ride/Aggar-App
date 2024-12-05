@@ -21,7 +21,7 @@ class StartNowWidget extends StatelessWidget {
             vertical: 5,
           ),
         ),
-        foregroundColor: WidgetStatePropertyAll(AppColors.myWhite100),
+        foregroundColor: WidgetStatePropertyAll(AppColors.myWhite100_1),
         backgroundColor: WidgetStatePropertyAll(AppColors.myBlue100_1),
       ),
       onPressed: () {
@@ -39,7 +39,7 @@ class StartNowWidget extends StatelessWidget {
           const Gap(8),
           Icon(
             Icons.arrow_forward_rounded,
-            color: AppColors.myWhite100,
+            color: AppColors.myWhite100_1,
             size: 15,
           ),
         ],
