@@ -11,7 +11,7 @@ class PageView3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.myWhite100,
+      color: AppColors.myWhite100_1,
       child: Column(
         children: [
           Image(
