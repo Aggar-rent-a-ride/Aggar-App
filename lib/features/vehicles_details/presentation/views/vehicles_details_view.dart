@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/features/vehicles_details/presentation/widgets/book_vehicle_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_icon_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/over_view_section.dart';
@@ -74,13 +75,7 @@ class VehiclesDetailsView extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {},
-            child: const Text('Bottom Button'),
-          ),
-        ),
+        bottomNavigationBar: const BookVehicleButton(),
       ),
     );
   }
