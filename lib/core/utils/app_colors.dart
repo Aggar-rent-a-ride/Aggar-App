@@ -8,8 +8,10 @@ class AppColors {
   static Color myGray100_1 = const Color(0xffD9D9D9);
   static Color myGray100_2 = const Color(0xff7D7D7D);
   static Color myGray100_3 = const Color(0xff505050);
+  static Color myGray100_4 = const Color(0xff7C7C7C);
   static Color myWhite100_1 = const Color(0xffffffff);
   static Color myWhite100_2 = const Color(0xffF7F7F7);
+  static Color myWhite100_3 = const Color(0xffE9E9E9);
   static Color myBlue100_1 = const Color(0xff19376d);
   static Color myBlue100_2 = const Color(0xff576CBC);
   static Color myBlue10_2 = const Color(0xff576CBC).withOpacity(0.1);
