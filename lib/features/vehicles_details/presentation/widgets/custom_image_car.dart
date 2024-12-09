@@ -37,7 +37,7 @@ class CustomImageCar extends StatelessWidget {
             image: AssetImage(
               AppAssets.assetsImagesCar,
             ),
-            height: 300,
+            height: 250,
             fit: BoxFit.cover,
           ),
         ),
