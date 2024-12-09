@@ -7,6 +7,14 @@ class AppAssets {
   static const String assetsIconsCarsInVehiclesList =
       "assets/icons/cars_in_vehiclesList.png";
 
+  /// Assets for assetsIconsChatIcon
+  /// assets/icons/chatIcon.png
+  static const String assetsIconsChat = "assets/icons/chat.png";
+
+  /// Assets for assetsImagesAvatar
+  /// assets/images/avatar.png
+  static const String assetsImagesAvatar = "assets/images/avatar.png";
+
   /// Assets for assetsImagesCar
   /// assets/images/car.png
   static const String assetsImagesCar = "assets/images/car.png";

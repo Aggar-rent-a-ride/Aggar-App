@@ -15,6 +15,7 @@ class CustomAppBar extends StatelessWidget {
         children: [
           const CustomIconButton(
             icon: Icons.arrow_back_ios_new_rounded,
+            flag: true,
           ),
           // TODO : style here want to change
           Text(
@@ -27,6 +28,7 @@ class CustomAppBar extends StatelessWidget {
           ),
           const CustomIconButton(
             icon: Icons.favorite_border,
+            flag: true,
           ),
         ],
       ),

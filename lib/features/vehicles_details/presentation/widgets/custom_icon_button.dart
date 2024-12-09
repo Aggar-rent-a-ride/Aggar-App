@@ -4,13 +4,23 @@ import 'package:flutter/material.dart';
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
     super.key,
-    required this.icon,
+    this.icon,
+    this.color = Colors.black,
+    this.size = 25,
+    required this.flag,
+    this.imageIcon,
   });
-  final IconData icon;
+  final IconData? icon;
+  final Color? color;
+  final double? size;
+  final bool flag;
+  final String? imageIcon;
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5),
+      height: 40,
+      width: 40,
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         color: AppColors.myWhite100_2,
@@ -23,11 +33,18 @@ class CustomIconButton extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(
-        icon,
-        size: 25,
-        color: AppColors.myBlack100,
-      ),
+      child: flag == true
+          ? Icon(
+              icon,
+              size: size,
+              color: color,
+            )
+          : Image(
+              image: AssetImage(
+                imageIcon!,
+              ),
+              height: size,
+            ),
     );
   }
 }
