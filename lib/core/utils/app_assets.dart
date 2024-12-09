@@ -1,14 +1,13 @@
 // ignore_for_file: prefer_single_quotes
 class AppAssets {
   AppAssets._();
-
+  
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
-  static const String assetsIconsCarsInVehiclesList =
-      "assets/icons/cars_in_vehiclesList.png";
+  static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
 
-  /// Assets for assetsIconsChatIcon
-  /// assets/icons/chatIcon.png
+  /// Assets for assetsIconsChat
+  /// assets/icons/chat.png
   static const String assetsIconsChat = "assets/icons/chat.png";
 
   /// Assets for assetsImagesAvatar
@@ -30,4 +29,9 @@ class AppAssets {
   /// Assets for assetsImagesImg3
   /// assets/images/img_3.png
   static const String assetsImagesImg3 = "assets/images/img_3.png";
+
+  /// Assets for assetsImagesMap
+  /// assets/images/map.png
+  static const String assetsImagesMap = "assets/images/map.png";
 }
+
