@@ -27,23 +27,32 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              lableText,
-              style: GoogleFonts.inter(
-                color: AppColors.myBlack100,
-                fontSize: getFontSize(context, 20),
-                fontWeight: FontWeight.w600,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            lableText,
+            style: GoogleFonts.inter(
+              color: AppColors.myBlack100,
+              fontSize: getFontSize(context, 20),
+              fontWeight: FontWeight.w600,
             ),
           ),
-          TextFormField(
+        ),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2), // Shadow color
+                blurRadius: 4, // Shadow blur radius
+                offset: const Offset(0, 4), // Shadow offset
+              ),
+            ],
+          ),
+          child: TextFormField(
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -57,35 +66,24 @@ class CustomTextField extends StatelessWidget {
             obscureText: obscureText,
             controller: controller,
             decoration: InputDecoration(
-              suffixIcon: suffixIcon,
-              filled: true,
-              fillColor: AppColors.myWhite100_3,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 15,
-              ),
-              // focusedBorder: const OutlineInputBorder(
-              //   borderSide: BorderSide(),
-              //   borderRadius: BorderRadius.all(
-              //     Radius.circular(5),
-              //   ),
-              // ),
-              // enabledBorder: const OutlineInputBorder(
-              //   borderSide: BorderSide(),
-              //   borderRadius: BorderRadius.all(
-              //     Radius.circular(5),
-              //   ),
-              // ),
-              hintText: hintText,
-              hintStyle: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: AppColors.myGray100_4,
-              ),
-            ),
+                hintText: hintText,
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.myGray100_4,
+                ),
+                filled: true,
+                fillColor: AppColors.myWhite100_3,
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 19),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                suffixIcon: suffixIcon),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

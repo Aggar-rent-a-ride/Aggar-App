@@ -1,15 +1,30 @@
 // ignore_for_file: prefer_single_quotes
 class AppAssets {
   AppAssets._();
-
+  
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
-  static const String assetsIconsCarsInVehiclesList =
-      "assets/icons/cars_in_vehiclesList.png";
+  static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
 
   /// Assets for assetsIconsChat
   /// assets/icons/chat.png
   static const String assetsIconsChat = "assets/icons/chat.png";
+
+  /// Assets for assetsIconsClosedEyeIcon
+  /// assets/icons/closed_eye_icon.png
+  static const String assetsIconsClosedEyeIcon = "assets/icons/closed_eye_icon.png";
+
+  /// Assets for assetsIconsFacebookIcon
+  /// assets/icons/Facebook_icon.png
+  static const String assetsIconsFacebookIcon = "assets/icons/Facebook_icon.png";
+
+  /// Assets for assetsIconsGoogleIcon
+  /// assets/icons/Google_icon.png
+  static const String assetsIconsGoogleIcon = "assets/icons/Google_icon.png";
+
+  /// Assets for assetsIconsOpenEyeIcon
+  /// assets/icons/open_eye_icon.png
+  static const String assetsIconsOpenEyeIcon = "assets/icons/open_eye_icon.png";
 
   /// Assets for assetsImagesAvatar
   /// assets/images/avatar.png
@@ -39,3 +54,4 @@ class AppAssets {
   /// assets/images/sign_up_img.png
   static const String assetsImagesSignUpImg = "assets/images/sign_up_img.png";
 }
+
