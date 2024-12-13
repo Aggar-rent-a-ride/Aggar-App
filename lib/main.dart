@@ -1,7 +1,5 @@
-import 'package:aggar/features/authorization/presentation/views/sign_up_view.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(
@@ -22,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const SignUpView(),
+      home: const SignInView(),
     );
   }
 }

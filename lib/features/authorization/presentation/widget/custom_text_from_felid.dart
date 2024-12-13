@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   const CustomTextField(
       {super.key,
-      required this.lableText,
+      required this.labelText,
       this.hintText,
       this.initialValue,
       this.validator,
@@ -16,7 +16,7 @@ class CustomTextField extends StatelessWidget {
       this.suffixIcon,
       required this.obscureText});
 
-  final String lableText;
+  final String labelText;
   final String? hintText;
   final String? initialValue;
   final String? Function(String?)? validator;
@@ -32,11 +32,12 @@ class CustomTextField extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
+          //TODO : this too will put in app_styles.dart file
           child: Text(
-            lableText,
+            labelText,
             style: GoogleFonts.inter(
               color: AppColors.myBlack100,
-              fontSize: getFontSize(context, 20),
+              fontSize: getFontSize(context, 16),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -52,9 +53,10 @@ class CustomTextField extends StatelessWidget {
               ),
             ],
           ),
+          //TODO : this too will put in app_styles.dart file
           child: TextFormField(
             style: GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: getFontSize(context, 16),
               fontWeight: FontWeight.w400,
               color: AppColors.myBlack100,
             ),
@@ -65,10 +67,11 @@ class CustomTextField extends StatelessWidget {
             onChanged: onChanged,
             obscureText: obscureText,
             controller: controller,
+            //TODO : this too will put in app_styles.dart file
             decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: getFontSize(context, 14),
                   fontWeight: FontWeight.w400,
                   color: AppColors.myGray100_4,
                 ),
