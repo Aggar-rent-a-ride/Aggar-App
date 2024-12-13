@@ -12,6 +12,7 @@ class CustomImageCar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Container(
+        width: MediaQuery.sizeOf(context).width,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
             Radius.circular(
