@@ -1,9 +1,7 @@
 import 'package:aggar/core/helper/get_font_size.dart';
-import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/authorization/presentation/widget/custom_elvated_button.dart';
-import 'package:aggar/features/authorization/presentation/widget/custom_text_from_feild.dart';
-import 'package:aggar/features/authorization/presentation/widget/divider_with_text.dart';
+import 'package:aggar/features/authorization/presentation/widget/custom_elevated_button.dart';
+import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,49 +17,50 @@ class SignUpView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
-              image: const AssetImage(AppAssets.assetsImagesSignUpImg),
-              width: MediaQuery.sizeOf(context).width * 0.5,
-              height: 200,
-              fit: BoxFit.fitWidth,
-            ),
             Text(
-              "Let's log you in",
+              "Let's sign you up",
               style: GoogleFonts.inter(
                 color: AppColors.myBlack100,
-                fontSize: getFontSize(context, 28),
+                fontSize: getFontSize(context, 24),
                 fontWeight: FontWeight.bold,
               ),
             ),
             const CustomTextField(
-              lableText: 'Email',
+              labelText: 'Name',
               inputType: TextInputType.text,
               obscureText: false,
-              hintText: "Enter Email",
+              hintText: "Say my name",
+            ),
+            const SizedBox(
+              height: 15,
             ),
             const CustomTextField(
-              lableText: 'Password',
+              labelText: 'Date of birth',
+              inputType: TextInputType.text,
+              obscureText: false,
+              hintText: "Enter your age",
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const CustomTextField(
+              labelText: 'Email',
+              inputType: TextInputType.text,
+              obscureText: false,
+              hintText: "Enter your Email",
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const CustomTextField(
+              labelText: 'Password',
               inputType: TextInputType.text,
               obscureText: false,
               hintText: "Enter password",
               suffixIcon: Icon(Icons.visibility_off),
             ),
             const SizedBox(
-              height: 25,
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "Forget password?",
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.myBlue100_1,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
+              height: 80,
             ),
             Center(
               child: CustomElevatedButton(
@@ -71,7 +70,7 @@ class SignUpView extends StatelessWidget {
                 width: 320,
                 onPressed: () {},
                 child: Text(
-                  "Login",
+                  "Next",
                   style: GoogleFonts.inter(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -83,39 +82,21 @@ class SignUpView extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const DividerWithText(),
-            const SizedBox(
-              height: 10,
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SocialButton(
-                  icon: Icons.facebook, //AppAssets.assetsIconsFacebookIcon
-                  color: Colors.blue,
-                  text: 'Facebook',
-                ),
-                const SizedBox(width: 20),
-                SocialButton(
-                  icon: Icons.g_mobiledata, //AppAssets.assetsIconsGoogleIcon
-                  color: AppColors.myWhite100_3,
-                  text: 'Google',
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Don't have an account?"),
+                const Text("Have an account?"),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(
+                      context,
+                    );
+                  },
                   child: Text(
-                    "Register now",
+                    "Login now",
+                    //TODO : this too will put in app_styles.dart file
                     style: GoogleFonts.inter(
-                      fontSize: 14,
+                      fontSize: getFontSize(context, 12),
                       fontWeight: FontWeight.bold,
                       color: AppColors.myBlue100_1,
                     ),
@@ -124,35 +105,6 @@ class SignUpView extends StatelessWidget {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class SocialButton extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String text;
-
-  const SocialButton({
-    required this.icon,
-    required this.color,
-    required this.text,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {},
-      icon: Icon(icon, color: Colors.white),
-      label: Text(text),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );
