@@ -1,4 +1,4 @@
-import 'package:aggar/features/vehicles_details/presentation/widgets/custom_indicator_with_text.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/custom_indicator_with_text.dart';
 import 'package:flutter/material.dart';
 
 class IndicatorSection extends StatelessWidget {

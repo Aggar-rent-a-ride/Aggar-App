@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/indicator_information.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/indicator_information.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 

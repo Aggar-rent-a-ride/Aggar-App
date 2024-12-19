@@ -1,5 +1,5 @@
-import 'package:aggar/features/vehicles_details/presentation/widgets/location_section.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/rent_partner_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/location_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/rent_partner_section.dart';
 import 'package:flutter/material.dart';
 
 class AboutTabBarView extends StatelessWidget {

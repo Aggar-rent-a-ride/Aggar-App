@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/custom_text_and_icon_section_addetinal_technical_information.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/custom_text_and_icon_section_addetinal_technical_information.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

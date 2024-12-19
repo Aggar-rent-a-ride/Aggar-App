@@ -1,6 +1,6 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/custom_gallary_image.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/technical_information_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/custom_gallary_image.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/technical_information_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
