@@ -1,8 +1,8 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_icon_button.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/owner_image_section.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/owner_name_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_image_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_name_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

@@ -1,6 +1,6 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/addetinal_technical_information.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/indicator_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/addetinal_technical_information.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/indicator_section.dart';
 import 'package:flutter/material.dart';
 
 class TechnicalInformationSection extends StatelessWidget {

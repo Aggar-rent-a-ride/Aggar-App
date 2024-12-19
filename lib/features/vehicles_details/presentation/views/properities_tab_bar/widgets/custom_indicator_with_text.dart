@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/custom_indicator.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/custom_indicator.dart';
 import 'package:flutter/material.dart';
 
 class CustomIndicatorWithText extends StatelessWidget {
