@@ -1,0 +1,45 @@
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_four_stars.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+
+class NameSection extends StatelessWidget {
+  const NameSection({
+    super.key,
+    required this.date,
+    required this.name,
+    required this.rating,
+  });
+  final String date;
+  final String name;
+  final double rating;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          name,
+          style: TextStyle(
+            color: AppColors.myBlue100_2,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Row(
+          children: [
+            RatingFourStars(rating: rating, color: AppColors.myYellow100_1),
+            const Gap(5),
+            Text(
+              date,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.myBlack100,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
