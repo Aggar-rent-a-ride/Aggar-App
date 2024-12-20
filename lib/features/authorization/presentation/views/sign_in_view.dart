@@ -100,6 +100,8 @@ class SignInView extends StatelessWidget {
                 SocialButton(
                   textColor: AppColors.myWhite100_3,
                   icon: const CustomIcon(
+                    hight: 40,
+                    width: 40,
                     flag: false,
                     imageIcon: AppAssets.assetsIconsFacebookIcon,
                   ),
@@ -110,6 +112,8 @@ class SignInView extends StatelessWidget {
                 SocialButton(
                   textColor: AppColors.myBlack100,
                   icon: const CustomIcon(
+                    hight: 40,
+                    width: 40,
                     flag: false,
                     imageIcon: AppAssets.assetsIconsGoogleIcon,
                   ),

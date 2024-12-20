@@ -2,6 +2,10 @@
 class AppAssets {
   AppAssets._();
   
+  /// Assets for assetsIconsAddPhoto
+  /// assets/icons/add_photo.png
+  static const String assetsIconsAddPhoto = "assets/icons/add_photo.png";
+
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
   static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
@@ -42,9 +46,25 @@ class AppAssets {
   /// assets/icons/open_eye_icon.png
   static const String assetsIconsOpenEyeIcon = "assets/icons/open_eye_icon.png";
 
+  /// Assets for assetsIconsRenterOff
+  /// assets/icons/renter_off.png
+  static const String assetsIconsRenterOff = "assets/icons/renter_off.png";
+
+  /// Assets for assetsIconsRenterOn
+  /// assets/icons/renter_on.png
+  static const String assetsIconsRenterOn = "assets/icons/renter_on.png";
+
   /// Assets for assetsIconsSeats
   /// assets/icons/seats.png
   static const String assetsIconsSeats = "assets/icons/seats.png";
+
+  /// Assets for assetsIconsUserOff
+  /// assets/icons/user_off.png
+  static const String assetsIconsUserOff = "assets/icons/user_off.png";
+
+  /// Assets for assetsIconsUserOn
+  /// assets/icons/user_on.png
+  static const String assetsIconsUserOn = "assets/icons/user_on.png";
 
   /// Assets for assetsImagesAvatar
   /// assets/images/avatar.png
