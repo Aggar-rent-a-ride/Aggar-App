@@ -1,6 +1,7 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/views/about_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/views/properities_tab_bar_view.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/views/review_tab_bar_view.dart';
 import 'package:flutter/material.dart';
 
 class TabBarSection extends StatelessWidget {
@@ -29,7 +30,7 @@ class TabBarSection extends StatelessWidget {
             children: [
               Center(child: AboutTabBarView()),
               Center(child: ProperitiesTabBarView()),
-              Center(child: Text('Settings Tab')),
+              Center(child: ReviewTabBarView()),
             ],
           ),
         ),
