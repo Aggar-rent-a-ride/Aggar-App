@@ -8,19 +8,22 @@ class CustomIcon extends StatelessWidget {
     this.size = 25,
     required this.flag,
     this.imageIcon,
+    required this.hight,
+    required this.width,
   });
   final IconData? icon;
   final Color? color;
   final double? size;
   final bool flag;
   final String? imageIcon;
+  final double hight;
+  final double width;
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      width: 40,
+      height: hight,
+      width: width,
       padding: const EdgeInsets.all(8),
-      
       child: flag == true
           ? Icon(
               icon,
