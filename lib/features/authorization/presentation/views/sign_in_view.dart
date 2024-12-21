@@ -53,22 +53,28 @@ class SignInView extends StatelessWidget {
               suffixIcon: Icon(Icons.visibility_off),
             ),
             const SizedBox(
-              height: 25,
+              height: 5,
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "Forget password?",
-                //TODO : this too will put in app_styles.dart file
-                style: GoogleFonts.inter(
-                  fontSize: getFontSize(context, 14),
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.myBlue100_1,
+            GestureDetector(
+              onTap: () {},
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Forget password?",
+                    //TODO : this too will put in app_styles.dart file
+                    style: GoogleFonts.inter(
+                      fontSize: getFontSize(context, 14),
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.myBlue100_1,
+                    ),
+                  ),
                 ),
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 5,
             ),
             Center(
               child: CustomElevatedButton(

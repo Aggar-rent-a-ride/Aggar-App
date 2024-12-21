@@ -7,9 +7,15 @@ import 'package:aggar/features/authorization/presentation/widget/terms_check.dar
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class PickImage extends StatelessWidget {
+class PickImage extends StatefulWidget {
   const PickImage({super.key});
 
+  @override
+  State<PickImage> createState() => _PickImageState();
+}
+
+class _PickImageState extends State<PickImage> {
+  String selectedType = "user";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +34,7 @@ class PickImage extends StatelessWidget {
             ),
             CircleAvatar(
               backgroundColor: AppColors.myBlue100_2,
-              radius: 120,
+              radius: 110,
               child: const CustomIcon(
                 hight: 120,
                 width: 120,
@@ -36,9 +42,12 @@ class PickImage extends StatelessWidget {
                 imageIcon: AppAssets.assetsIconsAddPhoto,
               ),
             ),
-            const Text(
-              //TODO : this too will put in app_styles.dart file
-              "Profile photo",
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                //TODO : this too will put in app_styles.dart file
+                "Profile photo",
+              ),
             ),
             const Align(
               alignment: Alignment.center,
@@ -47,7 +56,7 @@ class PickImage extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 40,
+              height: 20,
             ),
             const Align(
               alignment: Alignment.topLeft,
@@ -56,11 +65,32 @@ class PickImage extends StatelessWidget {
                 "Choose type:",
               ),
             ),
-            const Row(
+            Row(
               children: [
-                CardType(),
-                CardType(),
+                CardType(
+                  title: "User",
+                  subtitle: "Can use cars & buy for them",
+                  isSelected: selectedType == "user",
+                  onTap: () {
+                    setState(() {
+                      selectedType = "user";
+                    });
+                  },
+                ),
+                CardType(
+                  title: "Renter",
+                  subtitle: "Can rent cars & get money",
+                  isSelected: selectedType == "renter",
+                  onTap: () {
+                    setState(() {
+                      selectedType = "renter";
+                    });
+                  },
+                ),
               ],
+            ),
+            const SizedBox(
+              height: 60,
             ),
             const TermsCheck(),
             const SizedBox(

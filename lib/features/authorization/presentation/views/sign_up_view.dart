@@ -60,7 +60,7 @@ class SignUpView extends StatelessWidget {
               suffixIcon: Icon(Icons.visibility_off),
             ),
             const SizedBox(
-              height: 80,
+              height: 100,
             ),
             Center(
               child: CustomElevatedButton(
