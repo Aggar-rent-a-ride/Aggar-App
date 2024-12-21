@@ -20,16 +20,27 @@ class ScrollViewHome extends StatelessWidget {
             children: const [SignUpView(), PickImage()],
           ),
           Container(
-            alignment: const Alignment(0, 0.42),
+            alignment: const Alignment(0, 0.45),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SmoothPageIndicator(
                   controller: controller,
                   count: 2,
-                  effect: WormEffect(
-                    dotColor: AppColors.myGray100_1,
-                    activeDotColor: AppColors.myBlue100_2,
+                  effect: CustomizableEffect(
+                    activeDotDecoration: DotDecoration(
+                      width: 15.0,
+                      height: 15.0,
+                      color: AppColors.myBlue100_2,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    dotDecoration: DotDecoration(
+                      width: 15.0,
+                      height: 15.0,
+                      color: AppColors.myGray100_1,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    spacing: 10.0,
                   ),
                 ),
               ],
