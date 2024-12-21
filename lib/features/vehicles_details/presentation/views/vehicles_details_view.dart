@@ -42,7 +42,7 @@ class VehiclesDetailsView extends StatelessWidget {
           leading: const Padding(
             padding: EdgeInsets.all(8.0),
             child: CustomIconButton(
-              icon: Icons.favorite_border,
+              icon: Icons.arrow_back_rounded,
               flag: true,
             ),
           ),
