@@ -34,7 +34,7 @@ class AddetinalTechnicalInformation extends StatelessWidget {
             ),
           ],
         ),
-        Gap(12),
+        Gap(8),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
