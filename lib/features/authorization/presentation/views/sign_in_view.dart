@@ -8,6 +8,7 @@ import 'package:aggar/features/authorization/presentation/widget/custom_text_fro
 import 'package:aggar/features/authorization/presentation/widget/divider_with_text.dart';
 import 'package:aggar/features/authorization/presentation/widget/social_button.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignInView extends StatelessWidget {
@@ -20,6 +21,7 @@ class SignInView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
+          spacing: 15,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image(
@@ -42,9 +44,6 @@ class SignInView extends StatelessWidget {
               obscureText: false,
               hintText: "Enter Email",
             ),
-            const SizedBox(
-              height: 10,
-            ),
             const CustomTextField(
               labelText: 'Password',
               inputType: TextInputType.text,
@@ -52,18 +51,19 @@ class SignInView extends StatelessWidget {
               hintText: "Enter password",
               suffixIcon: Icon(Icons.visibility_off),
             ),
-            const SizedBox(
-              height: 5,
-            ),
             GestureDetector(
               onTap: () {},
               child: Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     "Forget password?",
-                    //TODO : this too will put in app_styles.dart file
                     style: GoogleFonts.inter(
                       fontSize: getFontSize(context, 14),
                       fontWeight: FontWeight.w500,
@@ -72,9 +72,6 @@ class SignInView extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 5,
             ),
             Center(
               child: CustomElevatedButton(
@@ -93,13 +90,7 @@ class SignInView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
             const DividerWithText(),
-            const SizedBox(
-              height: 10,
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -128,13 +119,12 @@ class SignInView extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const Gap(5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Don't have an account?"),
+                const Gap(5),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -143,6 +133,11 @@ class SignInView extends StatelessWidget {
                           builder: (context) => const ScrollViewHome(),
                         ));
                   },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     "Register now",
                     //TODO : this too will put in app_styles.dart file

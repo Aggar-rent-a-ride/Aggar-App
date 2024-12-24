@@ -1,3 +1,4 @@
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/chat/presentation/views/chat_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';

@@ -3,6 +3,7 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUpView extends StatelessWidget {
@@ -15,6 +16,7 @@ class SignUpView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
+          spacing: 15,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -31,26 +33,17 @@ class SignUpView extends StatelessWidget {
               obscureText: false,
               hintText: "Say my name",
             ),
-            const SizedBox(
-              height: 15,
-            ),
             const CustomTextField(
               labelText: 'Date of birth',
               inputType: TextInputType.text,
               obscureText: false,
               hintText: "Enter your age",
             ),
-            const SizedBox(
-              height: 15,
-            ),
             const CustomTextField(
               labelText: 'Email',
               inputType: TextInputType.text,
               obscureText: false,
               hintText: "Enter your Email",
-            ),
-            const SizedBox(
-              height: 15,
             ),
             const CustomTextField(
               labelText: 'Password',
@@ -59,9 +52,7 @@ class SignUpView extends StatelessWidget {
               hintText: "Enter password",
               suffixIcon: Icon(Icons.visibility_off),
             ),
-            const SizedBox(
-              height: 100,
-            ),
+            const Gap(65),
             Center(
               child: CustomElevatedButton(
                 borderRadius: BorderRadius.circular(15),
@@ -79,19 +70,23 @@ class SignUpView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const Gap(5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Have an account?"),
+                const Gap(5),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(
                       context,
                     );
                   },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     "Login now",
                     //TODO : this too will put in app_styles.dart file
