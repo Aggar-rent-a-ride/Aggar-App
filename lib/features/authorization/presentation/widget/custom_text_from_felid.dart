@@ -83,7 +83,14 @@ class CustomTextField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide.none,
                 ),
-                suffixIcon: suffixIcon),
+                suffixIcon: suffixIcon != null
+                    ? IconButton(
+                        icon: suffixIcon!,
+                        onPressed: () {
+                          // Add your onPressed code here
+                        },
+                      )
+                    : null),
           ),
         ),
       ],

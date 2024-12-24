@@ -1,42 +1,52 @@
 import 'package:flutter/material.dart';
 
 class CardType extends StatelessWidget {
-  const CardType({super.key, this.icon, this.title, this.subtitle});
+  const CardType({
+    super.key,
+    this.icon,
+    this.title,
+    this.subtitle,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   final IconData? icon;
   final String? title;
   final String? subtitle;
-  
+  final bool isSelected;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          // setState(() {
-          //   selectedType = 'User';
-          // });
-        },
+        onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              // color: selectedType == 'User' ? Colors.blue : Colors.grey,
               width: 2,
+              color: isSelected ? Colors.blue : Colors.grey, // Change color
             ),
             borderRadius: BorderRadius.circular(10),
+            color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.white, // Optional background
           ),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.all(8),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.person, size: 50),
-              SizedBox(height: 8),
+              Icon(icon ?? Icons.person, size: 50),
+              const SizedBox(height: 8),
               Text(
-                'User',
-                style: TextStyle(fontSize: 18),
+                title ?? 'User',
+                style: const TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 4),
-              Text('Can use cars & buy for them', textAlign: TextAlign.center),
+              const SizedBox(height: 4),
+              Text(
+                subtitle ?? 'Can use cars & buy for them',
+                style: const TextStyle(fontSize: 10),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
