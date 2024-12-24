@@ -1,14 +1,15 @@
 // ignore_for_file: prefer_single_quotes
 class AppAssets {
   AppAssets._();
-  
+
   /// Assets for assetsIconsAddPhoto
   /// assets/icons/add_photo.png
   static const String assetsIconsAddPhoto = "assets/icons/add_photo.png";
 
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
-  static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
+  static const String assetsIconsCarsInVehiclesList =
+      "assets/icons/cars_in_vehiclesList.png";
 
   /// Assets for assetsIconsChat
   /// assets/icons/chat.png
@@ -20,7 +21,8 @@ class AppAssets {
 
   /// Assets for assetsIconsClosedEyeIcon
   /// assets/icons/closed_eye_icon.png
-  static const String assetsIconsClosedEyeIcon = "assets/icons/closed_eye_icon.png";
+  static const String assetsIconsClosedEyeIcon =
+      "assets/icons/closed_eye_icon.png";
 
   /// Assets for assetsIconsEngine
   /// assets/icons/engine.png
@@ -28,7 +30,8 @@ class AppAssets {
 
   /// Assets for assetsIconsFacebookIcon
   /// assets/icons/Facebook_icon.png
-  static const String assetsIconsFacebookIcon = "assets/icons/Facebook_icon.png";
+  static const String assetsIconsFacebookIcon =
+      "assets/icons/Facebook_icon.png";
 
   /// Assets for assetsIconsFuel
   /// assets/icons/fuel.png
@@ -90,8 +93,11 @@ class AppAssets {
   /// assets/images/map.png
   static const String assetsImagesMap = "assets/images/map.png";
 
+  /// Assets for assetsImagesNoChat
+  /// assets/images/noChat.png
+  static const String assetsImagesNoChat = "assets/images/nochat.png";
+
   /// Assets for assetsImagesSignUpImg
   /// assets/images/sign_up_img.png
   static const String assetsImagesSignUpImg = "assets/images/sign_up_img.png";
 }
-
