@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
       home: const ChatView(),
-      home: const SignInView(),
     );
   }
 }
