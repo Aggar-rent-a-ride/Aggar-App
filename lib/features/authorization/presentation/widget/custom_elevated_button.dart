@@ -27,6 +27,14 @@ class CustomElevatedButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: borderRadius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: ElevatedButton(
         onPressed: onPressed,

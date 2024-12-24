@@ -93,14 +93,17 @@ flutter_assets:
         - asset: assets/fonts/beiruti/Beiruti-SemiBold.ttf
           weight: 600
         - asset: assets/fonts/beiruti/Beiruti-Bold.ttf
+          weight: 700
         - asset: assets/fonts/beiruti/Beiruti-ExtraBold.ttf
         - asset: assets/fonts/beiruti/Beiruti-Black.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo/Cairo-Light.ttf
+        - asset: assets/fonts/Cairo/Cairo-Regular.ttf
+        - asset: assets/fonts/Cairo/Cairo-Medium.ttf
+        - asset: assets/fonts/Cairo/Cairo-SemiBold.ttf
+        - asset: assets/fonts/Cairo/Cairo-Bold.ttf
+        - asset: assets/fonts/Cairo/Cairo-ExtraBold.ttf
+        - asset: assets/fonts/Cairo/Cairo-Black.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

@@ -1,3 +1,4 @@
+import 'package:aggar/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class TermsCheck extends StatefulWidget {
@@ -26,12 +27,11 @@ class _TermsCheckState extends State<TermsCheck> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
-            activeColor: Colors.blue,
+            activeColor: AppColors.myBlue100_1,
           ),
           const Text('Agree to the '),
           GestureDetector(
             onTap: () {
-              // Navigate to terms and conditions page or display a dialog
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
