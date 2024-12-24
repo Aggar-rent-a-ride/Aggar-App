@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "aggar"
-    ]
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    }
 }
