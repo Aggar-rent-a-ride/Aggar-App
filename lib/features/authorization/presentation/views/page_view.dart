@@ -14,7 +14,7 @@ class ScrollViewHome extends StatelessWidget {
       body: Stack(
         children: [
           PageView(
-            physics: const NeverScrollableScrollPhysics(), //to make it never scroll
+           // physics: const NeverScrollableScrollPhysics(), //to make it never scroll
             controller: controller,
             onPageChanged: (index) {},
             children: const [SignUpView(), PickImage()],
