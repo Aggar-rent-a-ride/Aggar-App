@@ -15,7 +15,7 @@ class NoChatView extends StatelessWidget {
           children: [
             const Image(
               image: AssetImage(
-                AppAssets.assetsImagesNoChat,
+                AppAssets.assetsImagesNochat,
               ),
               height: 225,
               width: 225,
