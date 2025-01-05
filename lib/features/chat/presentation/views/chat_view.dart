@@ -13,7 +13,7 @@ class ChatView extends StatelessWidget {
         itemBuilder: (context, index) => const ChatPerson(
           name: "Brian Smith",
           msg:
-              "Hello! Excited to connect with everyone!Hello! Excited to connect with everyone!",
+              "Hello! Excited to connect everyone!Hello! Excited to connect with everyone!",
           time: "12:00 am",
           numberMsg: 8,
           image: AppAssets.assetsImagesAvatar,
