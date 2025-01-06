@@ -20,10 +20,9 @@ class CustomIcon extends StatelessWidget {
   final double width;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: hight,
       width: width,
-      padding: const EdgeInsets.all(8),
       child: flag == true
           ? Icon(
               icon,

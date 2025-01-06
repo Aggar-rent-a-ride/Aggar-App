@@ -38,6 +38,10 @@ class AppAssets {
   /// assets/icons/Google_icon.png
   static const String assetsIconsGoogleIcon = "assets/icons/Google_icon.png";
 
+  /// Assets for assetsIconsMenu
+  /// assets/icons/menu.png
+  static const String assetsIconsMenu = "assets/icons/menu.png";
+
   /// Assets for assetsIconsMotor
   /// assets/icons/motor.png
   static const String assetsIconsMotor = "assets/icons/motor.png";
@@ -57,6 +61,10 @@ class AppAssets {
   /// Assets for assetsIconsSeats
   /// assets/icons/seats.png
   static const String assetsIconsSeats = "assets/icons/seats.png";
+
+  /// Assets for assetsIconsStar
+  /// assets/icons/star.png
+  static const String assetsIconsStar = "assets/icons/star.png";
 
   /// Assets for assetsIconsUserOff
   /// assets/icons/user_off.png

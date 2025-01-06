@@ -1,3 +1,5 @@
+import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
 import 'package:flutter/material.dart';
 
@@ -8,65 +10,66 @@ class CarItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 250,
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
+    return Card(
+      color: Colors.white,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 7),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
               child: Image.asset(
                 car.assetImage,
                 width: double.infinity,
-                height: 120,
+                height: 100,
                 fit: BoxFit.cover,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.star,
-                              color: Colors.yellow, size: 16),
-                          Text(car.rating.toString()),
-                        ],
-                      ),
-                      Text(
-                        "${car.distance} km",
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    car.name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "\$${car.pricePerHour}/hr",
-                    style: const TextStyle(fontSize: 14, color: Colors.blue),
-                  ),
-                ],
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const CustomIcon(
+                          hight: 15,
+                          width: 15,
+                          flag: false,
+                          imageIcon: AppAssets.assetsIconsStar,
+                        ),
+                        Text(" ${car.rating.toString()}"),
+                      ],
+                    ),
+                    Text(
+                      "${car.distance} km",
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  car.name,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "\$${car.pricePerHour}/hr",
+                  style: const TextStyle(fontSize: 14, color: Colors.blue),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
