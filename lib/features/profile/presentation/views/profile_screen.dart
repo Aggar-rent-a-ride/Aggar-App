@@ -35,7 +35,14 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text("Profile Account"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -43,18 +50,37 @@ class ProfileScreen extends StatelessWidget {
             ProfileWidget(profile: profile),
             const Gap(20),
             ToggleButtons(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
               isSelected: const [true, false, false, false],
+              onPressed: (index) {},
+              renderBorder: false,
+              color: Colors.black,
+              selectedColor: Colors.white,
+              fillColor: Colors.blue,
+              constraints: const BoxConstraints(
+                minHeight: 40,
+                minWidth: 80,
+              ),
               children: const [
-                Text("Cars"),
-                Text("Favorite"),
-                Text("Statics"),
-                Text("Reviews"),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text("Cars"),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text("Favorite"),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text("Statics"),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text("Reviews"),
+                ),
               ],
-              onPressed: (index) {
-                // Handle toggle selection
-              },
             ),
+            const Gap(20),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),

@@ -8,38 +8,65 @@ class CarItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          Image.asset(car.assetImage, height: 100, fit: BoxFit.cover),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(car.name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                Text("\$${car.pricePerHour}/hr",
-                    style: const TextStyle(fontSize: 14, color: Colors.blue)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.yellow, size: 16),
-                        Text(car.rating.toString()),
-                      ],
-                    ),
-                    Text("${car.distance} km",
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey)),
-                  ],
-                ),
-              ],
+    return SizedBox(
+      height: 250,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              child: Image.asset(
+                car.assetImage,
+                width: double.infinity,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.star,
+                              color: Colors.yellow, size: 16),
+                          Text(car.rating.toString()),
+                        ],
+                      ),
+                      Text(
+                        "${car.distance} km",
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    car.name,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    "\$${car.pricePerHour}/hr",
+                    style: const TextStyle(fontSize: 14, color: Colors.blue),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
