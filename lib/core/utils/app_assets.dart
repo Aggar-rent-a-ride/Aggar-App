@@ -6,6 +6,10 @@ class AppAssets {
   /// assets/icons/add_photo.png
   static const String assetsIconsAddPhoto = "assets/icons/add_photo.png";
 
+  /// Assets for assetsIconsCarIcon
+  /// assets/icons/car_icon.png
+  static const String assetsIconsCarIcon = "assets/icons/car_icon.png";
+
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
   static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
@@ -38,6 +42,10 @@ class AppAssets {
   /// assets/icons/Google_icon.png
   static const String assetsIconsGoogleIcon = "assets/icons/Google_icon.png";
 
+  /// Assets for assetsIconsLocation
+  /// assets/icons/location.png
+  static const String assetsIconsLocation = "assets/icons/location.png";
+
   /// Assets for assetsIconsMap
   /// assets/icons/map.png
   static const String assetsIconsMap = "assets/icons/map.png";
@@ -50,9 +58,21 @@ class AppAssets {
   /// assets/icons/motor.png
   static const String assetsIconsMotor = "assets/icons/motor.png";
 
+  /// Assets for assetsIconsMotorcyclesIcon
+  /// assets/icons/motorcycles_icon.png
+  static const String assetsIconsMotorcyclesIcon = "assets/icons/motorcycles_icon.png";
+
+  /// Assets for assetsIconsNotification
+  /// assets/icons/notification.png
+  static const String assetsIconsNotification = "assets/icons/notification.png";
+
   /// Assets for assetsIconsOpenEyeIcon
   /// assets/icons/open_eye_icon.png
   static const String assetsIconsOpenEyeIcon = "assets/icons/open_eye_icon.png";
+
+  /// Assets for assetsIconsRecreationalIcon
+  /// assets/icons/recreational_icon.png
+  static const String assetsIconsRecreationalIcon = "assets/icons/recreational_icon.png";
 
   /// Assets for assetsIconsRenterOff
   /// assets/icons/renter_off.png
@@ -62,13 +82,25 @@ class AppAssets {
   /// assets/icons/renter_on.png
   static const String assetsIconsRenterOn = "assets/icons/renter_on.png";
 
+  /// Assets for assetsIconsSearch
+  /// assets/icons/search.png
+  static const String assetsIconsSearch = "assets/icons/search.png";
+
   /// Assets for assetsIconsSeats
   /// assets/icons/seats.png
   static const String assetsIconsSeats = "assets/icons/seats.png";
 
+  /// Assets for assetsIconsSort
+  /// assets/icons/sort.png
+  static const String assetsIconsSort = "assets/icons/sort.png";
+
   /// Assets for assetsIconsStar
   /// assets/icons/star.png
   static const String assetsIconsStar = "assets/icons/star.png";
+
+  /// Assets for assetsIconsTruckIcon
+  /// assets/icons/truck_icon.png
+  static const String assetsIconsTruckIcon = "assets/icons/truck_icon.png";
 
   /// Assets for assetsIconsUserOff
   /// assets/icons/user_off.png
@@ -113,5 +145,9 @@ class AppAssets {
   /// Assets for assetsImagesSignUpImg
   /// assets/images/sign_up_img.png
   static const String assetsImagesSignUpImg = "assets/images/sign_up_img.png";
+
+  /// Assets for assetsImagesTesla
+  /// assets/images/Tesla.png
+  static const String assetsImagesTesla = "assets/images/Tesla.png";
 }
 
