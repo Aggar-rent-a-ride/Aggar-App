@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/widgets/comment_section.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
 import 'package:aggar/features/profile/data/profile_model.dart';
@@ -51,8 +52,8 @@ class ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const CustomIcon(
-              hight: 32,
-              width: 32,
+              hight: 30,
+              width: 30,
               flag: false,
               imageIcon: AppAssets.assetsIconsMenu,
             ),
@@ -165,15 +166,17 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget _buildReviewsTab() {
     return ListView(
       children: const [
-        ListTile(
-          leading: CircleAvatar(child: Text('S')),
-          title: Text('Scarlet Johnson'),
-          subtitle: Text('Was a good deal, nice person but bad car, fix it!'),
+        CommentSection(
+          name: "Scarlett  Johansson",
+          commentText: "Was a good deal, nice person but bad car , fix it mf",
+          date: "11/8/2024",
+          rate: 3,
         ),
-        ListTile(
-          leading: CircleAvatar(child: Text('N')),
-          title: Text('Naruto Uzumaki'),
-          subtitle: Text('Bad renter, tell him about the cat.'),
+        CommentSection(
+          name: "Scarlett  Johansson",
+          commentText: "Was a good deal, nice person but bad car , fix it mf",
+          date: "11/8/2024",
+          rate: 3,
         ),
       ],
     );

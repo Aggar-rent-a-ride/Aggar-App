@@ -38,6 +38,10 @@ class AppAssets {
   /// assets/icons/Google_icon.png
   static const String assetsIconsGoogleIcon = "assets/icons/Google_icon.png";
 
+  /// Assets for assetsIconsMap
+  /// assets/icons/map.png
+  static const String assetsIconsMap = "assets/icons/map.png";
+
   /// Assets for assetsIconsMenu
   /// assets/icons/menu.png
   static const String assetsIconsMenu = "assets/icons/menu.png";
