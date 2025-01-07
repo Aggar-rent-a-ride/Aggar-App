@@ -1,3 +1,4 @@
+import 'package:aggar/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -20,10 +21,10 @@ class NameAndMessageChatView extends StatelessWidget {
           Text(
             name,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.myBlue100_2),
           ),
           const Gap(6),
           Text(
@@ -31,7 +32,7 @@ class NameAndMessageChatView extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 12,
-              color: Colors.grey,
+              color: Colors.black87,
             ),
           ),
         ],

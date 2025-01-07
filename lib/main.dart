@@ -1,13 +1,16 @@
 import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
+import 'package:aggar/features/messages/presentation/views/chat_view.dart';
+import 'package:aggar/features/messages/presentation/views/no_message_view.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-      // DevicePreview(
-      //   enabled: !kReleaseMode,
-      //   builder: (context) => const MyApp(),
-      // ),
-      const MyApp(),
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => const MyApp(),
+      ),
+      // const MyApp(),
     );
 
 class MyApp extends StatelessWidget {
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const MainScreen(),
+      home: const ChatView(),
     );
   }
 }
