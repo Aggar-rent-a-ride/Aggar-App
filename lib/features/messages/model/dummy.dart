@@ -14,3 +14,34 @@ final List<String> names = [
   'Henry Lopez',
   'Isabella Taylor',
 ];
+final List<String> personOne = [
+  'Hi there! How are you today?',
+  'I\'m doing well, thank you. How about you?',
+  'Just got back from a short trip. You wouldn\'t believe the sights I saw!',
+  'Oh, just around the local area. It was refreshing to take a break.',
+  'I was thinking we could meet up for coffee later.',
+  'Great! How does 3 PM sound?',
+  'Perfect, I can\'t wait to catch up with you.',
+  'Absolutely! It\'s been too long since we had a good chat.',
+  'See you then!',
+  'Hey, by the way, have you tried the new café downtown?',
+  'I heard they have the best pastries in town.',
+  'Let\'s definitely check it out sometime!',
+  'Take care and see you soon!',
+];
+
+final List<String> personTwo = [
+  'Hello! I\'m good, thanks for asking. You?',
+  'I\'m fine, thanks. What have you been up to?',
+  'That sounds amazing! Where did you go?',
+  'That must have been nice. Sometimes you need a change of scenery.',
+  'That sounds like a wonderful idea!',
+  '3 PM works for me. See you there!',
+  'Same here! It\'ll be great to catch up.',
+  'Yes, it really has! I have so much to tell you.',
+  'Can\'t wait!',
+  'No, I haven\'t. Is it any good?',
+  'Really? We should definitely go there.',
+  'I\'m in! Let\'s plan for it.',
+  'You too! See you soon!',
+];

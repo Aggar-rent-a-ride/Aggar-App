@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/widgets/type_message_text_field_with_send_button.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/type_message_text_field_with_send_button.dart';
 import 'package:flutter/material.dart';
 
 class SendMessagesWithAttachSection extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/views/person_messages_view.dart';
-import 'package:aggar/features/messages/presentation/views/messages_status/presentation/widgets/widgets/chat_person.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../model/dummy.dart';
+import '../../../../model/dummy.dart';
 
 class RequestMessageView extends StatelessWidget {
   const RequestMessageView({super.key});
@@ -18,7 +18,7 @@ class RequestMessageView extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PersonMessagesView(
+              builder: (context) => PersonalChatView(
                 name: names[index],
               ),
             ),
