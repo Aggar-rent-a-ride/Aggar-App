@@ -1,4 +1,4 @@
-import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/views/person_messages_view.dart';
+import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/views/personal_chat_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const PersonMessagesView(name: 'Brian Smith'),
+      home: const PersonalChatView(name: 'Brian Smith'),
     );
   }
 }

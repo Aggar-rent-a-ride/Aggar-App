@@ -2,8 +2,8 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/widgets/image_and_name_person_message.dart';
 import 'package:flutter/material.dart';
 
-class AppBarPersonMessage extends StatelessWidget {
-  const AppBarPersonMessage({
+class AppBarPersonalMessageSection extends StatelessWidget {
+  const AppBarPersonalMessageSection({
     super.key,
     required this.name,
   });
