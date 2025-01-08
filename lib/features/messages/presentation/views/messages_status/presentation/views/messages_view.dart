@@ -1,7 +1,7 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/messages/presentation/views/no_message_view.dart';
-import 'package:aggar/features/messages/presentation/views/request_message_view.dart';
-import 'package:aggar/features/messages/presentation/widgets/message_app_bar_with_tab_bar.dart';
+import 'package:aggar/features/messages/presentation/views/messages_status/presentation/views/no_messages_view.dart';
+import 'package:aggar/features/messages/presentation/views/messages_status/presentation/views/request_messages_view.dart';
+import 'package:aggar/features/messages/presentation/views/messages_status/presentation/widgets/widgets/message_app_bar_with_tab_bar.dart';
 import 'package:flutter/material.dart';
 
 class ChatView extends StatelessWidget {
@@ -45,20 +45,3 @@ class ChatView extends StatelessWidget {
     );
   }
 }
-
-final List<String> names = [
-  'Brian Smith',
-  'Claire Davis',
-  'Alice Johnson',
-  'David Wilson',
-  'Frank Garcia',
-  'Grace Martinez',
-  'Henry Lopez',
-  'Isabella Taylor',
-  'Alice Johnson',
-  'David Wilson',
-  'Frank Garcia',
-  'Grace Martinez',
-  'Henry Lopez',
-  'Isabella Taylor',
-];
