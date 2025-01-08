@@ -22,4 +22,5 @@ class AppColors {
   static Color myBlue10_2 = const Color(0xff576CBC).withOpacity(0.1);
   static Color myBlue100_3 = const Color(0xffA5D7E8);
   static Color myBlue100_4 = const Color(0xff8BA2CC).withOpacity(.3);
+  static Color myBlue100_6 = const Color(0xff4669AA);
 }
