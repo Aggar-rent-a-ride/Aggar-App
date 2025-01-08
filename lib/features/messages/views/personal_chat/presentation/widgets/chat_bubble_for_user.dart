@@ -2,16 +2,16 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:flutter/material.dart';
 
-class ChatBubleForFriend extends StatelessWidget {
-  const ChatBubleForFriend({super.key, required this.message});
+class ChatBubbleForUser extends StatelessWidget {
+  const ChatBubbleForUser({super.key, required this.message});
   final Message message;
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.centerRight,
       child: Padding(
         padding: EdgeInsets.only(
-          right: MediaQuery.sizeOf(context).width * 0.3,
+          left: MediaQuery.sizeOf(context).width * 0.3,
         ),
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -20,16 +20,16 @@ class ChatBubleForFriend extends StatelessWidget {
             vertical: 3,
           ),
           decoration: BoxDecoration(
-            color: AppColors.myWhite100_4,
+            color: AppColors.myBlue100_6,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
             ),
           ),
           child: Text(
             message.message,
-            style: TextStyle(color: AppColors.myBlue100_5),
+            style: TextStyle(color: AppColors.myWhite100_1),
           ),
         ),
       ),

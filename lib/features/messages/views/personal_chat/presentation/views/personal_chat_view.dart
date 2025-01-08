@@ -2,7 +2,7 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/messages/model/dummy.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/app_bar_personal_chat.dart';
-import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/chat_buble_for_friend.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/chat_bubble_for_user.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/send_messages_with_attach_section.dart';
@@ -26,7 +26,7 @@ class PersonalChatView extends StatelessWidget {
                     reverse: true,
                     itemCount: personOne.length,
                     itemBuilder: (context, index) {
-                      return ChatBubleForFriend(
+                      return ChatBubbleForUser(
                         message: Message(
                           personOne[index],
                           personTwo[index],

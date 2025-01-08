@@ -1,5 +1,4 @@
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
-import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 
