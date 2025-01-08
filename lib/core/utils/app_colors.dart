@@ -14,8 +14,10 @@ class AppColors {
   static Color myGray100_5 = const Color(0xffF4F4F4);
   static Color myWhite100_1 = const Color(0xffffffff);
   static Color myWhite100_2 = const Color(0xffF7F7F7);
+  static Color myWhite100_4 = const Color(0xffE9F0F2);
   static Color myWhite100_3 = const Color(0xffE9E9E9);
   static Color myBlue100_1 = const Color(0xff19376d);
+  static Color myBlue100_5 = const Color(0xff0B2447);
   static Color myBlue100_2 = const Color(0xff576CBC);
   static Color myBlue10_2 = const Color(0xff576CBC).withOpacity(0.1);
   static Color myBlue100_3 = const Color(0xffA5D7E8);

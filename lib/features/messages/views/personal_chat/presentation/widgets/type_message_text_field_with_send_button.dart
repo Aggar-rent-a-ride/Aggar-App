@@ -1,5 +1,5 @@
-import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/widgets/message_text_field_with_attachment_button.dart';
-import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/widgets/send_message_button.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/message_text_field_with_attachment_button.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/send_message_button.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

@@ -1,11 +1,11 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/messages/presentation/views/messages_status/presentation/views/no_messages_view.dart';
-import 'package:aggar/features/messages/presentation/views/messages_status/presentation/views/request_messages_view.dart';
-import 'package:aggar/features/messages/presentation/views/messages_status/presentation/widgets/widgets/message_app_bar_with_tab_bar.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/views/no_messages_view.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/views/request_messages_view.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/message_app_bar_with_tab_bar.dart';
 import 'package:flutter/material.dart';
 
-class ChatView extends StatelessWidget {
-  const ChatView({super.key});
+class MessagesView extends StatelessWidget {
+  const MessagesView({super.key});
 
   @override
   Widget build(BuildContext context) {

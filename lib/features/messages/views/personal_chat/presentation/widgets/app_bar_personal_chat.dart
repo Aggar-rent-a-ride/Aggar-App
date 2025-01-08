@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/messages/presentation/views/personal_chat/presentation/widgets/app_bar_personal_message_section.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/app_bar_personal_message_section.dart';
 import 'package:flutter/material.dart';
 
 class AppBarPersonalChat extends StatelessWidget {
