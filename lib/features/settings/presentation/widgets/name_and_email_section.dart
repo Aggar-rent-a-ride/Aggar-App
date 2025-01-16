@@ -15,7 +15,7 @@ class NameAndEmailSection extends StatelessWidget {
           'Adele Adkins',
           style: TextStyle(
             color: AppColors.myBlack100,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -24,7 +24,7 @@ class NameAndEmailSection extends StatelessWidget {
           style: TextStyle(
             color: AppColors.myGray100_2,
             fontSize: 10,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
