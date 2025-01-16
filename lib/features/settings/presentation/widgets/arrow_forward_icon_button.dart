@@ -5,18 +5,17 @@ class ArrowForwardIconButton extends StatelessWidget {
   const ArrowForwardIconButton({
     super.key,
     this.onPressed,
+    this.icon,
   });
   final void Function()? onPressed;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {},
-      icon: Icon(
-        size: 20,
-        color: AppColors.myBlue100_1,
-        Icons.arrow_forward_ios_rounded,
-      ),
+    return Icon(
+      size: 20,
+      color: AppColors.myBlue100_1,
+      Icons.arrow_forward_ios_rounded,
     );
   }
 }
