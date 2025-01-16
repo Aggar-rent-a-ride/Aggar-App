@@ -5,13 +5,17 @@ class CustomCardSettingsPage extends StatelessWidget {
   const CustomCardSettingsPage({
     super.key,
     required this.backgroundColor,
-    required this.borderColor,
+    this.borderColor,
     required this.child,
     this.onPressed,
+    required this.padingVeritical,
+    required this.padingHorizental,
   });
   final Color backgroundColor;
-  final Color borderColor;
+  final Color? borderColor;
   final Widget child;
+  final double padingVeritical;
+  final double padingHorizental;
   final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class CustomCardSettingsPage extends StatelessWidget {
               Radius.circular(10),
             ),
             side: BorderSide(
-              color: borderColor,
+              color: borderColor ?? Colors.transparent,
             ),
           ),
         ), // This creates a rectangular shape.
@@ -40,7 +44,10 @@ class CustomCardSettingsPage extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(
+          vertical: padingVeritical,
+          horizontal: padingHorizental,
+        ),
         child: child,
       ),
     );
