@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_single_quotes
+//TODO : this images will be removed in the future as it will increase the size of our app
 class AppAssets {
   AppAssets._();
-  
+
   /// Assets for assetsIconsAddPhoto
   /// assets/icons/add_photo.png
   static const String assetsIconsAddPhoto = "assets/icons/add_photo.png";
@@ -12,7 +13,8 @@ class AppAssets {
 
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
-  static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
+  static const String assetsIconsCarsInVehiclesList =
+      "assets/icons/cars_in_vehiclesList.png";
 
   /// Assets for assetsIconsChat
   /// assets/icons/chat.png
@@ -24,7 +26,17 @@ class AppAssets {
 
   /// Assets for assetsIconsClosedEyeIcon
   /// assets/icons/closed_eye_icon.png
-  static const String assetsIconsClosedEyeIcon = "assets/icons/closed_eye_icon.png";
+  static const String assetsIconsClosedEyeIcon =
+      "assets/icons/closed_eye_icon.png";
+
+  /// Assets for assetsIconsContactUs
+  /// assets/icons/contact_us.png
+  static const String assetsIconsContactUs = "assets/icons/contact_us.png";
+
+  /// Assets for assetsIconsContactUsLink
+  /// assets/icons/contact_us_link.png
+  static const String assetsIconsContactUsLink =
+      "assets/icons/contact_us_link.png";
 
   /// Assets for assetsIconsEngine
   /// assets/icons/engine.png
@@ -32,7 +44,8 @@ class AppAssets {
 
   /// Assets for assetsIconsFacebookIcon
   /// assets/icons/Facebook_icon.png
-  static const String assetsIconsFacebookIcon = "assets/icons/Facebook_icon.png";
+  static const String assetsIconsFacebookIcon =
+      "assets/icons/Facebook_icon.png";
 
   /// Assets for assetsIconsFuel
   /// assets/icons/fuel.png
@@ -42,9 +55,21 @@ class AppAssets {
   /// assets/icons/Google_icon.png
   static const String assetsIconsGoogleIcon = "assets/icons/Google_icon.png";
 
+  /// Assets for assetsIconsHelpCenter
+  /// assets/icons/help_center.png
+  static const String assetsIconsHelpCenter = "assets/icons/help_center.png";
+
+  /// Assets for assetsIconsLanguage
+  /// assets/icons/language.png
+  static const String assetsIconsLanguage = "assets/icons/language.png";
+
   /// Assets for assetsIconsLocation
   /// assets/icons/location.png
   static const String assetsIconsLocation = "assets/icons/location.png";
+
+  /// Assets for assetsIconsLogout
+  /// assets/icons/logout.png
+  static const String assetsIconsLogout = "assets/icons/logout.png";
 
   /// Assets for assetsIconsMap
   /// assets/icons/map.png
@@ -60,19 +85,34 @@ class AppAssets {
 
   /// Assets for assetsIconsMotorcyclesIcon
   /// assets/icons/motorcycles_icon.png
-  static const String assetsIconsMotorcyclesIcon = "assets/icons/motorcycles_icon.png";
+  static const String assetsIconsMotorcyclesIcon =
+      "assets/icons/motorcycles_icon.png";
 
   /// Assets for assetsIconsNotification
   /// assets/icons/notification.png
   static const String assetsIconsNotification = "assets/icons/notification.png";
 
+  /// Assets for assetsIconsNotificationSettings
+  /// assets/icons/notification_settings.png
+  static const String assetsIconsNotificationSettings =
+      "assets/icons/notification_settings.png";
+
   /// Assets for assetsIconsOpenEyeIcon
   /// assets/icons/open_eye_icon.png
   static const String assetsIconsOpenEyeIcon = "assets/icons/open_eye_icon.png";
 
+  /// Assets for assetsIconsPayment
+  /// assets/icons/payment.png
+  static const String assetsIconsPayment = "assets/icons/payment.png";
+
   /// Assets for assetsIconsRecreationalIcon
   /// assets/icons/recreational_icon.png
-  static const String assetsIconsRecreationalIcon = "assets/icons/recreational_icon.png";
+  static const String assetsIconsRecreationalIcon =
+      "assets/icons/recreational_icon.png";
+
+  /// Assets for assetsIconsRentHistory
+  /// assets/icons/rent_history.png
+  static const String assetsIconsRentHistory = "assets/icons/rent_history.png";
 
   /// Assets for assetsIconsRenterOff
   /// assets/icons/renter_off.png
@@ -150,4 +190,3 @@ class AppAssets {
   /// assets/images/Tesla.png
   static const String assetsImagesTesla = "assets/images/Tesla.png";
 }
-
