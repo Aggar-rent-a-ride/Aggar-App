@@ -1,0 +1,39 @@
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/widgets/horizontal_line.dart';
+import 'package:aggar/features/settings/presentation/widgets/dark_mode_card.dart';
+import 'package:aggar/features/settings/presentation/widgets/language_card.dart';
+import 'package:aggar/features/settings/presentation/widgets/notification_settings_card.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+
+class SettingsAndPreferencesSection extends StatelessWidget {
+  const SettingsAndPreferencesSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Settings and Preferences",
+          style: TextStyle(
+            color: AppColors.myBlue100_1,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const Gap(20),
+        const NotificationSettingsCard(),
+        const Gap(12),
+        const LanguageCard(),
+        const Gap(12),
+        const DarkModeCard(),
+        const Gap(5),
+        const HorizontalLine(),
+        const Gap(5),
+      ],
+    );
+  }
+}

@@ -40,6 +40,8 @@ dependencies:
   google_fonts: ^6.2.1
   percent_indicator: ^4.2.4
   flutter_rating_bar: ^4.0.1
+  toggle_switch: ^2.3.0
+  flutter_advanced_switch: ^3.1.0
 
 dev_dependencies:
   flutter_test:

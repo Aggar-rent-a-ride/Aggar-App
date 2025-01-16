@@ -1,8 +1,7 @@
 // ignore_for_file: prefer_single_quotes
-//TODO : this images will be removed in the future as it will increase the size of our app
 class AppAssets {
   AppAssets._();
-
+  
   /// Assets for assetsIconsAddPhoto
   /// assets/icons/add_photo.png
   static const String assetsIconsAddPhoto = "assets/icons/add_photo.png";
@@ -13,8 +12,7 @@ class AppAssets {
 
   /// Assets for assetsIconsCarsInVehiclesList
   /// assets/icons/cars_in_vehiclesList.png
-  static const String assetsIconsCarsInVehiclesList =
-      "assets/icons/cars_in_vehiclesList.png";
+  static const String assetsIconsCarsInVehiclesList = "assets/icons/cars_in_vehiclesList.png";
 
   /// Assets for assetsIconsChat
   /// assets/icons/chat.png
@@ -26,8 +24,7 @@ class AppAssets {
 
   /// Assets for assetsIconsClosedEyeIcon
   /// assets/icons/closed_eye_icon.png
-  static const String assetsIconsClosedEyeIcon =
-      "assets/icons/closed_eye_icon.png";
+  static const String assetsIconsClosedEyeIcon = "assets/icons/closed_eye_icon.png";
 
   /// Assets for assetsIconsContactUs
   /// assets/icons/contact_us.png
@@ -35,8 +32,11 @@ class AppAssets {
 
   /// Assets for assetsIconsContactUsLink
   /// assets/icons/contact_us_link.png
-  static const String assetsIconsContactUsLink =
-      "assets/icons/contact_us_link.png";
+  static const String assetsIconsContactUsLink = "assets/icons/contact_us_link.png";
+
+  /// Assets for assetsIconsDarkMode
+  /// assets/icons/dark_mode.png
+  static const String assetsIconsDarkMode = "assets/icons/dark_mode.png";
 
   /// Assets for assetsIconsEngine
   /// assets/icons/engine.png
@@ -44,8 +44,7 @@ class AppAssets {
 
   /// Assets for assetsIconsFacebookIcon
   /// assets/icons/Facebook_icon.png
-  static const String assetsIconsFacebookIcon =
-      "assets/icons/Facebook_icon.png";
+  static const String assetsIconsFacebookIcon = "assets/icons/Facebook_icon.png";
 
   /// Assets for assetsIconsFuel
   /// assets/icons/fuel.png
@@ -85,8 +84,7 @@ class AppAssets {
 
   /// Assets for assetsIconsMotorcyclesIcon
   /// assets/icons/motorcycles_icon.png
-  static const String assetsIconsMotorcyclesIcon =
-      "assets/icons/motorcycles_icon.png";
+  static const String assetsIconsMotorcyclesIcon = "assets/icons/motorcycles_icon.png";
 
   /// Assets for assetsIconsNotification
   /// assets/icons/notification.png
@@ -94,8 +92,7 @@ class AppAssets {
 
   /// Assets for assetsIconsNotificationSettings
   /// assets/icons/notification_settings.png
-  static const String assetsIconsNotificationSettings =
-      "assets/icons/notification_settings.png";
+  static const String assetsIconsNotificationSettings = "assets/icons/notification_settings.png";
 
   /// Assets for assetsIconsOpenEyeIcon
   /// assets/icons/open_eye_icon.png
@@ -107,8 +104,7 @@ class AppAssets {
 
   /// Assets for assetsIconsRecreationalIcon
   /// assets/icons/recreational_icon.png
-  static const String assetsIconsRecreationalIcon =
-      "assets/icons/recreational_icon.png";
+  static const String assetsIconsRecreationalIcon = "assets/icons/recreational_icon.png";
 
   /// Assets for assetsIconsRentHistory
   /// assets/icons/rent_history.png
@@ -190,3 +186,4 @@ class AppAssets {
   /// assets/images/Tesla.png
   static const String assetsImagesTesla = "assets/images/Tesla.png";
 }
+
