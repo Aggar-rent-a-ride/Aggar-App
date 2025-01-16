@@ -14,7 +14,7 @@ class NotificationSettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomCardSettingsPage(
       padingHorizental: 5,
-      padingVeritical: 3,
+      padingVeritical: 10,
       onPressed: () {},
       backgroundColor: AppColors.myBlue100_7,
       child: Row(

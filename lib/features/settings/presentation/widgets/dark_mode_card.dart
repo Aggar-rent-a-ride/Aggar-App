@@ -1,6 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:aggar/features/settings/presentation/widgets/dark_mode_switch.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class DarkModeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomCardSettingsPage(
       padingHorizental: 5,
-      padingVeritical: 3,
+      padingVeritical: 1,
       backgroundColor: AppColors.myBlue100_7,
       child: Row(
         children: [

@@ -14,8 +14,7 @@ class LanguageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomCardSettingsPage(
       padingHorizental: 5,
-      padingVeritical: 3,
-      onPressed: () {},
+      padingVeritical: 0,
       backgroundColor: AppColors.myBlue100_7,
       child: Row(
         children: [
