@@ -174,6 +174,18 @@ class AppAssets {
   /// assets/images/nochat.png
   static const String assetsImagesNochat = "assets/images/nochat.png";
 
+  /// Assets for assetsImagesNotificationPic1
+  /// assets/images/notification_pic_1.png
+  static const String assetsImagesNotificationPic1 = "assets/images/notification_pic_1.png";
+
+  /// Assets for assetsImagesNotificationPic2
+  /// assets/images/notification_pic_2.png
+  static const String assetsImagesNotificationPic2 = "assets/images/notification_pic_2.png";
+
+  /// Assets for assetsImagesNotificationPic3
+  /// assets/images/notification_pic_3.png
+  static const String assetsImagesNotificationPic3 = "assets/images/notification_pic_3.png";
+
   /// Assets for assetsImagesProfile
   /// assets/images/profile.png
   static const String assetsImagesProfile = "assets/images/profile.png";

@@ -1,5 +1,4 @@
-import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
-import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
+import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const MainScreen(),
+      home: const NotificationScreen(),
     );
   }
 }
