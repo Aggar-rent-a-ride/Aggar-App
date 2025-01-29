@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class TermsCheck extends StatefulWidget {
@@ -27,30 +28,43 @@ class _TermsCheckState extends State<TermsCheck> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
-            activeColor: AppColors.myBlue100_1,
+            activeColor: AppColors.myBlue100_2,
           ),
-          const Text('Agree to the '),
+          Text(
+            'Agree to the ',
+            style: AppStyles.regular20(context),
+          ),
           GestureDetector(
             onTap: () {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('Terms and Conditions'),
-                  content: const Text('Here are the terms and conditions...'),
+                  title: Text(
+                    'Terms and Conditions',
+                    style: AppStyles.regular20(context),
+                  ),
+                  content: Text(
+                    'Here are the terms and conditions...',
+                    style: AppStyles.regular20(context),
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Close'),
+                      child: Text(
+                        'Close',
+                        style: AppStyles.regular20(context),
+                      ),
                     ),
                   ],
                 ),
               );
             },
-            child: const Text(
+            child: Text(
               'terms and conditions',
-              style: TextStyle(
+              style: AppStyles.regular20(context).copyWith(
                 color: Colors.blue,
                 decoration: TextDecoration.underline,
+                decorationColor: Colors.blue,
               ),
             ),
           ),
