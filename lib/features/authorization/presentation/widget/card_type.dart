@@ -1,4 +1,7 @@
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class CardType extends StatelessWidget {
   const CardType({
@@ -25,26 +28,39 @@ class CardType extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(
               width: 2,
-              color: isSelected ? Colors.blue : Colors.grey, // Change color
+              color: isSelected
+                  ? AppColors.myBlue100_2
+                  : AppColors.myBlack25, // Change color
             ),
             borderRadius: BorderRadius.circular(10),
-            color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.white, // Optional background
+            color: isSelected
+                ? AppColors.myBlue10_2
+                : AppColors.myWhite100_1, // Optional background
           ),
-          padding: const EdgeInsets.all(8),
-          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          margin: const EdgeInsets.all(5),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon ?? Icons.person, size: 50),
-              const SizedBox(height: 8),
+              Icon(
+                icon ?? Icons.person,
+                size: 50,
+                color: isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+              ),
+              const Gap(6),
               Text(
                 title ?? 'User',
-                style: const TextStyle(fontSize: 16),
+                style: AppStyles.regular20(context).copyWith(
+                  color:
+                      isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+                ),
               ),
-              const SizedBox(height: 4),
               Text(
                 subtitle ?? 'Can use cars & buy for them',
-                style: const TextStyle(fontSize: 10),
+                style: AppStyles.regular12(context).copyWith(
+                  color:
+                      isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
