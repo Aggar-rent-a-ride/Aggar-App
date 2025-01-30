@@ -1,7 +1,7 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/authorization/presentation/widget/card_type.dart';
-import 'package:aggar/features/authorization/presentation/widget/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/pick_image_icon_with_title_and_subtitle.dart';
+import 'package:aggar/features/authorization/presentation/widget/pick_image_register_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/terms_check.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -63,23 +63,7 @@ class _PickImageState extends State<PickImage> {
             const Gap(25),
             const TermsCheck(),
             const Gap(5),
-            Center(
-              child: CustomElevatedButton(
-                borderRadius: BorderRadius.circular(15),
-                color: AppColors.myBlue100_1,
-                width: MediaQuery.sizeOf(context).width * 0.8,
-                onPressed: () {},
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    "Register",
-                    style: AppStyles.bold18(context).copyWith(
-                      color: AppColors.myWhite100_1,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            const PickImageRegisterButton(),
           ],
         ),
       ),

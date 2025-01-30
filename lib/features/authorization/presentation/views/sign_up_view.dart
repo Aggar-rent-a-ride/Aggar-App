@@ -1,6 +1,6 @@
 import 'package:aggar/core/helper/get_font_size.dart';
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/authorization/presentation/widget/custom_elevated_button.dart';
+import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';

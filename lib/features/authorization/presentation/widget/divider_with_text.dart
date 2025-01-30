@@ -1,21 +1,34 @@
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../core/utils/app_colors.dart';
 
 class DividerWithText extends StatelessWidget {
   const DividerWithText({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(child: Divider()),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            "or continue with",
-            style: TextStyle(color: Colors.grey),
+        Expanded(
+          child: Divider(
+            color: AppColors.myBlack50,
           ),
         ),
-        Expanded(child: Divider()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            "or continue with",
+            style: AppStyles.medium18(context).copyWith(
+              color: AppColors.myBlack50,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Divider(
+            color: AppColors.myBlack50,
+          ),
+        ),
       ],
     );
   }
