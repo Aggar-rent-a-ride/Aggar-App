@@ -1,4 +1,5 @@
 import 'package:aggar/features/authorization/presentation/views/pick_image.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const PickImage(),
+      home: const SignInView(),
     );
   }
 }
