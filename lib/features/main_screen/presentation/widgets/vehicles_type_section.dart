@@ -1,8 +1,10 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/main_screen/presentation/widgets/vehicle_type_icon.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/vehicle_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../core/utils/app_styles.dart';
 
 class VehiclesTypeSection extends StatelessWidget {
   const VehiclesTypeSection({super.key});
@@ -14,23 +16,32 @@ class VehiclesTypeSection extends StatelessWidget {
       children: [
         Text(
           "Vehicles Type",
-          style: TextStyle(
-            color: AppColors.myBlue100_1,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          style: AppStyles.bold24(context).copyWith(
+            color: AppColors.myBlue100_5,
           ),
         ),
-        const Gap(5),
-        SingleChildScrollView(
+        const Gap(8),
+        const SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              vehicleTypeIcon(AppAssets.assetsIconsCarIcon, "Cars"),
-              vehicleTypeIcon(AppAssets.assetsIconsTruckIcon, "Trucks"),
-              vehicleTypeIcon(
-                  AppAssets.assetsIconsMotorcyclesIcon, "Motorcycles"),
-              vehicleTypeIcon(
-                  AppAssets.assetsIconsRecreationalIcon, "Recreational"),
+              VehicleTypeCard(
+                iconPrv: AppAssets.assetsIconsCarIcon,
+                label: "Cars",
+              ),
+              VehicleTypeCard(
+                iconPrv: AppAssets.assetsIconsTruckIcon,
+                label: "Trucks",
+              ),
+              VehicleTypeCard(
+                iconPrv: AppAssets.assetsIconsMotorcyclesIcon,
+                label: "Motorcycles",
+              ),
+              VehicleTypeCard(
+                iconPrv: AppAssets.assetsIconsRecreationalIcon,
+                label: "Recreational",
+              ),
             ],
           ),
         ),

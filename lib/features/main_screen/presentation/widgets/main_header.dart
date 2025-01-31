@@ -1,6 +1,8 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/main_screen_location_icon_and_location_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -14,35 +16,16 @@ class MainHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomIcon(
-                  hight: 25,
-                  width: 25,
-                  flag: false,
-                  imageIcon: AppAssets.assetsIconsLocation,
+                Text(
+                  "Location",
+                  style: AppStyles.regular14(context)
+                      .copyWith(color: AppColors.myWhite50_1),
                 ),
-                SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Location",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(
-                      "Minya al-Qamh, Sharkia, Egypt",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+                const Gap(5),
+                const MainScreenLocationIconAndLocationText(),
               ],
             ),
             Stack(
@@ -83,21 +66,8 @@ class MainHeader extends StatelessWidget {
         const Gap(20),
         Row(
           children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  ),
-                ),
-              ),
+            const Expanded(
+              child: MainScreenSearchField(),
             ),
             const Gap(10),
             SizedBox(
@@ -121,6 +91,32 @@ class MainHeader extends StatelessWidget {
           ],
         )
       ],
+    );
+  }
+}
+
+class MainScreenSearchField extends StatelessWidget {
+  const MainScreenSearchField({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search',
+          hintStyle: AppStyles.regular18(context).copyWith(
+            color: AppColors.myBlack50,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        ),
+      ),
     );
   }
 }
