@@ -8,22 +8,37 @@ class SendMessageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      style: ButtonStyle(
-        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-          const EdgeInsets.all(14),
-        ),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.myBlack25,
+            blurRadius: 4,
+            offset: const Offset(0, 0),
+          ),
+        ],
+      ),
+      child: IconButton(
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+            const EdgeInsets.all(14),
+          ),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          backgroundColor: WidgetStateProperty.all<Color>(
+            AppColors.myGray100_5,
           ),
         ),
-        backgroundColor: WidgetStateProperty.all<Color>(
-          AppColors.myGray100_5,
+        onPressed: () {},
+        icon: Icon(
+          Icons.send,
+          color: AppColors.myBlack50,
         ),
       ),
-      onPressed: () {},
-      icon: const Icon(Icons.send),
     );
   }
 }

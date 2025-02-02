@@ -37,11 +37,11 @@ class ChatPerson extends StatelessWidget {
               const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero,
               ),
-            ), // This creates a rectangular shape.
+            ),
             padding: WidgetStateProperty.all(
               const EdgeInsets.symmetric(
-                horizontal: 10,
                 vertical: 5,
+                horizontal: 25,
               ),
             ),
           ),

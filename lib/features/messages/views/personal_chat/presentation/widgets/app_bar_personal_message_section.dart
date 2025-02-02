@@ -12,27 +12,30 @@ class AppBarPersonalMessageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.myWhite100_2,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.myWhite100_2,
+            ),
           ),
-        ),
-        ImageAndNamePersonMessage(name: name),
-        const Spacer(),
-        IconButton(
-          onPressed: () {},
-          icon: Icon(
-            color: AppColors.myWhite100_2,
-            Icons.more_vert_outlined,
-          ),
-        )
-      ],
+          ImageAndNamePersonMessage(name: name),
+          const Spacer(),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              color: AppColors.myWhite100_2,
+              Icons.more_vert_outlined,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

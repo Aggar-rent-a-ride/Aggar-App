@@ -11,7 +11,9 @@ class RequestMessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 10, right: 0, left: 0, bottom: 0),
+      padding: const EdgeInsets.only(
+        top: 10,
+      ),
       itemCount: names.length,
       itemBuilder: (context, index) => ChatPerson(
         onTap: () {

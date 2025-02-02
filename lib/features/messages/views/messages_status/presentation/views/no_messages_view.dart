@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class NoMessagesView extends StatelessWidget {
@@ -22,22 +23,18 @@ class NoMessagesView extends StatelessWidget {
           children: [
             Text(
               "no chats yet!",
-              style: TextStyle(
+              style: AppStyles.medium20(context).copyWith(
                 color: AppColors.myBlue100_1,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
               ),
             ),
             Text(
               " start chating",
-              style: TextStyle(
+              style: AppStyles.medium20(context).copyWith(
                 color: AppColors.myBlue100_2,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }

@@ -3,6 +3,8 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../../../core/utils/app_styles.dart';
+
 class ImageAndNamePersonMessage extends StatelessWidget {
   const ImageAndNamePersonMessage({
     super.key,
@@ -22,10 +24,8 @@ class ImageAndNamePersonMessage extends StatelessWidget {
         const Gap(10),
         Text(
           name,
-          style: TextStyle(
-            color: AppColors.myWhite100_2,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          style: AppStyles.bold20(context).copyWith(
+            color: AppColors.myWhite100_1,
           ),
         ),
       ],

@@ -1,4 +1,4 @@
-import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const MainScreen(),
+      home: const MessagesView(),
     );
   }
 }
