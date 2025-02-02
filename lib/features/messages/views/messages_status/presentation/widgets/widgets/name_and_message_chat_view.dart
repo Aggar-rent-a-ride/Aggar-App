@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -13,27 +14,23 @@ class NameAndMessageChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width * 0.64,
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             name,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.myBlue100_2),
+            style: AppStyles.bold20(context).copyWith(
+              color: AppColors.myBlue100_2,
+            ),
           ),
           const Gap(6),
           Text(
             msg,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black87,
-            ),
+            style: AppStyles.medium16(context)
+                .copyWith(color: AppColors.myBlack50),
           ),
         ],
       ),
