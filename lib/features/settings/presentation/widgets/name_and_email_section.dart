@@ -1,6 +1,8 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/app_styles.dart';
+
 class NameAndEmailSection extends StatelessWidget {
   const NameAndEmailSection({
     super.key,
@@ -11,20 +13,11 @@ class NameAndEmailSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Adele Adkins',
-          style: TextStyle(
-            color: AppColors.myBlack100,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text('Adele Adkins', style: AppStyles.bold20(context)),
         Text(
           'adeleissomeceleb@gmail.com',
-          style: TextStyle(
-            color: AppColors.myGray100_2,
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
+          style: AppStyles.medium15(context).copyWith(
+            color: AppColors.myBlack50,
           ),
         ),
       ],

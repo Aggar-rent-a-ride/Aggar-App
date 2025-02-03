@@ -4,6 +4,7 @@ import 'package:aggar/features/settings/presentation/widgets/help_center_card.da
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/app_styles.dart';
 import '../../../../core/widgets/horizontal_line.dart';
 
 class SupportSection extends StatelessWidget {
@@ -18,10 +19,8 @@ class SupportSection extends StatelessWidget {
       children: [
         Text(
           "Support",
-          style: TextStyle(
+          style: AppStyles.bold18(context).copyWith(
             color: AppColors.myBlue100_1,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
           ),
         ),
         const Gap(20),

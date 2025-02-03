@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:aggar/features/settings/presentation/widgets/dark_mode_switch.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +29,8 @@ class DarkModeCard extends StatelessWidget {
           const Gap(10),
           Text(
             "Dark Mode",
-            style: TextStyle(
-              fontSize: 14,
+            style: AppStyles.bold16(context).copyWith(
               color: AppColors.myBlue100_1,
-              fontWeight: FontWeight.bold,
             ),
           ),
           const Spacer(),

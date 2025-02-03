@@ -5,6 +5,8 @@ import 'package:aggar/features/settings/presentation/widgets/custom_card_setting
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/app_styles.dart';
+
 class LogoutCard extends StatelessWidget {
   const LogoutCard({
     super.key,
@@ -29,10 +31,8 @@ class LogoutCard extends StatelessWidget {
           const Gap(10),
           Text(
             "Logout",
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.myBlue100_1,
-              fontWeight: FontWeight.bold,
+            style: AppStyles.bold16(context).copyWith(
+              color: Colors.red,
             ),
           ),
           const Spacer(),
