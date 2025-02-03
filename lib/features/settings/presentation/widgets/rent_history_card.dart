@@ -5,6 +5,8 @@ import 'package:aggar/features/settings/presentation/widgets/custom_card_setting
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/app_styles.dart';
+
 class RentHistoryCard extends StatelessWidget {
   const RentHistoryCard({
     super.key,
@@ -29,10 +31,8 @@ class RentHistoryCard extends StatelessWidget {
           const Gap(10),
           Text(
             "Rent history",
-            style: TextStyle(
-              fontSize: 14,
+            style: AppStyles.bold16(context).copyWith(
               color: AppColors.myBlue100_1,
-              fontWeight: FontWeight.bold,
             ),
           ),
           const Spacer(),

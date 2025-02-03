@@ -1,3 +1,4 @@
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/horizontal_line.dart';
 import 'package:aggar/features/settings/presentation/widgets/logout_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/payment_card.dart';
@@ -19,11 +20,9 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 80,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Settings',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppStyles.bold24(context),
         ),
         backgroundColor: Colors.transparent,
       ),

@@ -5,6 +5,8 @@ import 'package:aggar/features/settings/presentation/widgets/language_switch.dar
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/app_styles.dart';
+
 class LanguageCard extends StatelessWidget {
   const LanguageCard({
     super.key,
@@ -28,10 +30,8 @@ class LanguageCard extends StatelessWidget {
           const Gap(10),
           Text(
             "Language",
-            style: TextStyle(
-              fontSize: 14,
+            style: AppStyles.bold16(context).copyWith(
               color: AppColors.myBlue100_1,
-              fontWeight: FontWeight.bold,
             ),
           ),
           const Spacer(),

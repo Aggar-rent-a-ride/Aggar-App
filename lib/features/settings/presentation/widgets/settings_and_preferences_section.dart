@@ -6,6 +6,8 @@ import 'package:aggar/features/settings/presentation/widgets/notification_settin
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/app_styles.dart';
+
 class SettingsAndPreferencesSection extends StatelessWidget {
   const SettingsAndPreferencesSection({
     super.key,
@@ -18,10 +20,8 @@ class SettingsAndPreferencesSection extends StatelessWidget {
       children: [
         Text(
           "Settings and Preferences",
-          style: TextStyle(
+          style: AppStyles.bold18(context).copyWith(
             color: AppColors.myBlue100_1,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
           ),
         ),
         const Gap(20),
