@@ -3,6 +3,8 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'features/new_vehicle/presentation/views/add_vehicle_screen.dart';
+
 void main() => runApp(
       DevicePreview(
         enabled: !kReleaseMode,
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const SettingsScreen(),
+      home: const AddVehicleScreen(),
     );
   }
 }
