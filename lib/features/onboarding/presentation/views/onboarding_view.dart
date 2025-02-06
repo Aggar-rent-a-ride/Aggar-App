@@ -1,11 +1,11 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/onboarding/presentation/views/page_view_1.dart';
-import 'package:aggar/features/onboarding/presentation/views/page_view_2.dart';
-import 'package:aggar/features/onboarding/presentation/views/page_view_3.dart';
+import 'package:aggar/features/onboarding/presentation/widgets/custom_page_view.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/next_and_back_button_widget.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/start_now_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../../../../core/utils/app_assets.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -21,6 +21,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.myWhite100_1,
       body: Stack(
         children: [
           PageView(
@@ -32,9 +33,24 @@ class _OnboardingViewState extends State<OnboardingView> {
               });
             },
             children: const [
-              PageView1(),
-              PageView2(),
-              PageView3(),
+              CustomPageView(
+                img: AppAssets.assetsImagesImg1,
+                title: "Welcome to Agger",
+                description:
+                    "Whether you're exploring new cities or need a ride for the day, we’ve got you covered with our easy-to-use platform.",
+              ),
+              CustomPageView(
+                img: AppAssets.assetsImagesImg2,
+                title: "Meet the owner",
+                description:
+                    "You can connect with the owner for a personalized experience, ensuring you get exactly what you need for a memorable trip.",
+              ),
+              CustomPageView(
+                img: AppAssets.assetsImagesImg3,
+                title: "Book your car ",
+                description:
+                    "Agger offers a wide range of vehicles to suit your needs, ensuring a smooth and convenient booking experience.",
+              ),
             ],
           ),
           Container(
