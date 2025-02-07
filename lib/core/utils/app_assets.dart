@@ -154,18 +154,6 @@ class AppAssets {
   /// assets/images/car.png
   static const String assetsImagesCar = "assets/images/car.png";
 
-  /// Assets for assetsImagesImg1
-  /// assets/images/img_1.png
-  static const String assetsImagesImg1 = "assets/images/img_1.png";
-
-  /// Assets for assetsImagesImg2
-  /// assets/images/img_2.png
-  static const String assetsImagesImg2 = "assets/images/img_2.png";
-
-  /// Assets for assetsImagesImg3
-  /// assets/images/img_3.png
-  static const String assetsImagesImg3 = "assets/images/img_3.png";
-
   /// Assets for assetsImagesMap
   /// assets/images/map.png
   static const String assetsImagesMap = "assets/images/map.png";
@@ -185,6 +173,18 @@ class AppAssets {
   /// Assets for assetsImagesNotificationPic3
   /// assets/images/notification_pic_3.png
   static const String assetsImagesNotificationPic3 = "assets/images/notification_pic_3.png";
+
+  /// Assets for assetsImagesOnboarding1
+  /// assets/images/onboarding1.png
+  static const String assetsImagesOnboarding1 = "assets/images/onboarding1.png";
+
+  /// Assets for assetsImagesOnboarding2
+  /// assets/images/onboarding2.png
+  static const String assetsImagesOnboarding2 = "assets/images/onboarding2.png";
+
+  /// Assets for assetsImagesOnboarding3
+  /// assets/images/onboarding3.png
+  static const String assetsImagesOnboarding3 = "assets/images/onboarding3.png";
 
   /// Assets for assetsImagesProfile
   /// assets/images/profile.png
