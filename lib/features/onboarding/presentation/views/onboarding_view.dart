@@ -34,19 +34,19 @@ class _OnboardingViewState extends State<OnboardingView> {
             },
             children: const [
               CustomPageView(
-                img: AppAssets.assetsImagesImg1,
+                img: AppAssets.assetsImagesOnboarding1,
                 title: "Welcome to Agger",
                 description:
                     "Whether you're exploring new cities or need a ride for the day, we’ve got you covered with our easy-to-use platform.",
               ),
               CustomPageView(
-                img: AppAssets.assetsImagesImg2,
+                img: AppAssets.assetsImagesOnboarding2,
                 title: "Meet the owner",
                 description:
                     "You can connect with the owner for a personalized experience, ensuring you get exactly what you need for a memorable trip.",
               ),
               CustomPageView(
-                img: AppAssets.assetsImagesImg3,
+                img: AppAssets.assetsImagesOnboarding3,
                 title: "Book your car ",
                 description:
                     "Agger offers a wide range of vehicles to suit your needs, ensuring a smooth and convenient booking experience.",
