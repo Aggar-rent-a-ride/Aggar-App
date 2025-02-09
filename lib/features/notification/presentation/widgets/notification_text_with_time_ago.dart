@@ -1,0 +1,49 @@
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+
+class NotificationTextWithTimeAgo extends StatelessWidget {
+  const NotificationTextWithTimeAgo({
+    super.key,
+    required this.name,
+    required this.actionText,
+    required this.timeAgo,
+  });
+
+  final String name;
+  final String actionText;
+  final String timeAgo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(
+            text: TextSpan(
+              style: AppStyles.medium18(context).copyWith(
+                color: AppColors.myBlack50,
+              ),
+              children: [
+                TextSpan(
+                  text: name,
+                  style: AppStyles.semiBold18(context).copyWith(
+                    color: AppColors.myBlack100,
+                  ),
+                ),
+                TextSpan(text: ' $actionText'),
+              ],
+            ),
+          ),
+          const Gap(5),
+          Text(
+            timeAgo,
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+}
