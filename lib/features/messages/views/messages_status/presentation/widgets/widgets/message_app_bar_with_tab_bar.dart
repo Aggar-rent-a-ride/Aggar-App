@@ -10,41 +10,27 @@ class MessageAppBarWithTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Gap(40),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Row(
-            children: [
-              Text(
-                "Message",
-                style: AppStyles.semiBold28(context),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {},
-              )
-            ],
+    return AppBar(
+      toolbarHeight: 40,
+      centerTitle: false,
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Text(
+          'Messages',
+          style: AppStyles.bold24(context),
+        ),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.search,
+            color: AppColors.myBlack50,
           ),
         ),
-        const Gap(5),
-        TabBar(
-          padding: EdgeInsets.zero,
-          indicatorPadding: EdgeInsets.zero,
-          indicatorColor: AppColors.myBlue100_2,
-          dividerColor: AppColors.myWhite100_1,
-          labelColor: AppColors.myBlue100_2,
-          unselectedLabelColor: AppColors.myGray100_2,
-          labelStyle: AppStyles.bold15(context),
-          labelPadding: EdgeInsets.zero,
-          tabs: const [
-            Tab(text: 'All'),
-            Tab(text: 'Requests'),
-          ],
-        ),
+        const Gap(20),
       ],
+      backgroundColor: Colors.transparent,
     );
   }
 }
