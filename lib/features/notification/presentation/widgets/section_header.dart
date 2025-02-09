@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class SectionHeader extends StatelessWidget {
@@ -11,19 +12,29 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: AppStyles.medium16(context).copyWith(
+              color: AppColors.myBlack25,
+            ),
           ),
           const Spacer(),
           TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
             onPressed: () {},
             child: Text(
               markTitle,
-              style: TextStyle(fontSize: 12, color: AppColors.myBlue100_2),
+              style: AppStyles.medium16(context).copyWith(
+                color: AppColors.myBlue100_1,
+              ),
             ),
           ),
         ],
