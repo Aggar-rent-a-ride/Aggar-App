@@ -1,4 +1,3 @@
-import 'package:aggar/features/notification/presentation/widgets/action_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_card_content.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_card_style.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +7,17 @@ class NotificationCard extends StatelessWidget {
   final String name;
   final String actionText;
   final String timeAgo;
-  final List<ActionButton>? buttons;
+  final Widget? widget;
+  final bool isfoundButton;
 
   const NotificationCard({
     required this.profileImage,
     required this.name,
     required this.actionText,
     required this.timeAgo,
-    this.buttons,
     super.key,
+    this.widget,
+    required this.isfoundButton,
   });
 
   @override
@@ -27,7 +28,8 @@ class NotificationCard extends StatelessWidget {
         name: name,
         actionText: actionText,
         timeAgo: timeAgo,
-        buttons: buttons,
+        isfoundButton: isfoundButton,
+        widget: widget,
       ),
     );
   }

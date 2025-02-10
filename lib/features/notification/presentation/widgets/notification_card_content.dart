@@ -1,4 +1,3 @@
-import 'package:aggar/features/notification/presentation/widgets/action_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_text_with_time_ago.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -10,14 +9,16 @@ class NotificationCardContent extends StatelessWidget {
     required this.name,
     required this.actionText,
     required this.timeAgo,
-    required this.buttons,
+    this.widget,
+    required this.isfoundButton,
   });
 
   final String profileImage;
   final String name;
   final String actionText;
   final String timeAgo;
-  final List<ActionButton>? buttons;
+  final Widget? widget;
+  final bool isfoundButton;
 
   @override
   Widget build(BuildContext context) {
@@ -33,28 +34,14 @@ class NotificationCardContent extends StatelessWidget {
             ),
             const Gap(15),
             NotificationTextWithTimeAgo(
-                name: name, actionText: actionText, timeAgo: timeAgo),
+              name: name,
+              actionText: actionText,
+              timeAgo: timeAgo,
+              isfoundButton: isfoundButton,
+              widget: widget,
+            ),
           ],
         ),
-        if (buttons != null) ...[
-          const Gap(12),
-          Row(
-            children: buttons!
-                .map(
-                  (button) => Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: button.color,
-                      ),
-                      child: Text(button.text),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
       ],
     );
   }
