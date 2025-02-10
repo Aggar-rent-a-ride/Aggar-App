@@ -9,11 +9,15 @@ class NotificationTextWithTimeAgo extends StatelessWidget {
     required this.name,
     required this.actionText,
     required this.timeAgo,
+    this.widget,
+    required this.isfoundButton,
   });
 
   final String name;
   final String actionText;
   final String timeAgo;
+  final Widget? widget;
+  final bool isfoundButton;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,12 @@ class NotificationTextWithTimeAgo extends StatelessWidget {
             timeAgo,
             style: const TextStyle(color: Colors.grey, fontSize: 12),
           ),
+          isfoundButton
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: widget!,
+                )
+              : const SizedBox(),
         ],
       ),
     );

@@ -1,9 +1,10 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/notification/presentation/widgets/action_button.dart';
+import 'package:aggar/features/notification/presentation/widgets/accept_or_feedback_button.dart';
+import 'package:aggar/features/notification/presentation/widgets/deny_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_card.dart';
 import 'package:aggar/features/notification/presentation/widgets/section_header.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 import '../../../../core/utils/app_styles.dart';
 
@@ -34,52 +35,56 @@ class NotificationScreen extends StatelessWidget {
               name: 'Jenny Wilson',
               actionText: 'send a request to start chat',
               timeAgo: '5 min ago',
-              buttons: [
-                ActionButton(
-                  text: 'Accept',
-                  color: AppColors.myBlue100_1,
-                  onPressed: () {},
-                ),
-                ActionButton(
-                    text: 'Deny',
-                    color: AppColors.myGray100_2,
-                    onPressed: () {}),
-              ],
+              isfoundButton: true,
+              widget: Row(
+                children: [
+                  AcceptOrFeedbackButton(
+                    title: "Accept",
+                    onPressed: () {},
+                  ),
+                  const Gap(8),
+                  DenyButton(
+                    onPressed: () {},
+                  )
+                ],
+              ),
             ),
             NotificationCard(
               profileImage: AppAssets.assetsImagesNotificationPic1,
               name: 'Jenny Wilson',
               actionText: 'send a request to start chat',
               timeAgo: '5 min ago',
-              buttons: [
-                ActionButton(
-                  text: 'Accept',
-                  color: AppColors.myBlue100_1,
-                  onPressed: () {},
-                ),
-                ActionButton(
-                    text: 'Deny',
-                    color: AppColors.myGray100_2,
-                    onPressed: () {}),
-              ],
+              isfoundButton: true,
+              widget: Row(
+                children: [
+                  AcceptOrFeedbackButton(
+                    title: "Accept",
+                    onPressed: () {},
+                  ),
+                  const Gap(8),
+                  DenyButton(
+                    onPressed: () {},
+                  )
+                ],
+              ),
             ),
             const NotificationCard(
               profileImage: AppAssets.assetsImagesNotificationPic2,
               name: 'Annette Black',
               actionText: 'have completed the steps to book the BMW',
               timeAgo: '5 min ago',
+              isfoundButton: false,
             ),
             NotificationCard(
               profileImage: AppAssets.assetsImagesNotificationPic1,
               name: 'Robert Fox',
               actionText: 'send a feedback on Tesla Model',
               timeAgo: '1 hr ago',
-              buttons: [
-                ActionButton(
-                    text: 'View a feedback',
-                    color: Colors.blue,
-                    onPressed: () {}),
-              ],
+              isfoundButton: true,
+              widget: AcceptOrFeedbackButton(
+                title: "Send a Feedback",
+                onPressed: () {},
+              ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
@@ -91,13 +96,11 @@ class NotificationScreen extends StatelessWidget {
               name: 'Robert Fox',
               actionText: 'send a feedback on Tesla Model',
               timeAgo: '1 hr ago',
-              buttons: [
-                ActionButton(
-                  text: 'View a feedback',
-                  color: Colors.blue,
-                  onPressed: () {},
-                ),
-              ],
+              isfoundButton: true,
+              widget: AcceptOrFeedbackButton(
+                title: "Send a Feedback",
+                onPressed: () {},
+              ),
             ),
           ],
         ),
