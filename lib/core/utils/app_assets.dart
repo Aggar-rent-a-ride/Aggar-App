@@ -102,6 +102,10 @@ class AppAssets {
   /// assets/icons/payment.png
   static const String assetsIconsPayment = "assets/icons/payment.png";
 
+  /// Assets for assetsIconsPickimage
+  /// assets/icons/pickimage.png
+  static const String assetsIconsPickimage = "assets/icons/pickimage.png";
+
   /// Assets for assetsIconsRecreationalIcon
   /// assets/icons/recreational_icon.png
   static const String assetsIconsRecreationalIcon = "assets/icons/recreational_icon.png";

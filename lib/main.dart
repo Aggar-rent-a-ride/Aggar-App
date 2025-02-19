@@ -2,7 +2,8 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'features/notification/presentation/views/notification_screen.dart';
+import 'features/new_vehicle/presentation/views/add_vehicle_screen.dart'
+    show AddVehicleScreen;
 
 void main() => runApp(
       DevicePreview(
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const NotificationScreen(),
+      home: const AddVehicleScreen(),
     );
   }
 }

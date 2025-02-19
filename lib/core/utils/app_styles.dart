@@ -232,6 +232,11 @@ class AppStyles {
         fontSize: getFontSize(context, 28),
         color: const Color(0xFF000000),
       );
+// TextStyle for font size 22
+  static TextStyle bold22(BuildContext context) => bold.copyWith(
+        fontSize: getFontSize(context, 22),
+        color: const Color(0xFF000000),
+      );
 
 // TextStyle for font size 20
   static TextStyle bold20(BuildContext context) => bold.copyWith(
