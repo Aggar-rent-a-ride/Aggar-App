@@ -1,11 +1,10 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/core/widgets/comment_section.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
 import 'package:aggar/features/profile/data/profile_model.dart';
-import 'package:aggar/features/profile/presentation/widgets/car_item_widget.dart';
+import 'package:aggar/features/profile/presentation/widgets/profile_tabs.dart';
 import 'package:aggar/features/profile/presentation/widgets/profile_widget.dart';
+import 'package:aggar/features/profile/presentation/widgets/tab_button.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -21,7 +20,8 @@ class ProfileScreenState extends State<ProfileScreen> {
     name: "Adele Famous",
     role: "Renter",
     avatarAsset: AppAssets.assetsImagesProfile,
-    description: "Some information about the renter...",
+    description:
+        "some information about the renter and should be different from the user or not? i don’t know lets ask the backend? well no need i already know the answer but it just words :)",
   );
 
   final List<Car> cars = [
@@ -59,24 +59,30 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
             onPressed: () {},
           ),
-          const Gap(10)
+          const Gap(25)
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 10,
+          horizontal: 25,
         ),
         child: Column(
           children: [
             ProfileWidget(profile: profile),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildTabButton(0, 'Cars'),
-                buildTabButton(1, 'Favorite'),
-                buildTabButton(2, 'Statics'),
-                buildTabButton(3, 'Reviews'),
-              ],
+              children: List.generate(4, (index) {
+                return TabButton(
+                  index: index,
+                  title: ['Cars', 'Favorite', 'Statics', 'Reviews'][index],
+                  selectedIndex: selectedTabIndex,
+                  onTabSelected: (i) {
+                    setState(() {
+                      selectedTabIndex = i;
+                    });
+                  },
+                );
+              }),
             ),
             const Divider(
               indent: 7,
@@ -91,94 +97,18 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildTabButton(int index, String title) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedTabIndex = index;
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color:
-              selectedTabIndex == index ? AppColors.myBlue100_1 : Colors.white,
-          border: Border.all(
-              color: selectedTabIndex == index
-                  ? AppColors.myBlue100_1
-                  : AppColors.myGray100_1),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-              color: selectedTabIndex == index ? Colors.white : Colors.black),
-        ),
-      ),
-    );
-  }
-
   Widget buildTabContent() {
     switch (selectedTabIndex) {
       case 0:
-        return _buildCarsTab();
+        return const CarsTab();
       case 1:
-        return _buildFavoriteTab();
+        return const FavoriteTab();
       case 2:
-        return _buildStaticsTab();
+        return const StaticsTab();
       case 3:
-        return _buildReviewsTab();
+        return const ReviewsTab();
       default:
         return const SizedBox.shrink();
     }
-  }
-
-  Widget _buildCarsTab() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: cars.length,
-      itemBuilder: (context, index) {
-        return CarItemWidget(car: cars[index]);
-      },
-    );
-  }
-
-  Widget _buildFavoriteTab() {
-    return const Center(
-      child: Text('Favorite Tab Content'),
-    );
-  }
-
-  Widget _buildStaticsTab() {
-    return const Center(
-      child: Text('Statics Tab Content'),
-    );
-  }
-
-  Widget _buildReviewsTab() {
-    return ListView(
-      children: const [
-        CommentSection(
-          name: "Scarlett  Johansson",
-          commentText: "Was a good deal, nice person but bad car , fix it mf",
-          date: "11/8/2024",
-          rate: 3,
-        ),
-        CommentSection(
-          name: "Scarlett  Johansson",
-          commentText: "Was a good deal, nice person but bad car , fix it mf",
-          date: "11/8/2024",
-          rate: 3,
-        ),
-      ],
-    );
   }
 }
