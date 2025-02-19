@@ -1,5 +1,7 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/about_vehicle_section.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/pick_main_image_button_content.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -11,99 +13,42 @@ class AddVehicleScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.myWhite100_1,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ),
+        ),
         backgroundColor: AppColors.myWhite100_1,
-        title: const Text('Add Vehicle'),
-      ),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              children: [
-                Text("Vehicle Name"),
-                Row(
-                  children: [
-                    InputNameWithInputFieldSection(
-                      hintText: "ex: Toyota",
-                      label: "brand",
-                    ),
-                    Gap(10),
-                    InputNameWithInputFieldSection(
-                      hintText: "ex: model x",
-                      label: "model",
-                    ),
-                  ],
-                ),
-              ],
-            )
-          ],
+        title: Text(
+          'Add Vehicle',
+          style: AppStyles.semiBold24(context),
         ),
       ),
-    );
-  }
-}
-
-class InputNameWithInputFieldSection extends StatelessWidget {
-  const InputNameWithInputFieldSection({
-    super.key,
-    required this.label,
-    required this.hintText,
-  });
-  final String label;
-  final String hintText;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppStyles.medium18(context).copyWith(
-            color: AppColors.myBlue100_1,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: Column(
+            children: [
+              const AboutVehicleSection(),
+              const Gap(25),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "About Vehicle :",
+                    style: AppStyles.bold22(context).copyWith(
+                      color: AppColors.myBlue100_2,
+                    ),
+                  ),
+                  const Gap(10),
+                  const PickMainImageButtonContent()
+                ],
+              )
+            ],
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.3,
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: AppStyles.medium15(context).copyWith(
-                color: AppColors.myBlack50,
-              ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              fillColor: AppColors.myWhite100_1,
-              filled: true,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: AppColors.myBlack25,
-                  width: 1,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: AppColors.myBlack25,
-                  width: 1,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(
-                  color: AppColors.myBlack25,
-                  width: 1,
-                  style: BorderStyle.solid,
-                ),
-              ),
-            ),
-            style: AppStyles.medium15(context).copyWith(
-              color: AppColors.myBlack100,
-            ),
-          ),
-        )
-      ],
+      ),
     );
   }
 }
