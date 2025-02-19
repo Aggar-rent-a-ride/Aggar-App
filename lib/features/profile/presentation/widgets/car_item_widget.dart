@@ -13,14 +13,14 @@ class CarItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      elevation: 4,
+      elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 7),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: Image.asset(
@@ -60,7 +60,7 @@ class CarItemWidget extends StatelessWidget {
                       Text(
                         " ${car.distance} km",
                         style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+                            const TextStyle(fontSize: 10, color: Colors.grey),
                       ),
                     ]),
                   ],
@@ -69,7 +69,7 @@ class CarItemWidget extends StatelessWidget {
                 Text(
                   car.name,
                   style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 10, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
                 Row(
