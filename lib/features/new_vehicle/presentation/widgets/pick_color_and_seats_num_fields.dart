@@ -12,38 +12,49 @@ class PickColorAndSeatsNumFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const InputNameWithInputFieldSection(
+        InputNameWithInputFieldSection(
           hintText: "ex: red or C8C8C8",
           label: "color of vehicle",
           width: 150,
         ),
-        const Gap(30),
+        Gap(30),
         InputNameWithInputFieldSection(
           width: 155,
           hintText: "ex: 6",
           label: "seats number ",
           foundIcon: true,
-          widget: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  width: 1,
-                  color: AppColors.myBlack50,
-                ),
-              ),
-            ),
-            child: Text(
-              "person",
-              style: AppStyles.medium15(context).copyWith(
-                color: AppColors.myBlack50,
-              ),
-            ),
-          ),
+          widget: SeatsNumberSuffixWidget(),
         ),
       ],
+    );
+  }
+}
+
+class SeatsNumberSuffixWidget extends StatelessWidget {
+  const SeatsNumberSuffixWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            width: 1,
+            color: AppColors.myBlack50,
+          ),
+        ),
+      ),
+      child: Text(
+        "person",
+        style: AppStyles.medium15(context).copyWith(
+          color: AppColors.myBlack50,
+        ),
+      ),
     );
   }
 }
