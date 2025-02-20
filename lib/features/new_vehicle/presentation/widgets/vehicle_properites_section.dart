@@ -17,11 +17,11 @@ class VehicleProperitesSection extends StatefulWidget {
 }
 
 class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
-  final int _selectedValue = 0;
+  int _selectedValue = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 10,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -31,12 +31,20 @@ class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
           ),
         ),
         Column(
-          spacing: 15,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
           children: [
             const PickColorAndSeatsNumFields(),
             const ProperitesOverViewField(),
             const VehicleHealthOptions(),
-            TransmissionModeOptions(selectedValue: _selectedValue)
+            TransmissionModeOptions(
+              selectedValue: _selectedValue,
+              onChanged: (int? value) {
+                setState(() {
+                  _selectedValue = value!;
+                });
+              },
+            ),
           ],
         )
       ],

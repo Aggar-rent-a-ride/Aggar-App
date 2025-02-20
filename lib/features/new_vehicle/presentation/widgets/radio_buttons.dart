@@ -1,14 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:flutter/material.dart';
 
 class RadioButtons extends StatelessWidget {
   const RadioButtons({
     super.key,
     required int selectedValue,
+    required this.onChanged,
   }) : _selectedValue = selectedValue;
 
   final int _selectedValue;
+  final ValueChanged<int?> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +20,11 @@ class RadioButtons extends StatelessWidget {
           Row(
             children: [
               Radio<int>(
-                fillColor: WidgetStatePropertyAll(AppColors.myBlue100_2),
+                fillColor: WidgetStateProperty.all(AppColors.myBlue100_2),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: 0,
                 groupValue: _selectedValue,
-                onChanged: (int? value) {},
+                onChanged: onChanged,
               ),
               Text(
                 'Manual Transmission',
@@ -35,11 +37,11 @@ class RadioButtons extends StatelessWidget {
           Row(
             children: [
               Radio<int>(
-                fillColor: WidgetStatePropertyAll(AppColors.myBlue100_2),
+                fillColor: WidgetStateProperty.all(AppColors.myBlue100_2),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                value: 0,
+                value: 1,
                 groupValue: _selectedValue,
-                onChanged: (int? value) {},
+                onChanged: onChanged,
               ),
               Text(
                 'Automatic Transmission',
@@ -52,11 +54,11 @@ class RadioButtons extends StatelessWidget {
           Row(
             children: [
               Radio<int>(
-                fillColor: WidgetStatePropertyAll(AppColors.myBlue100_2),
+                fillColor: WidgetStateProperty.all(AppColors.myBlue100_2),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                value: 1,
+                value: 2,
                 groupValue: _selectedValue,
-                onChanged: (int? value) {},
+                onChanged: onChanged,
               ),
               Text(
                 'None',
@@ -65,7 +67,7 @@ class RadioButtons extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
