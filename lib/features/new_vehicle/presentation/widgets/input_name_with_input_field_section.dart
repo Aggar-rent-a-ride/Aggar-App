@@ -10,12 +10,14 @@ class InputNameWithInputFieldSection extends StatelessWidget {
     this.width,
     this.widget,
     this.foundIcon = false,
+    this.maxLines = 1,
   });
   final String label;
   final String hintText;
   final double? width;
   final Widget? widget;
   final bool? foundIcon;
+  final int? maxLines;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,6 +32,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
         SizedBox(
           width: width ?? MediaQuery.of(context).size.width * 0.3,
           child: TextField(
+            maxLines: maxLines,
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: AppStyles.medium15(context).copyWith(
