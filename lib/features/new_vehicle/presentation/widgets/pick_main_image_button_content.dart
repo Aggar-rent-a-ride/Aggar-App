@@ -12,6 +12,7 @@ class PickMainImageButtonContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PickMainImageButtonStyle(
+      onPressed: () {},
       widget: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

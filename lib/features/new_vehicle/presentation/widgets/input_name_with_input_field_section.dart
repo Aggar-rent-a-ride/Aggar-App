@@ -8,10 +8,14 @@ class InputNameWithInputFieldSection extends StatelessWidget {
     required this.label,
     required this.hintText,
     this.width,
+    this.widget,
+    this.foundIcon = false,
   });
   final String label;
   final String hintText;
   final double? width;
+  final Widget? widget;
+  final bool? foundIcon;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,6 +63,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
                   style: BorderStyle.solid,
                 ),
               ),
+              suffix: foundIcon == true ? widget : const SizedBox(),
             ),
             style: AppStyles.medium15(context).copyWith(
               color: AppColors.myBlack100,

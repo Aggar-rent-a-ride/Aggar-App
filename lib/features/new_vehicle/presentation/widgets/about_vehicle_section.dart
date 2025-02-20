@@ -2,7 +2,6 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class AboutVehicleSection extends StatelessWidget {
   const AboutVehicleSection({
@@ -12,6 +11,7 @@ class AboutVehicleSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 10,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -21,26 +21,25 @@ class AboutVehicleSection extends StatelessWidget {
           ),
         ),
         const Row(
+          spacing: 30,
           children: [
             InputNameWithInputFieldSection(
               hintText: "ex: Toyota",
               label: "brand",
             ),
-            Gap(10),
             InputNameWithInputFieldSection(
               hintText: "ex: model x",
               label: "model",
             ),
           ],
         ),
-        const Gap(10),
         Row(
+          spacing: 30,
           children: [
             const InputNameWithInputFieldSection(
               hintText: "ex: car",
               label: "vehicle",
             ),
-            const Gap(10),
             InputNameWithInputFieldSection(
               hintText: "ex: 1980",
               label: "year of manufacture",
