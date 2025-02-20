@@ -7,9 +7,11 @@ class TransmissionModeOptions extends StatelessWidget {
   const TransmissionModeOptions({
     super.key,
     required int selectedValue,
+    required this.onChanged,
   }) : _selectedValue = selectedValue;
 
   final int _selectedValue;
+  final ValueChanged<int?> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class TransmissionModeOptions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
             "transmission mode :",
             style: AppStyles.medium18(context).copyWith(
@@ -25,7 +27,10 @@ class TransmissionModeOptions extends StatelessWidget {
             ),
           ),
         ),
-        RadioButtons(selectedValue: _selectedValue)
+        RadioButtons(
+          selectedValue: _selectedValue,
+          onChanged: onChanged,
+        ),
       ],
     );
   }
