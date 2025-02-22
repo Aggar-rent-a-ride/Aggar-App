@@ -5,7 +5,6 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_wi
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class VehiclesDetailsView extends StatelessWidget {
   const VehiclesDetailsView({super.key});

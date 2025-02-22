@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/views/about_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/views/properities_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/views/review_tab_bar_view.dart';
@@ -9,32 +10,45 @@ class TabBarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TabBar(
-          padding: EdgeInsets.zero,
-          indicatorPadding: EdgeInsets.zero,
-          indicatorColor: AppColors.myBlue100_2,
-          dividerColor: AppColors.myBlack10,
-          labelColor: AppColors.myBlue100_2,
-          unselectedLabelColor: AppColors.myGray100_2,
-          tabs: const [
-            Tab(text: 'About'),
-            Tab(text: 'Properties'),
-            Tab(text: 'Reviews'),
-          ],
-        ),
-        const SizedBox(
-          height: 500,
-          child: TabBarView(
-            children: [
-              Center(child: AboutTabBarView()),
-              Center(child: ProperitiesTabBarView()),
-              Center(child: ReviewTabBarView()),
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: [
+          TabBar(
+            padding: EdgeInsets.zero,
+            indicatorPadding: EdgeInsets.zero,
+            indicatorColor: AppColors.myBlue100_2,
+            dividerColor: AppColors.myBlack10,
+            labelColor: AppColors.myBlue100_2,
+            unselectedLabelColor: AppColors.myGray100_2,
+            labelStyle: AppStyles.bold18(context)
+                .copyWith(color: AppColors.myBlue100_2),
+            unselectedLabelStyle:
+                AppStyles.bold18(context).copyWith(color: AppColors.myBlack25),
+            tabs: const [
+              Tab(
+                child: Text("About"),
+              ),
+              Tab(
+                child: Text("Properties"),
+              ),
+              Tab(
+                child: Text("Reviews"),
+              ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(
+            height: 500,
+            child: TabBarView(
+              children: [
+                Center(child: AboutTabBarView()),
+                Center(child: ProperitiesTabBarView()),
+                Center(child: ReviewTabBarView()),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
