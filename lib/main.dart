@@ -1,10 +1,7 @@
-import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'features/new_vehicle/presentation/views/add_vehicle_screen.dart'
-    show AddVehicleScreen;
+import 'features/vehicles_details/presentation/views/vehicles_details_view.dart';
 
 void main() => runApp(
       DevicePreview(
@@ -23,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
-      home: const AddVehicleScreen(),
+      home: const VehiclesDetailsView(),
     );
   }
 }

@@ -1,12 +1,11 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/book_vehicle_button.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/custom_icon_button.dart';
+import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/over_view_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class VehiclesDetailsView extends StatelessWidget {
   const VehiclesDetailsView({super.key});
@@ -18,57 +17,54 @@ class VehiclesDetailsView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.myWhite100_1,
-          foregroundColor: AppColors.myWhite100_1,
-          shadowColor: AppColors.myWhite100_1,
-          elevation: 0,
-          actions: const [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CustomIconButton(
-                icon: Icons.favorite_border,
-                flag: true,
+          actions: [
+            IconButton(
+              style: ButtonStyle(
+                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                  const EdgeInsets.symmetric(horizontal: 25),
+                ),
               ),
+              icon: Icon(
+                Icons.favorite_border,
+                color: AppColors.myBlack100,
+              ),
+              onPressed: () {},
             ),
           ],
           centerTitle: true,
-          title: Text(
-            "Vehicles Details",
-            style: GoogleFonts.inter(
+          title: Text("Vehicles Details",
+              style: AppStyles.semiBold24(context)
+                  .copyWith(color: AppColors.myBlack100)),
+          leading: IconButton(
+            style: ButtonStyle(
+              padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                const EdgeInsets.symmetric(horizontal: 25),
+              ),
+            ),
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
               color: AppColors.myBlack100,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
             ),
-          ),
-          leading: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CustomIconButton(
-              icon: Icons.arrow_back_rounded,
-              flag: true,
-            ),
+            onPressed: () {},
           ),
         ),
         backgroundColor: AppColors.myWhite100_1,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        body: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 25),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 Column(
+                  spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TODO : style here want to change
-                    Text(
-                      "Tesla Model  S",
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    CustomImageCar(),
+                    CarNameWithTypeAndYearOfManifiction(
+                      carName: 'Lamborghini Sesto Elemento ',
+                      manifactionYear: 1989,
+                      transmissionType: 'Automatic',
                     ),
-                    const CustomImageCar(),
-                    const Gap(10),
-                    const OverViewSection(),
-                    const Gap(20),
-                    const TabBarSection()
+                    TabBarSection(),
                   ],
                 )
               ],
