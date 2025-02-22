@@ -164,6 +164,12 @@ class AppStyles {
         color: const Color(0xFF000000),
       );
 
+// TextStyle for font size 24
+  static TextStyle semiBold26(BuildContext context) => semiBold.copyWith(
+        fontSize: getFontSize(context, 26),
+        color: const Color(0xFF000000),
+      );
+
 // TextStyle for font size 28
   static TextStyle semiBold28(BuildContext context) => semiBold.copyWith(
         fontSize: getFontSize(context, 28),

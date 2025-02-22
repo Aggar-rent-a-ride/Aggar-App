@@ -31,7 +31,7 @@ class OverViewSection extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: AppColors.myBlue10_2,
+                  color: AppColors.myBlue100_8,
                 ),
                 // TODO : style here want to change
                 child: Text(
