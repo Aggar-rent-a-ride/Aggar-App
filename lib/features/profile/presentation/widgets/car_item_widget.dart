@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +43,13 @@ class CarItemWidget extends StatelessWidget {
                     Row(
                       children: [
                         const CustomIcon(
-                          hight: 15,
-                          width: 15,
+                          hight: 12,
+                          width: 12,
                           flag: false,
                           imageIcon: AppAssets.assetsIconsStar,
                         ),
-                        Text(" ${car.rating.toString()}"),
+                        Text(" ${car.rating.toString()}",
+                            style: AppStyles.semiBold12(context)),
                       ],
                     ),
                     Row(children: [
@@ -59,32 +61,26 @@ class CarItemWidget extends StatelessWidget {
                       ),
                       Text(
                         " ${car.distance} km",
-                        style:
-                            const TextStyle(fontSize: 10, color: Colors.grey),
+                        style: AppStyles.bold12(context)
+                            .copyWith(color: Colors.grey),
                       ),
                     ]),
                   ],
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  car.name,
-                  style: const TextStyle(
-                      fontSize: 10, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
+                Text(car.name, style: AppStyles.semiBold20(context)),
                 Row(
                   children: [
                     Text(
                       "\$${car.pricePerHour}",
-                      style:
-                          TextStyle(fontSize: 18, color: AppColors.myBlue100_2),
+                      style: AppStyles.regular24(context)
+                          .copyWith(color: AppColors.myBlue100_2),
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: Text(
                         "/hr",
-                        style: TextStyle(
-                            fontSize: 12, color: AppColors.myBlue100_2),
+                        style: AppStyles.regular12(context)
+                            .copyWith(color: AppColors.myBlue100_2),
                       ),
                     ),
                   ],
