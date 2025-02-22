@@ -22,7 +22,7 @@ class AppColors {
   static Color myBlue100_5 = const Color(0xff0B2447);
   static Color myBlue100_2 = const Color(0xff576CBC);
   static Color myBlue50_2 = const Color(0xff576CBC).withOpacity(0.5);
-  static Color myBlue10_2 = const Color(0xff576CBC).withOpacity(0.1);
+  static Color myBlue10_2 = const Color(0xffEFF1F9);
   static Color myBlue100_8 = const Color(0xffEFF1F9);
   static Color myBlue100_3 = const Color(0xffA5D7E8);
   static Color myBlue100_4 = const Color(0xff8BA2CC).withOpacity(.3);
