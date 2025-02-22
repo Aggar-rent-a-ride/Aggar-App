@@ -89,21 +89,27 @@ class AppStyles {
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
   // Medium styles with dynamic font sizes
+  // TextStyle for font size 65
+  static TextStyle medium65(BuildContext context) => medium.copyWith(
+        fontSize: getFontSize(context, 65),
+        color: const Color(0xFF000000),
+      );
+
   // TextStyle for font size 36
   static TextStyle medium36(BuildContext context) => medium.copyWith(
         fontSize: getFontSize(context, 36),
         color: const Color(0xFF000000),
       );
 
-// TextStyle for font size 24
-  static TextStyle medium24(BuildContext context) => medium.copyWith(
-        fontSize: getFontSize(context, 24),
-        color: const Color(0xFF000000),
-      );
-
 // TextStyle for font size 28
   static TextStyle medium28(BuildContext context) => medium.copyWith(
         fontSize: getFontSize(context, 28),
+        color: const Color(0xFF000000),
+      );
+
+// TextStyle for font size 24
+  static TextStyle medium24(BuildContext context) => medium.copyWith(
+        fontSize: getFontSize(context, 24),
         color: const Color(0xFF000000),
       );
 

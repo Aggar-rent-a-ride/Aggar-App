@@ -1,3 +1,4 @@
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_graph_section.dart';
 import 'package:flutter/material.dart';
 
@@ -8,20 +9,20 @@ class RatingAndReviewsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //TODO:font !!!
-        Text(
-          "Rating and Reviews",
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColors.myGray100_3,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Rating and Reviews",
+            style: AppStyles.bold18(context).copyWith(
+              color: AppColors.myGray100_3,
+            ),
           ),
-        ),
-        const RatingGraphSection()
-      ],
+          const RatingGraphSection()
+        ],
+      ),
     );
   }
 }
