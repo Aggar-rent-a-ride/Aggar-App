@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../../../core/utils/app_colors.dart';
+import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class RatingNumberSection extends StatelessWidget {
   const RatingNumberSection(
@@ -13,13 +14,12 @@ class RatingNumberSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           rating.toString(),
-          style: const TextStyle(
-            fontSize: 48,
-            fontWeight: FontWeight.w500,
+          style: AppStyles.medium65(context).copyWith(
+            color: AppColors.myBlack100,
           ),
         ),
         RatingFourStars(
@@ -27,14 +27,14 @@ class RatingNumberSection extends StatelessWidget {
           color: AppColors.myBlue100_2,
         ),
         const Gap(5),
-        Text(
+        /* Text(
           totalRaring,
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w400,
             color: AppColors.myGray100_2,
           ),
-        )
+        )*/
       ],
     );
   }

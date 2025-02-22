@@ -17,11 +17,11 @@ class CommentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: AppColors.myGreen100_1,
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.myBlue100_7,
           boxShadow: [
             BoxShadow(
               offset: const Offset(0, 0),
