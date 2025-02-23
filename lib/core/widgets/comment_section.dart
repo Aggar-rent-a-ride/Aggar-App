@@ -1,6 +1,6 @@
-import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/name_and_rate_section.dart';
+import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/core/widgets/name_and_rate_section.dart';
 import 'package:flutter/material.dart';
 
 class CommentSection extends StatelessWidget {
@@ -9,11 +9,13 @@ class CommentSection extends StatelessWidget {
       required this.name,
       required this.date,
       required this.commentText,
-      required this.rate});
+      required this.rate,
+      required this.imageUrl});
   final String name;
   final String date;
   final String commentText;
   final double rate;
+  final String imageUrl;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,16 +29,17 @@ class CommentSection extends StatelessWidget {
               offset: const Offset(0, 0),
               color: AppColors.myBlack25,
               spreadRadius: 0,
-              blurRadius: 2,
+              blurRadius: 4,
             )
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NameAndRateSection(
-                imageUrl: AppAssets.assetsImagesAvatar,
+                imageUrl: imageUrl,
                 name: name,
                 rate: rate,
                 date: date,
@@ -45,10 +48,8 @@ class CommentSection extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   commentText,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.myGray100_3,
+                  style: AppStyles.medium14(context).copyWith(
+                    color: AppColors.myBlack50,
                   ),
                 ),
               )
