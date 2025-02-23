@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_four_stars.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -20,10 +21,8 @@ class NameSection extends StatelessWidget {
       children: [
         Text(
           name,
-          style: TextStyle(
+          style: AppStyles.bold18(context).copyWith(
             color: AppColors.myBlue100_2,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
           ),
         ),
         Row(
@@ -32,9 +31,8 @@ class NameSection extends StatelessWidget {
             const Gap(5),
             Text(
               date,
-              style: TextStyle(
-                fontSize: 11,
-                color: AppColors.myBlack100,
+              style: AppStyles.medium10(context).copyWith(
+                color: AppColors.myBlack50,
               ),
             ),
           ],

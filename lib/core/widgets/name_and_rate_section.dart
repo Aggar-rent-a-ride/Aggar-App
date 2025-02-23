@@ -1,4 +1,5 @@
-import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/name_section.dart';
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/widgets/name_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -18,18 +19,31 @@ class NameAndRateSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(30),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(0, 0),
+                blurRadius: 4,
+                color: AppColors.myBlack25,
+              )
+            ],
           ),
-          child: Image(
-            image: AssetImage(imageUrl),
-            height: 50,
-            width: 50,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(30),
+            ),
+            child: Image(
+              image: AssetImage(imageUrl),
+              height: 45,
+              width: 45,
+            ),
           ),
         ),
-        const Gap(10),
+        const Gap(15),
         NameSection(
           date: date,
           name: name,

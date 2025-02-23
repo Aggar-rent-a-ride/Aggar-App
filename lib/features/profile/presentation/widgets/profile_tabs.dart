@@ -3,6 +3,8 @@ import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
 import 'package:aggar/features/profile/presentation/widgets/car_item_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/app_assets.dart' show AppAssets;
+
 class CarsTab extends StatelessWidget {
   const CarsTab({super.key});
 
@@ -61,12 +63,14 @@ class ReviewsTab extends StatelessWidget {
           commentText: "Was a good deal, nice person but bad car , fix it mf",
           date: "11/8/2024",
           rate: 3,
+          imageUrl: AppAssets.assetsImagesNotificationPic2,
         ),
         CommentSection(
           name: "Scarlett  Johansson",
           commentText: "Was a good deal, nice person but bad car , fix it mf",
           date: "11/8/2024",
           rate: 3,
+          imageUrl: AppAssets.assetsImagesNotificationPic2,
         ),
       ],
     );
