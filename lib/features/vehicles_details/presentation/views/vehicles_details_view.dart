@@ -1,6 +1,6 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/book_vehicle_button.dart';
+import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
@@ -70,7 +70,8 @@ class VehiclesDetailsView extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: const BookVehicleButton(),
+        bottomNavigationBar:
+            BottomNavigationBarSection(price: 25, onPressed: () {}),
       ),
     );
   }
