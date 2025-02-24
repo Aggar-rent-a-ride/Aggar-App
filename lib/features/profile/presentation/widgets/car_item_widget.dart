@@ -27,13 +27,13 @@ class CarItemWidget extends StatelessWidget {
               child: Image.asset(
                 car.assetImage,
                 width: double.infinity,
-                height: 100,
+                height: 90,
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -76,9 +76,28 @@ class CarItemWidget extends StatelessWidget {
                           .copyWith(color: AppColors.myBlue100_2),
                     ),
                     Align(
-                      alignment: Alignment.bottomLeft,
+                      alignment: Alignment.bottomRight,
                       child: Text(
                         "/hr",
+                        style: AppStyles.regular12(context)
+                            .copyWith(color: AppColors.myBlue100_2),
+                      ),
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        fixedSize: const Size(60, 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(color: AppColors.myBlue100_2),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                      ),
+                      child: Text(
+                        "Show more",
                         style: AppStyles.regular12(context)
                             .copyWith(color: AppColors.myBlue100_2),
                       ),
