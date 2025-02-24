@@ -1,5 +1,5 @@
-
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class TabButton extends StatelessWidget {
@@ -34,8 +34,8 @@ class TabButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
+          style: AppStyles.regular16(context).copyWith(
+            color: isSelected ? AppColors.myWhite100_1 : AppColors.myBlack100,
           ),
         ),
       ),

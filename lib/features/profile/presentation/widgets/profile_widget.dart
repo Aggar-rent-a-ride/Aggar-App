@@ -1,3 +1,5 @@
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/profile/data/profile_model.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +17,18 @@ class ProfileWidget extends StatelessWidget {
           backgroundImage: AssetImage(profile.avatarAsset),
         ),
         const SizedBox(height: 10),
-        Text(profile.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Text(profile.role, style: const TextStyle(fontSize: 16, color: Colors.grey)),
+        Text(profile.name, style: AppStyles.bold24(context)),
+        Text(profile.role,
+            style: AppStyles.regular20(context).copyWith(
+              color: AppColors.myGray100_2,
+            )),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(profile.description, textAlign: TextAlign.center),
+          child: Text(
+            profile.description,
+            textAlign: TextAlign.center,
+            style: AppStyles.medium16(context),
+          ),
         ),
       ],
     );

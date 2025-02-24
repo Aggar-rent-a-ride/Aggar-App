@@ -5,10 +5,17 @@ import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
 import 'package:flutter/material.dart';
 
-class CarItemWidget extends StatelessWidget {
+class CarItemWidget extends StatefulWidget {
   final Car car;
 
   const CarItemWidget({super.key, required this.car});
+
+  @override
+  _CarItemWidgetState createState() => _CarItemWidgetState();
+}
+
+class _CarItemWidgetState extends State<CarItemWidget> {
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +27,37 @@ class CarItemWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
-                car.assetImage,
-                width: double.infinity,
-                height: 90,
-                fit: BoxFit.cover,
+          Stack(
+            alignment: Alignment.topRight,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    widget.car.assetImage,
+                    width: double.infinity,
+                    height: 90,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8, top: 8),
+                child: IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : Colors.white,
+                    size: 24,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isFavorite = !isFavorite;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
@@ -48,7 +75,7 @@ class CarItemWidget extends StatelessWidget {
                           flag: false,
                           imageIcon: AppAssets.assetsIconsStar,
                         ),
-                        Text(" ${car.rating.toString()}",
+                        Text(" ${widget.car.rating.toString()}",
                             style: AppStyles.semiBold12(context)),
                       ],
                     ),
@@ -60,18 +87,18 @@ class CarItemWidget extends StatelessWidget {
                         imageIcon: AppAssets.assetsIconsMap,
                       ),
                       Text(
-                        " ${car.distance} km",
+                        " ${widget.car.distance} km",
                         style: AppStyles.bold12(context)
                             .copyWith(color: Colors.grey),
                       ),
                     ]),
                   ],
                 ),
-                Text(car.name, style: AppStyles.semiBold20(context)),
+                Text(widget.car.name, style: AppStyles.semiBold20(context)),
                 Row(
                   children: [
                     Text(
-                      "\$${car.pricePerHour}",
+                      "\$${widget.car.pricePerHour}",
                       style: AppStyles.regular24(context)
                           .copyWith(color: AppColors.myBlue100_2),
                     ),
