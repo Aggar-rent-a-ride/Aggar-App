@@ -20,7 +20,7 @@ class _CarItemWidgetState extends State<CarItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: AppColors.myWhite100_1,
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -44,17 +44,22 @@ class _CarItemWidgetState extends State<CarItemWidget> {
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 8, top: 8),
-                child: IconButton(
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.white,
-                    size: 24,
+                child: CircleAvatar(
+                  backgroundColor: AppColors.myWhite100_1,
+                  radius: 20,
+                  child: IconButton(
+                    iconSize: 13,
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? Colors.red : AppColors.myBlue100_1,
+                      size: 24,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isFavorite = !isFavorite;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      isFavorite = !isFavorite;
-                    });
-                  },
                 ),
               ),
             ],
@@ -94,7 +99,7 @@ class _CarItemWidgetState extends State<CarItemWidget> {
                     ]),
                   ],
                 ),
-                Text(widget.car.name, style: AppStyles.semiBold20(context)),
+                Text(widget.car.name, style: AppStyles.semiBold24(context)),
                 Row(
                   children: [
                     Text(
@@ -114,6 +119,8 @@ class _CarItemWidgetState extends State<CarItemWidget> {
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.myWhite100_1,
+                        foregroundColor: AppColors.myBlue100_2,
                         elevation: 2,
                         fixedSize: const Size(60, 20),
                         shape: RoundedRectangleBorder(
