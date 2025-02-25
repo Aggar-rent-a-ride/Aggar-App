@@ -5,7 +5,10 @@ class AppColors {
   static Color myBlack25 = const Color(0xff000000).withOpacity(0.25);
   static Color myBlack10 = const Color(0xff000000).withOpacity(0.1);
   static Color myBlack50 = const Color(0xff000000).withOpacity(0.5);
-  static Color myYellow100_1 = const Color(0xffFBBC05);
+  static Color myYellow100_1 = const Color(0xffFFCC17);
+  static Color myYellow10_1 = const Color(0xffFFFDF5);
+  static Color myRed100_1 = const Color(0xffFF4D3C);
+  static Color myRed10_1 = const Color(0xffFFEEEC);
   static Color myGreen100_1 = const Color(0xff34A853);
   static Color myGray100_1 = const Color(0xffD9D9D9);
   static Color myGray100_2 = const Color(0xff7D7D7D);

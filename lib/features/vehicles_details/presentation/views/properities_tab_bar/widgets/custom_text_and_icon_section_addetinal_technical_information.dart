@@ -1,41 +1,29 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class CustomTextAndIconSectionAddetinalTechnicalInformation
-    extends StatelessWidget {
-  const CustomTextAndIconSectionAddetinalTechnicalInformation(
-      {super.key,
-      required this.title,
-      required this.subtitle,
-      required this.imageIcon});
+class TextAndIconSection extends StatelessWidget {
+  const TextAndIconSection(
+      {super.key, required this.title, required this.imageIcon, this.width});
   final String title;
-  final String subtitle;
   final String imageIcon;
+  final double? width;
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image(
           image: AssetImage(imageIcon),
-          height: 25,
-          width: 25,
+          height: 16,
+          width: 16,
         ),
-        const Gap(2),
+        Gap(width ?? 0),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 13,
-            color: AppColors.myGray100_2,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: 15,
+          style: AppStyles.semiBold16(context).copyWith(
             color: AppColors.myBlue100_2,
-            fontWeight: FontWeight.w600,
           ),
         ),
       ],
