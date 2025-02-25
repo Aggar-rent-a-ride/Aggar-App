@@ -1,37 +1,52 @@
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/custom_gallary_image.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/additional_image_gallery.dart';
+
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+
+import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class GallarySection extends StatelessWidget {
-  const GallarySection({super.key});
+  GallarySection({super.key});
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Gap(30),
-        //TODO: the font not handle yet
-        Text(
-          "Gallary",
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColors.myGray100_3,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Gallary",
+            style: AppStyles.bold18(context).copyWith(
+              color: AppColors.myGray100_3,
+            ),
           ),
-        ),
-        const Gap(5),
-        SizedBox(
-          width: MediaQuery.sizeOf(context).width,
-          height: MediaQuery.sizeOf(context).width * 0.21,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => const CustomGallaryImage(),
-            itemCount: 6,
+          RawScrollbar(
+            thumbVisibility: true,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 135), // must be dynamic
+            minThumbLength: 40, // must be dynamic
+            trackVisibility: true,
+            trackRadius: const Radius.circular(50),
+            trackColor: AppColors.myGray100_1,
+            controller: _scrollController,
+            thumbColor: AppColors.myBlue100_2,
+            radius: const Radius.circular(20),
+            thickness: 8,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              child: Row(
+                spacing: 5,
+                children: List.generate(5, (index) {
+                  return const AdditionalImageGallery();
+                }),
+              ),
+            ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }
