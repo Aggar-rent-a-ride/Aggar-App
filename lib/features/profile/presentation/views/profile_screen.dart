@@ -21,7 +21,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     role: "Renter",
     avatarAsset: AppAssets.assetsImagesProfile,
     description:
-        "some information about the renter and should be different from the user or not? i don’t know lets ask the backend? well no need i already know the answer but it just words :)",
+        "renter and should be different from the user or not? i don’t know lets ask the backend? well no need i already know the answer but it just words :)",
   );
 
   final List<Car> cars = [

@@ -1,6 +1,8 @@
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/comment_section.dart';
 import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
 import 'package:aggar/features/profile/presentation/widgets/car_item_widget.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/app_assets.dart' show AppAssets;
@@ -45,8 +47,33 @@ class StaticsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Statics Tab Content'),
+    return Column(
+      children: [
+        Text(
+          'Statics Tab Content',
+          style: AppStyles.bold18(context),
+        ),
+        SizedBox(
+          height: 300,
+          child: LineChart(
+            LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: [
+                    const FlSpot(0, 0),
+                    const FlSpot(1, 1),
+                    const FlSpot(2, 3),
+                    const FlSpot(3, 4),
+                    const FlSpot(4, 6),
+                    const FlSpot(5, 8),
+                    const FlSpot(6, 10),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
