@@ -7,8 +7,8 @@ class ProperitiesTabBarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [GallarySection(), Gap(12)],
+    return Column(
+      children: [GallarySection(), const Gap(12)],
     );
   }
 }
