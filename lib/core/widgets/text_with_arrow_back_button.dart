@@ -3,11 +3,14 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class SeeAllReviewsButton extends StatelessWidget {
-  const SeeAllReviewsButton({
+class TextWithArrowBackButton extends StatelessWidget {
+  const TextWithArrowBackButton({
     super.key,
+    required this.text,
+    this.onPressed,
   });
-
+  final String text;
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -31,7 +34,7 @@ class SeeAllReviewsButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "see all reviews",
+              text,
               style: AppStyles.medium14(context).copyWith(
                 color: AppColors.myBlue100_2,
               ),

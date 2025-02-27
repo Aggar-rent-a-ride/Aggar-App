@@ -17,34 +17,37 @@ class CustomIconButton extends StatelessWidget {
   final String? imageIcon;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 40,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: AppColors.myWhite100_2,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.myBlack25,
-            offset: const Offset(0, 0),
-            spreadRadius: 0,
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: flag == true
-          ? Icon(
-              icon,
-              size: size,
-              color: color,
-            )
-          : Image(
-              image: AssetImage(
-                imageIcon!,
-              ),
-              height: size,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Container(
+        height: 40,
+        width: 40,
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: AppColors.myWhite100_2,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.myBlack25,
+              offset: const Offset(0, 0),
+              spreadRadius: 0,
+              blurRadius: 4,
             ),
+          ],
+        ),
+        child: flag == true
+            ? Icon(
+                icon,
+                size: size,
+                color: color,
+              )
+            : Image(
+                image: AssetImage(
+                  imageIcon!,
+                ),
+                height: size,
+              ),
+      ),
     );
   }
 }
