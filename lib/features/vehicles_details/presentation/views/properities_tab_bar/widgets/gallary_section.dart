@@ -38,7 +38,7 @@ class GallarySection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               controller: _scrollController,
               child: Row(
-                spacing: 5,
+                spacing: 8,
                 children: List.generate(5, (index) {
                   return const AdditionalImageGallery();
                 }),
