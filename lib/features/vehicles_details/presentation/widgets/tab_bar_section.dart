@@ -4,11 +4,13 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/views/about_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/views/properities_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/views/review_tab_bar_view.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 
 class TabBarSection extends StatefulWidget {
   const TabBarSection({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
 }
 
@@ -62,18 +64,14 @@ class _TabBarSectionState extends State<TabBarSection>
             _pageController.jumpToPage(index); // Jump to the selected page
           },
         ),
-        SizedBox(
-            height: 500,
-            child: PageView(
-              controller: _pageController,
-              physics:
-                  const NeverScrollableScrollPhysics(), // Disable swipe gestures
-              children: const [
-                Center(child: AboutTabBarView()),
-                Center(child: ProperitiesTabBarView()),
-                Center(child: ReviewTabBarView()),
-              ],
-            )),
+        ExpandablePageView(
+          controller: _pageController,
+          children: const [
+            AboutTabBarView(),
+            ProperitiesTabBarView(),
+            ReviewTabBarView(),
+          ],
+        ),
       ],
     );
   }

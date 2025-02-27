@@ -10,12 +10,12 @@ class AdditionalImageGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 25),
+      margin: const EdgeInsets.only(bottom: 35),
       child: Container(
-        height: MediaQuery.sizeOf(context).width * 0.20,
-        width: MediaQuery.sizeOf(context).width * 0.26,
+        height: MediaQuery.sizeOf(context).width * 0.25,
+        width: MediaQuery.sizeOf(context).width * 0.30,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(8),
           color: AppColors.myBlue100_7,
           image: const DecorationImage(
             image: AssetImage(
