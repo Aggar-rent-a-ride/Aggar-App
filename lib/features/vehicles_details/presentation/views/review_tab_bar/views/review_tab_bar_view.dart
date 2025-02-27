@@ -2,6 +2,7 @@ import 'package:aggar/core/widgets/comment_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_and_reviews_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/see_all_reviews_button.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart' show Gap;
 
 import '../../../../../../core/utils/app_assets.dart' show AppAssets;
 
@@ -28,7 +29,8 @@ class ReviewTabBarView extends StatelessWidget {
           date: "11/8/2024",
           rate: 3,
         ),
-        SeeAllReviewsButton()
+        SeeAllReviewsButton(),
+        Gap(25)
       ],
     );
   }

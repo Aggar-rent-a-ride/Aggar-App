@@ -1,6 +1,7 @@
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/location_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/rent_partner_section.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class AboutTabBarView extends StatelessWidget {
   const AboutTabBarView({super.key});
@@ -8,7 +9,11 @@ class AboutTabBarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [RentPartnerSection(), LocationSection()],
+      children: [
+        RentPartnerSection(),
+        LocationSection(),
+        Gap(25),
+      ],
     );
   }
 }
