@@ -27,7 +27,7 @@ class OwnerImageSection extends StatelessWidget {
           image: AssetImage(
             AppAssets.assetsImagesAvatar,
           ),
-          height: 50,
+          height: 45,
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class OwnerNameSection extends StatelessWidget {
@@ -9,26 +10,20 @@ class OwnerNameSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //TODO: style here will be change
           Text(
             "Brian Smith",
-            style: TextStyle(
-              color: AppColors.myBlack100,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+            style: AppStyles.bold16(context).copyWith(
+              color: AppColors.myBlue100_2,
             ),
           ),
-          //TODO: style here will be change
           Text(
             "Owner",
-            style: TextStyle(
-              color: AppColors.myGray100_2,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
+            style: AppStyles.semiBold14(context).copyWith(
+              color: AppColors.myBlack50,
             ),
           )
         ],
