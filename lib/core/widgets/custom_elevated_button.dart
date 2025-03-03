@@ -1,32 +1,25 @@
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
-  final BorderRadiusGeometry? borderRadius;
-  final double? width;
-  final double? height;
+  final String text;
   final VoidCallback? onPressed;
-  final Widget child;
-  final Color? color;
 
   const CustomElevatedButton({
     super.key,
     required this.onPressed,
-    required this.child,
-    this.borderRadius,
-    this.width,
-    this.height,
-    this.color,
+    required this.text,
   });
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = this.borderRadius ?? BorderRadius.circular(0);
     return Container(
-      width: width,
-      height: height,
+      width: MediaQuery.sizeOf(context).width * 0.8,
+      height: 55,
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: borderRadius,
+        color: AppColors.myBlue100_1,
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -42,10 +35,15 @@ class CustomElevatedButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: borderRadius,
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
-        child: child,
+        child: Text(
+          text,
+          style: AppStyles.bold20(context).copyWith(
+            color: AppColors.myWhite100_1,
+          ),
+        ),
       ),
     );
   }
