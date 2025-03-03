@@ -1,7 +1,7 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_up_all_fields.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_up_have_an_account_section.dart';
-import 'package:aggar/features/authorization/presentation/widget/sign_up_next_button.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -26,7 +26,7 @@ class SignUpView extends StatelessWidget {
             ),
             const SignUpAllFields(),
             const Gap(25),
-            const SignUpNextButton(),
+            CustomElevatedButton(onPressed: () {}, text: "Next"),
             const Gap(5),
             const SignUpHaveAnAccountSection(),
           ],
