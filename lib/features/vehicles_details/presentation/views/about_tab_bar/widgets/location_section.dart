@@ -2,6 +2,7 @@ import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/widgets/text_with_arrow_back_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/current_location_with_distance_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/image_of_current_vehicle_location.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -25,13 +26,15 @@ class LocationSection extends StatelessWidget {
           ),
         ),
         const CurrentLocationWithDistanceSection(),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image(
-            image: const AssetImage(AppAssets.assetsImagesMap),
-            fit: BoxFit.cover,
-            height: MediaQuery.sizeOf(context).width * 0.42,
-            width: MediaQuery.sizeOf(context).width,
+        Container(
+          height: 150,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const ImageOfCurrentVehicleLocation(
+            latitude: 30.033333,
+            longitude: 31.233334,
           ),
         ),
         const TextWithArrowBackButton(
