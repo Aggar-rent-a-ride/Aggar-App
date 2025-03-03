@@ -1,15 +1,14 @@
 // ignore_for_file: prefer_single_quotes
 class AppAssets {
   AppAssets._();
-
+  
   /// Assets for assetsIconsAddPhoto
   /// assets/icons/add_photo.png
   static const String assetsIconsAddPhoto = "assets/icons/add_photo.png";
 
   /// Assets for assetsIconsAdditionalImage
   /// assets/icons/additional_image.png
-  static const String assetsIconsAdditionalImage =
-      "assets/icons/additional_image.png";
+  static const String assetsIconsAdditionalImage = "assets/icons/additional_image.png";
 
   /// Assets for assetsIconsCarIcon
   /// assets/icons/car_icon.png
@@ -21,8 +20,7 @@ class AppAssets {
 
   /// Assets for assetsIconsClosedEyeIcon
   /// assets/icons/closed_eye_icon.png
-  static const String assetsIconsClosedEyeIcon =
-      "assets/icons/closed_eye_icon.png";
+  static const String assetsIconsClosedEyeIcon = "assets/icons/closed_eye_icon.png";
 
   /// Assets for assetsIconsColor
   /// assets/icons/color.png
@@ -34,8 +32,7 @@ class AppAssets {
 
   /// Assets for assetsIconsContactUsLink
   /// assets/icons/contact_us_link.png
-  static const String assetsIconsContactUsLink =
-      "assets/icons/contact_us_link.png";
+  static const String assetsIconsContactUsLink = "assets/icons/contact_us_link.png";
 
   /// Assets for assetsIconsDarkMode
   /// assets/icons/dark_mode.png
@@ -43,8 +40,7 @@ class AppAssets {
 
   /// Assets for assetsIconsFacebookIcon
   /// assets/icons/Facebook_icon.png
-  static const String assetsIconsFacebookIcon =
-      "assets/icons/Facebook_icon.png";
+  static const String assetsIconsFacebookIcon = "assets/icons/Facebook_icon.png";
 
   /// Assets for assetsIconsGoogleIcon
   /// assets/icons/Google_icon.png
@@ -76,8 +72,7 @@ class AppAssets {
 
   /// Assets for assetsIconsMotorcyclesIcon
   /// assets/icons/motorcycles_icon.png
-  static const String assetsIconsMotorcyclesIcon =
-      "assets/icons/motorcycles_icon.png";
+  static const String assetsIconsMotorcyclesIcon = "assets/icons/motorcycles_icon.png";
 
   /// Assets for assetsIconsNotification
   /// assets/icons/notification.png
@@ -85,8 +80,7 @@ class AppAssets {
 
   /// Assets for assetsIconsNotificationSettings
   /// assets/icons/notification_settings.png
-  static const String assetsIconsNotificationSettings =
-      "assets/icons/notification_settings.png";
+  static const String assetsIconsNotificationSettings = "assets/icons/notification_settings.png";
 
   /// Assets for assetsIconsOpenEyeIcon
   /// assets/icons/open_eye_icon.png
@@ -102,8 +96,7 @@ class AppAssets {
 
   /// Assets for assetsIconsRecreationalIcon
   /// assets/icons/recreational_icon.png
-  static const String assetsIconsRecreationalIcon =
-      "assets/icons/recreational_icon.png";
+  static const String assetsIconsRecreationalIcon = "assets/icons/recreational_icon.png";
 
   /// Assets for assetsIconsRentHistory
   /// assets/icons/rent_history.png
@@ -167,18 +160,15 @@ class AppAssets {
 
   /// Assets for assetsImagesNotificationPic1
   /// assets/images/notification_pic_1.png
-  static const String assetsImagesNotificationPic1 =
-      "assets/images/notification_pic_1.png";
+  static const String assetsImagesNotificationPic1 = "assets/images/notification_pic_1.png";
 
   /// Assets for assetsImagesNotificationPic2
   /// assets/images/notification_pic_2.png
-  static const String assetsImagesNotificationPic2 =
-      "assets/images/notification_pic_2.png";
+  static const String assetsImagesNotificationPic2 = "assets/images/notification_pic_2.png";
 
   /// Assets for assetsImagesNotificationPic3
   /// assets/images/notification_pic_3.png
-  static const String assetsImagesNotificationPic3 =
-      "assets/images/notification_pic_3.png";
+  static const String assetsImagesNotificationPic3 = "assets/images/notification_pic_3.png";
 
   /// Assets for assetsImagesOnboarding1
   /// assets/images/onboarding1.png
@@ -203,4 +193,9 @@ class AppAssets {
   /// Assets for assetsImagesTesla
   /// assets/images/Tesla.png
   static const String assetsImagesTesla = "assets/images/Tesla.png";
+
+  /// Assets for assetsImagesVerificationIcon
+  /// assets/images/verification_icon.png
+  static const String assetsImagesVerificationIcon = "assets/images/verification_icon.png";
 }
+

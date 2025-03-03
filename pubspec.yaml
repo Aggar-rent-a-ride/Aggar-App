@@ -45,16 +45,11 @@ dependencies:
   latlong2: ^0.9.1
   location: ^8.0.0
   percent_indicator: ^4.2.4
+  pin_code_fields: ^8.0.1
   smooth_page_indicator: ^1.2.0+3
   toggle_switch: ^2.3.0
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
