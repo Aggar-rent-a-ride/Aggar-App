@@ -50,6 +50,7 @@ class VehiclesDetailsView extends StatelessWidget {
         backgroundColor: AppColors.myWhite100_1,
         body: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 25),
+          // TODO: sub screens with no space
           child: SingleChildScrollView(
             child: Column(
               children: [

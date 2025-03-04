@@ -36,6 +36,7 @@ class LocationSection extends StatelessWidget {
             ),
           ),
         ),
+        const Gap(5),
         const TextWithArrowBackButton(
           text: "see in google map",
         ),

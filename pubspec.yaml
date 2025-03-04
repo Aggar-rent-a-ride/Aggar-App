@@ -32,6 +32,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   device_preview: ^1.2.0
   dio: ^5.8.0+1
+  dropdown_button2: ^2.3.9
   expandable_page_view: ^1.0.17
   fl_chart: ^0.70.2
   flutter:
