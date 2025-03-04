@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:flutter/material.dart';
 
@@ -20,30 +21,34 @@ class AboutVehicleSection extends StatelessWidget {
             color: AppColors.myBlue100_2,
           ),
         ),
-        const Row(
-          spacing: 30,
+        Row(
+          spacing: 20,
           children: [
-            InputNameWithInputFieldSection(
-              hintText: "ex: Toyota",
-              label: "brand",
+            InputNameWithDropDownList(
+              hintTextSearch: "Search for vehicle brand ...",
+              lableText: "brand",
+              hintText: "ex: Tesla",
+              width: MediaQuery.of(context).size.width * 0.4,
             ),
-            InputNameWithInputFieldSection(
+            const InputNameWithInputFieldSection(
               hintText: "ex: model x",
               label: "model",
             ),
           ],
         ),
         Row(
-          spacing: 30,
+          spacing: 20,
           children: [
-            const InputNameWithInputFieldSection(
+            InputNameWithDropDownList(
+              hintTextSearch: "Search for vehicle type ...",
+              lableText: "vehicle",
               hintText: "ex: car",
-              label: "vehicle",
+              width: MediaQuery.of(context).size.width * 0.4,
             ),
             InputNameWithInputFieldSection(
               hintText: "ex: 1980",
               label: "year of manufacture",
-              width: MediaQuery.of(context).size.width * 0.4,
+              width: MediaQuery.of(context).size.width * 0.3,
             ),
           ],
         ),

@@ -36,10 +36,10 @@ class InputNameWithInputFieldSection extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: AppStyles.medium15(context).copyWith(
-                color: AppColors.myBlack50,
+                color: AppColors.myBlack25,
               ),
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 14.7),
               fillColor: AppColors.myWhite100_1,
               filled: true,
               focusedBorder: OutlineInputBorder(
