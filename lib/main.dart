@@ -1,4 +1,3 @@
-import 'package:aggar/features/authorization/presentation/views/sign_up_view.dart';
 import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
