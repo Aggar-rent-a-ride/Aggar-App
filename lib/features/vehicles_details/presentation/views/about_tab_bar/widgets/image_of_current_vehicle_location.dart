@@ -24,22 +24,18 @@ class _MapScreenState extends State<ImageOfCurrentVehicleLocation> {
   }
 
   void _setStaticLocation() {
-    setState(
-      () {
-        markers.add(
-          Marker(
-            width: 50,
-            height: 50.0,
-            point: staticLocation,
-            child: Icon(
-              Icons.my_location,
-              color: AppColors.myBlue100_1,
-              size: 40.0,
-            ),
-          ),
-        );
-      },
-    );
+    setState(() {
+      markers.add(Marker(
+        width: 50,
+        height: 50.0,
+        point: staticLocation,
+        child: Icon(
+          Icons.my_location,
+          color: AppColors.myBlue100_1,
+          size: 40.0,
+        ),
+      ));
+    });
   }
 
   @override
@@ -47,11 +43,18 @@ class _MapScreenState extends State<ImageOfCurrentVehicleLocation> {
     return FlutterMap(
       options: MapOptions(
         initialCenter: staticLocation,
-        initialZoom: 15.0,
+        initialZoom: 16.0,
+        maxZoom: 16.0,
+        minZoom: 16.0,
+        interactionOptions: const InteractionOptions(
+          flags: InteractiveFlag.none,
+        ),
       ),
       children: [
         TileLayer(
+          //TODO : templete would be change
           urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          subdomains: const ['a', 'b', 'c'],
         ),
         MarkerLayer(
           markers: markers,

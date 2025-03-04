@@ -1,4 +1,3 @@
-import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/widgets/text_with_arrow_back_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/current_location_with_distance_section.dart';
@@ -26,15 +25,15 @@ class LocationSection extends StatelessWidget {
           ),
         ),
         const CurrentLocationWithDistanceSection(),
-        Container(
-          height: 150,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: const ImageOfCurrentVehicleLocation(
-            latitude: 30.033333,
-            longitude: 31.233334,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: const SizedBox(
+            height: 150,
+            width: double.infinity,
+            child: ImageOfCurrentVehicleLocation(
+              latitude: 30.518111621078358,
+              longitude: 31.351927067432843,
+            ),
           ),
         ),
         const TextWithArrowBackButton(

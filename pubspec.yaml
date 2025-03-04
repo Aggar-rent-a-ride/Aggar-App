@@ -47,6 +47,7 @@ dependencies:
   location: ^8.0.0
   percent_indicator: ^4.2.4
   pin_code_fields: ^8.0.1
+  screenshot: ^3.0.0
   smooth_page_indicator: ^1.2.0+3
   toggle_switch: ^2.3.0
 
