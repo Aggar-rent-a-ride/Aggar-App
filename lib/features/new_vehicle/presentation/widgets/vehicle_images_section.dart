@@ -3,11 +3,23 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_list_view.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_main_image_button_content.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
-class VehicleImagesSection extends StatelessWidget {
-  const VehicleImagesSection({
-    super.key,
-  });
+class VehicleImagesSection extends StatefulWidget {
+  const VehicleImagesSection({super.key});
+
+  @override
+  _VehicleImagesSectionState createState() => _VehicleImagesSectionState();
+}
+
+class _VehicleImagesSectionState extends State<VehicleImagesSection> {
+  File? mainImage;
+
+  void onMainImagePicked(File image) {
+    setState(() {
+      mainImage = image;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +33,18 @@ class VehicleImagesSection extends StatelessWidget {
             color: AppColors.myBlue100_2,
           ),
         ),
-        const PickMainImageButtonContent(),
+        PickMainImageButtonContent(
+          onImagePicked: onMainImagePicked,
+        ),
         Text(
           "additional images",
           style: AppStyles.medium18(context).copyWith(
             color: AppColors.myBlue100_1,
           ),
         ),
-        const AdditionalImageListView(),
+        AdditionalImageListView(
+          mainImage: mainImage,
+        ),
       ],
     );
   }
