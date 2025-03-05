@@ -4,11 +4,12 @@ import 'package:aggar/features/authorization/presentation/widget/sign_up_all_fie
 import 'package:aggar/features/authorization/presentation/widget/sign_up_have_an_account_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import '../../../../core/utils/app_styles.dart';
 
 class SignUpView extends StatelessWidget {
-  const SignUpView({super.key});
+  final PageController controller;
+
+  const SignUpView({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +18,19 @@ class SignUpView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
-          spacing: 15,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Let's sign you up",
-              style: AppStyles.bold28(context),
-            ),
+            Text("Let's sign you up", style: AppStyles.bold28(context)),
             const SignUpAllFields(),
-            const Gap(25),
-            CustomElevatedButton(onPressed: () {}, text: "Next"),
-            const Gap(5),
+            const Gap(30),
+            CustomElevatedButton(
+              onPressed: () => controller.nextPage(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              ),
+              text: "Next",
+            ),
+            const Gap(10),
             const SignUpHaveAnAccountSection(),
           ],
         ),
