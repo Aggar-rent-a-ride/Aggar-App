@@ -1,3 +1,4 @@
+import 'package:aggar/features/new_vehicle/data/model/dropbown_button.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/search_text_field.dart'
     show SearchTextField;
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -5,20 +6,23 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/app_colors.dart' show AppColors;
 import '../../../../core/utils/app_styles.dart' show AppStyles;
-import '../../data/model/dropbown_button.dart' show items;
 
 class InputNameWithDropDownList extends StatefulWidget {
-  const InputNameWithDropDownList(
-      {super.key,
-      required this.hintTextSearch,
-      required this.lableText,
-      required this.hintText,
-      this.width});
+  const InputNameWithDropDownList({
+    super.key,
+    required this.hintTextSearch,
+    required this.lableText,
+    required this.hintText,
+    this.width,
+    required this.items,
+    this.flag = false,
+  });
   final String hintTextSearch;
   final String lableText;
   final String hintText;
   final double? width;
-
+  final List<String> items;
+  final bool? flag;
   @override
   State<InputNameWithDropDownList> createState() =>
       _InputNameWithDropDownListState();
@@ -27,6 +31,14 @@ class InputNameWithDropDownList extends StatefulWidget {
 class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
   String? selectedValue;
   final TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.items == vehicleStatus) {
+      selectedValue = widget.items.first;
+    }
+  }
 
   @override
   void dispose() {
@@ -54,15 +66,27 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 color: AppColors.myBlack50,
               ),
             ),
-            items: items
+            items: widget.items
                 .map(
                   (item) => DropdownMenuItem(
                     value: item,
                     child: Text(
                       item,
-                      style: AppStyles.medium15(context).copyWith(
-                        color: AppColors.myBlack50,
-                      ),
+                      style: item == selectedValue
+                          ? (item == "active"
+                              ? AppStyles.medium15(context).copyWith(
+                                  color: AppColors.myGreen100_1,
+                                )
+                              : item == "out of stock"
+                                  ? AppStyles.medium15(context).copyWith(
+                                      color: AppColors.myRed100_1,
+                                    )
+                                  : AppStyles.medium15(context).copyWith(
+                                      color: AppColors.myBlack100,
+                                    ))
+                          : AppStyles.medium15(context).copyWith(
+                              color: AppColors.myBlack50,
+                            ),
                     ),
                   ),
                 )
@@ -84,32 +108,34 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 color: AppColors.myWhite100_1,
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(
-                  color: AppColors.myBlack25,
+                  color: AppColors.myBlack50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
               ),
             ),
-            dropdownSearchData: DropdownSearchData(
-              searchController: textEditingController,
-              searchInnerWidgetHeight: 50,
-              searchInnerWidget: Container(
-                color: AppColors.myWhite100_1,
-                height: 50,
-                padding: const EdgeInsets.only(
-                  top: 8,
-                  bottom: 4,
-                  right: 8,
-                  left: 8,
-                ),
-                child: SearchTextField(
-                    hintText: widget.hintTextSearch,
-                    textEditingController: textEditingController),
-              ),
-              searchMatchFn: (item, searchValue) {
-                return item.value.toString().contains(searchValue);
-              },
-            ),
+            dropdownSearchData: widget.flag == true
+                ? DropdownSearchData(
+                    searchController: textEditingController,
+                    searchInnerWidgetHeight: 50,
+                    searchInnerWidget: Container(
+                      color: AppColors.myWhite100_1,
+                      height: 50,
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        bottom: 4,
+                        right: 8,
+                        left: 8,
+                      ),
+                      child: SearchTextField(
+                          hintText: widget.hintTextSearch,
+                          textEditingController: textEditingController),
+                    ),
+                    searchMatchFn: (item, searchValue) {
+                      return item.value.toString().contains(searchValue);
+                    },
+                  )
+                : const DropdownSearchData(),
             onMenuStateChange: (isOpen) {
               if (!isOpen) {
                 textEditingController.clear();

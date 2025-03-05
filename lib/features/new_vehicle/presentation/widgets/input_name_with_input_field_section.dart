@@ -36,7 +36,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: AppStyles.medium15(context).copyWith(
-                color: AppColors.myBlack25,
+                color: AppColors.myBlack50,
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 14.7),
@@ -45,7 +45,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: AppColors.myBlack25,
+                  color: AppColors.myBlack50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -53,7 +53,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: AppColors.myBlack25,
+                  color: AppColors.myBlack50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -61,7 +61,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: AppColors.myBlack25,
+                  color: AppColors.myBlack50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
