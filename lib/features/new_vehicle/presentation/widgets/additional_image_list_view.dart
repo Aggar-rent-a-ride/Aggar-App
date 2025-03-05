@@ -42,7 +42,11 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
               itemCount: state.images.length,
               itemBuilder: (context, index) => Row(
                 children: [
-                  if (index == 0) const AdditionalImageButton(),
+                  index == 0
+                      ? widget.mainImage == null
+                          ? const AdditionalImageButton()
+                          : AdditionalImageCard(image: widget.mainImage!)
+                      : const SizedBox(),
                   if (state.images[index] == null &&
                       index == state.images.length - 1)
                     AddImageButton(
