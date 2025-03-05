@@ -15,18 +15,19 @@ class AdditionalImageButton extends StatelessWidget {
         right: 10,
       ),
       child: Container(
-        decoration: BoxDecoration(boxShadow: [
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.circular(5), boxShadow: [
           BoxShadow(
             color: AppColors.myBlack25,
             offset: const Offset(0, 0),
-            blurRadius: 4,
+            blurRadius: 2,
           )
         ]),
         child: ElevatedButton(
           onPressed: () {},
           style: ButtonStyle(
             elevation: WidgetStateProperty.all(0),
-            overlayColor: WidgetStateProperty.all(AppColors.myBlue10_2),
+            overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),
             backgroundColor: WidgetStateProperty.all(
               AppColors.myBlue100_8,
             ),

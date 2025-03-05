@@ -2,6 +2,7 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
 import 'package:flutter/material.dart';
@@ -29,17 +30,20 @@ class AddVehicleScreen extends StatelessWidget {
           style: AppStyles.semiBold24(context),
         ),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
             spacing: 25,
             children: [
-              AboutVehicleSection(),
-              VehicleImagesSection(),
-              VehicleProperitesSection(),
-              VehicleRentalPriceSection(),
-              Gap(25),
+              const AboutVehicleSection(),
+              const VehicleImagesSection(),
+              const VehicleProperitesSection(),
+              VehicleLocationSection(
+                onPressed: () {},
+              ),
+              const VehicleRentalPriceSection(),
+              const Gap(25),
             ],
           ),
         ),

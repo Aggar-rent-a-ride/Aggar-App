@@ -1,20 +1,18 @@
 import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
-class PickMainImageButtonStyle extends StatelessWidget {
-  const PickMainImageButtonStyle({
+class PickLocationOnMapButton extends StatelessWidget {
+  const PickLocationOnMapButton({
     super.key,
-    required this.widget,
-    this.onPressed,
+    required this.onPressed,
   });
-  final Widget widget;
+
   final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.25,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
@@ -22,10 +20,13 @@ class PickMainImageButtonStyle extends StatelessWidget {
             color: AppColors.myBlack25,
             offset: const Offset(0, 0),
             blurRadius: 2,
-          ),
+          )
         ],
       ),
+      width: double.infinity,
+      height: MediaQuery.sizeOf(context).height * 0.18,
       child: ElevatedButton(
+        onPressed: onPressed,
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(0),
           overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),
@@ -39,13 +40,17 @@ class PickMainImageButtonStyle extends StatelessWidget {
           ),
           padding: WidgetStateProperty.all(
             const EdgeInsets.symmetric(
-              vertical: 10,
+              vertical: 25,
               horizontal: 25,
             ),
           ),
         ),
-        onPressed: onPressed,
-        child: widget,
+        child: Text(
+          "Pick on Map",
+          style: AppStyles.regular16(context).copyWith(
+            color: AppColors.myBlue100_1,
+          ),
+        ),
       ),
     );
   }
