@@ -1,13 +1,18 @@
-import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
+import 'dart:io';
+
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_state.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_button.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:aggar/features/new_vehicle/presentation/widgets/add_image_button.dart';
 
 class AdditionalImageListView extends StatefulWidget {
-  const AdditionalImageListView({super.key});
+  final File? mainImage;
+
+  const AdditionalImageListView({super.key, this.mainImage});
 
   @override
   State<AdditionalImageListView> createState() =>
@@ -18,7 +23,7 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
   @override
   void initState() {
     super.initState();
-    context.read<AdditionalImageCubit>().initializeImages();
+    context.read<AdditionalImageCubit>().initializeImages(widget.mainImage);
   }
 
   @override
@@ -37,16 +42,16 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
               itemCount: state.images.length,
               itemBuilder: (context, index) => Row(
                 children: [
-                  index == 0 ? const AdditionalImageButton() : const SizedBox(),
-                  state.images[index] == null
-                      ? AddImageButton(
-                          onPressed: () {
-                            context
-                                .read<AdditionalImageCubit>()
-                                .pickImage(index);
-                          },
-                        )
-                      : AdditionalImageCard(image: state.images[index]!),
+                  if (index == 0) const AdditionalImageButton(),
+                  if (state.images[index] == null &&
+                      index == state.images.length - 1)
+                    AddImageButton(
+                      onPressed: () {
+                        context.read<AdditionalImageCubit>().pickImage(index);
+                      },
+                    )
+                  else if (state.images[index] != null)
+                    AdditionalImageCard(image: state.images[index]!),
                 ],
               ),
             );

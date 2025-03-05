@@ -7,8 +7,8 @@ import 'package:image_picker/image_picker.dart';
 class AdditionalImageCubit extends Cubit<AdditionalImageState> {
   AdditionalImageCubit() : super(AdditionalImagesInitial());
 
-  void initializeImages() {
-    emit(const AdditionalImagesLoaded([null]));
+  void initializeImages(File? mainImage) {
+    emit(AdditionalImagesLoaded([mainImage, null]));
   }
 
   Future<void> pickImage(int index) async {
