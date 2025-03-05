@@ -11,7 +11,6 @@ class VehicleImagesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int len = 2;
     return Column(
       spacing: 10,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +28,7 @@ class VehicleImagesSection extends StatelessWidget {
             color: AppColors.myBlue100_1,
           ),
         ),
-        AdditionalImageListView(len: len),
+        const AdditionalImageListView(),
       ],
     );
   }
