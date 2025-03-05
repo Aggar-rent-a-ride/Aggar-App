@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/data/model/dropbown_button.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,8 @@ class AboutVehicleSection extends StatelessWidget {
           spacing: 20,
           children: [
             InputNameWithDropDownList(
+              items: vehicleBrands,
+              flag: true,
               hintTextSearch: "Search for vehicle brand ...",
               lableText: "brand",
               hintText: "ex: Tesla",
@@ -40,6 +43,8 @@ class AboutVehicleSection extends StatelessWidget {
           spacing: 20,
           children: [
             InputNameWithDropDownList(
+              flag: true,
+              items: vehicleTypes,
               hintTextSearch: "Search for vehicle type ...",
               lableText: "vehicle",
               hintText: "ex: car",

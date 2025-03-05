@@ -1,8 +1,11 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/rental_price_per_day_suffix_widget.dart';
 import 'package:flutter/material.dart';
+
+import '../../data/model/dropbown_button.dart' show vehicleStatus;
 
 class VehicleRentalPriceSection extends StatelessWidget {
   const VehicleRentalPriceSection({
@@ -21,16 +24,21 @@ class VehicleRentalPriceSection extends StatelessWidget {
             color: AppColors.myBlue100_2,
           ),
         ),
-        const Row(
+        Row(
+          spacing: 25,
           children: [
-            Expanded(
-              child: InputNameWithInputFieldSection(
-                label: "Rental Price per Day ",
-                hintText: "ex: 2200",
-                width: double.infinity,
-                foundIcon: true,
-                widget: RentalPricePerDaySuffixWidget(),
-              ),
+            InputNameWithInputFieldSection(
+              label: "Rental Price per Day ",
+              hintText: "ex: 2200",
+              width: MediaQuery.sizeOf(context).width * 0.45,
+              foundIcon: true,
+              widget: const RentalPricePerDaySuffixWidget(),
+            ),
+            InputNameWithDropDownList(
+              items: vehicleStatus,
+              hintTextSearch: "Search for Vehicle status",
+              lableText: "status",
+              hintText: "ex: active",
             ),
           ],
         )

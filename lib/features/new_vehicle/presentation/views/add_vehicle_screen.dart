@@ -5,6 +5,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_s
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import '../widgets/about_vehicle_section.dart';
 
 class AddVehicleScreen extends StatelessWidget {
@@ -37,7 +38,8 @@ class AddVehicleScreen extends StatelessWidget {
               AboutVehicleSection(),
               VehicleImagesSection(),
               VehicleProperitesSection(),
-              VehicleRentalPriceSection()
+              VehicleRentalPriceSection(),
+              Gap(25),
             ],
           ),
         ),
