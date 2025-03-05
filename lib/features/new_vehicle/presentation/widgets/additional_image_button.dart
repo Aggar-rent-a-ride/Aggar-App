@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 class AdditionalImageButton extends StatelessWidget {
   const AdditionalImageButton({
     super.key,
+    this.onPressed,
   });
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class AdditionalImageButton extends StatelessWidget {
           )
         ]),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: onPressed,
           style: ButtonStyle(
             elevation: WidgetStateProperty.all(0),
             overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),

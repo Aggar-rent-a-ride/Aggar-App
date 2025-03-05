@@ -2,7 +2,8 @@ import 'package:aggar/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AddImageButton extends StatelessWidget {
-  const AddImageButton({super.key});
+  const AddImageButton({super.key, this.onPressed});
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class AddImageButton extends StatelessWidget {
           ),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
-        onPressed: () {},
+        onPressed: onPressed,
         icon: Icon(
           Icons.add,
           size: MediaQuery.sizeOf(context).height * 0.03,
