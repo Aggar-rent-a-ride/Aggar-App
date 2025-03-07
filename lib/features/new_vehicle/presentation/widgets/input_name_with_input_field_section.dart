@@ -11,6 +11,8 @@ class InputNameWithInputFieldSection extends StatelessWidget {
     this.widget,
     this.foundIcon = false,
     this.maxLines = 1,
+    this.controller,
+    this.validator,
   });
   final String label;
   final String hintText;
@@ -18,6 +20,8 @@ class InputNameWithInputFieldSection extends StatelessWidget {
   final Widget? widget;
   final bool? foundIcon;
   final int? maxLines;
+  final String? Function(String?)? validator;
+  final TextEditingController? controller;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,7 +35,14 @@ class InputNameWithInputFieldSection extends StatelessWidget {
         ),
         SizedBox(
           width: width ?? MediaQuery.of(context).size.width * 0.3,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) {
+              if (value!.isEmpty) {
+                return "required";
+              }
+              return null;
+            },
+            controller: controller,
             maxLines: maxLines,
             decoration: InputDecoration(
               hintText: hintText,

@@ -8,7 +8,11 @@ import 'package:flutter/material.dart';
 class AboutVehicleSection extends StatelessWidget {
   const AboutVehicleSection({
     super.key,
+    required this.modelController,
+    required this.yearOfManufactureController,
   });
+  final TextEditingController modelController;
+  final TextEditingController yearOfManufactureController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,8 @@ class AboutVehicleSection extends StatelessWidget {
               hintText: "ex: Tesla",
               width: MediaQuery.of(context).size.width * 0.4,
             ),
-            const InputNameWithInputFieldSection(
+            InputNameWithInputFieldSection(
+              controller: modelController,
               hintText: "ex: model x",
               label: "model",
             ),
@@ -51,6 +56,7 @@ class AboutVehicleSection extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.4,
             ),
             InputNameWithInputFieldSection(
+              controller: yearOfManufactureController,
               hintText: "ex: 1980",
               label: "year of manufacture",
               width: MediaQuery.of(context).size.width * 0.3,

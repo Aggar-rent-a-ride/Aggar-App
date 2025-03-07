@@ -1,12 +1,17 @@
+// ignore_for_file: avoid_print
+
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/data/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import '../../data/add_vehicle_cubit/add_vehicle_cubit.dart';
 import '../widgets/about_vehicle_section.dart';
 
 class AddVehicleScreen extends StatelessWidget {
@@ -14,40 +19,87 @@ class AddVehicleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: const BottomNavigationBarContent(),
-      backgroundColor: AppColors.myWhite100_1,
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.arrow_back_ios,
+    return BlocConsumer<AddVehicleCubit, AddVehicleState>(
+      listener: (context, state) {
+        if (state is AddVehicleSuccess) {
+          print("Sucess");
+        } else if (state is AddVehicleFailure) {
+          print("Fail");
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          bottomNavigationBar: BottomNavigationBarContent(
+            onPressed: () {
+              if (context
+                      .read<AddVehicleCubit>()
+                      .addVehicleFormKey
+                      .currentState
+                      ?.validate() ??
+                  false) {
+                print(context
+                    .read<AddVehicleCubit>()
+                    .vehicleModelController
+                    .text);
+                // Add your logic here to submit the form or perform any other actions.
+              } else {
+                print("Validation failed");
+              }
+              print(
+                  context.read<AddVehicleCubit>().vehicleModelController.text);
+            },
           ),
-        ),
-        backgroundColor: AppColors.myWhite100_1,
-        title: Text(
-          'Add Vehicle',
-          style: AppStyles.semiBold24(context),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Column(
-            spacing: 25,
-            children: [
-              const AboutVehicleSection(),
-              const VehicleImagesSection(),
-              const VehicleProperitesSection(),
-              VehicleLocationSection(
-                onPressed: () {},
+          backgroundColor: AppColors.myWhite100_1,
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.arrow_back_ios,
               ),
-              const VehicleRentalPriceSection(),
-              const Gap(25),
-            ],
+            ),
+            backgroundColor: AppColors.myWhite100_1,
+            title: Text(
+              'Add Vehicle',
+              style: AppStyles.semiBold24(context),
+            ),
           ),
-        ),
-      ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Form(
+                key: context.read<AddVehicleCubit>().addVehicleFormKey,
+                child: Column(
+                  spacing: 25,
+                  children: [
+                    AboutVehicleSection(
+                      modelController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleModelController,
+                      yearOfManufactureController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleYearOfManufactureController,
+                    ),
+                    const VehicleImagesSection(),
+                    VehicleProperitesSection(
+                      vehicleColorController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleColorController,
+                      vehicleSeatsNoController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleSeatsNoController,
+                    ),
+                    VehicleLocationSection(
+                      onPressed: () {},
+                    ),
+                    const VehicleRentalPriceSection(),
+                    const Gap(25),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
