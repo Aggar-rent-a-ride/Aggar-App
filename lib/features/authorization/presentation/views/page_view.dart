@@ -1,24 +1,30 @@
+import 'package:flutter/material.dart';
 import 'package:aggar/features/authorization/presentation/views/pick_image.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_up_view.dart';
-import 'package:flutter/material.dart';
 
 class ScrollViewHome extends StatefulWidget {
   const ScrollViewHome({super.key});
-
+  
   @override
-  // ignore: library_private_types_in_public_api
-  _ScrollViewHomeState createState() => _ScrollViewHomeState();
+  State<ScrollViewHome> createState() => _ScrollViewHomeState();
 }
 
 class _ScrollViewHomeState extends State<ScrollViewHome> {
   final PageController _controller = PageController();
-
+  final Map<String, dynamic> _userData = {};
+  
+  void _updateUserData(Map<String, String> formData) {
+    setState(() {
+      _userData.addAll(formData);
+    });
+  }
+  
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +32,18 @@ class _ScrollViewHomeState extends State<ScrollViewHome> {
         children: [
           PageView(
             controller: _controller,
-            physics: const NeverScrollableScrollPhysics(), // Disable swipe
+            physics: const NeverScrollableScrollPhysics(), 
             children: [
-              SignUpView(controller: _controller), // Pass controller
-              const PickImage(),
+              SignUpView(
+                controller: _controller,
+                onFormDataSubmitted: _updateUserData,
+              ),
+              PickImage(
+                userData: _userData,
+              ),
             ],
           ),
+          // Page indicator can be uncommented and implemented here
           // Positioned(
           //   bottom: 20,
           //   left: 0,
