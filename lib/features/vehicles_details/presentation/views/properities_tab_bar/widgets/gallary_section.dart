@@ -1,13 +1,16 @@
-import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/additional_image_gallery.dart';
+import 'dart:io';
 
+import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_button.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class GallarySection extends StatelessWidget {
-  GallarySection({super.key});
+  GallarySection({super.key, required this.images});
   final ScrollController _scrollController = ScrollController();
+  final List<File?> images;
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +40,17 @@ class GallarySection extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               controller: _scrollController,
-              child: Row(
-                spacing: 8,
-                children: List.generate(5, (index) {
-                  return const AdditionalImageGallery();
-                }),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Row(
+                  children: List.generate(images.length, (index) {
+                    if (images[index] == null) {
+                      return const AdditionalImageButton();
+                    } else {
+                      return AdditionalImageCard(image: images[index]);
+                    }
+                  }),
+                ),
               ),
             ),
           ),

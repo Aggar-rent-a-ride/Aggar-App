@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 class AdditionalImageCubit extends Cubit<AdditionalImageState> {
   AdditionalImageCubit() : super(AdditionalImagesInitial());
-
+  List<File?> images = [];
   void initializeImages(File? mainImage) {
     emit(AdditionalImagesLoaded([mainImage, null]));
   }
@@ -16,7 +16,7 @@ class AdditionalImageCubit extends Cubit<AdditionalImageState> {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final images = List<File?>.from(currentState.images);
+      images = List<File?>.from(currentState.images);
       images[index] = File(pickedFile.path);
       if (index == images.length - 1) {
         images.add(null);

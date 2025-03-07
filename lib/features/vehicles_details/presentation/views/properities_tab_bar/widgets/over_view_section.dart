@@ -30,6 +30,7 @@ class OverViewSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 5,
       children: [
         Row(
