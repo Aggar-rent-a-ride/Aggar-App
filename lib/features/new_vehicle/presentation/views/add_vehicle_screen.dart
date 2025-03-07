@@ -41,12 +41,23 @@ class AddVehicleScreen extends StatelessWidget {
                     .read<AddVehicleCubit>()
                     .vehicleModelController
                     .text);
-                // Add your logic here to submit the form or perform any other actions.
-              } else {
-                print("Validation failed");
               }
               print(
                   context.read<AddVehicleCubit>().vehicleModelController.text);
+              print(
+                  context.read<AddVehicleCubit>().vehicleColorController.text);
+              print(context
+                  .read<AddVehicleCubit>()
+                  .vehicleProperitesOverviewController
+                  .text);
+              print(context
+                  .read<AddVehicleCubit>()
+                  .vehicleYearOfManufactureController
+                  .text);
+              print(context
+                  .read<AddVehicleCubit>()
+                  .vehicleSeatsNoController
+                  .text);
             },
           ),
           backgroundColor: AppColors.myWhite100_1,
