@@ -7,7 +7,20 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_sec
 import 'package:flutter/material.dart';
 
 class VehiclesDetailsView extends StatelessWidget {
-  const VehiclesDetailsView({super.key});
+  const VehiclesDetailsView(
+      {super.key,
+      required this.yearOfManufaction,
+      required this.vehicleModel,
+      required this.vehicleRentPrice,
+      required this.vehicleColor,
+      required this.vehicleOverView,
+      required this.vehiceSeatsNo});
+  final int yearOfManufaction;
+  final String vehicleModel;
+  final double vehicleRentPrice;
+  final String vehicleColor;
+  final String vehicleOverView;
+  final String vehiceSeatsNo;
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +61,8 @@ class VehiclesDetailsView extends StatelessWidget {
           ),
         ),
         backgroundColor: AppColors.myWhite100_1,
-        body: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           // TODO: sub screens with no space
           child: SingleChildScrollView(
             child: Column(
@@ -58,21 +71,25 @@ class VehiclesDetailsView extends StatelessWidget {
                   spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomImageCar(),
+                    const CustomImageCar(),
                     CarNameWithTypeAndYearOfManifiction(
-                      carName: 'Lamborghini Sesto Elemento ',
-                      manifactionYear: 1989,
+                      carName: 'Lamborghini Sesto Elemento $vehicleModel',
+                      manifactionYear: yearOfManufaction,
                       transmissionType: 'Automatic',
                     ),
-                    TabBarSection(),
+                    TabBarSection(
+                      vehicleColor: vehicleColor,
+                      vehicleOverView: vehicleOverView,
+                      vehiceSeatsNo: vehiceSeatsNo,
+                    ),
                   ],
                 )
               ],
             ),
           ),
         ),
-        bottomNavigationBar:
-            BottomNavigationBarSection(price: 25, onPressed: () {}),
+        bottomNavigationBar: BottomNavigationBarSection(
+            price: vehicleRentPrice, onPressed: () {}),
       ),
     );
   }

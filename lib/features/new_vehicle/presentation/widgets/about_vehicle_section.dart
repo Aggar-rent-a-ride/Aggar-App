@@ -27,6 +27,7 @@ class AboutVehicleSection extends StatelessWidget {
           ),
         ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 20,
           children: [
             InputNameWithDropDownList(
@@ -46,6 +47,7 @@ class AboutVehicleSection extends StatelessWidget {
         ),
         Row(
           spacing: 20,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputNameWithDropDownList(
               flag: true,

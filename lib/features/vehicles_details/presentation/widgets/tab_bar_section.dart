@@ -7,8 +7,14 @@ import 'package:aggar/features/vehicles_details/presentation/views/review_tab_ba
 import 'package:expandable_page_view/expandable_page_view.dart';
 
 class TabBarSection extends StatefulWidget {
-  const TabBarSection({super.key});
-
+  const TabBarSection(
+      {super.key,
+      required this.vehicleColor,
+      required this.vehicleOverView,
+      required this.vehiceSeatsNo});
+  final String vehicleColor;
+  final String vehicleOverView;
+  final String vehiceSeatsNo;
   @override
   // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
@@ -66,10 +72,14 @@ class _TabBarSectionState extends State<TabBarSection>
         ),
         ExpandablePageView(
           controller: _pageController,
-          children: const [
-            AboutTabBarView(),
-            ProperitiesTabBarView(),
-            ReviewTabBarView(),
+          children: [
+            const AboutTabBarView(),
+            ProperitiesTabBarView(
+              vehicleColor: widget.vehicleColor,
+              vehicleOverView: widget.vehicleOverView,
+              vehiceSeatsNo: widget.vehiceSeatsNo,
+            ),
+            const ReviewTabBarView(),
           ],
         ),
       ],

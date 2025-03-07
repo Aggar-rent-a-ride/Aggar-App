@@ -25,6 +25,7 @@ class VehicleRentalPriceSection extends StatelessWidget {
           ),
         ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 25,
           children: [
             InputNameWithInputFieldSection(
