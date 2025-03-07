@@ -10,8 +10,11 @@ import 'package:gap/gap.dart';
 class VehicleProperitesSection extends StatefulWidget {
   const VehicleProperitesSection({
     super.key,
+    required this.vehicleColorController,
+    required this.vehicleSeatsNoController,
   });
-
+  final TextEditingController vehicleColorController;
+  final TextEditingController vehicleSeatsNoController;
   @override
   State<VehicleProperitesSection> createState() =>
       _VehicleProperitesSectionState();
@@ -35,7 +38,10 @@ class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10,
           children: [
-            const PickColorAndSeatsNumFields(),
+            PickColorAndSeatsNumFields(
+              vehicleColorController: widget.vehicleColorController,
+              vehicleSeatsNoController: widget.vehicleSeatsNoController,
+            ),
             const ProperitesOverViewField(),
             const VehicleHealthOptions(),
             const Gap(5),

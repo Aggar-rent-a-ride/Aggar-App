@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class BottomNavigationBarContent extends StatelessWidget {
   const BottomNavigationBarContent({
     super.key,
+    this.onPressed,
   });
-
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,7 +41,7 @@ class BottomNavigationBarContent extends StatelessWidget {
               AppColors.myBlue100_2,
             ),
           ),
-          onPressed: () {},
+          onPressed: onPressed,
           child: Text(
             'Add Vehicle',
             style: AppStyles.bold20(context).copyWith(

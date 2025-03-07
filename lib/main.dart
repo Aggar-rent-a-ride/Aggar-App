@@ -1,4 +1,5 @@
 import 'package:aggar/core/cache/cache_helper.dart';
+import 'package:aggar/features/new_vehicle/data/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => MainImageCubit(),
+          ),
+          BlocProvider(
+            create: (context) => AddVehicleCubit(),
           ),
         ],
         child: const AddVehicleScreen(),
