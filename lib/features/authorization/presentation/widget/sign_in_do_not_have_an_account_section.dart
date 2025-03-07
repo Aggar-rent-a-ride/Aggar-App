@@ -4,8 +4,8 @@ import 'package:aggar/features/authorization/presentation/widget/sign_in_registe
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class SignInDonotHaveAnAccountSection extends StatelessWidget {
-  const SignInDonotHaveAnAccountSection({
+class SignInDoNotHaveAnAccountSection extends StatelessWidget {
+  const SignInDoNotHaveAnAccountSection({
     super.key,
   });
 
