@@ -2,16 +2,17 @@
 
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/new_vehicle/data/add_vehicle_cubit/add_vehicle_state.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import '../../data/add_vehicle_cubit/add_vehicle_cubit.dart';
+import '../../data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import '../widgets/about_vehicle_section.dart';
 
 class AddVehicleScreen extends StatelessWidget {
@@ -37,6 +38,34 @@ class AddVehicleScreen extends StatelessWidget {
                       .currentState
                       ?.validate() ??
                   false) {
+                String vehicleModel =
+                    context.read<AddVehicleCubit>().vehicleModelController.text;
+                int vehicleYearOfManufaction = int.parse(context
+                    .read<AddVehicleCubit>()
+                    .vehicleYearOfManufactureController
+                    .text);
+                String vehicleColor =
+                    context.read<AddVehicleCubit>().vehicleColorController.text;
+                String vehicleOverView = context
+                    .read<AddVehicleCubit>()
+                    .vehicleProperitesOverviewController
+                    .text;
+                String vehicleSeatsNo = context
+                    .read<AddVehicleCubit>()
+                    .vehicleSeatsNoController
+                    .text;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VehiclesDetailsView(
+                        yearOfManufaction: vehicleYearOfManufaction,
+                        vehicleModel: vehicleModel,
+                        vehicleRentPrice: 25,
+                        vehicleColor: vehicleColor,
+                        vehicleOverView: vehicleOverView,
+                        vehiceSeatsNo: vehicleSeatsNo,
+                      ),
+                    ));
                 print(context
                     .read<AddVehicleCubit>()
                     .vehicleModelController

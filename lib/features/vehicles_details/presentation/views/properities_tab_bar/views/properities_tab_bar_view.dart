@@ -5,7 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart' show Gap;
 
 class ProperitiesTabBarView extends StatelessWidget {
-  const ProperitiesTabBarView({super.key});
+  const ProperitiesTabBarView(
+      {super.key,
+      required this.vehicleColor,
+      required this.vehicleOverView,
+      required this.vehiceSeatsNo});
+  final String vehicleColor;
+  final String vehicleOverView;
+  final String vehiceSeatsNo;
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +21,15 @@ class ProperitiesTabBarView extends StatelessWidget {
       children: [
         GallarySection(),
         OverViewSection(
-          color: "red",
+          color: vehicleColor,
           carHealth: "minor dents",
           carHealthContainerColor: AppColors.myYellow10_1,
           carHealthTextColor: AppColors.myYellow100_1,
           carStatus: "out of service",
           carStatusContainerColor: AppColors.myRed10_1,
           carStatusTextColor: AppColors.myRed100_1,
-          overviewText:
-              "Discover the with its unique design with innovative SUV code . its characteristic and original design combines power Discover the with its unique design with innovative SUV code . its characteristic and original design combines power Discover the with its unique design with innovative SUV code . its characteristic and original design combines power ",
-          seatsno: "9",
+          overviewText: vehicleOverView,
+          seatsno: vehiceSeatsNo,
         ),
         const Gap(25)
       ],
