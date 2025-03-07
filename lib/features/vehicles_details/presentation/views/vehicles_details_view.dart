@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
@@ -14,13 +16,15 @@ class VehiclesDetailsView extends StatelessWidget {
       required this.vehicleRentPrice,
       required this.vehicleColor,
       required this.vehicleOverView,
-      required this.vehiceSeatsNo});
+      required this.vehiceSeatsNo,
+      required this.images});
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
+  final List<File?> images;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +85,7 @@ class VehiclesDetailsView extends StatelessWidget {
                       vehicleColor: vehicleColor,
                       vehicleOverView: vehicleOverView,
                       vehiceSeatsNo: vehiceSeatsNo,
+                      images: images,
                     ),
                   ],
                 )

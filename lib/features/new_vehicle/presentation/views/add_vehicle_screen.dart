@@ -1,8 +1,13 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
+
+import 'dart:io';
 
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -32,6 +37,7 @@ class AddVehicleScreen extends StatelessWidget {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             onPressed: () {
+              print(context.read<AdditionalImageCubit>().images);
               if (context
                       .read<AddVehicleCubit>()
                       .addVehicleFormKey
@@ -50,10 +56,14 @@ class AddVehicleScreen extends StatelessWidget {
                     .read<AddVehicleCubit>()
                     .vehicleProperitesOverviewController
                     .text;
+                print(vehicleOverView);
                 String vehicleSeatsNo = context
                     .read<AddVehicleCubit>()
                     .vehicleSeatsNoController
                     .text;
+                List<File?> images =
+                    context.read<AdditionalImageCubit>().images;
+                print(context.read<AdditionalImageCubit>().images);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -64,28 +74,17 @@ class AddVehicleScreen extends StatelessWidget {
                         vehicleColor: vehicleColor,
                         vehicleOverView: vehicleOverView,
                         vehiceSeatsNo: vehicleSeatsNo,
+                        images: images,
                       ),
                     ));
                 print(context
                     .read<AddVehicleCubit>()
-                    .vehicleModelController
+                    .vehicleProperitesOverviewController
                     .text);
               }
-              print(
-                  context.read<AddVehicleCubit>().vehicleModelController.text);
-              print(
-                  context.read<AddVehicleCubit>().vehicleColorController.text);
               print(context
                   .read<AddVehicleCubit>()
                   .vehicleProperitesOverviewController
-                  .text);
-              print(context
-                  .read<AddVehicleCubit>()
-                  .vehicleYearOfManufactureController
-                  .text);
-              print(context
-                  .read<AddVehicleCubit>()
-                  .vehicleSeatsNoController
                   .text);
             },
           ),
@@ -121,6 +120,9 @@ class AddVehicleScreen extends StatelessWidget {
                     ),
                     const VehicleImagesSection(),
                     VehicleProperitesSection(
+                      vehicleOverviewController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleProperitesOverviewController,
                       vehicleColorController: context
                           .read<AddVehicleCubit>()
                           .vehicleColorController,

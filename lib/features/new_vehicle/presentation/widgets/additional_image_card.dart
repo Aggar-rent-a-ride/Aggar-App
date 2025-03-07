@@ -7,7 +7,7 @@ class AdditionalImageCard extends StatelessWidget {
     super.key,
     required this.image,
   });
-  final File image;
+  final File? image;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +25,7 @@ class AdditionalImageCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: Image.file(
-          image,
+          image!,
           fit: BoxFit.cover,
           height: MediaQuery.sizeOf(context).height * 0.03 + 50,
           width: MediaQuery.sizeOf(context).height * 0.03 + 50,

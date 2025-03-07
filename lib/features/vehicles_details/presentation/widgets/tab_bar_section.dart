@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -11,10 +13,12 @@ class TabBarSection extends StatefulWidget {
       {super.key,
       required this.vehicleColor,
       required this.vehicleOverView,
-      required this.vehiceSeatsNo});
+      required this.vehiceSeatsNo,
+      required this.images});
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
+  final List<File?> images;
   @override
   // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
@@ -78,6 +82,7 @@ class _TabBarSectionState extends State<TabBarSection>
               vehicleColor: widget.vehicleColor,
               vehicleOverView: widget.vehicleOverView,
               vehiceSeatsNo: widget.vehiceSeatsNo,
+              images: widget.images,
             ),
             const ReviewTabBarView(),
           ],

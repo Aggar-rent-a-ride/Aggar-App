@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
@@ -9,17 +11,21 @@ class ProperitiesTabBarView extends StatelessWidget {
       {super.key,
       required this.vehicleColor,
       required this.vehicleOverView,
-      required this.vehiceSeatsNo});
+      required this.vehiceSeatsNo,
+      required this.images});
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
+  final List<File?> images;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        GallarySection(),
+        GallarySection(
+          images: images,
+        ),
         OverViewSection(
           color: vehicleColor,
           carHealth: "minor dents",

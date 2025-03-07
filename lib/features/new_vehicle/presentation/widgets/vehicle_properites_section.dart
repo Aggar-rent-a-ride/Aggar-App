@@ -12,9 +12,11 @@ class VehicleProperitesSection extends StatefulWidget {
     super.key,
     required this.vehicleColorController,
     required this.vehicleSeatsNoController,
+    required this.vehicleOverviewController,
   });
   final TextEditingController vehicleColorController;
   final TextEditingController vehicleSeatsNoController;
+  final TextEditingController vehicleOverviewController;
   @override
   State<VehicleProperitesSection> createState() =>
       _VehicleProperitesSectionState();
@@ -42,7 +44,8 @@ class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
               vehicleColorController: widget.vehicleColorController,
               vehicleSeatsNoController: widget.vehicleSeatsNoController,
             ),
-            const ProperitesOverViewField(),
+            ProperitesOverViewField(
+                vehicleOverviewController: widget.vehicleOverviewController),
             const VehicleHealthOptions(),
             const Gap(5),
             TransmissionModeOptions(
