@@ -9,10 +9,12 @@ import 'package:aggar/features/authorization/presentation/widget/terms_check.dar
 
 class PickImage extends StatefulWidget {
   final Map<String, dynamic>? userData;
+  final PageController? controller;
 
   const PickImage({
     super.key,
     this.userData,
+    this.controller,
   });
 
   @override
@@ -34,6 +36,15 @@ class _PickImageState extends State<PickImage> {
     setState(() {
       termsAccepted = accepted;
     });
+  }
+
+  void _previousPage() {
+    if (widget.controller != null) {
+      widget.controller!.previousPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   bool get _isFormValid => selectedImagePath != null && termsAccepted;
@@ -61,7 +72,7 @@ class _PickImageState extends State<PickImage> {
 
     print('Registration data: $completeUserData');
 
-    // Navigate to next screen or show success message
+ 
   }
 
   @override
@@ -124,9 +135,34 @@ class _PickImageState extends State<PickImage> {
                   isChecked: termsAccepted,
                 ),
                 const Gap(30),
-                CustomElevatedButton(
-                  onPressed: _isFormValid ? _onRegister : null,
-                  text: 'Register',
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _previousPage,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side:
+                              BorderSide(color: Theme.of(context).primaryColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          "Back",
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: CustomElevatedButton(
+                        onPressed: _isFormValid ? _onRegister : null,
+                        text: 'Register',
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
