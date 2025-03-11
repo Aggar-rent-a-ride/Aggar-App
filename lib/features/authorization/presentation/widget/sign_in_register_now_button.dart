@@ -1,6 +1,6 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/authorization/presentation/views/page_view.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_up_view.dart';
 import 'package:flutter/material.dart';
 
 class SignInRegisterNowButton extends StatelessWidget {
@@ -15,7 +15,7 @@ class SignInRegisterNowButton extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ScrollViewHome(),
+            builder: (context) => const SignUpView(),
           ),
         );
       },

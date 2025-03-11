@@ -1,4 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
 import 'package:aggar/features/profile/data/profile_model.dart';
@@ -48,7 +49,10 @@ class ProfileScreenState extends State<ProfileScreen> {
         toolbarHeight: 80,
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: const Text("Profile Account"),
+        title: Text(
+          "Profile Account",
+          style: AppStyles.bold24(context),
+        ),
         actions: [
           IconButton(
             icon: const CustomIcon(

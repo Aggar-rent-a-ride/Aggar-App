@@ -21,50 +21,48 @@ class CardType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 2,
-              color: isSelected
-                  ? AppColors.myBlue100_2
-                  : AppColors.myBlack25, // Change color
-            ),
-            borderRadius: BorderRadius.circular(10),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
             color: isSelected
-                ? AppColors.myBlue10_2
-                : AppColors.myWhite100_1, // Optional background
+                ? AppColors.myBlue100_2
+                : AppColors.myBlack25,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          margin: const EdgeInsets.all(5),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon ?? Icons.person,
-                size: 50,
-                color: isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+          borderRadius: BorderRadius.circular(10),
+          color: isSelected
+              ? AppColors.myBlue10_2
+              : AppColors.myWhite100_1, 
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        margin: const EdgeInsets.all(5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon ?? Icons.person,
+              size: 50,
+              color: isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+            ),
+            const Gap(6),
+            Text(
+              title ?? 'User',
+              style: AppStyles.regular20(context).copyWith(
+                color:
+                    isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
               ),
-              const Gap(6),
-              Text(
-                title ?? 'User',
-                style: AppStyles.regular20(context).copyWith(
-                  color:
-                      isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
-                ),
+            ),
+            Text(
+              subtitle ?? 'Can use cars & buy for them',
+              style: AppStyles.regular12(context).copyWith(
+                color:
+                    isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
               ),
-              Text(
-                subtitle ?? 'Can use cars & buy for them',
-                style: AppStyles.regular12(context).copyWith(
-                  color:
-                      isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
