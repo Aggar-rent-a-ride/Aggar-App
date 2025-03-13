@@ -1,8 +1,8 @@
 import 'package:aggar/core/cache/cache_helper.dart';
-import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
+import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
             create: (context) => AddVehicleCubit(),
           ),
         ],
-        child: const SignInView(),
+        child: const AddVehicleScreen(),
       ),
     );
   }

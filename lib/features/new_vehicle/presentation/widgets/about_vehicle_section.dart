@@ -31,6 +31,12 @@ class AboutVehicleSection extends StatelessWidget {
           spacing: 20,
           children: [
             InputNameWithDropDownList(
+              validator: (value) {
+                if (value == null) {
+                  return "required";
+                }
+                return null;
+              },
               items: vehicleBrands,
               flag: true,
               hintTextSearch: "Search for vehicle brand ...",
@@ -51,6 +57,12 @@ class AboutVehicleSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputNameWithDropDownList(
+              validator: (value) {
+                if (value == null) {
+                  return "required";
+                }
+                return null;
+              },
               flag: true,
               items: vehicleTypes,
               hintTextSearch: "Search for vehicle type ...",
