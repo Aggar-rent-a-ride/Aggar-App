@@ -7,7 +7,6 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
-import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -17,7 +16,6 @@ import 'package:aggar/features/vehicles_details/presentation/views/vehicles_deta
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import '../../data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import '../widgets/about_vehicle_section.dart';
 
 class AddVehicleScreen extends StatelessWidget {
@@ -37,7 +35,6 @@ class AddVehicleScreen extends StatelessWidget {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             onPressed: () {
-              print(context.read<AdditionalImageCubit>().images);
               if (context
                       .read<AddVehicleCubit>()
                       .addVehicleFormKey
@@ -63,7 +60,6 @@ class AddVehicleScreen extends StatelessWidget {
                     .text;
                 List<File?> images =
                     context.read<AdditionalImageCubit>().images;
-                print(context.read<AdditionalImageCubit>().images);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -77,15 +73,7 @@ class AddVehicleScreen extends StatelessWidget {
                         images: images,
                       ),
                     ));
-                print(context
-                    .read<AddVehicleCubit>()
-                    .vehicleProperitesOverviewController
-                    .text);
               }
-              print(context
-                  .read<AddVehicleCubit>()
-                  .vehicleProperitesOverviewController
-                  .text);
             },
           ),
           backgroundColor: AppColors.myWhite100_1,

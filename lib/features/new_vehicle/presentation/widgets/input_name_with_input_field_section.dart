@@ -45,12 +45,24 @@ class InputNameWithInputFieldSection extends StatelessWidget {
             controller: controller,
             maxLines: maxLines,
             decoration: InputDecoration(
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.myRed100_1,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: AppColors.myRed100_1,
+              )),
+              errorStyle: AppStyles.regular14(context).copyWith(
+                color: AppColors.myRed100_1,
+              ),
               hintText: hintText,
               hintStyle: AppStyles.medium15(context).copyWith(
                 color: AppColors.myBlack50,
               ),
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 14.7),
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
               fillColor: AppColors.myWhite100_1,
               filled: true,
               focusedBorder: OutlineInputBorder(

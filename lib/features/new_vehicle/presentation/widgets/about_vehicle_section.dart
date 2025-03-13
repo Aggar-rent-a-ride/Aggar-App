@@ -39,6 +39,7 @@ class AboutVehicleSection extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.4,
             ),
             InputNameWithInputFieldSection(
+              width: MediaQuery.of(context).size.width * 0.4,
               controller: modelController,
               hintText: "ex: model x",
               label: "model",
@@ -61,7 +62,7 @@ class AboutVehicleSection extends StatelessWidget {
               controller: yearOfManufactureController,
               hintText: "ex: 1980",
               label: "year of manufacture",
-              width: MediaQuery.of(context).size.width * 0.3,
+              width: MediaQuery.of(context).size.width * 0.4,
             ),
           ],
         ),
