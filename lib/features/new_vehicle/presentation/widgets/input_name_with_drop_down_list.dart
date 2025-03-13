@@ -17,6 +17,7 @@ class InputNameWithDropDownList extends StatefulWidget {
     required this.items,
     this.flag = false,
     this.onSaved,
+    this.validator,
   });
   final String hintTextSearch;
   final String lableText;
@@ -25,6 +26,7 @@ class InputNameWithDropDownList extends StatefulWidget {
   final List<String> items;
   final bool? flag;
   final void Function(String?)? onSaved;
+  final String? Function(String?)? validator;
   @override
   State<InputNameWithDropDownList> createState() =>
       _InputNameWithDropDownListState();
@@ -51,13 +53,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
   @override
   Widget build(BuildContext context) {
     return FormField<String>(
-      validator: (value) {
-        if (value == null) {
-          return "required";
-        }
-        print("${value}ddddddddddddddddddddddd");
-        return null;
-      },
+      validator: widget.validator,
       onSaved: widget.onSaved,
       builder: (state) {
         return Column(
