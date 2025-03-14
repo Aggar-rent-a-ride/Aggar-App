@@ -15,12 +15,16 @@ class TabBarSection extends StatefulWidget {
       required this.vehicleOverView,
       required this.vehiceSeatsNo,
       required this.images,
-      required this.mainImage});
+      required this.mainImage,
+      required this.vehicleHealth,
+      required this.vehicleStatus});
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
   final List<File?> images;
   final File mainImage;
+  final String vehicleHealth;
+  final String vehicleStatus;
   @override
   // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
@@ -81,6 +85,8 @@ class _TabBarSectionState extends State<TabBarSection>
           children: [
             const AboutTabBarView(),
             ProperitiesTabBarView(
+              vehicleHealth: widget.vehicleHealth,
+              vehicleStatus: widget.vehicleStatus,
               vehicleColor: widget.vehicleColor,
               vehicleOverView: widget.vehicleOverView,
               vehiceSeatsNo: widget.vehiceSeatsNo,

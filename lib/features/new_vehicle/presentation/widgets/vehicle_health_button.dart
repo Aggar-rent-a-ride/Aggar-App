@@ -6,13 +6,19 @@ class VehicleHealthButton extends StatelessWidget {
   const VehicleHealthButton({
     super.key,
     required this.text,
+    this.isSelected = false,
+    required this.onPressed,
   });
+
   final String text;
+  final bool isSelected;
+  final Function(String) onPressed;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45,
-      width: MediaQuery.of(context).size.width * 0.35,
+      height: 50,
+      width: MediaQuery.of(context).size.width * 0.4,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
@@ -29,6 +35,10 @@ class VehicleHealthButton extends StatelessWidget {
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
+              side: BorderSide(
+                color: isSelected ? AppColors.myBlue100_1 : Colors.transparent,
+                width: 1.5,
+              ),
             ),
           ),
           padding: const WidgetStatePropertyAll(
@@ -38,14 +48,14 @@ class VehicleHealthButton extends StatelessWidget {
             AppColors.myWhite50_1,
           ),
           backgroundColor: WidgetStatePropertyAll(
-            AppColors.myBlue100_2,
+            isSelected ? AppColors.myWhite100_1 : AppColors.myBlue100_2,
           ),
         ),
-        onPressed: () {},
+        onPressed: () => onPressed(text),
         child: Text(
           text,
           style: AppStyles.semiBold16(context).copyWith(
-            color: AppColors.myWhite100_1,
+            color: isSelected ? AppColors.myBlue100_1 : AppColors.myWhite100_1,
           ),
         ),
       ),

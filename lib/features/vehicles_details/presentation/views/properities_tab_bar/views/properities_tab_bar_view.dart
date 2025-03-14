@@ -13,12 +13,16 @@ class ProperitiesTabBarView extends StatelessWidget {
       required this.vehicleOverView,
       required this.vehiceSeatsNo,
       required this.images,
-      required this.mainImage});
+      required this.mainImage,
+      required this.vehicleHealth,
+      required this.vehicleStatus});
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
   final List<File?> images;
   final File mainImage;
+  final String vehicleHealth;
+  final String vehicleStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +37,10 @@ class ProperitiesTabBarView extends StatelessWidget {
         ),
         OverViewSection(
           color: vehicleColor,
-          carHealth: "minor dents",
+          carHealth: vehicleHealth,
           carHealthContainerColor: AppColors.myYellow10_1,
           carHealthTextColor: AppColors.myYellow100_1,
-          carStatus: "out of service",
+          carStatus: vehicleStatus,
           carStatusContainerColor: AppColors.myRed10_1,
           carStatusTextColor: AppColors.myRed100_1,
           overviewText: vehicleOverView,

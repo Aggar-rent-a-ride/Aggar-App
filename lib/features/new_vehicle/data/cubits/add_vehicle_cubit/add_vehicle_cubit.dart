@@ -12,5 +12,14 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   TextEditingController vehicleSeatsNoController = TextEditingController();
   TextEditingController vehicleProperitesOverviewController =
       TextEditingController();
-  String? selectedValue;
+  String? selectedVehicleStatusValue;
+  String? selectedVehicleHealthValue;
+  void setVehicleHealth(String value) {
+    if (selectedVehicleHealthValue == value) {
+      selectedVehicleHealthValue = null;
+    } else {
+      selectedVehicleHealthValue = value;
+    }
+    emit(VehicleHealthUpdated(selectedVehicleHealthValue));
+  }
 }

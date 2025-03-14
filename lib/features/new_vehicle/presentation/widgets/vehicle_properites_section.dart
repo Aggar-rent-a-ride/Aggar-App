@@ -24,7 +24,7 @@ class VehicleProperitesSection extends StatefulWidget {
 
 class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
   int _selectedValue = 0;
-
+  String? vehicleHealth;
   @override
   Widget build(BuildContext context) {
     return Column(

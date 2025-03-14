@@ -62,6 +62,12 @@ class AddVehicleScreen extends StatelessWidget {
                 List<File?> images =
                     context.read<AdditionalImageCubit>().images;
                 File? mainImage = context.read<MainImageCubit>().image!;
+                String vehicleHealth =
+                    context.read<AddVehicleCubit>().selectedVehicleHealthValue!;
+                String vehicleStatus = context
+                        .read<AddVehicleCubit>()
+                        .selectedVehicleStatusValue ??
+                    "jjj";
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -74,6 +80,8 @@ class AddVehicleScreen extends StatelessWidget {
                       vehiceSeatsNo: vehicleSeatsNo,
                       images: images,
                       mainImage: mainImage,
+                      vehicleHealth: vehicleHealth,
+                      vehicleStatus: vehicleStatus,
                     ),
                   ),
                 );

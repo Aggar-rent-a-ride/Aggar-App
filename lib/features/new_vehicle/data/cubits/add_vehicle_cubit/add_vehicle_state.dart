@@ -18,6 +18,28 @@ class AddVehicleSuccess extends AddVehicleState {
   List<Object> get props => [successMessage];
 }
 
+class VehicleHealthSelected extends AddVehicleState {
+  final String? selectedVehicleHealthValue;
+
+  VehicleHealthSelected({this.selectedVehicleHealthValue});
+}
+
+class VehicleHealthUpdated extends AddVehicleState {
+  final String? selectedVehicleHealthValue;
+
+  VehicleHealthUpdated(this.selectedVehicleHealthValue);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is VehicleHealthUpdated &&
+        other.selectedVehicleHealthValue == selectedVehicleHealthValue;
+  }
+
+  @override
+  int get hashCode => selectedVehicleHealthValue.hashCode;
+}
+
 class AddVehicleFailure extends AddVehicleState {
   final String errorMessage;
 
