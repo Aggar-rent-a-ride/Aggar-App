@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class GallarySection extends StatelessWidget {
-  GallarySection({super.key, required this.images});
+  GallarySection({super.key, required this.images, required this.mainImage});
   final ScrollController _scrollController = ScrollController();
   final List<File?> images;
+  final File mainImage;
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +44,13 @@ class GallarySection extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
-                  children: List.generate(images.length, (index) {
+                  children: List.generate(images.length - 1, (index) {
                     if (images[index] == null) {
-                      return const AdditionalImageButton();
+                      if (index == 0) {
+                        return AdditionalImageCard(image: mainImage);
+                      } else {
+                        return const AdditionalImageButton();
+                      }
                     } else {
                       return AdditionalImageCard(image: images[index]);
                     }

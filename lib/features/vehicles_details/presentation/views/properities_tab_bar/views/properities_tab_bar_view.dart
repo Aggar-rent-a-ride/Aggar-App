@@ -12,19 +12,24 @@ class ProperitiesTabBarView extends StatelessWidget {
       required this.vehicleColor,
       required this.vehicleOverView,
       required this.vehiceSeatsNo,
-      required this.images});
+      required this.images,
+      required this.mainImage});
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
   final List<File?> images;
+  final File mainImage;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GallarySection(
           images: images,
+          mainImage: mainImage,
         ),
         OverViewSection(
           color: vehicleColor,
