@@ -130,9 +130,7 @@ class AddVehicleScreen extends StatelessWidget {
                           .read<AddVehicleCubit>()
                           .vehicleSeatsNoController,
                     ),
-                    VehicleLocationSection(
-                      onPressed: () {},
-                    ),
+                    const VehicleLocationSection(),
                     const VehicleRentalPriceSection(),
                     const Gap(25),
                   ],
