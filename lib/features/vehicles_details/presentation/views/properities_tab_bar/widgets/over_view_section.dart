@@ -1,9 +1,8 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/color_and_seats_no_section.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/custom_container.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/vehicle_health_with_status_container.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart' show Gap;
 
 class OverViewSection extends StatelessWidget {
   const OverViewSection({
@@ -56,20 +55,13 @@ class OverViewSection extends StatelessWidget {
             color: AppColors.myBlack50,
           ),
         ),
-        Row(
-          children: [
-            CustomContainer(
-              text: carHealth,
-              textColor: carHealthTextColor,
-              containerColor: carHealthContainerColor,
-            ),
-            const Gap(10),
-            CustomContainer(
-              text: carStatus,
-              textColor: carStatusTextColor,
-              containerColor: carStatusContainerColor,
-            ),
-          ],
+        VehicleHealthWithStatusContainer(
+          carHealth: carHealth,
+          carHealthTextColor: carHealthTextColor,
+          carHealthContainerColor: carHealthContainerColor,
+          carStatus: carStatus,
+          carStatusTextColor: carStatusTextColor,
+          carStatusContainerColor: carStatusContainerColor,
         ),
       ],
     );

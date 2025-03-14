@@ -44,12 +44,12 @@ class GallarySection extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
-                  children: List.generate(images.length - 1, (index) {
+                  children: List.generate(images.length, (index) {
                     if (images[index] == null) {
                       if (index == 0) {
                         return AdditionalImageCard(image: mainImage);
                       } else {
-                        return const AdditionalImageButton();
+                        return const SizedBox();
                       }
                     } else {
                       return AdditionalImageCard(image: images[index]);

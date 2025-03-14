@@ -18,7 +18,9 @@ class VehiclesDetailsView extends StatelessWidget {
       required this.vehicleOverView,
       required this.vehiceSeatsNo,
       required this.images,
-      required this.mainImage});
+      required this.mainImage,
+      required this.vehicleHealth,
+      required this.vehicleStatus});
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
@@ -27,6 +29,8 @@ class VehiclesDetailsView extends StatelessWidget {
   final String vehiceSeatsNo;
   final List<File?> images;
   final File mainImage;
+  final String vehicleHealth;
+  final String vehicleStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +95,8 @@ class VehiclesDetailsView extends StatelessWidget {
                       vehiceSeatsNo: vehiceSeatsNo,
                       images: images,
                       mainImage: mainImage,
+                      vehicleHealth: vehicleHealth,
+                      vehicleStatus: vehicleStatus,
                     ),
                   ],
                 )
