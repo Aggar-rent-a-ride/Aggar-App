@@ -7,6 +7,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -60,19 +61,22 @@ class AddVehicleScreen extends StatelessWidget {
                     .text;
                 List<File?> images =
                     context.read<AdditionalImageCubit>().images;
+                File? mainImage = context.read<MainImageCubit>().image!;
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VehiclesDetailsView(
-                        yearOfManufaction: vehicleYearOfManufaction,
-                        vehicleModel: vehicleModel,
-                        vehicleRentPrice: 25,
-                        vehicleColor: vehicleColor,
-                        vehicleOverView: vehicleOverView,
-                        vehiceSeatsNo: vehicleSeatsNo,
-                        images: images,
-                      ),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VehiclesDetailsView(
+                      yearOfManufaction: vehicleYearOfManufaction,
+                      vehicleModel: vehicleModel,
+                      vehicleRentPrice: 25,
+                      vehicleColor: vehicleColor,
+                      vehicleOverView: vehicleOverView,
+                      vehiceSeatsNo: vehicleSeatsNo,
+                      images: images,
+                      mainImage: mainImage,
+                    ),
+                  ),
+                );
               }
             },
           ),

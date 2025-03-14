@@ -17,7 +17,8 @@ class VehiclesDetailsView extends StatelessWidget {
       required this.vehicleColor,
       required this.vehicleOverView,
       required this.vehiceSeatsNo,
-      required this.images});
+      required this.images,
+      required this.mainImage});
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
@@ -25,6 +26,7 @@ class VehiclesDetailsView extends StatelessWidget {
   final String vehicleOverView;
   final String vehiceSeatsNo;
   final List<File?> images;
+  final File mainImage;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,9 @@ class VehiclesDetailsView extends StatelessWidget {
                   spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomImageCar(),
+                    CustomImageCar(
+                      mainImage: mainImage,
+                    ),
                     CarNameWithTypeAndYearOfManifiction(
                       carName: 'Lamborghini Sesto Elemento $vehicleModel',
                       manifactionYear: yearOfManufaction,
@@ -86,6 +90,7 @@ class VehiclesDetailsView extends StatelessWidget {
                       vehicleOverView: vehicleOverView,
                       vehiceSeatsNo: vehiceSeatsNo,
                       images: images,
+                      mainImage: mainImage,
                     ),
                   ],
                 )
