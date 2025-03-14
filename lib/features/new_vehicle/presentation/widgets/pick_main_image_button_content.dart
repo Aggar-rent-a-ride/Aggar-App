@@ -53,6 +53,7 @@ class _PickMainImageButtonContentState
         } else if (state is MainImageLoaded) {
           return MainImageCard(image: state.image);
         } else if (state is MainImageFaliure) {
+          // TODO : not handle here
           return Center(child: Text(state.message));
         }
         return Container();

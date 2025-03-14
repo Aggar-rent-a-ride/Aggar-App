@@ -5,8 +5,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_pick_loc
 import 'package:flutter/material.dart';
 
 class VehicleLocationSection extends StatelessWidget {
-  const VehicleLocationSection({super.key, this.onPressed});
-  final void Function()? onPressed;
+  const VehicleLocationSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class VehicleLocationSection extends StatelessWidget {
           label: "vehicle address",
           hintText: "Minya al-Qamh,  Sharkia,  Egypt",
         ),
-        VehiclePickLocationOnMapSection(onPressed: onPressed),
+        const VehiclePickLocationOnMapSection(),
       ],
     );
   }

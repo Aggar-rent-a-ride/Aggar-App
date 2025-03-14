@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -15,10 +13,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapController mapController = MapController();
   LocationData? currentLocation;
-  List<LatLng> routePoints = [];
-  List<Marker> markers = [];
-  final String orsApiKey =
-      '5b3ce3597851110001cf624873891cbdefc5469692cfe07446254225';
+  Marker? currentMarker;
 
   @override
   void initState() {
@@ -33,15 +28,6 @@ class _MapScreenState extends State<MapScreen> {
       var userLocation = await location.getLocation();
       setState(() {
         currentLocation = userLocation;
-        markers.add(
-          Marker(
-            width: 80.0,
-            height: 80.0,
-            point: LatLng(userLocation.latitude!, userLocation.longitude!),
-            child:
-                const Icon(Icons.my_location, color: Colors.blue, size: 40.0),
-          ),
-        );
       });
     } on Exception {
       currentLocation = null;
@@ -54,57 +40,72 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Future<void> _getRoute(LatLng destination) async {
-    if (currentLocation == null) return;
+  void _setSingleMarkerAndLog(LatLng point) {
+    setState(() {
+      currentMarker = Marker(
+        width: 80.0,
+        height: 80.0,
+        point: point,
+        child: const Icon(Icons.location_on, color: Colors.red, size: 40.0),
+      );
+    });
+  }
 
-    final start =
-        LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-    final response = await http.get(
-      Uri.parse(
-          'https://api.openrouteservice.org/v2/directions/driving-car?api_key=$orsApiKey&start=${start.longitude},${start.latitude}&end=${destination.longitude},${destination.latitude}'),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List<dynamic> coords =
-          data['features'][0]['geometry']['coordinates'];
+  void _showCurrentLocation() {
+    if (currentLocation != null) {
+      final LatLng userLatLng = LatLng(
+        currentLocation!.latitude!,
+        currentLocation!.longitude!,
+      );
       setState(() {
-        routePoints =
-            coords.map((coord) => LatLng(coord[1], coord[0])).toList();
-        markers.add(
-          Marker(
-            width: 80.0,
-            height: 80.0,
-            point: destination,
-            child: const Icon(Icons.location_on, color: Colors.red, size: 40.0),
-          ),
+        currentMarker = Marker(
+          width: 80.0,
+          height: 80.0,
+          point: userLatLng,
+          child: const Icon(Icons.my_location, color: Colors.blue, size: 40.0),
         );
       });
-    } else {
-      // Handle errors
-      print('Failed to fetch route');
+      mapController.move(userLatLng, 16.0);
     }
   }
 
-  void _addDestinationMarker(LatLng point) {
-    setState(() {
-      markers.add(
-        Marker(
-          width: 80.0,
-          height: 80.0,
-          point: point,
-          child: const Icon(Icons.location_on, color: Colors.red, size: 40.0),
-        ),
+  void showCoordinatesDialog() {
+    if (currentMarker != null) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Marker Coordinates'),
+            content: Text(
+              'Latitude: ${currentMarker!.point.latitude}\n'
+              'Longitude: ${currentMarker!.point.longitude}',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
       );
-    });
-    _getRoute(point);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please set a marker first!')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OpenStreetMap with Flutter'),
+        leading: IconButton(
+          onPressed: () {
+            showCoordinatesDialog();
+          },
+          icon: const Icon(Icons.check),
+        ),
       ),
       body: currentLocation == null
           ? const Center(child: CircularProgressIndicator())
@@ -113,37 +114,21 @@ class _MapScreenState extends State<MapScreen> {
               options: MapOptions(
                 initialCenter: LatLng(
                     currentLocation!.latitude!, currentLocation!.longitude!),
-                initialZoom: 15.0,
-                onTap: (tapPosition, point) => _addDestinationMarker(point),
+                initialZoom: 16.0,
+                onTap: (tapPosition, point) => _setSingleMarkerAndLog(point),
               ),
               children: [
                 TileLayer(
                   urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 ),
-                MarkerLayer(
-                  markers: markers,
-                ),
-                if (routePoints.isNotEmpty) // Check if routePoints is not empty
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: routePoints,
-                        strokeWidth: 4.0,
-                        color: Colors.blue,
-                      ),
-                    ],
+                if (currentMarker != null)
+                  MarkerLayer(
+                    markers: [currentMarker!],
                   ),
               ],
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (currentLocation != null) {
-            mapController.move(
-              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-              15.0,
-            );
-          }
-        },
+        onPressed: _showCurrentLocation,
         child: const Icon(Icons.my_location),
       ),
     );
