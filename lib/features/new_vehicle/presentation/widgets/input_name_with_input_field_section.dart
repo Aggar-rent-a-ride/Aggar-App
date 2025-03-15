@@ -36,12 +36,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
         SizedBox(
           width: width ?? MediaQuery.of(context).size.width * 0.3,
           child: TextFormField(
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "required";
-              }
-              return null;
-            },
+            validator: validator,
             controller: controller,
             maxLines: maxLines,
             decoration: InputDecoration(

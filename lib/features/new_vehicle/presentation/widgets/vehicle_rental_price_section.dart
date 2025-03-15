@@ -31,6 +31,12 @@ class VehicleRentalPriceSection extends StatelessWidget {
           spacing: 25,
           children: [
             InputNameWithInputFieldSection(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "required";
+                }
+                return null;
+              },
               controller: vehicleRentalPrice,
               label: "Rental Price per Day ",
               hintText: "ex: 2200",
