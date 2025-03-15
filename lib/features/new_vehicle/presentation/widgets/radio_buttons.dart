@@ -5,12 +5,12 @@ import 'package:aggar/core/utils/app_styles.dart';
 class RadioButtons extends StatelessWidget {
   const RadioButtons({
     super.key,
-    required int selectedValue,
+    required this.selectedValue,
     required this.onChanged,
-  }) : _selectedValue = selectedValue;
+  });
 
-  final int _selectedValue;
-  final ValueChanged<int?> onChanged;
+  final int? selectedValue;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +22,9 @@ class RadioButtons extends StatelessWidget {
               Radio<int>(
                 fillColor: WidgetStateProperty.all(AppColors.myBlue100_2),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                value: 0,
-                groupValue: _selectedValue,
-                onChanged: onChanged,
+                value: 2,
+                groupValue: selectedValue,
+                onChanged: (value) => onChanged(2),
               ),
               Text(
                 'Manual Transmission',
@@ -40,8 +40,8 @@ class RadioButtons extends StatelessWidget {
                 fillColor: WidgetStateProperty.all(AppColors.myBlue100_2),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: 1,
-                groupValue: _selectedValue,
-                onChanged: onChanged,
+                groupValue: selectedValue,
+                onChanged: (value) => onChanged(1),
               ),
               Text(
                 'Automatic Transmission',
@@ -56,9 +56,9 @@ class RadioButtons extends StatelessWidget {
               Radio<int>(
                 fillColor: WidgetStateProperty.all(AppColors.myBlue100_2),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                value: 2,
-                groupValue: _selectedValue,
-                onChanged: onChanged,
+                value: 0,
+                groupValue: selectedValue,
+                onChanged: (value) => onChanged(0),
               ),
               Text(
                 'None',

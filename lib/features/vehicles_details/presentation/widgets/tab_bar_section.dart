@@ -9,15 +9,16 @@ import 'package:aggar/features/vehicles_details/presentation/views/review_tab_ba
 import 'package:expandable_page_view/expandable_page_view.dart';
 
 class TabBarSection extends StatefulWidget {
-  const TabBarSection(
-      {super.key,
-      required this.vehicleColor,
-      required this.vehicleOverView,
-      required this.vehiceSeatsNo,
-      required this.images,
-      required this.mainImage,
-      required this.vehicleHealth,
-      required this.vehicleStatus});
+  const TabBarSection({
+    super.key,
+    required this.vehicleColor,
+    required this.vehicleOverView,
+    required this.vehiceSeatsNo,
+    required this.images,
+    required this.mainImage,
+    required this.vehicleHealth,
+    required this.vehicleStatus,
+  });
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;

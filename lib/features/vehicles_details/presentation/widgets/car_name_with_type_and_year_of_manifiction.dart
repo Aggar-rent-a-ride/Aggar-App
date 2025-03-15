@@ -13,7 +13,7 @@ class CarNameWithTypeAndYearOfManifiction extends StatelessWidget {
   });
   final String carName;
   final int manifactionYear;
-  final String transmissionType;
+  final int transmissionType;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -33,7 +33,14 @@ class CarNameWithTypeAndYearOfManifiction extends StatelessWidget {
               ),
             ),
             const Gap(15),
-            TransmissionTypeContainer(transmissionType: transmissionType)
+            transmissionType == 0
+                ? const SizedBox()
+                : (transmissionType == 1
+                    ? const TransmissionTypeContainer(
+                        transmissionType: "Automatic")
+                    : const TransmissionTypeContainer(
+                        transmissionType: "Manual",
+                      )),
           ],
         ),
         Text(

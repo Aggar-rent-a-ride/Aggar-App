@@ -26,12 +26,9 @@ class VehicleHealthOptions extends StatelessWidget {
         ),
         const Gap(10),
         BlocBuilder<AddVehicleCubit, AddVehicleState>(
-          // Use a builder function that doesn't depend on specific state types
           builder: (context, state) {
-            // Get the latest value from the cubit directly
             final cubit = context.read<AddVehicleCubit>();
             final selectedValue = cubit.selectedVehicleHealthValue;
-
             return Row(
               children: [
                 Column(
