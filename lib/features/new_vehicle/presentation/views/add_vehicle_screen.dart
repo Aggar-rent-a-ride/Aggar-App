@@ -42,6 +42,10 @@ class AddVehicleScreen extends StatelessWidget {
                       .currentState
                       ?.validate() ??
                   false) {
+                int transmissionMode = context
+                        .read<AddVehicleCubit>()
+                        .selectedTransmissionModeValue ??
+                    0;
                 String vehicleModel =
                     context.read<AddVehicleCubit>().vehicleModelController.text;
                 int vehicleYearOfManufaction = int.parse(context
@@ -82,6 +86,7 @@ class AddVehicleScreen extends StatelessWidget {
                       mainImage: mainImage,
                       vehicleHealth: vehicleHealth,
                       vehicleStatus: vehicleStatus,
+                      transmissionMode: transmissionMode,
                     ),
                   ),
                 );

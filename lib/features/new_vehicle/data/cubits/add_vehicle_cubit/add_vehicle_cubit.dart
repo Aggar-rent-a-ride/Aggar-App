@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'add_vehicle_state.dart';
 
 class AddVehicleCubit extends Cubit<AddVehicleState> {
-  AddVehicleCubit() : super(AddVehicleInitial());
+  AddVehicleCubit() : super(AddVehicleInitial()) {
+    // Initialize with default value right after construction
+    selectedTransmissionModeValue = 0;
+    emit(TransmissionModeUpdated(selectedTransmissionModeValue));
+  }
+
   GlobalKey<FormState> addVehicleFormKey = GlobalKey();
   TextEditingController vehicleModelController = TextEditingController();
   TextEditingController vehicleYearOfManufactureController =
@@ -12,8 +17,17 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   TextEditingController vehicleSeatsNoController = TextEditingController();
   TextEditingController vehicleProperitesOverviewController =
       TextEditingController();
+
+  int? selectedTransmissionModeValue;
+
+  void setTransmissionMode(int value) {
+    selectedTransmissionModeValue = value;
+    emit(TransmissionModeUpdated(selectedTransmissionModeValue));
+  }
+
   String? selectedVehicleStatusValue;
   String? selectedVehicleHealthValue;
+
   void setVehicleHealth(String value) {
     if (selectedVehicleHealthValue == value) {
       selectedVehicleHealthValue = null;

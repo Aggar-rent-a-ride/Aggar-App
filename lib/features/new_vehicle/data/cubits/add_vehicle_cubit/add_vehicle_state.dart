@@ -24,6 +24,15 @@ class VehicleHealthSelected extends AddVehicleState {
   VehicleHealthSelected({this.selectedVehicleHealthValue});
 }
 
+class TransmissionModeUpdated extends AddVehicleState {
+  final int? transmissionMode;
+
+  TransmissionModeUpdated(this.transmissionMode);
+
+  @override
+  List<Object> get props => [transmissionMode ?? -1];
+}
+
 class VehicleHealthUpdated extends AddVehicleState {
   final String? selectedVehicleHealthValue;
 

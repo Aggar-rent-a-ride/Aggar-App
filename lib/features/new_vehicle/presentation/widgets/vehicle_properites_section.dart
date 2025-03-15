@@ -23,8 +23,6 @@ class VehicleProperitesSection extends StatefulWidget {
 }
 
 class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
-  int _selectedValue = 0;
-  String? vehicleHealth;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,17 +43,11 @@ class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
               vehicleSeatsNoController: widget.vehicleSeatsNoController,
             ),
             ProperitesOverViewField(
-                vehicleOverviewController: widget.vehicleOverviewController),
+              vehicleOverviewController: widget.vehicleOverviewController,
+            ),
             const VehicleHealthOptions(),
             const Gap(5),
-            TransmissionModeOptions(
-              selectedValue: _selectedValue,
-              onChanged: (int? value) {
-                setState(() {
-                  _selectedValue = value!;
-                });
-              },
-            ),
+            const TransmissionModeOptions(),
           ],
         )
       ],
