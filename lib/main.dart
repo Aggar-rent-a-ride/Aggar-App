@@ -1,4 +1,5 @@
 import 'package:aggar/core/cache/cache_helper.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
@@ -12,11 +13,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   CacheHelper().init();
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => const MyApp(),
-    ),
-    // const MyApp(),
+    // DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) => const MyApp(),
+    // ),
+    const MyApp(),
   );
 }
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
             create: (context) => AddVehicleCubit(),
           ),
         ],
-        child: const AddVehicleScreen(),
+        child: const SignInView(),
       ),
     );
   }

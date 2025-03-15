@@ -1,3 +1,6 @@
+import 'package:aggar/core/api/dio_consumer.dart';
+import 'package:aggar/core/api/end_points.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:aggar/core/utils/app_colors.dart';
@@ -67,12 +70,12 @@ class _PickImageState extends State<PickImage> {
       'profileImage': selectedImagePath,
       'termsAccepted': termsAccepted,
     };
-    // TODO: Implement registration logic
-    // Here you would pass the data to your registration service
+    DioConsumer(dio: Dio()).post(
+      EndPoint.register,
+      data: completeUserData,
+    );
 
     print('Registration data: $completeUserData');
-
- 
   }
 
   @override
