@@ -21,7 +21,7 @@ class PickMainImageButtonStyle extends StatelessWidget {
           BoxShadow(
             color: AppColors.myBlack25,
             offset: const Offset(0, 0),
-            blurRadius: 2,
+            blurRadius: 4,
           ),
         ],
       ),

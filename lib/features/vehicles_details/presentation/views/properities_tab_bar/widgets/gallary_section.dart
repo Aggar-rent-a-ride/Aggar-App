@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_button.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:flutter/material.dart';
 
