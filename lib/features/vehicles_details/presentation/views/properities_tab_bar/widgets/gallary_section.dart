@@ -43,17 +43,16 @@ class GallarySection extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
-                  children: List.generate(images.length, (index) {
-                    if (images[index] == null) {
-                      if (index == 0) {
-                        return AdditionalImageCard(image: mainImage);
+                  children: [
+                    AdditionalImageCard(image: mainImage),
+                    ...List.generate(images.length, (index) {
+                      if (images[index] != null) {
+                        return AdditionalImageCard(image: images[index]!);
                       } else {
                         return const SizedBox();
                       }
-                    } else {
-                      return AdditionalImageCard(image: images[index]);
-                    }
-                  }),
+                    }),
+                  ],
                 ),
               ),
             ),

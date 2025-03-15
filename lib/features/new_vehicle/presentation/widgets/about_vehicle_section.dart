@@ -71,6 +71,12 @@ class AboutVehicleSection extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.4,
             ),
             InputNameWithInputFieldSection(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "required";
+                }
+                return null;
+              },
               controller: yearOfManufactureController,
               hintText: "ex: 1980",
               label: "year of manufacture",

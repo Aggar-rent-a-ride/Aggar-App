@@ -19,7 +19,13 @@ class VehicleLocationSection extends StatelessWidget {
             color: AppColors.myBlue100_2,
           ),
         ),
-        const InputNameWithInputFieldSection(
+        InputNameWithInputFieldSection(
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "required";
+            }
+            return null;
+          },
           width: double.infinity,
           label: "vehicle address",
           hintText: "Minya al-Qamh,  Sharkia,  Egypt",
