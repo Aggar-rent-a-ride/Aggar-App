@@ -11,6 +11,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
   GlobalKey<FormState> addVehicleFormKey = GlobalKey();
   TextEditingController vehicleModelController = TextEditingController();
+  TextEditingController vehicleRentalPrice = TextEditingController();
   TextEditingController vehicleYearOfManufactureController =
       TextEditingController();
   TextEditingController vehicleColorController = TextEditingController();
