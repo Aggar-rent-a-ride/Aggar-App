@@ -10,7 +10,9 @@ import '../../data/model/dropbown_button.dart' show vehicleStatus;
 class VehicleRentalPriceSection extends StatelessWidget {
   const VehicleRentalPriceSection({
     super.key,
+    required this.vehicleRentalPrice,
   });
+  final TextEditingController vehicleRentalPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class VehicleRentalPriceSection extends StatelessWidget {
           spacing: 25,
           children: [
             InputNameWithInputFieldSection(
+              controller: vehicleRentalPrice,
               label: "Rental Price per Day ",
               hintText: "ex: 2200",
               width: MediaQuery.sizeOf(context).width * 0.45,

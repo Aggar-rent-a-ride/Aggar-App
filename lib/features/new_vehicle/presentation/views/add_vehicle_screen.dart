@@ -46,6 +46,8 @@ class AddVehicleScreen extends StatelessWidget {
                         .read<AddVehicleCubit>()
                         .selectedTransmissionModeValue ??
                     0;
+                String vehicleRentalPrice =
+                    context.read<AddVehicleCubit>().vehicleRentalPrice.text;
                 String vehicleModel =
                     context.read<AddVehicleCubit>().vehicleModelController.text;
                 int vehicleYearOfManufaction = int.parse(context
@@ -78,7 +80,7 @@ class AddVehicleScreen extends StatelessWidget {
                     builder: (context) => VehiclesDetailsView(
                       yearOfManufaction: vehicleYearOfManufaction,
                       vehicleModel: vehicleModel,
-                      vehicleRentPrice: 25,
+                      vehicleRentPrice: double.parse(vehicleRentalPrice),
                       vehicleColor: vehicleColor,
                       vehicleOverView: vehicleOverView,
                       vehiceSeatsNo: vehicleSeatsNo,
@@ -136,7 +138,10 @@ class AddVehicleScreen extends StatelessWidget {
                           .vehicleSeatsNoController,
                     ),
                     const VehicleLocationSection(),
-                    const VehicleRentalPriceSection(),
+                    VehicleRentalPriceSection(
+                      vehicleRentalPrice:
+                          context.read<AddVehicleCubit>().vehicleRentalPrice,
+                    ),
                     const Gap(25),
                   ],
                 ),
