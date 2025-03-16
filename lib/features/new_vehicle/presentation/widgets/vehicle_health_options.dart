@@ -29,40 +29,63 @@ class VehicleHealthOptions extends StatelessWidget {
           builder: (context, state) {
             final cubit = context.read<AddVehicleCubit>();
             final selectedValue = cubit.selectedVehicleHealthValue;
-            return Row(
-              children: [
-                Column(
-                  children: [
-                    VehicleHealthButton(
-                      text: 'Excellent',
-                      isSelected: selectedValue == 'Excellent',
-                      onPressed: (value) => cubit.setVehicleHealth(value),
+            return FormField(
+              validator: (value) {
+                if (selectedValue == null || selectedValue.isEmpty) {
+                  return 'required';
+                }
+                return null;
+              },
+              builder: (field) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    spacing: 25,
+                    children: [
+                      Column(
+                        spacing: 25,
+                        children: [
+                          VehicleHealthButton(
+                            text: 'Excellent',
+                            isSelected: selectedValue == 'Excellent',
+                            onPressed: (value) => cubit.setVehicleHealth(value),
+                          ),
+                          VehicleHealthButton(
+                            text: 'Minor dents',
+                            isSelected: selectedValue == 'Minor dents',
+                            onPressed: (value) => cubit.setVehicleHealth(value),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        spacing: 25,
+                        children: [
+                          VehicleHealthButton(
+                            text: 'Good',
+                            isSelected: selectedValue == 'Good',
+                            onPressed: (value) => cubit.setVehicleHealth(value),
+                          ),
+                          VehicleHealthButton(
+                            text: 'Not bad',
+                            isSelected: selectedValue == 'Not bad',
+                            onPressed: (value) => cubit.setVehicleHealth(value),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  if (field.hasError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        field.errorText!,
+                        style: AppStyles.regular14(context).copyWith(
+                          color: AppColors.myRed100_1,
+                        ),
+                      ),
                     ),
-                    const Gap(25),
-                    VehicleHealthButton(
-                      text: 'Minor dents',
-                      isSelected: selectedValue == 'Minor dents',
-                      onPressed: (value) => cubit.setVehicleHealth(value),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 25),
-                Column(
-                  children: [
-                    VehicleHealthButton(
-                      text: 'Good',
-                      isSelected: selectedValue == 'Good',
-                      onPressed: (value) => cubit.setVehicleHealth(value),
-                    ),
-                    const Gap(25),
-                    VehicleHealthButton(
-                      text: 'Not bad',
-                      isSelected: selectedValue == 'Not bad',
-                      onPressed: (value) => cubit.setVehicleHealth(value),
-                    ),
-                  ],
-                )
-              ],
+                ],
+              ),
             );
           },
         )
