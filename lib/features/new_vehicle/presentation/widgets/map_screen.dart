@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
+
+import '../../data/cubits/map_location/map_location_cubit.dart';
+import '../../data/cubits/map_location/map_location_state.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -11,74 +14,96 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final MapController mapController = MapController();
-  LocationData? currentLocation;
-  Marker? currentMarker;
-
   @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => MapLocationCubit(),
+      child: BlocConsumer<MapLocationCubit, MapLocationState>(
+        listener: (context, state) {
+          // Show errors if any
+          if (state is MapLocationFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage)),
+            );
+          }
+        },
+        builder: (context, state) {
+          final mapLocationCubit = context.read<MapLocationCubit>();
+
+          // Loading state
+          if (state is MapLocationInitial || state is MapLocationLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          // Build the map when we have location
+          return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: () => _showCoordinatesDialog(context),
+                icon: const Icon(Icons.check),
+              ),
+            ),
+            body: FlutterMap(
+              mapController: mapLocationCubit.mapController,
+              options: MapOptions(
+                initialCenter: state is MapLocationSuccess
+                    ? LatLng(
+                        state.locationData.latitude!,
+                        state.locationData.longitude!,
+                      )
+                    : state is CurrentLocationChanged
+                        ? LatLng(
+                            state.locationData.latitude!,
+                            state.locationData.longitude!,
+                          )
+                        : const LatLng(0, 0),
+                initialZoom: 16.0,
+                onTap: (tapPosition, point) =>
+                    mapLocationCubit.setSingleMarker(point),
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate:
+                      "https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+                ),
+                MarkerLayer(
+                  markers: [
+                    if (state is MarkerUpdated && state.markerPosition != null)
+                      Marker(
+                        width: 80.0,
+                        height: 80.0,
+                        point: state.markerPosition!,
+                        child: const Icon(Icons.location_on,
+                            color: Colors.red, size: 40.0),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => mapLocationCubit.showCurrentLocation(),
+              child: const Icon(Icons.my_location),
+            ),
+          );
+        },
+      ),
+    );
   }
 
-  Future<void> _getCurrentLocation() async {
-    var location = Location();
+  void _showCoordinatesDialog(BuildContext context) {
+    final mapLocationCubit = context.read<MapLocationCubit>();
 
-    try {
-      var userLocation = await location.getLocation();
-      setState(() {
-        currentLocation = userLocation;
-      });
-    } on Exception {
-      currentLocation = null;
-    }
-
-    location.onLocationChanged.listen((LocationData newLocation) {
-      setState(() {
-        currentLocation = newLocation;
-      });
-    });
-  }
-
-  void _setSingleMarkerAndLog(LatLng point) {
-    setState(() {
-      currentMarker = Marker(
-        width: 80.0,
-        height: 80.0,
-        point: point,
-        child: const Icon(Icons.location_on, color: Colors.red, size: 40.0),
-      );
-    });
-  }
-
-  void _showCurrentLocation() {
-    if (currentLocation != null) {
-      final LatLng userLatLng = LatLng(
-        currentLocation!.latitude!,
-        currentLocation!.longitude!,
-      );
-      setState(() {
-        currentMarker = Marker(
-          width: 80.0,
-          height: 80.0,
-          point: userLatLng,
-          child: const Icon(Icons.my_location, color: Colors.blue, size: 40.0),
-        );
-      });
-      mapController.move(userLatLng, 16.0);
-    }
-  }
-
-  void showCoordinatesDialog() {
-    if (currentMarker != null) {
+    if (mapLocationCubit.hasMarker()) {
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Marker Coordinates'),
             content: Text(
-              'Latitude: ${currentMarker!.point.latitude}\n'
-              'Longitude: ${currentMarker!.point.longitude}',
+              'Latitude: ${mapLocationCubit.getMarkerLatitude()}\n'
+              'Longitude: ${mapLocationCubit.getMarkerLongitude()}',
             ),
             actions: [
               TextButton(
@@ -94,43 +119,5 @@ class _MapScreenState extends State<MapScreen> {
         const SnackBar(content: Text('Please set a marker first!')),
       );
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            showCoordinatesDialog();
-          },
-          icon: const Icon(Icons.check),
-        ),
-      ),
-      body: currentLocation == null
-          ? const Center(child: CircularProgressIndicator())
-          : FlutterMap(
-              mapController: mapController,
-              options: MapOptions(
-                initialCenter: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                initialZoom: 16.0,
-                onTap: (tapPosition, point) => _setSingleMarkerAndLog(point),
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                ),
-                if (currentMarker != null)
-                  MarkerLayer(
-                    markers: [currentMarker!],
-                  ),
-              ],
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showCurrentLocation,
-        child: const Icon(Icons.my_location),
-      ),
-    );
   }
 }
