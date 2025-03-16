@@ -5,7 +5,6 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/properites_over_
 import 'package:aggar/features/new_vehicle/presentation/widgets/transmission_mode_options.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_health_options.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class VehicleProperitesSection extends StatefulWidget {
   const VehicleProperitesSection({
@@ -46,7 +45,6 @@ class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
               vehicleOverviewController: widget.vehicleOverviewController,
             ),
             const VehicleHealthOptions(),
-            const Gap(5),
             const TransmissionModeOptions(),
           ],
         )
