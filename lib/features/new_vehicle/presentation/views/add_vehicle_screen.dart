@@ -60,7 +60,6 @@ class AddVehicleScreen extends StatelessWidget {
                     .read<AddVehicleCubit>()
                     .vehicleProperitesOverviewController
                     .text;
-                print(vehicleOverView);
                 String vehicleSeatsNo = context
                     .read<AddVehicleCubit>()
                     .vehicleSeatsNoController
@@ -70,10 +69,15 @@ class AddVehicleScreen extends StatelessWidget {
                 File? mainImage = context.read<MainImageCubit>().image!;
                 String vehicleHealth =
                     context.read<AddVehicleCubit>().selectedVehicleHealthValue!;
+                String vehicleType =
+                    context.read<AddVehicleCubit>().vehicleTypeController.text;
+                String vehicleBrand =
+                    context.read<AddVehicleCubit>().vehicleBrandController.text;
                 String vehicleStatus = context
-                        .read<AddVehicleCubit>()
-                        .selectedVehicleStatusValue ??
-                    "jjj";
+                    .read<AddVehicleCubit>()
+                    .vehicleStatusController
+                    .text;
+                print(vehicleStatus);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -89,6 +93,8 @@ class AddVehicleScreen extends StatelessWidget {
                       vehicleHealth: vehicleHealth,
                       vehicleStatus: vehicleStatus,
                       transmissionMode: transmissionMode,
+                      vehicleType: vehicleType,
+                      vehicleBrand: vehicleBrand,
                     ),
                   ),
                 );
@@ -124,6 +130,11 @@ class AddVehicleScreen extends StatelessWidget {
                       yearOfManufactureController: context
                           .read<AddVehicleCubit>()
                           .vehicleYearOfManufactureController,
+                      vehicleBrandController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleBrandController,
+                      vehicleTypeController:
+                          context.read<AddVehicleCubit>().vehicleTypeController,
                     ),
                     const VehicleImagesSection(),
                     VehicleProperitesSection(
@@ -141,6 +152,9 @@ class AddVehicleScreen extends StatelessWidget {
                     VehicleRentalPriceSection(
                       vehicleRentalPrice:
                           context.read<AddVehicleCubit>().vehicleRentalPrice,
+                      vehicleStatusController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleStatusController,
                     ),
                     const Gap(25),
                   ],

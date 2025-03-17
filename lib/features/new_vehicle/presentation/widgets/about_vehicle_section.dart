@@ -10,10 +10,17 @@ class AboutVehicleSection extends StatelessWidget {
     super.key,
     required this.modelController,
     required this.yearOfManufactureController,
+    required this.vehicleBrandController,
+    required this.vehicleTypeController,
+    this.onSavedBrand,
+    this.onSavedType,
   });
   final TextEditingController modelController;
   final TextEditingController yearOfManufactureController;
-
+  final TextEditingController vehicleBrandController;
+  final TextEditingController vehicleTypeController;
+  final void Function(String?)? onSavedBrand;
+  final void Function(String?)? onSavedType;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,6 +38,8 @@ class AboutVehicleSection extends StatelessWidget {
           spacing: 20,
           children: [
             InputNameWithDropDownList(
+              controller: vehicleBrandController,
+              onSaved: onSavedBrand,
               validator: (value) {
                 if (value == null) {
                   return "required";
@@ -57,6 +66,8 @@ class AboutVehicleSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputNameWithDropDownList(
+              controller: vehicleTypeController,
+              onSaved: onSavedType,
               validator: (value) {
                 if (value == null) {
                   return "required";
