@@ -1,15 +1,21 @@
 import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/core/api/api_interceptors.dart';
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/errors/error_model.dart';
 import 'package:aggar/core/errors/exceptions.dart';
 import 'package:dio/dio.dart';
-
 
 class DioConsumer extends ApiConsumer {
   final Dio dio;
 
   DioConsumer({required this.dio}) {
     dio.options.baseUrl = EndPoint.baseUrl;
+    dio.options.connectTimeout = const Duration(seconds: 30);
+    dio.options.receiveTimeout = const Duration(seconds: 30);
+    dio.options.validateStatus = (status) {
+      return status != null && status < 500;
+    };
+
     dio.interceptors.add(ApiInterceptor());
     dio.interceptors.add(LogInterceptor(
       request: true,
@@ -37,6 +43,8 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -52,6 +60,8 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -71,6 +81,8 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -82,14 +94,37 @@ class DioConsumer extends ApiConsumer {
     bool isFromData = false,
   }) async {
     try {
+      // Debug info
+      print("POST DATA TYPE: ${data.runtimeType}");
+      print("IS FROM DATA: $isFromData");
+
+      dynamic finalData;
+      if (data is FormData) {
+        finalData = data;
+        print("USING FORMDATA DIRECTLY");
+      } else if (isFromData) {
+        try {
+          finalData = FormData.fromMap(data);
+          print("CONVERTED TO FORMDATA");
+        } catch (e) {
+          print("FAILED TO CONVERT TO FORMDATA: $e");
+          finalData = data;
+        }
+      } else {
+        finalData = data;
+      }
+
       final response = await dio.post(
         path,
-        data: isFromData ? FormData.fromMap(data) : data,
+        data: finalData,
         queryParameters: queryParameters,
       );
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
+    } catch (e) {
+      print("ERROR IN POST: $e");
+      rethrow;
     }
   }
 }
