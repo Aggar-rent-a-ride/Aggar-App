@@ -1,5 +1,6 @@
 class EndPoint {
   static String baseUrl = "https://aggarapi.runasp.net/";
+
   static String login = "api/auth/login";
   static String register = "api/auth/register";
 }
