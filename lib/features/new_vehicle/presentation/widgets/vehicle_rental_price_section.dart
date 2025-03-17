@@ -11,8 +11,12 @@ class VehicleRentalPriceSection extends StatelessWidget {
   const VehicleRentalPriceSection({
     super.key,
     required this.vehicleRentalPrice,
+    required this.vehicleStatusController,
+    this.onSavedStatus,
   });
   final TextEditingController vehicleRentalPrice;
+  final TextEditingController vehicleStatusController;
+  final void Function(String?)? onSavedStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +49,8 @@ class VehicleRentalPriceSection extends StatelessWidget {
               widget: const RentalPricePerDaySuffixWidget(),
             ),
             InputNameWithDropDownList(
+              controller: vehicleStatusController,
+              onSaved: onSavedStatus,
               items: vehicleStatus,
               hintTextSearch: "Search for Vehicle status",
               lableText: "status",

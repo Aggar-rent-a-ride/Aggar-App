@@ -18,6 +18,8 @@ class InputNameWithDropDownList extends StatefulWidget {
     this.flag = false,
     this.onSaved,
     this.validator,
+    this.controller,
+    this.initialValue,
   });
   final String hintTextSearch;
   final String lableText;
@@ -27,6 +29,9 @@ class InputNameWithDropDownList extends StatefulWidget {
   final bool? flag;
   final void Function(String?)? onSaved;
   final String? Function(String?)? validator;
+  final TextEditingController? controller;
+  final String? initialValue;
+
   @override
   State<InputNameWithDropDownList> createState() =>
       _InputNameWithDropDownListState();
@@ -34,19 +39,31 @@ class InputNameWithDropDownList extends StatefulWidget {
 
 class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
   String? selectedValue;
-  final TextEditingController textEditingController = TextEditingController();
+  late final TextEditingController textEditingController;
+  late final TextEditingController dropdownController;
 
   @override
   void initState() {
     super.initState();
-    if (widget.items == vehicleStatus) {
+    textEditingController = TextEditingController();
+    dropdownController = widget.controller ?? TextEditingController();
+
+    // Initialize selectedValue from the controller or initialValue
+    if (widget.initialValue != null) {
+      selectedValue = widget.initialValue;
+      dropdownController.text = widget.initialValue!;
+    } else if (widget.items == vehicleStatus) {
       selectedValue = widget.items.first;
+      dropdownController.text = widget.items.first;
     }
   }
 
   @override
   void dispose() {
     textEditingController.dispose();
+    if (widget.controller == null) {
+      dropdownController.dispose();
+    }
     super.dispose();
   }
 
@@ -103,6 +120,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value;
+                    dropdownController.text = value ?? '';
                     state.didChange(value);
                   });
                 },

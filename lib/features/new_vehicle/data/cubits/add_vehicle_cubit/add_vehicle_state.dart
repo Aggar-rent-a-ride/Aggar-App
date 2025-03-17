@@ -37,16 +37,24 @@ class VehicleHealthUpdated extends AddVehicleState {
   final String? selectedVehicleHealthValue;
 
   VehicleHealthUpdated(this.selectedVehicleHealthValue);
+}
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is VehicleHealthUpdated &&
-        other.selectedVehicleHealthValue == selectedVehicleHealthValue;
-  }
+class VehicleStatusUpdated extends AddVehicleState {
+  final String? selectedVehicleStatusValue;
 
-  @override
-  int get hashCode => selectedVehicleHealthValue.hashCode;
+  VehicleStatusUpdated(this.selectedVehicleStatusValue);
+}
+
+class VehicleBrandUpdated extends AddVehicleState {
+  final String? selectedVehicleBrandValue;
+
+  VehicleBrandUpdated(this.selectedVehicleBrandValue);
+}
+
+class VehicleTypeUpdated extends AddVehicleState {
+  final String? selectedVehicleTypeValue;
+
+  VehicleTypeUpdated(this.selectedVehicleTypeValue);
 }
 
 class AddVehicleFailure extends AddVehicleState {

@@ -21,7 +21,9 @@ class VehiclesDetailsView extends StatelessWidget {
       required this.mainImage,
       required this.vehicleHealth,
       required this.vehicleStatus,
-      required this.transmissionMode});
+      required this.transmissionMode,
+      required this.vehicleType,
+      required this.vehicleBrand});
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
@@ -33,6 +35,8 @@ class VehiclesDetailsView extends StatelessWidget {
   final String vehicleHealth;
   final String vehicleStatus;
   final int transmissionMode;
+  final String vehicleType;
+  final String vehicleBrand;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +91,7 @@ class VehiclesDetailsView extends StatelessWidget {
                       mainImage: mainImage,
                     ),
                     CarNameWithTypeAndYearOfManifiction(
-                      carName: 'Lamborghini Sesto Elemento $vehicleModel',
+                      carName: '$vehicleBrand $vehicleModel',
                       manifactionYear: yearOfManufaction,
                       transmissionType: transmissionMode,
                     ),
