@@ -32,6 +32,9 @@ class MyApp extends StatelessWidget {
       home: MultiBlocProvider(
         providers: [
           BlocProvider(
+            create: (context) => MapLocationCubit(),
+          ),
+          BlocProvider(
             create: (context) => AdditionalImageCubit(),
           ),
           BlocProvider(
