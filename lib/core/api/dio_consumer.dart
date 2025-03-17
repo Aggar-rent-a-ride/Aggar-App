@@ -94,15 +94,36 @@ class DioConsumer extends ApiConsumer {
     bool isFromData = false,
   }) async {
     try {
+      // Debug info
+      print("POST DATA TYPE: ${data.runtimeType}");
+      print("IS FROM DATA: $isFromData");
+
+      dynamic finalData;
+      if (data is FormData) {
+        finalData = data;
+        print("USING FORMDATA DIRECTLY");
+      } else if (isFromData) {
+        try {
+          finalData = FormData.fromMap(data);
+          print("CONVERTED TO FORMDATA");
+        } catch (e) {
+          print("FAILED TO CONVERT TO FORMDATA: $e");
+          finalData = data;
+        }
+      } else {
+        finalData = data;
+      }
+
       final response = await dio.post(
         path,
-        data: isFromData ? FormData.fromMap(data) : data,
+        data: finalData,
         queryParameters: queryParameters,
       );
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
     } catch (e) {
+      print("ERROR IN POST: $e");
       rethrow;
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:aggar/core/api/dio_consumer.dart';
@@ -43,63 +45,53 @@ class PickImageCubit extends Cubit<PickImageState> {
       dio.options.connectTimeout = const Duration(seconds: 60);
       dio.options.receiveTimeout = const Duration(seconds: 60);
 
-      // Create FormData object
-      final FormData formData = FormData();
+      // Create JSON data in the format expected by the server
+      final Map<String, dynamic> jsonData = {
+        // Add fields from userData if available
+        ...(userData ?? {}),
 
-      // Add text fields from userData
-      if (userData != null) {
-        userData!.forEach((key, value) {
-          if (value != null) {
-            formData.fields.add(MapEntry(key, value.toString()));
-          }
-        });
-      }
+        // Convert UI values to API format
+        "aggreedTheTerms": state.termsAccepted,
+        "isCustomer":
+            state.selectedType == "user", // user → true, renter → false
 
-      // Add user type and terms acceptance
-      formData.fields.add(MapEntry('userType', state.selectedType));
-      formData.fields
-          .add(MapEntry('termsAccepted', state.termsAccepted.toString()));
+        // Include these fields if they aren't already in userData
+        "location": userData?["location"] ?? {"longitude": 0, "latitude": 0},
 
-      // Add image file if selected
-      if (state.selectedImagePath != null) {
-        File imageFile = File(state.selectedImagePath!);
-        if (await imageFile.exists()) {
-          String fileName = state.selectedImagePath!.split('/').last;
-          formData.files.add(MapEntry(
-            'profileImage',
-            await MultipartFile.fromFile(
-              state.selectedImagePath!,
-              filename: fileName,
-            ),
-          ));
-          print('Added image: $fileName');
-        } else {
-          throw Exception('Selected image file does not exist');
-        }
-      }
+        // Include address if not provided
+        "address": userData?["address"] ??
+            {"country": "", "state": "", "city": "", "street": ""}
+      };
 
-      print(
-          'Sending registration request with ${formData.fields.length} fields and ${formData.files.length} files');
+      print('Sending JSON data: ${jsonEncode(jsonData)}');
 
-      // Use your DioConsumer
-      final dioConsumer = DioConsumer(dio: dio);
-      final response = await dioConsumer.post(
+      final response = await dio.post(
         EndPoint.register,
-        data: formData,
-        isFromData: false, // We already created FormData directly
+        data: jsonData,
+        options: Options(
+          contentType: 'application/json',
+          headers: {
+            'Accept': 'application/json',
+          },
+        ),
       );
 
-      print('Registration successful: $response');
+      print('Registration successful: ${response.data}');
+
+
       emit(state.copyWith(isLoading: false, isSuccess: true));
-    } on ServerException catch (e) {
-      // Handle the specific error model from your server
-      print('Server exception: ${e.errModel.errorMessage}');
+
+      // Note: You might need to handle image upload in a separate API call
+      // after successful registration
+    } on DioException catch (e) {
+      print('Dio exception: ${e.message}');
+      print('Response data: ${e.response?.data}');
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: e.errModel.errorMessage,
+        errorMessage:
+            'Registration failed: ${e.response?.data?.toString() ?? e.message}',
       ));
     } catch (error) {
-      // Handle any other exceptions
       print('Registration error: $error');
       emit(state.copyWith(
         isLoading: false,
