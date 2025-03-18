@@ -24,7 +24,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   TextEditingController vehicleBrandController = TextEditingController();
   TextEditingController vehicleTypeController = TextEditingController();
   TextEditingController vehicleStatusController = TextEditingController();
-
+  TextEditingController vehicleAddressController = TextEditingController();
   int? selectedTransmissionModeValue;
 
   void setTransmissionMode(int value) {

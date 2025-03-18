@@ -18,6 +18,9 @@ class TabBarSection extends StatefulWidget {
     required this.mainImage,
     required this.vehicleHealth,
     required this.vehicleStatus,
+    required this.vehicleAddress,
+    required this.vehicleLongitude,
+    required this.vehicleLatitude,
   });
   final String vehicleColor;
   final String vehicleOverView;
@@ -26,6 +29,9 @@ class TabBarSection extends StatefulWidget {
   final File mainImage;
   final String vehicleHealth;
   final String vehicleStatus;
+  final String vehicleAddress;
+  final double vehicleLongitude;
+  final double vehicleLatitude;
   @override
   // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
@@ -78,13 +84,17 @@ class _TabBarSectionState extends State<TabBarSection>
             ),
           ],
           onTap: (index) {
-            _pageController.jumpToPage(index); // Jump to the selected page
+            _pageController.jumpToPage(index);
           },
         ),
         ExpandablePageView(
           controller: _pageController,
           children: [
-            const AboutTabBarView(),
+            AboutTabBarView(
+              vehicleAddress: widget.vehicleAddress,
+              vehicleLongitude: widget.vehicleLongitude,
+              vehicleLatitude: widget.vehicleLatitude,
+            ),
             ProperitiesTabBarView(
               vehicleHealth: widget.vehicleHealth,
               vehicleStatus: widget.vehicleStatus,

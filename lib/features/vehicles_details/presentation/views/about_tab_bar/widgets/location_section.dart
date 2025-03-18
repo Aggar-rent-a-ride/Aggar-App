@@ -10,8 +10,13 @@ import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 class LocationSection extends StatelessWidget {
   const LocationSection({
     super.key,
+    required this.vehicleAddress,
+    required this.vehicleLongitude,
+    required this.vehicleLatitude,
   });
-
+  final String vehicleAddress;
+  final double vehicleLongitude;
+  final double vehicleLatitude;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -24,15 +29,17 @@ class LocationSection extends StatelessWidget {
             color: AppColors.myGray100_3,
           ),
         ),
-        const CurrentLocationWithDistanceSection(),
+        CurrentLocationWithDistanceSection(
+          vehicleAddress: vehicleAddress,
+        ),
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: const SizedBox(
+          child: SizedBox(
             height: 150,
             width: double.infinity,
             child: ImageOfCurrentVehicleLocation(
-              latitude: 30.518111621078358,
-              longitude: 31.351927067432843,
+              latitude: vehicleLatitude,
+              longitude: vehicleLongitude,
             ),
           ),
         ),

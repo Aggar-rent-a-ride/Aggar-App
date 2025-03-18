@@ -1,6 +1,7 @@
-import 'package:aggar/core/utils/app_colors.dart';
-import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../core/utils/app_colors.dart' show AppColors;
+import '../../../../core/utils/app_styles.dart' show AppStyles;
 
 class InputNameWithInputFieldSection extends StatelessWidget {
   const InputNameWithInputFieldSection({
@@ -14,6 +15,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
     this.controller,
     this.validator,
   });
+
   final String label;
   final String hintText;
   final double? width;
@@ -22,6 +24,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
   final int? maxLines;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,8 +39,9 @@ class InputNameWithInputFieldSection extends StatelessWidget {
         SizedBox(
           width: width ?? MediaQuery.of(context).size.width * 0.3,
           child: TextFormField(
-            validator: validator,
+            // Remove `initialValue` and ensure controller is used
             controller: controller,
+            validator: validator,
             maxLines: maxLines,
             decoration: InputDecoration(
               errorBorder: OutlineInputBorder(

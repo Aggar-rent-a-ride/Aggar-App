@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class CurrentLocationWithDistanceSection extends StatelessWidget {
   const CurrentLocationWithDistanceSection({
     super.key,
+    required this.vehicleAddress,
   });
-
+  final String vehicleAddress;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,7 +24,9 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Text(
-              "Minya al-Qamh, Sharkia, Egypt",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              vehicleAddress,
               style: AppStyles.semiBold16(context).copyWith(
                 color: AppColors.myBlack50,
               ),

@@ -82,6 +82,9 @@ class AddVehicleScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => VehiclesDetailsView(
+                      vehicleAddress: "",
+                      vehicleLatitude: 0.0,
+                      vehicleLongitude: 0.0,
                       yearOfManufaction: vehicleYearOfManufaction,
                       vehicleModel: vehicleModel,
                       vehicleRentPrice: double.parse(vehicleRentalPrice),
@@ -148,7 +151,11 @@ class AddVehicleScreen extends StatelessWidget {
                           .read<AddVehicleCubit>()
                           .vehicleSeatsNoController,
                     ),
-                    const VehicleLocationSection(),
+                    VehicleLocationSection(
+                      vehicleAddressController: context
+                          .read<AddVehicleCubit>()
+                          .vehicleAddressController,
+                    ),
                     VehicleRentalPriceSection(
                       vehicleRentalPrice:
                           context.read<AddVehicleCubit>().vehicleRentalPrice,
