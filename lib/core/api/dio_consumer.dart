@@ -1,7 +1,6 @@
 import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/core/api/api_interceptors.dart';
 import 'package:aggar/core/api/end_points.dart';
-import 'package:aggar/core/errors/error_model.dart';
 import 'package:aggar/core/errors/exceptions.dart';
 import 'package:dio/dio.dart';
 

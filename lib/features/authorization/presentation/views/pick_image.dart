@@ -1,7 +1,7 @@
 import 'package:aggar/core/api/end_points.dart';
-import 'package:aggar/features/authorization/data/cubit/pick_image_cubit.dart';
-import 'package:aggar/features/authorization/data/cubit/pick_image_state.dart';
-import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
+import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
+import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_state.dart';
+import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -27,7 +27,9 @@ class PickImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PickImageCubit(userData: userData),
+      create: (context) => PickImageCubit(
+        userData: userData,
+      ),
       child: PickImageContent(
         controller: controller,
         onRegistrationSuccess: onRegistrationSuccess,
@@ -82,8 +84,19 @@ class PickImageContent extends StatelessWidget {
             onRegistrationSuccess!(
                 {ApiKey.message: 'Registration successful!'});
           }
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const SignInView()));
+
+          // Get registration response data to pass to verification screen
+          final registrationResponse =
+              context.read<PickImageCubit>().registrationResponse;
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerificationView(
+                userData: registrationResponse,
+              ),
+            ),
+          );
         }
       },
       builder: (context, state) {

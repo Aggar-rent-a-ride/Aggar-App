@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:aggar/core/api/end_points.dart';
 import 'dart:developer';
 
 class ApiInterceptor extends Interceptor {

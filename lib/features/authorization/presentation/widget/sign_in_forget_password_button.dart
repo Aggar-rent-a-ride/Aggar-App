@@ -5,17 +5,16 @@ import 'package:flutter/material.dart';
 class SignInForgetPasswordButton extends StatelessWidget {
   const SignInForgetPasswordButton({
     super.key,
-    this.onTap,
+    this.onPressed,
   });
-  final void Function()? onTap;
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
       child: Align(
         alignment: Alignment.centerRight,
         child: TextButton(
-          onPressed: () {},
+          onPressed: onPressed,
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             minimumSize: Size.zero,
