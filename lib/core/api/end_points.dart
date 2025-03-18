@@ -3,6 +3,8 @@ class EndPoint {
 
   static String login = "api/auth/login";
   static String register = "api/auth/register";
+  static String sendActivationCode = "api/auth/send-activation-code";
+  static String activate = "/api/auth/activate";
 }
 
 class ApiKey {
