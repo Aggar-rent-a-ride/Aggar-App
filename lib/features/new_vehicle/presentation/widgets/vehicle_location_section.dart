@@ -5,8 +5,9 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_pick_loc
 import 'package:flutter/material.dart';
 
 class VehicleLocationSection extends StatelessWidget {
-  const VehicleLocationSection({super.key});
-
+  const VehicleLocationSection(
+      {super.key, required this.vehicleAddressController});
+  final TextEditingController vehicleAddressController;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,6 +21,7 @@ class VehicleLocationSection extends StatelessWidget {
           ),
         ),
         InputNameWithInputFieldSection(
+          controller: vehicleAddressController,
           validator: (value) {
             if (value!.isEmpty) {
               return "required";

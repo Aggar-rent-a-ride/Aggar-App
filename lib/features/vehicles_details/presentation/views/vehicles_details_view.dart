@@ -23,7 +23,10 @@ class VehiclesDetailsView extends StatelessWidget {
       required this.vehicleStatus,
       required this.transmissionMode,
       required this.vehicleType,
-      required this.vehicleBrand});
+      required this.vehicleBrand,
+      required this.vehicleAddress,
+      required this.vehicleLongitude,
+      required this.vehicleLatitude});
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
@@ -37,6 +40,9 @@ class VehiclesDetailsView extends StatelessWidget {
   final int transmissionMode;
   final String vehicleType;
   final String vehicleBrand;
+  final String vehicleAddress;
+  final double vehicleLongitude;
+  final double vehicleLatitude;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +66,12 @@ class VehiclesDetailsView extends StatelessWidget {
             ),
           ],
           centerTitle: true,
-          title: Text("Vehicles Details",
-              style: AppStyles.semiBold24(context)
-                  .copyWith(color: AppColors.myBlack100)),
+          title: Text(
+            "Vehicles Details",
+            style: AppStyles.semiBold24(context).copyWith(
+              color: AppColors.myBlack100,
+            ),
+          ),
           leading: IconButton(
             style: ButtonStyle(
               padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
@@ -103,6 +112,9 @@ class VehiclesDetailsView extends StatelessWidget {
                       mainImage: mainImage,
                       vehicleHealth: vehicleHealth,
                       vehicleStatus: vehicleStatus,
+                      vehicleAddress: vehicleAddress,
+                      vehicleLongitude: vehicleLongitude,
+                      vehicleLatitude: vehicleLatitude,
                     ),
                   ],
                 )

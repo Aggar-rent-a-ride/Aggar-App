@@ -1,14 +1,15 @@
 import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/map_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class PickLocationOnMapButton extends StatelessWidget {
   const PickLocationOnMapButton({
     super.key,
-    required this.onPressed,
+    required this.onPickLocation,
   });
-
-  final void Function()? onPressed;
+  final Function(LatLng, String) onPickLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,21 @@ class PickLocationOnMapButton extends StatelessWidget {
       width: double.infinity,
       height: MediaQuery.sizeOf(context).height * 0.18,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MapScreen(),
+            ),
+          );
+
+          if (result != null && result is Map<String, dynamic>) {
+            final latitude = result['latitude'] as double;
+            final longitude = result['longitude'] as double;
+            final address = result['address'] as String? ?? '';
+            onPickLocation(LatLng(latitude, longitude), address);
+          }
+        },
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(0),
           overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),

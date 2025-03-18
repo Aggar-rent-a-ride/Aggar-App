@@ -4,15 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class AboutTabBarView extends StatelessWidget {
-  const AboutTabBarView({super.key});
-
+  const AboutTabBarView({
+    super.key,
+    required this.vehicleAddress,
+    required this.vehicleLongitude,
+    required this.vehicleLatitude,
+  });
+  final String vehicleAddress;
+  final double vehicleLongitude;
+  final double vehicleLatitude;
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        RentPartnerSection(),
-        LocationSection(),
-        Gap(25),
+        const RentPartnerSection(),
+        LocationSection(
+          vehicleAddress: vehicleAddress,
+          vehicleLongitude: vehicleLongitude,
+          vehicleLatitude: vehicleLatitude,
+        ),
+        const Gap(25),
       ],
     );
   }

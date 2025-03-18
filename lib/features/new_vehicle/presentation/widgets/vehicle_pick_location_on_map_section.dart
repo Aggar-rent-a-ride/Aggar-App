@@ -1,8 +1,7 @@
-import 'package:aggar/core/utils/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/new_vehicle/presentation/widgets/map_screen.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/pick_location_on_map_button.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/selected_location_map_contnet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class VehiclePickLocationOnMapSection extends StatefulWidget {
@@ -26,9 +25,6 @@ class _VehiclePickLocationOnMapSectionState
   final GlobalKey<FormFieldState> _formFieldKey = GlobalKey<FormFieldState>();
   String address = '';
 
-  // Default Cairo location if no initial location is provided
-  static const LatLng defaultLocation = LatLng(30.0444, 31.2357);
-
   @override
   void initState() {
     super.initState();
@@ -42,9 +38,7 @@ class _VehiclePickLocationOnMapSectionState
       children: [
         Text(
           "Vehicle location",
-          style: AppStyles.medium18(context).copyWith(
-            color: AppColors.myBlue100_1,
-          ),
+          style: AppStyles.bold12(context),
         ),
         const SizedBox(height: 10),
         FormField(
@@ -60,9 +54,31 @@ class _VehiclePickLocationOnMapSectionState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (selectedLocation == null)
-                _buildPickLocationButton(context, field)
+                PickLocationOnMapButton(
+                  onPickLocation: (LatLng location, String locationAddress) {
+                    setState(() {
+                      selectedLocation = location;
+                      address = locationAddress;
+                    });
+                    field.didChange(location);
+                    _formFieldKey.currentState?.validate();
+                    widget.onLocationSelected?.call(location, locationAddress);
+                  },
+                )
               else
-                _buildSelectedLocationMap(context, field),
+                SelectedLocationMapContent(
+                  location: selectedLocation!,
+                  address: address,
+                  onEditLocation: (LatLng location, String locationAddress) {
+                    setState(() {
+                      selectedLocation = location;
+                      address = locationAddress;
+                    });
+                    field.didChange(location);
+                    _formFieldKey.currentState?.validate();
+                    widget.onLocationSelected?.call(location, locationAddress);
+                  },
+                ),
               if (field.hasError)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -79,177 +95,5 @@ class _VehiclePickLocationOnMapSectionState
         ),
       ],
     );
-  }
-
-  Widget _buildPickLocationButton(BuildContext context, FormFieldState field) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.myBlack25,
-            offset: const Offset(0, 0),
-            blurRadius: 2,
-          )
-        ],
-      ),
-      width: double.infinity,
-      height: MediaQuery.sizeOf(context).height * 0.18,
-      child: ElevatedButton(
-        onPressed: () {
-          _navigateToMapScreen(context, field);
-        },
-        style: ButtonStyle(
-          elevation: WidgetStateProperty.all(0),
-          overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),
-          backgroundColor: WidgetStateProperty.all(
-            AppColors.myBlue100_8,
-          ),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-          padding: WidgetStateProperty.all(
-            const EdgeInsets.symmetric(
-              vertical: 25,
-              horizontal: 25,
-            ),
-          ),
-        ),
-        child: Text(
-          "Pick on Map",
-          style: AppStyles.regular16(context).copyWith(
-            color: AppColors.myBlue100_1,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectedLocationMap(BuildContext context, FormFieldState field) {
-    // Create a unique key for the map to force rebuild when location changes
-    final mapKey = ValueKey(selectedLocation.toString());
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.myBlack25,
-            offset: const Offset(0, 0),
-            blurRadius: 2,
-          )
-        ],
-      ),
-      width: double.infinity,
-      height: MediaQuery.sizeOf(context).height * 0.18,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Stack(
-          children: [
-            FlutterMap(
-              key: mapKey,
-              options: MapOptions(
-                initialCenter: selectedLocation!,
-                initialZoom: 11,
-                maxZoom: 11,
-                interactionOptions: const InteractionOptions(
-                  flags: InteractiveFlag.none,
-                ),
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.aggar',
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: selectedLocation!,
-                      child: const Icon(
-                        Icons.location_on,
-                        color: Colors.red,
-                        size: 30,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: FloatingActionButton.small(
-                backgroundColor: AppColors.myBlue100_1,
-                onPressed: () => _navigateToMapScreen(context, field),
-                child: const Icon(
-                  Icons.edit_location_alt,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            if (address.isNotEmpty)
-              Positioned(
-                bottom: 8,
-                left: 8,
-                right: 48,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    address,
-                    style: AppStyles.regular12(context),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _navigateToMapScreen(
-      BuildContext context, FormFieldState field) async {
-    try {
-      // Navigate to MapScreen with the initial location
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MapScreen(
-            // Pass current location or default location
-            initialLocation: selectedLocation ?? defaultLocation,
-          ),
-        ),
-      );
-
-      if (result != null && result is Map<String, dynamic>) {
-        final latitude = result['latitude'] as double;
-        final longitude = result['longitude'] as double;
-        final newLocation = LatLng(latitude, longitude);
-        final newAddress =
-            result['address'] as String? ?? ''; // Handle null address
-
-        setState(() {
-          selectedLocation = newLocation;
-          address = newAddress;
-        });
-
-        field.didChange(newLocation);
-
-        if (widget.onLocationSelected != null) {
-          widget.onLocationSelected!(newLocation, newAddress);
-        }
-
-        _formFieldKey.currentState?.validate();
-      }
-    } catch (e) {
-      debugPrint('Error navigating to map screen: $e');
-    }
   }
 }
