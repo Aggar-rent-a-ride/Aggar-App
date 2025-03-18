@@ -50,10 +50,9 @@ class SelectedLocationSection extends StatelessWidget {
                   color: AppColors.myBlue100_1,
                   size: 24,
                 ),
-                // not finish
                 Text(
                   maxLines: 5,
-                  address.substring(1, 5),
+                  address.split(',').last.trim(),
                   style: AppStyles.bold24(context)
                       .copyWith(color: AppColors.myBlue100_1),
                 ),
