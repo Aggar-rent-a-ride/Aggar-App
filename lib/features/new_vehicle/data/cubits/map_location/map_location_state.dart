@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
 
 abstract class MapLocationState extends Equatable {
+  const MapLocationState();
+
   @override
   List<Object?> get props => [];
 }
@@ -11,48 +13,93 @@ class MapLocationInitial extends MapLocationState {}
 
 class MapLocationLoading extends MapLocationState {}
 
-class MapLocationSuccess extends MapLocationState {
-  final LocationData locationData;
+class MapLocationInitialized extends MapLocationState {
+  final LatLng? selectedLocation;
+  final List<Marker> markers;
+  final String selectedAddress;
+  final bool isAddressLoading;
 
-  MapLocationSuccess(this.locationData);
+  const MapLocationInitialized({
+    required this.selectedLocation,
+    required this.markers,
+    required this.selectedAddress,
+    required this.isAddressLoading,
+  });
 
   @override
-  List<Object> get props => [locationData];
+  List<Object?> get props => [
+        selectedLocation,
+        markers,
+        selectedAddress,
+        isAddressLoading,
+      ];
 }
 
-class MapLocationFailure extends MapLocationState {
-  final String errorMessage;
+class MapLocationUpdating extends MapLocationState {
+  final LatLng? selectedLocation;
+  final List<Marker> markers;
+  final String selectedAddress;
+  final bool isAddressLoading;
 
-  MapLocationFailure(this.errorMessage);
+  const MapLocationUpdating({
+    required this.selectedLocation,
+    required this.markers,
+    required this.selectedAddress,
+    required this.isAddressLoading,
+  });
 
   @override
-  List<Object> get props => [errorMessage];
+  List<Object?> get props => [
+        selectedLocation,
+        markers,
+        selectedAddress,
+        isAddressLoading,
+      ];
 }
 
-class MarkerUpdated extends MapLocationState {
-  final LatLng? markerPosition;
+class MapLocationUpdated extends MapLocationState {
+  final LatLng? selectedLocation;
+  final List<Marker> markers;
+  final String selectedAddress;
+  final bool isAddressLoading;
 
-  MarkerUpdated(this.markerPosition);
+  const MapLocationUpdated({
+    required this.selectedLocation,
+    required this.markers,
+    required this.selectedAddress,
+    required this.isAddressLoading,
+  });
 
   @override
-  List<Object?> get props => [markerPosition];
+  List<Object?> get props => [
+        selectedLocation,
+        markers,
+        selectedAddress,
+        isAddressLoading,
+      ];
 }
 
-class CurrentLocationChanged extends MapLocationState {
-  final LocationData locationData;
+class MapLocationError extends MapLocationState {
+  final String error;
+  final LatLng? selectedLocation;
+  final List<Marker> markers;
+  final String selectedAddress;
+  final bool isAddressLoading;
 
-  CurrentLocationChanged(this.locationData);
+  const MapLocationError({
+    required this.error,
+    required this.selectedLocation,
+    required this.markers,
+    required this.selectedAddress,
+    required this.isAddressLoading,
+  });
 
   @override
-  List<Object> get props => [locationData];
-}
-
-class MapViewUpdated extends MapLocationState {
-  final LatLng center;
-  final double zoom;
-
-  MapViewUpdated(this.center, this.zoom);
-
-  @override
-  List<Object> get props => [center, zoom];
+  List<Object?> get props => [
+        error,
+        selectedLocation,
+        markers,
+        selectedAddress,
+        isAddressLoading,
+      ];
 }
