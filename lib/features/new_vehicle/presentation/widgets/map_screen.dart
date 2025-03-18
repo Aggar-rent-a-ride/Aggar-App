@@ -3,7 +3,6 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/pick_image_map.d
 import 'package:aggar/features/new_vehicle/presentation/widgets/selected_location_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_state.dart';
@@ -43,27 +42,29 @@ class _MapScreenContent extends StatelessWidget {
           final currentAddress = getAddressFromState(state);
           final isLoading = isAddressLoadingFromState(state);
 
-          return Column(
-            children: [
-              const Gap(15),
-              const AddressSearchBar(),
-              Expanded(
-                child: Stack(
-                  children: [
-                    PickImageMap(markers: currentMarkers),
-                    if (currentAddress.isNotEmpty)
-                      SelectedLocationSection(
-                        isLoading: isLoading,
-                        address: currentAddress,
-                      ),
-                    if (state is MapLocationLoading)
-                      const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                  ],
+          return SafeArea(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: PickImageMap(markers: currentMarkers),
                 ),
-              ),
-            ],
+                const Positioned(
+                  top: 15,
+                  left: 16,
+                  right: 16,
+                  child: AddressSearchBar(),
+                ),
+                if (currentAddress.isNotEmpty)
+                  SelectedLocationSection(
+                    isLoading: isLoading,
+                    address: currentAddress,
+                  ),
+                if (state is MapLocationLoading)
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+              ],
+            ),
           );
         },
       ),
