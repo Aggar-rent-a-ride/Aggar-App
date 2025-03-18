@@ -29,13 +29,6 @@ class AddressSearchBar extends StatelessWidget {
                       context.read<MapLocationCubit>().searchLocation(value),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () => context
-                    .read<MapLocationCubit>()
-                    .searchLocation(
-                        context.read<MapLocationCubit>().searchController.text),
-              ),
             ],
           ),
         );

@@ -77,7 +77,6 @@ class AddVehicleScreen extends StatelessWidget {
                     .read<AddVehicleCubit>()
                     .vehicleStatusController
                     .text;
-                print(vehicleStatus);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
