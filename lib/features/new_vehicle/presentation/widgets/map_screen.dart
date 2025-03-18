@@ -1,6 +1,7 @@
 import 'package:aggar/features/new_vehicle/presentation/widgets/address_search_bar.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_image_map.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/selected_location_section.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/confirm_location_with_pick_current_location.dart'; // Added import
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -54,6 +55,7 @@ class _MapScreenContent extends StatelessWidget {
                   right: 16,
                   child: AddressSearchBar(),
                 ),
+                const ConfirmLocationWithPickCurrentLocation(),
                 if (currentAddress.isNotEmpty)
                   SelectedLocationSection(
                     isLoading: isLoading,
