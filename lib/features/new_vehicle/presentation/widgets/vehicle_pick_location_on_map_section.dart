@@ -7,7 +7,7 @@ import 'package:latlong2/latlong.dart';
 
 class VehiclePickLocationOnMapSection extends StatefulWidget {
   final LatLng? initialLocation;
-  final Function(LatLng)? onLocationSelected;
+  final Function(LatLng, String)? onLocationSelected;
 
   const VehiclePickLocationOnMapSection({
     super.key,
@@ -24,6 +24,10 @@ class _VehiclePickLocationOnMapSectionState
     extends State<VehiclePickLocationOnMapSection> {
   LatLng? selectedLocation;
   final GlobalKey<FormFieldState> _formFieldKey = GlobalKey<FormFieldState>();
+  String address = '';
+
+  // Default Cairo location if no initial location is provided
+  static const LatLng defaultLocation = LatLng(30.0444, 31.2357);
 
   @override
   void initState() {
@@ -92,7 +96,9 @@ class _VehiclePickLocationOnMapSectionState
       width: double.infinity,
       height: MediaQuery.sizeOf(context).height * 0.18,
       child: ElevatedButton(
-        onPressed: () => _navigateToMapScreen(context, field),
+        onPressed: () {
+          _navigateToMapScreen(context, field);
+        },
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(0),
           overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),
@@ -183,6 +189,25 @@ class _VehiclePickLocationOnMapSectionState
                 ),
               ),
             ),
+            if (address.isNotEmpty)
+              Positioned(
+                bottom: 8,
+                left: 8,
+                right: 48,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    address,
+                    style: AppStyles.regular12(context),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -191,22 +216,40 @@ class _VehiclePickLocationOnMapSectionState
 
   Future<void> _navigateToMapScreen(
       BuildContext context, FormFieldState field) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MapScreen(initialLocation: selectedLocation),
-      ),
-    );
+    try {
+      // Navigate to MapScreen with the initial location
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MapScreen(
+            // Pass current location or default location
+            initialLocation: selectedLocation ?? defaultLocation,
+          ),
+        ),
+      );
 
-    if (result != null && result is LatLng) {
-      setState(() {
-        selectedLocation = result;
-      });
-      field.didChange(result);
-      if (widget.onLocationSelected != null) {
-        widget.onLocationSelected!(selectedLocation!);
+      if (result != null && result is Map<String, dynamic>) {
+        final latitude = result['latitude'] as double;
+        final longitude = result['longitude'] as double;
+        final newLocation = LatLng(latitude, longitude);
+        final newAddress =
+            result['address'] as String? ?? ''; // Handle null address
+
+        setState(() {
+          selectedLocation = newLocation;
+          address = newAddress;
+        });
+
+        field.didChange(newLocation);
+
+        if (widget.onLocationSelected != null) {
+          widget.onLocationSelected!(newLocation, newAddress);
+        }
+
+        _formFieldKey.currentState?.validate();
       }
-      _formFieldKey.currentState?.validate();
+    } catch (e) {
+      debugPrint('Error navigating to map screen: $e');
     }
   }
 }
