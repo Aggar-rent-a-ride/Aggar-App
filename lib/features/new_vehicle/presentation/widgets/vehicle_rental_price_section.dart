@@ -25,7 +25,7 @@ class VehicleRentalPriceSection extends StatelessWidget {
       spacing: 10,
       children: [
         Text(
-          "Vehicle Properties : ",
+          "Vehicle Rental Price :",
           style: AppStyles.bold22(context).copyWith(
             color: AppColors.myBlue100_2,
           ),
