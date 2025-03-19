@@ -17,7 +17,9 @@ class PickImageMap extends StatelessWidget {
           options: MapOptions(
             initialCenter: context.read<MapLocationCubit>().selectedLocation ??
                 MapLocationCubit.defaultLocation,
-            initialZoom: 13.0,
+            initialZoom: 14.0,
+            maxZoom: 18.0,
+            minZoom: 15.0,
             onTap: (tapPosition, point) {
               context.read<MapLocationCubit>().updateSelectedLocation(point);
             },
