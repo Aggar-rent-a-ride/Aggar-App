@@ -36,9 +36,12 @@ class SelectedLocationMapContent extends StatelessWidget {
         child: Stack(
           children: [
             FlutterMap(
+              mapController: MapController(),
               options: MapOptions(
                 initialCenter: location,
-                maxZoom: 14.0,
+                initialZoom: 14.0,
+                maxZoom: 18.0,
+                minZoom: 2.0,
                 interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.none,
                 ),
@@ -46,20 +49,46 @@ class SelectedLocationMapContent extends StatelessWidget {
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.yourapp.name',
                 ),
                 MarkerLayer(
                   markers: [
                     Marker(
                       point: location,
+                      width: 40,
+                      height: 40,
                       child: Icon(
                         Icons.location_on,
                         color: AppColors.myRed100_1,
+                        size: 36,
                       ),
                     ),
                   ],
                 ),
               ],
             ),
+            /* if (address.isNotEmpty)
+              Positioned(
+                bottom: 40,
+                left: 8,
+                right: 48,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    address,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.myBlack100,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),*/
             Positioned(
               bottom: 8,
               right: 8,
@@ -68,7 +97,8 @@ class SelectedLocationMapContent extends StatelessWidget {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MapScreen(),
+                      builder: (context) =>
+                          MapScreen(initialLocation: location),
                     ),
                   );
 
