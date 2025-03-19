@@ -7,6 +7,7 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_wi
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class VehiclesDetailsView extends StatelessWidget {
   const VehiclesDetailsView(
@@ -26,7 +27,9 @@ class VehiclesDetailsView extends StatelessWidget {
       required this.vehicleBrand,
       required this.vehicleAddress,
       required this.vehicleLongitude,
-      required this.vehicleLatitude});
+      required this.vehicleLatitude,
+      this.initialLocation,
+      this.onLocationSelected});
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
@@ -43,7 +46,8 @@ class VehiclesDetailsView extends StatelessWidget {
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
-
+  final LatLng? initialLocation;
+  final Function(LatLng, String)? onLocationSelected;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -105,6 +109,8 @@ class VehiclesDetailsView extends StatelessWidget {
                       transmissionType: transmissionMode,
                     ),
                     TabBarSection(
+                      initialLocation: initialLocation,
+                      onLocationSelected: onLocationSelected,
                       vehicleColor: vehicleColor,
                       vehicleOverView: vehicleOverView,
                       vehiceSeatsNo: vehiceSeatsNo,

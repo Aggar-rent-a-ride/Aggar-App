@@ -21,22 +21,26 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
             size: 20,
             color: AppColors.myGray100_2,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Text(
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              vehicleAddress,
-              style: AppStyles.semiBold16(context).copyWith(
-                color: AppColors.myBlack50,
+          Expanded(
+            flex: 7,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                vehicleAddress,
+                style: AppStyles.semiBold16(context).copyWith(
+                  color: AppColors.myBlack50,
+                ),
               ),
             ),
           ),
-          const Spacer(),
-          Text(
-            "1.4km",
-            style: AppStyles.semiBold16(context).copyWith(
-              color: AppColors.myBlack50,
+          Expanded(
+            flex: 1,
+            child: Text(
+              "1.4km",
+              style: AppStyles.semiBold16(context).copyWith(
+                color: AppColors.myBlack50,
+              ),
             ),
           ),
         ],

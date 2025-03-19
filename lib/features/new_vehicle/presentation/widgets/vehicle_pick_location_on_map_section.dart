@@ -2,20 +2,18 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_location_on_map_button.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/selected_location_map_contnet.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
-
 import '../../../../core/utils/app_colors.dart';
 
 class VehiclePickLocationOnMapSection extends StatefulWidget {
   final LatLng? initialLocation;
   final Function(LatLng, String)? onLocationSelected;
-
   const VehiclePickLocationOnMapSection({
     super.key,
     this.initialLocation,
     this.onLocationSelected,
   });
-
   @override
   State<VehiclePickLocationOnMapSection> createState() =>
       _VehiclePickLocationOnMapSectionState();
@@ -26,7 +24,6 @@ class _VehiclePickLocationOnMapSectionState
   LatLng? selectedLocation;
   final GlobalKey<FormFieldState> _formFieldKey = GlobalKey<FormFieldState>();
   String address = '';
-
   @override
   void initState() {
     super.initState();
@@ -44,7 +41,7 @@ class _VehiclePickLocationOnMapSectionState
             color: AppColors.myBlue100_2,
           ),
         ),
-        const SizedBox(height: 10),
+        const Gap(10),
         FormField(
           key: _formFieldKey,
           initialValue: selectedLocation,
