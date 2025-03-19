@@ -17,17 +17,55 @@ import 'package:aggar/features/vehicles_details/presentation/views/vehicles_deta
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:latlong2/latlong.dart';
 import '../widgets/about_vehicle_section.dart';
 
-class AddVehicleScreen extends StatelessWidget {
-  const AddVehicleScreen({super.key});
+class AddVehicleScreen extends StatefulWidget {
+  const AddVehicleScreen(
+      {super.key, this.initialLocation, this.onLocationSelected});
+
+  final LatLng? initialLocation;
+  final Function(LatLng, String)? onLocationSelected;
+
+  @override
+  State<AddVehicleScreen> createState() => _AddVehicleScreenState();
+}
+
+class _AddVehicleScreenState extends State<AddVehicleScreen> {
+  // Store the selected location and address
+  LatLng? selectedLocation;
+  String selectedAddress = "";
+
+  @override
+  void initState() {
+    super.initState();
+    selectedLocation = widget.initialLocation;
+  }
+
+  // Handle location selection from VehicleLocationSection
+  void _handleLocationSelected(LatLng location, String address) {
+    setState(() {
+      selectedLocation = location;
+      selectedAddress = address;
+
+      // Update the address controller with the selected address
+      final addressController =
+          context.read<AddVehicleCubit>().vehicleAddressController;
+      addressController.text = address;
+    });
+
+    // Call the parent's onLocationSelected if provided
+    if (widget.onLocationSelected != null) {
+      widget.onLocationSelected!(location, address);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddVehicleCubit, AddVehicleState>(
       listener: (context, state) {
         if (state is AddVehicleSuccess) {
-          print("Sucess");
+          print("Success");
         } else if (state is AddVehicleFailure) {
           print("Fail");
         }
@@ -77,13 +115,26 @@ class AddVehicleScreen extends StatelessWidget {
                     .read<AddVehicleCubit>()
                     .vehicleStatusController
                     .text;
+
+                // Get the address from the address controller
+                String vehicleAddress = context
+                    .read<AddVehicleCubit>()
+                    .vehicleAddressController
+                    .text;
+
+                // Use the stored location or default to 0,0 if not set
+                double vehicleLatitude = selectedLocation?.latitude ?? 0.0;
+                double vehicleLongitude = selectedLocation?.longitude ?? 0.0;
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => VehiclesDetailsView(
-                      vehicleAddress: "",
-                      vehicleLatitude: 0.0,
-                      vehicleLongitude: 0.0,
+                      initialLocation: selectedLocation,
+                      onLocationSelected: _handleLocationSelected,
+                      vehicleAddress: vehicleAddress,
+                      vehicleLatitude: vehicleLatitude,
+                      vehicleLongitude: vehicleLongitude,
                       yearOfManufaction: vehicleYearOfManufaction,
                       vehicleModel: vehicleModel,
                       vehicleRentPrice: double.parse(vehicleRentalPrice),
@@ -106,7 +157,9 @@ class AddVehicleScreen extends StatelessWidget {
           backgroundColor: AppColors.myWhite100_1,
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               icon: const Icon(
                 Icons.arrow_back_ios,
               ),
@@ -123,7 +176,6 @@ class AddVehicleScreen extends StatelessWidget {
               child: Form(
                 key: context.read<AddVehicleCubit>().addVehicleFormKey,
                 child: Column(
-                  spacing: 25,
                   children: [
                     AboutVehicleSection(
                       modelController: context
@@ -138,7 +190,9 @@ class AddVehicleScreen extends StatelessWidget {
                       vehicleTypeController:
                           context.read<AddVehicleCubit>().vehicleTypeController,
                     ),
+                    const Gap(25),
                     const VehicleImagesSection(),
+                    const Gap(25),
                     VehicleProperitesSection(
                       vehicleOverviewController: context
                           .read<AddVehicleCubit>()
@@ -150,11 +204,15 @@ class AddVehicleScreen extends StatelessWidget {
                           .read<AddVehicleCubit>()
                           .vehicleSeatsNoController,
                     ),
+                    const Gap(25),
                     VehicleLocationSection(
+                      initialLocation: selectedLocation,
+                      onLocationSelected: _handleLocationSelected,
                       vehicleAddressController: context
                           .read<AddVehicleCubit>()
                           .vehicleAddressController,
                     ),
+                    const Gap(25),
                     VehicleRentalPriceSection(
                       vehicleRentalPrice:
                           context.read<AddVehicleCubit>().vehicleRentalPrice,

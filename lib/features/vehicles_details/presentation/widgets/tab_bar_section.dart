@@ -7,6 +7,7 @@ import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/views/properities_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/views/review_tab_bar_view.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:latlong2/latlong.dart';
 
 class TabBarSection extends StatefulWidget {
   const TabBarSection({
@@ -21,6 +22,8 @@ class TabBarSection extends StatefulWidget {
     required this.vehicleAddress,
     required this.vehicleLongitude,
     required this.vehicleLatitude,
+    this.initialLocation,
+    this.onLocationSelected,
   });
   final String vehicleColor;
   final String vehicleOverView;
@@ -32,6 +35,8 @@ class TabBarSection extends StatefulWidget {
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
+  final LatLng? initialLocation;
+  final Function(LatLng, String)? onLocationSelected;
   @override
   // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
@@ -94,6 +99,8 @@ class _TabBarSectionState extends State<TabBarSection>
               vehicleAddress: widget.vehicleAddress,
               vehicleLongitude: widget.vehicleLongitude,
               vehicleLatitude: widget.vehicleLatitude,
+              initialLocation: widget.initialLocation,
+              onLocationSelected: widget.onLocationSelected,
             ),
             ProperitiesTabBarView(
               vehicleHealth: widget.vehicleHealth,
