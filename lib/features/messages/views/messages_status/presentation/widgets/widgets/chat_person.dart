@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/name_and_message_chat_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/time_and_number_of_msg_chat_view.dart';

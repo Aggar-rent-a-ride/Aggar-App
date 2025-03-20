@@ -3,7 +3,7 @@ import 'package:aggar/features/vehicles_details/presentation/views/review_tab_ba
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../../../core/themes/app_colors.dart';
+import '../../../../../../core/themes/app_light_colors.dart';
 
 class RatingGraphSection extends StatelessWidget {
   const RatingGraphSection({super.key});

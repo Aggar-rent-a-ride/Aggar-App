@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/image_and_name_person_message.dart';
 import 'package:flutter/material.dart';
 

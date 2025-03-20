@@ -8,7 +8,7 @@ import 'package:aggar/features/settings/presentation/widgets/settings_and_prefer
 import 'package:aggar/features/settings/presentation/widgets/support_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/themes/app_light_colors.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

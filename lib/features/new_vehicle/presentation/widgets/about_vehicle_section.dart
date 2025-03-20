@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/model/dropbown_button.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';

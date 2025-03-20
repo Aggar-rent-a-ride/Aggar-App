@@ -5,7 +5,7 @@ import 'package:aggar/features/main_screen/presentation/widgets/vehicles_type_se
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/themes/app_light_colors.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});

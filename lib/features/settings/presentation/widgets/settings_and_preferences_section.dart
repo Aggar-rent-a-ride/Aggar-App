@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/widgets/horizontal_line.dart';
 import 'package:aggar/features/settings/presentation/widgets/dark_mode_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/language_card.dart';

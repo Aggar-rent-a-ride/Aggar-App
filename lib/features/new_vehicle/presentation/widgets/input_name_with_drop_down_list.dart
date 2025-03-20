@@ -2,7 +2,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/search_text_fiel
     show SearchTextField;
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_colors.dart' show AppLightColors;
+import '../../../../core/themes/app_light_colors.dart' show AppLightColors;
 import '../../../../core/utils/app_styles.dart' show AppStyles;
 import '../../data/model/dropbown_button.dart';
 
