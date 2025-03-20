@@ -4,7 +4,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_ima
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_main_image_button_style.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/main_image_card.dart';
@@ -39,7 +39,7 @@ class _PickMainImageButtonContentState
                   decoration: BoxDecoration(
                     border: field.hasError
                         ? Border.all(
-                            color: AppColors.myRed100_1,
+                            color: AppLightColors.myRed100_1,
                           )
                         : null,
                     borderRadius: BorderRadius.circular(5),
@@ -67,7 +67,7 @@ class _PickMainImageButtonContentState
                                 textAlign: TextAlign.center,
                                 "click here to pick \nmain image ",
                                 style: AppStyles.regular16(context).copyWith(
-                                  color: AppColors.myBlue100_1,
+                                  color: AppLightColors.myBlue100_1,
                                 ),
                               )
                             ],
@@ -95,7 +95,7 @@ class _PickMainImageButtonContentState
                     child: Text(
                       field.errorText!,
                       style: AppStyles.regular14(context).copyWith(
-                        color: AppColors.myRed100_1,
+                        color: AppLightColors.myRed100_1,
                       ),
                     ),
                   ),

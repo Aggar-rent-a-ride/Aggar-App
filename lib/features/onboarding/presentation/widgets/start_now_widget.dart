@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -21,8 +21,8 @@ class StartNowWidget extends StatelessWidget {
             vertical: 5,
           ),
         ),
-        foregroundColor: WidgetStatePropertyAll(AppColors.myWhite100_1),
-        backgroundColor: WidgetStatePropertyAll(AppColors.myBlue100_1),
+        foregroundColor: WidgetStatePropertyAll(AppLightColors.myWhite100_1),
+        backgroundColor: WidgetStatePropertyAll(AppLightColors.myBlue100_1),
       ),
       onPressed: () {
         Navigator.pushReplacement(
@@ -39,7 +39,7 @@ class StartNowWidget extends StatelessWidget {
           const Gap(8),
           Icon(
             Icons.arrow_forward_rounded,
-            color: AppColors.myWhite100_1,
+            color: AppLightColors.myWhite100_1,
             size: 15,
           ),
         ],

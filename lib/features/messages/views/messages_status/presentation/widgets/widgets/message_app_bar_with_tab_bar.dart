@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -25,7 +25,7 @@ class MessageAppBarWithTabBar extends StatelessWidget {
           onPressed: () {},
           icon: Icon(
             Icons.search,
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
         ),
         const Gap(20),

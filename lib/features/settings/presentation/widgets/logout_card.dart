@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class LogoutCard extends StatelessWidget {
       padingHorizental: 5,
       padingVeritical: 10,
       onPressed: () {},
-      backgroundColor: AppColors.myBlue100_7,
+      backgroundColor: AppLightColors.myBlue100_7,
       child: Row(
         children: [
           const Image(

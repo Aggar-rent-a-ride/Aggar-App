@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -29,12 +29,12 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
         Icon(
           Icons.star,
           size: 12,
-          color: AppColors.myBlue100_2,
+          color: AppLightColors.myBlue100_2,
         ),
         Text(
           rating.toString(),
           style: AppStyles.semiBold12(context).copyWith(
-            color: AppColors.myBlue100_2,
+            color: AppLightColors.myBlue100_2,
           ),
         ),
       ],

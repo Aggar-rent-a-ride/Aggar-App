@@ -5,7 +5,7 @@ import 'package:aggar/features/main_screen/presentation/widgets/vehicles_type_se
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/themes/app_colors.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -13,14 +13,14 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.myWhite100_1,
+      backgroundColor: AppLightColors.myWhite100_1,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColors.myBlue100_1,
+                color: AppLightColors.myBlue100_1,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),

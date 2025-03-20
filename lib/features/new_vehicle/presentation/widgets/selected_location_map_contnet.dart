@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -23,7 +23,7 @@ class SelectedLocationMapContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
-            color: AppColors.myBlack25,
+            color: AppLightColors.myBlack25,
             offset: const Offset(0, 0),
             blurRadius: 2,
           )
@@ -59,7 +59,7 @@ class SelectedLocationMapContent extends StatelessWidget {
                       height: 40,
                       child: Icon(
                         Icons.location_on,
-                        color: AppColors.myRed100_1,
+                        color: AppLightColors.myRed100_1,
                         size: 36,
                       ),
                     ),
@@ -109,10 +109,10 @@ class SelectedLocationMapContent extends StatelessWidget {
                     onEditLocation(LatLng(latitude, longitude), newAddress);
                   }
                 },
-                backgroundColor: AppColors.myBlue100_2,
+                backgroundColor: AppLightColors.myBlue100_2,
                 child: Icon(
                   Icons.edit_location_alt_rounded,
-                  color: AppColors.myBlue100_8,
+                  color: AppLightColors.myBlue10_2,
                 ),
               ),
             ),

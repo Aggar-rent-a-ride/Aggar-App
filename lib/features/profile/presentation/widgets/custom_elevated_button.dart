@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -18,7 +18,7 @@ class CustomElevatedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isActive ? onPressed : null,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isActive ? AppColors.myBlue100_1 : Colors.white,
+        backgroundColor: isActive ? AppLightColors.myBlue100_1 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),

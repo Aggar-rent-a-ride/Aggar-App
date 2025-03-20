@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +25,7 @@ class CustomContainer extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: AppColors.myBlack25,
+              color: AppLightColors.myBlack25,
               blurRadius: 3,
               offset: const Offset(0, 0),
             )

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -19,17 +19,17 @@ class TransmissionTypeContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-            color: AppColors.myBlack25,
+            color: AppLightColors.myBlack25,
             offset: const Offset(0, 0),
             blurRadius: 4,
           ),
         ],
-        color: AppColors.myBlue100_8,
+        color: AppLightColors.myBlue10_2,
       ),
       child: Text(
         transmissionType,
         style: AppStyles.semiBold12(context).copyWith(
-          color: AppColors.myBlue100_2,
+          color: AppLightColors.myBlue100_2,
         ),
       ),
     );

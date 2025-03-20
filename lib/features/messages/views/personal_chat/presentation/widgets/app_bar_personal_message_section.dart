@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/image_and_name_person_message.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class AppBarPersonalMessageSection extends StatelessWidget {
             },
             icon: Icon(
               Icons.arrow_back_ios,
-              color: AppColors.myWhite100_2,
+              color: AppLightColors.myWhite100_2,
             ),
           ),
           ImageAndNamePersonMessage(name: name),
@@ -30,7 +30,7 @@ class AppBarPersonalMessageSection extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: Icon(
-              color: AppColors.myWhite100_2,
+              color: AppLightColors.myWhite100_2,
               Icons.more_vert_outlined,
             ),
           )

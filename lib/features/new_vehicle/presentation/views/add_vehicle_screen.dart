@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
@@ -154,7 +154,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               }
             },
           ),
-          backgroundColor: AppColors.myWhite100_1,
+          backgroundColor: AppLightColors.myWhite100_1,
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
@@ -164,7 +164,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 Icons.arrow_back_ios,
               ),
             ),
-            backgroundColor: AppColors.myWhite100_1,
+            backgroundColor: AppLightColors.myWhite100_1,
             title: Text(
               'Add Vehicle',
               style: AppStyles.semiBold24(context),

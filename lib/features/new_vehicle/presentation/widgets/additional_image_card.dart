@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AdditionalImageCard extends StatelessWidget {
@@ -16,7 +16,7 @@ class AdditionalImageCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
-            color: AppColors.myBlack25,
+            color: AppLightColors.myBlack25,
             offset: const Offset(0, 0),
             blurRadius: 2,
           )

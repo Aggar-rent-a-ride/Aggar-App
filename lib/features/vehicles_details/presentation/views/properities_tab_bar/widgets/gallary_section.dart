@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class GallarySection extends StatelessWidget {
           Text(
             "Gallary",
             style: AppStyles.bold18(context).copyWith(
-              color: AppColors.myGray100_3,
+              color: AppLightColors.myGray100_3,
             ),
           ),
           RawScrollbar(
@@ -32,9 +32,9 @@ class GallarySection extends StatelessWidget {
             minThumbLength: 40, // must be dynamic
             trackVisibility: true,
             trackRadius: const Radius.circular(50),
-            trackColor: AppColors.myGray100_1,
+            trackColor: AppLightColors.myGray100_1,
             controller: _scrollController,
-            thumbColor: AppColors.myBlue100_2,
+            thumbColor: AppLightColors.myBlue100_2,
             radius: const Radius.circular(20),
             thickness: 8,
             child: SingleChildScrollView(

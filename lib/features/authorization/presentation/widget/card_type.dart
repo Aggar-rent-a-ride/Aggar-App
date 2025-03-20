@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -28,13 +28,13 @@ class CardType extends StatelessWidget {
           border: Border.all(
             width: 2,
             color: isSelected
-                ? AppColors.myBlue100_2
-                : AppColors.myBlack25,
+                ? AppLightColors.myBlue100_2
+                : AppLightColors.myBlack25,
           ),
           borderRadius: BorderRadius.circular(10),
           color: isSelected
-              ? AppColors.myBlue10_2
-              : AppColors.myWhite100_1, 
+              ? AppLightColors.myBlue10_2
+              : AppLightColors.myWhite100_1,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         margin: const EdgeInsets.all(5),
@@ -44,21 +44,25 @@ class CardType extends StatelessWidget {
             Icon(
               icon ?? Icons.person,
               size: 50,
-              color: isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+              color: isSelected
+                  ? AppLightColors.myBlue100_2
+                  : AppLightColors.myBlack25,
             ),
             const Gap(6),
             Text(
               title ?? 'User',
               style: AppStyles.regular20(context).copyWith(
-                color:
-                    isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+                color: isSelected
+                    ? AppLightColors.myBlue100_2
+                    : AppLightColors.myBlack25,
               ),
             ),
             Text(
               subtitle ?? 'Can use cars & buy for them',
               style: AppStyles.regular12(context).copyWith(
-                color:
-                    isSelected ? AppColors.myBlue100_2 : AppColors.myBlack25,
+                color: isSelected
+                    ? AppLightColors.myBlue100_2
+                    : AppLightColors.myBlack25,
               ),
               textAlign: TextAlign.center,
             ),

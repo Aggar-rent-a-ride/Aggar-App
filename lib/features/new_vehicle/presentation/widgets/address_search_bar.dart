@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_state.dart';
@@ -24,18 +24,18 @@ class AddressSearchBar extends StatelessWidget {
                     BoxShadow(
                       offset: const Offset(0, 0),
                       blurRadius: 4,
-                      color: AppColors.myBlack25,
+                      color: AppLightColors.myBlack25,
                     )
                   ],
                 ),
                 child: TextField(
                   controller: context.read<MapLocationCubit>().searchController,
                   decoration: InputDecoration(
-                    fillColor: AppColors.myWhite100_1,
+                    fillColor: AppLightColors.myWhite100_1,
                     filled: true,
                     hintText: 'Search location',
                     hintStyle: AppStyles.regular15(context).copyWith(
-                      color: AppColors.myBlack50,
+                      color: AppLightColors.myBlack50,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -44,19 +44,19 @@ class AddressSearchBar extends StatelessWidget {
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: AppColors.myBlack10,
+                        color: AppLightColors.myBlack10,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: AppColors.myBlue100_2,
+                        color: AppLightColors.myBlue100_2,
                       ),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: AppColors.myBlack10,
+                        color: AppLightColors.myBlack10,
                       ),
                     ),
                   ),

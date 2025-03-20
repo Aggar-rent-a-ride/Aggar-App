@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ArrowForwardIconButton extends StatelessWidget {
@@ -14,7 +14,7 @@ class ArrowForwardIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Icon(
       size: 20,
-      color: AppColors.myBlue100_1,
+      color: AppLightColors.myBlue100_1,
       Icons.arrow_forward_ios_rounded,
     );
   }

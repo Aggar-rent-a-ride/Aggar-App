@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalLine extends StatelessWidget {
@@ -14,7 +14,7 @@ class HorizontalLine extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: padding ?? 15),
       child: Divider(
-        color: color ?? AppColors.myBlack10,
+        color: color ?? AppLightColors.myBlack10,
       ),
     );
   }

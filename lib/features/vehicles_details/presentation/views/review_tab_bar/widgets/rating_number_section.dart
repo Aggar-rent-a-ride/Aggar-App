@@ -2,7 +2,7 @@ import 'package:aggar/features/vehicles_details/presentation/views/review_tab_ba
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../../../core/utils/app_colors.dart';
+import '../../../../../../core/themes/app_colors.dart';
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class RatingNumberSection extends StatelessWidget {
@@ -19,12 +19,12 @@ class RatingNumberSection extends StatelessWidget {
         Text(
           rating.toString(),
           style: AppStyles.medium65(context).copyWith(
-            color: AppColors.myBlack100,
+            color: AppLightColors.myBlack100,
           ),
         ),
         RatingFourStars(
           rating: rating,
-          color: AppColors.myBlue100_2,
+          color: AppLightColors.myBlue100_2,
         ),
         const Gap(5),
         /* Text(

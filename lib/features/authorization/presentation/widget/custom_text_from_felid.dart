@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -53,7 +53,7 @@ class CustomTextField extends StatelessWidget {
           ),
           child: TextFormField(
             style: AppStyles.regular16(context).copyWith(
-              color: AppColors.myBlack50,
+              color: AppLightColors.myBlack50,
             ),
             textAlign: TextAlign.start,
             keyboardType: inputType,
@@ -65,10 +65,10 @@ class CustomTextField extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: AppStyles.regular16(context).copyWith(
-                color: AppColors.myBlack50,
+                color: AppLightColors.myBlack50,
               ),
               filled: true,
-              fillColor: AppColors.myWhite100_3,
+              fillColor: AppLightColors.myGray100_1,
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 14,
                 horizontal: 19,

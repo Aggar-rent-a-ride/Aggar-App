@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicles_brand_number_of_brands.dart';
@@ -19,12 +19,12 @@ class VehicleBrandCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
       width: MediaQuery.of(context).size.width * 0.27,
       decoration: BoxDecoration(
-        color: AppColors.myGray100_5,
+        color: AppLightColors.myWhite100_2,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             blurRadius: 4,
-            color: AppColors.myBlack25,
+            color: AppLightColors.myBlack25,
             offset: const Offset(0, 0),
           ),
         ],

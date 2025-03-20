@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
@@ -27,11 +27,11 @@ class PopularVehiclesCarCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.myWhite100_1,
+        color: AppLightColors.myWhite100_1,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppColors.myBlack10,
+            color: AppLightColors.myBlack10,
             blurRadius: 6,
             spreadRadius: 1,
           ),

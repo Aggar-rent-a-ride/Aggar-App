@@ -8,7 +8,7 @@ import 'package:aggar/features/settings/presentation/widgets/settings_and_prefer
 import 'package:aggar/features/settings/presentation/widgets/support_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/themes/app_colors.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -16,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.myWhite100_1,
+      backgroundColor: AppLightColors.myWhite100_1,
       appBar: AppBar(
         toolbarHeight: 80,
         centerTitle: true,

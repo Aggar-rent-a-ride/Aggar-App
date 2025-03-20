@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +15,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: AppColors.myBlack25,
+              color: AppLightColors.myBlack25,
               blurRadius: 4,
               offset: const Offset(0, 0),
             ),
@@ -30,10 +30,10 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             filled: true,
-            fillColor: AppColors.myGray100_5,
+            fillColor: AppLightColors.myWhite100_2,
             hintText: 'Message',
             hintStyle: AppStyles.medium18(context).copyWith(
-              color: AppColors.myBlack50,
+              color: AppLightColors.myBlack50,
             ),
             suffixIcon: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -43,7 +43,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
                   onPressed: () {},
                   icon: Icon(
                     Icons.attach_file_rounded,
-                    color: AppColors.myBlack50,
+                    color: AppLightColors.myBlack50,
                   ),
                 ),
               ),

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
@@ -27,7 +27,7 @@ class VehicleRentalPriceSection extends StatelessWidget {
         Text(
           "Vehicle Rental Price :",
           style: AppStyles.bold22(context).copyWith(
-            color: AppColors.myBlue100_2,
+            color: AppLightColors.myBlue100_2,
           ),
         ),
         Row(

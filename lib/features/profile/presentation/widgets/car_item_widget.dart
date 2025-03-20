@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
@@ -20,7 +20,7 @@ class _CarItemWidgetState extends State<CarItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.myWhite100_1,
+      color: AppLightColors.myWhite100_1,
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -45,13 +45,14 @@ class _CarItemWidgetState extends State<CarItemWidget> {
               Padding(
                 padding: const EdgeInsets.only(right: 8, top: 8),
                 child: CircleAvatar(
-                  backgroundColor: AppColors.myWhite100_1,
+                  backgroundColor: AppLightColors.myWhite100_1,
                   radius: 20,
                   child: IconButton(
                     iconSize: 13,
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? Colors.red : AppColors.myBlue100_1,
+                      color:
+                          isFavorite ? Colors.red : AppLightColors.myBlue100_1,
                       size: 24,
                     ),
                     onPressed: () {
@@ -105,35 +106,38 @@ class _CarItemWidgetState extends State<CarItemWidget> {
                     Text(
                       "\$${widget.car.pricePerHour}",
                       style: AppStyles.regular24(context)
-                          .copyWith(color: AppColors.myBlue100_2),
+                          .copyWith(color: AppLightColors.myBlue100_2),
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
                         "/hr",
                         style: AppStyles.regular12(context)
-                            .copyWith(color: AppColors.myBlue100_2),
+                            .copyWith(color: AppLightColors.myBlue100_2),
                       ),
                     ),
                     const Spacer(),
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.myWhite100_1,
-                        foregroundColor: AppColors.myBlue100_2,
+                        backgroundColor: AppLightColors.myWhite100_1,
+                        foregroundColor: AppLightColors.myBlue100_2,
                         elevation: 2,
                         fixedSize: const Size(60, 20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(color: AppColors.myBlue100_2),
+                          side: BorderSide(
+                            color: AppLightColors.myBlue100_2,
+                          ),
                         ),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5, vertical: 5),
                       ),
                       child: Text(
                         "Show more",
-                        style: AppStyles.regular12(context)
-                            .copyWith(color: AppColors.myBlue100_2),
+                        style: AppStyles.regular12(context).copyWith(
+                          color: AppLightColors.myBlue100_2,
+                        ),
                       ),
                     ),
                   ],

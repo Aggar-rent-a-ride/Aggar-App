@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 
 class TermsCheck extends StatelessWidget {
@@ -19,7 +19,7 @@ class TermsCheck extends StatelessWidget {
         Checkbox(
           value: isChecked,
           onChanged: (value) => onChanged(value ?? false),
-          activeColor: AppColors.myBlue100_2,
+          activeColor: AppLightColors.myBlue100_2,
         ),
         GestureDetector(
           onTap: () {

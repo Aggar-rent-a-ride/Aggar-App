@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/custom_page_view.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/next_and_back_button_widget.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/start_now_widget.dart';
@@ -21,7 +21,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.myWhite100_1,
+      backgroundColor: AppLightColors.myWhite100_1,
       body: Stack(
         children: [
           PageView(
@@ -75,8 +75,8 @@ class _OnboardingViewState extends State<OnboardingView> {
                   controller: controller,
                   count: 3,
                   effect: WormEffect(
-                    dotColor: AppColors.myGray100_1,
-                    activeDotColor: AppColors.myBlue100_2,
+                    dotColor: AppLightColors.myGray100_1,
+                    activeDotColor: AppLightColors.myBlue100_2,
                   ),
                 ),
                 lastPage

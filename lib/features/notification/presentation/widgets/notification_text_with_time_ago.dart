@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -28,13 +28,13 @@ class NotificationTextWithTimeAgo extends StatelessWidget {
           RichText(
             text: TextSpan(
               style: AppStyles.medium18(context).copyWith(
-                color: AppColors.myBlack50,
+                color: AppLightColors.myBlack50,
               ),
               children: [
                 TextSpan(
                   text: name,
                   style: AppStyles.semiBold18(context).copyWith(
-                    color: AppColors.myBlack100,
+                    color: AppLightColors.myBlack100,
                   ),
                 ),
                 TextSpan(text: ' $actionText'),

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/all_messages_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -13,7 +13,7 @@ class MessagesView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        shadowColor: AppColors.myBlack50,
+        shadowColor: AppLightColors.myBlack50,
         toolbarHeight: 70,
         centerTitle: false,
         title: Padding(
@@ -28,14 +28,14 @@ class MessagesView extends StatelessWidget {
             onPressed: () {},
             icon: Icon(
               Icons.search,
-              color: AppColors.myBlack50,
+              color: AppLightColors.myBlack50,
             ),
           ),
           const Gap(20),
         ],
-        backgroundColor: AppColors.myWhite100_1,
+        backgroundColor: AppLightColors.myWhite100_1,
       ),
-      backgroundColor: AppColors.myWhite100_1,
+      backgroundColor: AppLightColors.myWhite100_1,
       body: const AllMessagesView(),
     );
   }

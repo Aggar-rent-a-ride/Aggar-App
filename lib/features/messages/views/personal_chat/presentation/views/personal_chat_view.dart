@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/messages/model/dummy.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/app_bar_personal_chat.dart';
@@ -13,7 +13,7 @@ class PersonalChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.myWhite100_1,
+      backgroundColor: AppLightColors.myWhite100_1,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

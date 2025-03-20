@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -20,14 +20,14 @@ class SelectedLocationSection extends StatelessWidget {
           vertical: 20,
         ),
         decoration: BoxDecoration(
-          color: AppColors.myWhite100_1,
+          color: AppLightColors.myWhite100_1,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.myBlack25,
+              color: AppLightColors.myBlack25,
               blurRadius: 4,
               offset: const Offset(0, 0),
             ),
@@ -47,21 +47,21 @@ class SelectedLocationSection extends StatelessWidget {
               children: [
                 Icon(
                   Icons.location_on,
-                  color: AppColors.myBlue100_1,
+                  color: AppLightColors.myBlue100_1,
                   size: 24,
                 ),
                 Text(
                   maxLines: 5,
                   address.split(',').last.trim(),
                   style: AppStyles.bold24(context)
-                      .copyWith(color: AppColors.myBlue100_1),
+                      .copyWith(color: AppLightColors.myBlue100_1),
                 ),
               ],
             ),
             Text(
               address,
               style: AppStyles.semiBold16(context).copyWith(
-                color: AppColors.myBlack50,
+                color: AppLightColors.myBlack50,
               ),
             )
           ],

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/color_and_seats_no_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/vehicle_health_with_status_container.dart';
@@ -39,7 +39,7 @@ class OverViewSection extends StatelessWidget {
             Text(
               "OverView",
               style: AppStyles.bold18(context).copyWith(
-                color: AppColors.myGray100_3,
+                color: AppLightColors.myGray100_3,
               ),
             ),
             const Spacer(),
@@ -52,7 +52,7 @@ class OverViewSection extends StatelessWidget {
         Text(
           overviewText,
           style: AppStyles.medium15(context).copyWith(
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
         ),
         VehicleHealthWithStatusContainer(

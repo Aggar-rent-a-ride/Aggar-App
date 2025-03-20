@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/transmission_type_container.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class CarNameWithTypeAndYearOfManifiction extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 carName,
                 style: AppStyles.semiBold26(context).copyWith(
-                  color: AppColors.myBlack100,
+                  color: AppLightColors.myBlack100,
                 ),
               ),
             ),
@@ -46,7 +46,7 @@ class CarNameWithTypeAndYearOfManifiction extends StatelessWidget {
         Text(
           "This car was made in $manifactionYear",
           style: AppStyles.medium16(context).copyWith(
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
         )
       ],
