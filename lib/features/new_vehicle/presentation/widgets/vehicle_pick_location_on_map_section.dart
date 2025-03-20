@@ -4,7 +4,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/selected_locatio
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/themes/app_colors.dart';
 
 class VehiclePickLocationOnMapSection extends StatefulWidget {
   final LatLng? initialLocation;
@@ -38,7 +38,7 @@ class _VehiclePickLocationOnMapSectionState
         Text(
           "Vehicle location",
           style: AppStyles.bold22(context).copyWith(
-            color: AppColors.myBlue100_2,
+            color: AppLightColors.myBlue100_2,
           ),
         ),
         const Gap(10),

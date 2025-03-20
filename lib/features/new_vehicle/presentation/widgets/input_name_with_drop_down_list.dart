@@ -2,8 +2,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/search_text_fiel
     show SearchTextField;
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/utils/app_colors.dart' show AppColors;
+import '../../../../core/themes/app_colors.dart' show AppLightColors;
 import '../../../../core/utils/app_styles.dart' show AppStyles;
 import '../../data/model/dropbown_button.dart';
 
@@ -79,7 +78,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
             Text(
               widget.lableText,
               style: AppStyles.medium18(context).copyWith(
-                color: AppColors.myBlue100_1,
+                color: AppLightColors.myBlue100_1,
               ),
             ),
             DropdownButtonHideUnderline(
@@ -88,7 +87,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 hint: Text(
                   widget.hintText,
                   style: AppStyles.medium15(context).copyWith(
-                    color: AppColors.myBlack50,
+                    color: AppLightColors.myBlack50,
                   ),
                 ),
                 items: widget.items
@@ -100,17 +99,17 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                           style: item == selectedValue
                               ? (item == "active"
                                   ? AppStyles.medium15(context).copyWith(
-                                      color: AppColors.myGreen100_1,
+                                      color: AppLightColors.myGreen100_1,
                                     )
                                   : item == "out of stock"
                                       ? AppStyles.medium15(context).copyWith(
-                                          color: AppColors.myRed100_1,
+                                          color: AppLightColors.myRed100_1,
                                         )
                                       : AppStyles.medium15(context).copyWith(
-                                          color: AppColors.myBlack100,
+                                          color: AppLightColors.myBlack100,
                                         ))
                               : AppStyles.medium15(context).copyWith(
-                                  color: AppColors.myBlack50,
+                                  color: AppLightColors.myBlack50,
                                 ),
                         ),
                       ),
@@ -125,7 +124,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                   });
                 },
                 dropdownStyleData: DropdownStyleData(
-                  decoration: BoxDecoration(color: AppColors.myWhite100_1),
+                  decoration: BoxDecoration(color: AppLightColors.myWhite100_1),
                   maxHeight: 200,
                 ),
                 buttonStyleData: ButtonStyleData(
@@ -133,12 +132,12 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                   width:
                       widget.width ?? MediaQuery.of(context).size.width * 0.3,
                   decoration: BoxDecoration(
-                    color: AppColors.myWhite100_1,
+                    color: AppLightColors.myWhite100_1,
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: state.hasError
-                          ? AppColors.myRed100_1
-                          : AppColors.myBlack50,
+                          ? AppLightColors.myRed100_1
+                          : AppLightColors.myBlack50,
                       width: 1,
                       style: BorderStyle.solid,
                     ),
@@ -149,7 +148,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                         searchController: textEditingController,
                         searchInnerWidgetHeight: 50,
                         searchInnerWidget: Container(
-                          color: AppColors.myWhite100_1,
+                          color: AppLightColors.myWhite100_1,
                           height: 50,
                           padding: const EdgeInsets.only(
                             top: 8,
@@ -180,7 +179,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 child: Text(
                   state.errorText!,
                   style: AppStyles.regular14(context).copyWith(
-                    color: AppColors.myRed100_1,
+                    color: AppLightColors.myRed100_1,
                   ),
                 ),
               ),

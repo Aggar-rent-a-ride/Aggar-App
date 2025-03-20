@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_icon_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_image_section.dart';
@@ -21,7 +21,7 @@ class RentPartnerSection extends StatelessWidget {
           Text(
             "Rent Partner",
             style: AppStyles.bold18(context).copyWith(
-              color: AppColors.myGray100_3,
+              color: AppLightColors.myGray100_3,
             ),
           ),
           const Padding(

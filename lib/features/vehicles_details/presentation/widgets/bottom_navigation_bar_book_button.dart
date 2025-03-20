@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart' show AppStyles;
 import 'package:flutter/material.dart';
 
@@ -24,17 +24,17 @@ class BottomNavigationBarBookButton extends StatelessWidget {
             EdgeInsets.symmetric(horizontal: 0, vertical: 20),
           ),
           overlayColor: WidgetStatePropertyAll(
-            AppColors.myWhite50_1,
+            AppLightColors.myWhite50_1,
           ),
           backgroundColor: WidgetStatePropertyAll(
-            AppColors.myBlue100_2,
+            AppLightColors.myBlue100_2,
           ),
         ),
         onPressed: onPressed,
         child: Text(
           'Book Vehicle',
           style: AppStyles.bold18(context).copyWith(
-            color: AppColors.myWhite100_1,
+            color: AppLightColors.myWhite100_1,
           ),
         ),
       ),

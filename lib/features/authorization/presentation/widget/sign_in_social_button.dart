@@ -1,7 +1,7 @@
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/themes/app_colors.dart';
 
 class SignInSocialButton extends StatelessWidget {
   final Widget? icon;
@@ -27,7 +27,7 @@ class SignInSocialButton extends StatelessWidget {
       label: Text(
         text,
         style: AppStyles.regular18(context).copyWith(
-          color: textColor ?? AppColors.myWhite100_1,
+          color: textColor ?? AppLightColors.myWhite100_1,
         ),
       ),
       style: ElevatedButton.styleFrom(

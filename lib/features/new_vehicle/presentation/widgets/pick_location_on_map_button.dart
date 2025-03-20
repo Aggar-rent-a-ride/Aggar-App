@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/map_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class PickLocationOnMapButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
-            color: AppColors.myBlack25,
+            color: AppLightColors.myBlack25,
             offset: const Offset(0, 0),
             blurRadius: 2,
           )
@@ -44,9 +44,9 @@ class PickLocationOnMapButton extends StatelessWidget {
         },
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(0),
-          overlayColor: WidgetStateProperty.all(AppColors.myBlue50_2),
+          overlayColor: WidgetStateProperty.all(AppLightColors.myBlue50_2),
           backgroundColor: WidgetStateProperty.all(
-            AppColors.myBlue100_8,
+            AppLightColors.myBlue10_2,
           ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
@@ -63,7 +63,7 @@ class PickLocationOnMapButton extends StatelessWidget {
         child: Text(
           "Pick on Map",
           style: AppStyles.regular16(context).copyWith(
-            color: AppColors.myBlue100_1,
+            color: AppLightColors.myBlue100_1,
           ),
         ),
       ),

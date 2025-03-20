@@ -3,7 +3,7 @@ import 'package:aggar/features/vehicles_details/presentation/views/review_tab_ba
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../../../core/utils/app_colors.dart';
+import '../../../../../../core/themes/app_colors.dart';
 
 class RatingGraphSection extends StatelessWidget {
   const RatingGraphSection({super.key});
@@ -22,7 +22,7 @@ class RatingGraphSection extends StatelessWidget {
           child: Text(
             "Rating and reviews are verified and are from people who rent the same type of vehicle that you rent  ",
             style: AppStyles.medium15(context).copyWith(
-              color: AppColors.myBlack50,
+              color: AppLightColors.myBlack50,
             ),
           ),
         ),

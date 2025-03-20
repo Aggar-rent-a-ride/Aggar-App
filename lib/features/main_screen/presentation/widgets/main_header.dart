@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/main_screen_location_icon_and_location_text.dart';
@@ -22,7 +22,7 @@ class MainHeader extends StatelessWidget {
                 Text(
                   "Location",
                   style: AppStyles.regular14(context)
-                      .copyWith(color: AppColors.myWhite50_1),
+                      .copyWith(color: AppLightColors.myWhite50_1),
                 ),
                 const Gap(5),
                 const MainScreenLocationIconAndLocationText(),
@@ -34,7 +34,7 @@ class MainHeader extends StatelessWidget {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.myBlue100_4,
+                    color: AppLightColors.myBlue100_4,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Padding(
@@ -54,7 +54,7 @@ class MainHeader extends StatelessWidget {
                     height: 8,
                     width: 8,
                     decoration: BoxDecoration(
-                      color: AppColors.myGreen100_1,
+                      color: AppLightColors.myGreen100_1,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -74,7 +74,7 @@ class MainHeader extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.12,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.myBlue100_4,
+                  color: AppLightColors.myBlue100_4,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -111,7 +111,7 @@ class MainScreenSearchField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Search',
           hintStyle: AppStyles.regular18(context).copyWith(
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/widgets/name_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -28,7 +28,7 @@ class NameAndRateSection extends StatelessWidget {
               BoxShadow(
                 offset: const Offset(0, 0),
                 blurRadius: 4,
-                color: AppColors.myBlack25,
+                color: AppLightColors.myBlack25,
               )
             ],
           ),

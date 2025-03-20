@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class OwnerImageSection extends StatelessWidget {
@@ -15,7 +15,7 @@ class OwnerImageSection extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 4),
-            color: AppColors.myBlack25,
+            color: AppLightColors.myBlack25,
             spreadRadius: 0,
             blurRadius: 4,
           )

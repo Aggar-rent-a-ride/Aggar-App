@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_list_view.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_main_image_button_content.dart';
@@ -30,7 +30,7 @@ class _VehicleImagesSectionState extends State<VehicleImagesSection> {
         Text(
           "Vehicle Images :",
           style: AppStyles.bold22(context).copyWith(
-            color: AppColors.myBlue100_2,
+            color: AppLightColors.myBlue100_2,
           ),
         ),
         PickMainImageButtonContent(
@@ -39,7 +39,7 @@ class _VehicleImagesSectionState extends State<VehicleImagesSection> {
         Text(
           "additional images",
           style: AppStyles.medium18(context).copyWith(
-            color: AppColors.myBlue100_1,
+            color: AppLightColors.myBlue100_1,
           ),
         ),
         AdditionalImageListView(

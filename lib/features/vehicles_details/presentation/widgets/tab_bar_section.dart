@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/views/about_tab_bar_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/views/properities_tab_bar_view.dart';
@@ -69,14 +69,14 @@ class _TabBarSectionState extends State<TabBarSection>
           controller: _tabController,
           padding: EdgeInsets.zero,
           indicatorPadding: EdgeInsets.zero,
-          indicatorColor: AppColors.myBlue100_2,
-          dividerColor: AppColors.myBlack10,
-          labelColor: AppColors.myBlue100_2,
-          unselectedLabelColor: AppColors.myGray100_2,
-          labelStyle:
-              AppStyles.bold18(context).copyWith(color: AppColors.myBlue100_2),
-          unselectedLabelStyle:
-              AppStyles.bold18(context).copyWith(color: AppColors.myBlack25),
+          indicatorColor: AppLightColors.myBlue100_2,
+          dividerColor: AppLightColors.myBlack10,
+          labelColor: AppLightColors.myBlue100_2,
+          unselectedLabelColor: AppLightColors.myGray100_2,
+          labelStyle: AppStyles.bold18(context)
+              .copyWith(color: AppLightColors.myBlue100_2),
+          unselectedLabelStyle: AppStyles.bold18(context)
+              .copyWith(color: AppLightColors.myBlack25),
           tabs: const [
             Tab(
               child: Text("About"),

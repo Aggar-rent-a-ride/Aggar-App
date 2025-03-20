@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart' show AppStyles;
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
           Icon(
             Icons.location_on_sharp,
             size: 20,
-            color: AppColors.myGray100_2,
+            color: AppLightColors.myGray100_2,
           ),
           Expanded(
             flex: 7,
@@ -29,7 +29,7 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 vehicleAddress,
                 style: AppStyles.semiBold16(context).copyWith(
-                  color: AppColors.myBlack50,
+                  color: AppLightColors.myBlack50,
                 ),
               ),
             ),
@@ -39,7 +39,7 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
             child: Text(
               "1.4km",
               style: AppStyles.semiBold16(context).copyWith(
-                color: AppColors.myBlack50,
+                color: AppLightColors.myBlack50,
               ),
             ),
           ),

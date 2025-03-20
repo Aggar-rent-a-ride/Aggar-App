@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 
@@ -47,7 +47,6 @@ class _PickImageIconWithTitleAndSubtitleState
       }
     } catch (e) {
       debugPrint('Error picking image: $e');
-      // Optionally show error message to user
     }
   }
 
@@ -92,7 +91,7 @@ class _PickImageIconWithTitleAndSubtitleState
           child: Column(
             children: [
               CircleAvatar(
-                backgroundColor: AppColors.myBlue100_2,
+                backgroundColor: AppLightColors.myBlue100_2,
                 radius: 90,
                 child: _localImagePath != null
                     ? ClipRRect(
@@ -117,13 +116,13 @@ class _PickImageIconWithTitleAndSubtitleState
                     ? "Change profile photo"
                     : "Profile photo",
                 style: AppStyles.semiBold24(context).copyWith(
-                  color: AppColors.myBlue100_1,
+                  color: AppLightColors.myBlue100_1,
                 ),
               ),
               Text(
                 "Please make sure that the photo you \n    upload will not be modified later",
                 style: AppStyles.regular12(context).copyWith(
-                  color: AppColors.myBlack50,
+                  color: AppLightColors.myBlack50,
                 ),
               ),
             ],

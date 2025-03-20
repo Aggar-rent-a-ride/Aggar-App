@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
 import 'package:aggar/features/authorization/presentation/widget/divider_with_text.dart';
@@ -42,7 +42,7 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.myWhite100_1,
+      backgroundColor: AppLightColors.myWhite100_1,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(

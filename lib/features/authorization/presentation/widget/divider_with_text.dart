@@ -1,7 +1,7 @@
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/themes/app_colors.dart';
 
 class DividerWithText extends StatelessWidget {
   const DividerWithText({super.key});
@@ -12,7 +12,7 @@ class DividerWithText extends StatelessWidget {
       children: [
         Expanded(
           child: Divider(
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
         ),
         Padding(
@@ -20,13 +20,13 @@ class DividerWithText extends StatelessWidget {
           child: Text(
             "or continue with",
             style: AppStyles.medium18(context).copyWith(
-              color: AppColors.myBlack50,
+              color: AppLightColors.myBlack50,
             ),
           ),
         ),
         Expanded(
           child: Divider(
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
         ),
       ],

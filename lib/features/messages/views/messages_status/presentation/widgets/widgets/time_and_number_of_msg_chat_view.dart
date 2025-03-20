@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -19,7 +19,7 @@ class TimeAndNumberOfMsgChatView extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: AppColors.myGray100_3,
+            color: AppLightColors.myGray100_3,
           ),
         ),
         const Gap(2),
@@ -27,7 +27,7 @@ class TimeAndNumberOfMsgChatView extends StatelessWidget {
           height: 25,
           width: 25,
           decoration: BoxDecoration(
-            color: AppColors.myBlue100_3,
+            color: AppLightColors.myBlue100_3,
             borderRadius: BorderRadius.circular(50),
           ),
           child: Center(

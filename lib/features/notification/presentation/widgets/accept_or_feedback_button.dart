@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +15,7 @@ class AcceptOrFeedbackButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        backgroundColor: AppColors.myBlue100_2,
+        backgroundColor: AppLightColors.myBlue100_2,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -27,7 +27,7 @@ class AcceptOrFeedbackButton extends StatelessWidget {
       child: Text(
         title,
         style: AppStyles.semiBold18(context).copyWith(
-          color: AppColors.myWhite100_1,
+          color: AppLightColors.myWhite100_1,
         ),
       ),
     );

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_pick_location_on_map_section.dart';
@@ -58,7 +58,7 @@ class _VehicleLocationSectionState extends State<VehicleLocationSection> {
         Text(
           "Vehicle Location:",
           style: AppStyles.bold22(context).copyWith(
-            color: AppColors.myBlue100_2,
+            color: AppLightColors.myBlue100_2,
           ),
         ),
         const Gap(10),

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -26,7 +26,7 @@ class TextWithArrowBackButton extends StatelessWidget {
             ),
           ),
           overlayColor: WidgetStatePropertyAll(
-            AppColors.myBlue100_8,
+            AppLightColors.myBlue10_2,
           ),
         ),
         onPressed: () {},
@@ -36,14 +36,14 @@ class TextWithArrowBackButton extends StatelessWidget {
             Text(
               text,
               style: AppStyles.medium14(context).copyWith(
-                color: AppColors.myBlue100_2,
+                color: AppLightColors.myBlue100_2,
               ),
             ),
             const Gap(10),
             Icon(
               Icons.arrow_forward_ios,
               size: 14,
-              color: AppColors.myBlue100_2,
+              color: AppLightColors.myBlue100_2,
             ),
           ],
         ),

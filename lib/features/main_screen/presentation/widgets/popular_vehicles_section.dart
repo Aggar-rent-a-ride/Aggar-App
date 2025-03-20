@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/utils/app_styles.dart';
@@ -20,7 +20,7 @@ class PopularVehiclesSection extends StatelessWidget {
             Text(
               'Popular vehicles',
               style: AppStyles.bold24(context).copyWith(
-                color: AppColors.myBlue100_5,
+                color: AppLightColors.myBlue100_5,
               ),
             ),
             TextButton(
@@ -30,13 +30,13 @@ class PopularVehiclesSection extends StatelessWidget {
                   Text(
                     'see all',
                     style: AppStyles.medium15(context).copyWith(
-                      color: AppColors.myBlue100_2,
+                      color: AppLightColors.myBlue100_2,
                     ),
                   ),
                   const Gap(5),
                   Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColors.myBlue100_2,
+                    color: AppLightColors.myBlue100_2,
                     size: 12,
                   ),
                 ],

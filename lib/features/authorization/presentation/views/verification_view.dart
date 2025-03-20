@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/data/cubit/verification/verification_cubit.dart';
@@ -39,7 +39,7 @@ class VerificationViewContent extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
+              backgroundColor: AppLightColors.myRed100_1,
             ),
           );
           context.read<VerificationCubit>().resetError();
@@ -60,10 +60,10 @@ class VerificationViewContent extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: AppColors.myWhite100_1,
+          backgroundColor: AppLightColors.myWhite100_1,
           appBar: AppBar(
             toolbarHeight: 80,
-            backgroundColor: AppColors.myWhite100_1,
+            backgroundColor: AppLightColors.myWhite100_1,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
@@ -92,7 +92,7 @@ class VerificationViewContent extends StatelessWidget {
                   Text(
                     'Please enter the verification code sent to:',
                     style: AppStyles.regular20(context)
-                        .copyWith(color: AppColors.myGray100_2),
+                        .copyWith(color: AppLightColors.myGray100_2),
                   ),
                   Text(
                     state.email ?? 'your email',
@@ -111,9 +111,9 @@ class VerificationViewContent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       fieldHeight: 50,
                       fieldWidth: 50,
-                      activeColor: AppColors.myBlue100_1,
-                      inactiveColor: AppColors.myGray100_2,
-                      selectedColor: AppColors.myBlue100_2,
+                      activeColor: AppLightColors.myBlue100_1,
+                      inactiveColor: AppLightColors.myGray100_2,
+                      selectedColor: AppLightColors.myBlue100_2,
                     ),
                   ),
                   const Gap(20),
@@ -122,7 +122,7 @@ class VerificationViewContent extends StatelessWidget {
                     children: [
                       Text("Didn't receive the code?",
                           style: AppStyles.regular20(context)
-                              .copyWith(color: AppColors.myGray100_2)),
+                              .copyWith(color: AppLightColors.myGray100_2)),
                       TextButton(
                         onPressed: state.isResending
                             ? null
@@ -138,21 +138,21 @@ class VerificationViewContent extends StatelessWidget {
                                     height: 16,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: AppColors.myBlue100_1,
+                                      color: AppLightColors.myBlue100_1,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     'Sending...',
-                                    style: AppStyles.bold22(context)
-                                        .copyWith(color: AppColors.myBlue100_1),
+                                    style: AppStyles.bold22(context).copyWith(
+                                        color: AppLightColors.myBlue100_1),
                                   ),
                                 ],
                               )
                             : Text(
                                 'Resend it',
-                                style: AppStyles.bold22(context)
-                                    .copyWith(color: AppColors.myBlue100_1),
+                                style: AppStyles.bold22(context).copyWith(
+                                    color: AppLightColors.myBlue100_1),
                               ),
                       )
                     ],
@@ -161,7 +161,7 @@ class VerificationViewContent extends StatelessWidget {
                   state.isLoading
                       ? Center(
                           child: CircularProgressIndicator(
-                            color: AppColors.myBlue100_1,
+                            color: AppLightColors.myBlue100_1,
                           ),
                         )
                       : CustomElevatedButton(

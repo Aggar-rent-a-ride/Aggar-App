@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class CustomElevatedButton extends StatelessWidget {
       width: MediaQuery.sizeOf(context).width * 0.8,
       height: 55,
       decoration: BoxDecoration(
-        color: AppColors.myBlue100_1,
+        color: AppLightColors.myBlue100_1,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -41,7 +41,7 @@ class CustomElevatedButton extends StatelessWidget {
         child: Text(
           text,
           style: AppStyles.bold20(context).copyWith(
-            color: AppColors.myWhite100_1,
+            color: AppLightColors.myWhite100_1,
           ),
         ),
       ),

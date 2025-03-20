@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AdditionalImageGallery extends StatelessWidget {
@@ -16,7 +16,7 @@ class AdditionalImageGallery extends StatelessWidget {
         width: MediaQuery.sizeOf(context).width * 0.30,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.myBlue100_7,
+          color: AppLightColors.myBlue100_7,
           image: const DecorationImage(
             image: AssetImage(
               AppAssets.assetsImagesCar,

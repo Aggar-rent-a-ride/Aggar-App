@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/type_message_text_field_with_send_button.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +10,7 @@ class SendMessagesWithAttachSection extends StatelessWidget {
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.11,
       width: double.infinity,
-      color: AppColors.myWhite100_1,
+      color: AppLightColors.myWhite100_1,
       child: const TypeMessageTextFieldWithSendButton(),
     );
   }

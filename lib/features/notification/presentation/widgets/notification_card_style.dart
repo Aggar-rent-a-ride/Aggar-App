@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class NotificationCardStyle extends StatelessWidget {
@@ -14,18 +14,18 @@ class NotificationCardStyle extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: AppColors.myGray100_6,
+            color: AppLightColors.myBlack10,
             width: 0.5,
           ),
           top: BorderSide(
-            color: AppColors.myGray100_6,
+            color: AppLightColors.myBlack10,
             width: 0.5,
           ),
         ),
       ),
       child: ElevatedButton(
         style: ButtonStyle(
-          overlayColor: WidgetStateProperty.all(AppColors.myBlue10_2),
+          overlayColor: WidgetStateProperty.all(AppLightColors.myBlue10_2),
           backgroundColor: WidgetStateProperty.all(
             Colors.transparent,
           ),

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/app_styles.dart';
@@ -17,7 +17,7 @@ class NameAndEmailSection extends StatelessWidget {
         Text(
           'adeleissomeceleb@gmail.com',
           style: AppStyles.medium15(context).copyWith(
-            color: AppColors.myBlack50,
+            color: AppLightColors.myBlack50,
           ),
         ),
       ],

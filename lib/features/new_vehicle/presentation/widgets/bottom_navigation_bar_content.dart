@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +12,10 @@ class BottomNavigationBarContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.myWhite100_1,
+        color: AppLightColors.myWhite100_1,
         boxShadow: [
           BoxShadow(
-            color: AppColors.myBlack10,
+            color: AppLightColors.myBlack10,
             offset: const Offset(0, -1),
             blurRadius: 10,
           ),
@@ -35,17 +35,17 @@ class BottomNavigationBarContent extends StatelessWidget {
               EdgeInsets.symmetric(horizontal: 0, vertical: 20),
             ),
             overlayColor: WidgetStatePropertyAll(
-              AppColors.myWhite50_1,
+              AppLightColors.myWhite50_1,
             ),
             backgroundColor: WidgetStatePropertyAll(
-              AppColors.myBlue100_2,
+              AppLightColors.myBlue100_2,
             ),
           ),
           onPressed: onPressed,
           child: Text(
             'Add Vehicle',
             style: AppStyles.bold20(context).copyWith(
-              color: AppColors.myWhite100_1,
+              color: AppLightColors.myWhite100_1,
             ),
           ),
         ),

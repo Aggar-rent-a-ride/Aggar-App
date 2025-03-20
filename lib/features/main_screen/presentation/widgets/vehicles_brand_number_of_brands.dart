@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -18,12 +18,12 @@ class VehiclesBrandNumberOfBrands extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(3),
-        color: AppColors.myBlue10_2,
+        color: AppLightColors.myBlue10_2,
       ),
       child: Text(
         numOfBrands.toString(),
         style: AppStyles.regular10(context).copyWith(
-          color: AppColors.myBlue100_2,
+          color: AppLightColors.myBlue100_2,
         ),
       ),
     );

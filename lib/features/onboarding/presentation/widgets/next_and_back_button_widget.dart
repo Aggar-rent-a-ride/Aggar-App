@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class NextandBackButtonWidget extends StatelessWidget {
@@ -21,7 +21,7 @@ class NextandBackButtonWidget extends StatelessWidget {
               vertical: 5,
             ),
           ),
-          foregroundColor: WidgetStatePropertyAll(AppColors.myBlue100_1),
+          foregroundColor: WidgetStatePropertyAll(AppLightColors.myBlue100_1),
           backgroundColor: const WidgetStatePropertyAll(Colors.transparent)),
       onPressed: onPressed,
       child: Text(

@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class SectionHeader extends StatelessWidget {
           Text(
             title,
             style: AppStyles.medium16(context).copyWith(
-              color: AppColors.myBlack25,
+              color: AppLightColors.myBlack25,
             ),
           ),
           const Spacer(),
@@ -33,7 +33,7 @@ class SectionHeader extends StatelessWidget {
             child: Text(
               markTitle,
               style: AppStyles.medium16(context).copyWith(
-                color: AppColors.myBlue100_1,
+                color: AppLightColors.myBlue100_1,
               ),
             ),
           ),

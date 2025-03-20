@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -17,7 +17,7 @@ class VehiclesTypeSection extends StatelessWidget {
         Text(
           "Vehicles Type",
           style: AppStyles.bold24(context).copyWith(
-            color: AppColors.myBlue100_5,
+            color: AppLightColors.myBlue100_5,
           ),
         ),
         const Gap(8),

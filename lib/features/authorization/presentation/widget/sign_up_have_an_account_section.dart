@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_colors.dart';
+import 'package:aggar/core/themes/app_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +27,7 @@ class SignUpHaveAnAccountSection extends StatelessWidget {
           child: Text(
             "Login now",
             style: AppStyles.medium18(context).copyWith(
-              color: AppColors.myBlue100_1,
+              color: AppLightColors.myBlue100_1,
             ),
           ),
         ),
