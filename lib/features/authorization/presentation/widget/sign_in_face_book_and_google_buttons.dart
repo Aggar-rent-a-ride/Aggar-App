@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_social_button.dart';
 import 'package:flutter/material.dart';

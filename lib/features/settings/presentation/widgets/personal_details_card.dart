@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:aggar/features/settings/presentation/widgets/image_with_name_and_email_section.dart';
 import 'package:flutter/material.dart';

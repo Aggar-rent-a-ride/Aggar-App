@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';

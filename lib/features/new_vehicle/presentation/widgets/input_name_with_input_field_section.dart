@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/themes/app_light_colors.dart';
 import '../../../../core/utils/app_styles.dart' show AppStyles;
 
 class InputNameWithInputFieldSection extends StatelessWidget {

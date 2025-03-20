@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/transmission_type_container.dart';
 import 'package:flutter/material.dart';

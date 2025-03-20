@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
 import 'package:aggar/features/authorization/presentation/widget/divider_with_text.dart';

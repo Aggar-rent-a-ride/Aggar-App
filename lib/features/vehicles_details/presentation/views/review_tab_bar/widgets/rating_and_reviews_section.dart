@@ -2,7 +2,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_graph_section.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../core/themes/app_colors.dart';
+import '../../../../../../core/themes/app_light_colors.dart';
 
 class RatingAndReviewsSection extends StatelessWidget {
   const RatingAndReviewsSection({super.key});

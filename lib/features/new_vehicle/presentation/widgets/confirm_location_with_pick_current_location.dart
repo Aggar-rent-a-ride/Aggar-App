@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_state.dart';
 import 'package:flutter/material.dart';

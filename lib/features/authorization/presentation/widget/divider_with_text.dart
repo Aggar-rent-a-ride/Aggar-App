@@ -1,7 +1,7 @@
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/themes/app_light_colors.dart';
 
 class DividerWithText extends StatelessWidget {
   const DividerWithText({super.key});

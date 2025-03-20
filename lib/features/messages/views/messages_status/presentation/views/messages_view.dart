@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/all_messages_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/color_and_seats_no_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/vehicle_health_with_status_container.dart';

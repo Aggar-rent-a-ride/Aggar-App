@@ -4,7 +4,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_ima
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_main_image_button_style.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/main_image_card.dart';

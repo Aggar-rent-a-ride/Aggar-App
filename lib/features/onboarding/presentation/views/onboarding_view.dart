@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_colors.dart';
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/custom_page_view.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/next_and_back_button_widget.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/start_now_widget.dart';
