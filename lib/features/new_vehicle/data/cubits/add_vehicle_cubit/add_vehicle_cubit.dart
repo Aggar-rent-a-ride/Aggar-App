@@ -29,7 +29,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       baseUrl: "https://aggarapi.runasp.net",
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUxIiwianRpIjoiNjRhYmE1NzctZGQwOC00ZTVlLWFhY2YtNDJkMDc3ZTA5YmI0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q2IiwidWlkIjoiMTA1MSIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyNzQ3NTI4LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.3d-hJG5qZ1UHgZR0KBYAPtpLQNauPP27vZOpd29UREo',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUzIiwianRpIjoiZWFiYTJhYWYtYzE5NC00ODA1LTlkOWItMWVlMWJjYTE1Y2M0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q4IiwidWlkIjoiMTA1MyIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyNzU2NTQxLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.1a-meZ0E3Iu1HuLYvbg60QhPsVZGibqBrOVkeoucGI8',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
