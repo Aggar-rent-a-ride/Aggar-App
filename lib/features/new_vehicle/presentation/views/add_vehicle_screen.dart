@@ -63,17 +63,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddVehicleCubit, AddVehicleState>(
-      listener: (context, state) {
-        if (state is AddVehicleSuccess) {
-          print("Success");
-        } else if (state is AddVehicleFailure) {
-          print("Fail");
-        }
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
-            onPressed: () {
+            onPressed: () async {
+              await context.read<AddVehicleCubit>().postData();
               if (context
                       .read<AddVehicleCubit>()
                       .addVehicleFormKey
