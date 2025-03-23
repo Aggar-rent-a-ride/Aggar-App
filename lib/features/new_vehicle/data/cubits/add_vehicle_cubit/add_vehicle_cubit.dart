@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart'
@@ -6,6 +8,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:latlong2/latlong.dart';
 import 'dart:convert';
 import 'package:path/path.dart' show basename;
 import '../../../../../core/api/end_points.dart';
@@ -88,29 +91,62 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     emit(VehicleHealthUpdated(selectedVehicleHealthValue));
   }
 
-  Future<void> postData() async {
+  Future<void> postData(
+    LatLng? location,
+    List<File?> additionalImages,
+    File? mainImageFile,
+  ) async {
     try {
       emit(AddVehicleLoading());
-
-      // Create FormData object
       FormData formData = FormData();
 
-      // Add text fields
+      // Create location JSON with default values if location is null
+      final locationJson = jsonEncode({
+        "Latitude": location?.latitude ?? 30.0444,
+        "Longitude": location?.longitude ?? 31.2357,
+      });
+
       formData.fields.addAll([
+        MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
         MapEntry(ApiKey.vehicleModel, vehicleModelController.text),
         MapEntry(ApiKey.vehicleRentalPrice, vehicleRentalPrice.text),
         MapEntry(ApiKey.vehicleYearOfManufacture,
             vehicleYearOfManufactureController.text),
         MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
-        MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
         MapEntry(ApiKey.vehicleProperitesOverview,
             vehicleProperitesOverviewController.text),
-        MapEntry(ApiKey.vehicleBrand, vehicleBrandController.text),
-        MapEntry(ApiKey.vehicleType, vehicleTypeController.text),
+        MapEntry(ApiKey.vehicleType, "1"),
+        MapEntry(ApiKey.vehicleBrand, "1"),
         MapEntry(ApiKey.vehicleStatus, vehicleStatusController.text),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
+        MapEntry(ApiKey.vehicleTransmissionMode, "Manual"),
+        MapEntry(ApiKey.vehicleHealth, selectedVehicleHealthValue ?? "Good"),
+        MapEntry(
+            "Location.Latitude", (location?.latitude ?? 30.0444).toString()),
+        MapEntry(
+            "Location.Longitude", (location?.longitude ?? 31.2357).toString()),
       ]);
-      // Send the request
+      formData.files.add(MapEntry(
+        "MainImage",
+        await MultipartFile.fromFile(
+          mainImageFile!.path,
+          filename: basename(mainImageFile.path),
+        ),
+      ));
+      if (additionalImages.isNotEmpty) {
+        for (int i = 0; i < additionalImages.length; i++) {
+          if (additionalImages[i] != null) {
+            formData.files.add(MapEntry(
+              "AdditionalImages",
+              await MultipartFile.fromFile(
+                additionalImages[i]!.path,
+                filename: basename(additionalImages[i]!.path),
+              ),
+            ));
+          }
+        }
+      }
+
       final response = await _dio.post(
         EndPoint.vehicle,
         data: formData,
@@ -122,7 +158,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           },
         ),
       );
-      print("dddddddddddddddddd $response ");
+
+      print("Response: $response");
+
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         emit(AddVehicleSuccess(response.data));
       } else {

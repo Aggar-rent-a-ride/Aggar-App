@@ -8,6 +8,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -68,7 +69,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             onPressed: () async {
-              await context.read<AddVehicleCubit>().postData();
+              await context.read<AddVehicleCubit>().postData(
+                    context.read<MapLocationCubit>().selectedLocation,
+                    context.read<AdditionalImageCubit>().images,
+                    context.read<MainImageCubit>().image!,
+                  );
               if (context
                       .read<AddVehicleCubit>()
                       .addVehicleFormKey
