@@ -31,6 +31,7 @@ class DioConsumer extends ApiConsumer {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
     bool isFromData = false,
   }) async {
     try {
@@ -48,8 +49,12 @@ class DioConsumer extends ApiConsumer {
   }
 
   @override
-  Future get(String path,
-      {Object? data, Map<String, dynamic>? queryParameters}) async {
+  Future get(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
     try {
       final response = await dio.get(
         path,
@@ -69,6 +74,7 @@ class DioConsumer extends ApiConsumer {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
     bool isFromData = false,
   }) async {
     try {
@@ -90,6 +96,7 @@ class DioConsumer extends ApiConsumer {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
     bool isFromData = false,
   }) async {
     try {

@@ -1,3 +1,4 @@
+import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cache/cache_helper.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
@@ -7,6 +8,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location
 import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart'
     show AddVehicleScreen;
 import 'package:device_preview/device_preview.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,7 +45,12 @@ class MyApp extends StatelessWidget {
             create: (context) => MainImageCubit(),
           ),
           BlocProvider(
-            create: (context) => AddVehicleCubit(),
+            create: (context) => AddVehicleCubit(
+              DioConsumer(dio: Dio()),
+              MainImageCubit(),
+              AdditionalImageCubit(),
+              MapLocationCubit(),
+            ),
           ),
           BlocProvider(
             create: (context) => PickImageCubit(),
