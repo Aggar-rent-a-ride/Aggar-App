@@ -5,6 +5,9 @@ import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_ima
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:path/path.dart' show basename;
 import '../../../../../core/api/end_points.dart';
 import 'add_vehicle_state.dart';
 
@@ -13,25 +16,35 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   final AdditionalImageCubit additionalImageCubit;
   final MapLocationCubit mapLocationCubit;
   final ApiConsumer apiConsumer;
+  late Dio _dio;
+
   AddVehicleCubit(this.apiConsumer, this.mainImageCubit,
       this.additionalImageCubit, this.mapLocationCubit)
       : super(AddVehicleInitial()) {
     selectedTransmissionModeValue = 0;
     emit(TransmissionModeUpdated(selectedTransmissionModeValue));
+
+    // Initialize Dio with base URL and default options
+    _dio = Dio(BaseOptions(
+      baseUrl: "https://aggarapi.runasp.net",
+      headers: {
+        'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUxIiwianRpIjoiNjRhYmE1NzctZGQwOC00ZTVlLWFhY2YtNDJkMDc3ZTA5YmI0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q2IiwidWlkIjoiMTA1MSIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyNzQ3NTI4LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.3d-hJG5qZ1UHgZR0KBYAPtpLQNauPP27vZOpd29UREo',
+        'Accept': 'application/json',
+      },
+      responseType: ResponseType.json,
+    ));
   }
 
   GlobalKey<FormState> addVehicleFormKey = GlobalKey();
   TextEditingController vehicleModelController = TextEditingController();
-
   TextEditingController vehicleRentalPrice = TextEditingController();
-
   TextEditingController vehicleYearOfManufactureController =
       TextEditingController();
   TextEditingController vehicleColorController = TextEditingController();
   TextEditingController vehicleSeatsNoController = TextEditingController();
   TextEditingController vehicleProperitesOverviewController =
       TextEditingController();
-
   TextEditingController vehicleBrandController = TextEditingController();
   TextEditingController vehicleTypeController = TextEditingController();
   TextEditingController vehicleStatusController = TextEditingController();
@@ -79,30 +92,62 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     try {
       emit(AddVehicleLoading());
 
-      final Map<String, dynamic> data = {
-        ApiKey.vehicleModel: vehicleModelController.text, // Model
-        ApiKey.vehicleRentalPrice: vehicleRentalPrice.text, // PricePerDay
-        ApiKey.vehicleYearOfManufacture:
-            vehicleYearOfManufactureController.text, // Year
-        ApiKey.vehicleColor: vehicleColorController.text, // Color
-        ApiKey.vehicleSeatsNo: vehicleSeatsNoController.text, // NumOfPassengers
-        ApiKey.vehicleProperitesOverview:
-            vehicleProperitesOverviewController.text, // ExtraDetails
-        ApiKey.vehicleBrand: vehicleBrandController.text, // VehicleBrandId
-        ApiKey.vehicleType: vehicleTypeController.text, // VehicleTypeId
-        ApiKey.vehicleStatus: vehicleStatusController.text, // Status
-        ApiKey.vehicleAddress: vehicleAddressController.text, // Address
-        ApiKey.vehicleTransmissionMode:
-            selectedTransmissionModeValue, // Transmission
-        ApiKey.vehicleHealth: selectedVehicleHealthValue, // PhysicalStatus
-        ApiKey.vehicleImages: additionalImageCubit.images, // Images
-        ApiKey.vehicleMainImage: mainImageCubit.image, // MainImage
-        ApiKey.vehiclLocation: mapLocationCubit.selectedLocation, // Location
-      };
-      final response = await apiConsumer.post(
+      // Create FormData object
+      FormData formData = FormData();
+
+      // Add text fields
+      formData.fields.addAll([
+        MapEntry(ApiKey.vehicleModel, vehicleModelController.text),
+        MapEntry(ApiKey.vehicleRentalPrice, vehicleRentalPrice.text),
+        MapEntry(ApiKey.vehicleYearOfManufacture,
+            vehicleYearOfManufactureController.text),
+        MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
+        MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
+        MapEntry(ApiKey.vehicleProperitesOverview,
+            vehicleProperitesOverviewController.text),
+        MapEntry(ApiKey.vehicleBrand, vehicleBrandController.text),
+        MapEntry(ApiKey.vehicleType, vehicleTypeController.text),
+        MapEntry(ApiKey.vehicleStatus, vehicleStatusController.text),
+        MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
+      ]);
+      // Send the request
+      final response = await _dio.post(
         EndPoint.vehicle,
-        data: data,
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
       );
-    } catch (e) {}
+      print("dddddddddddddddddd $response ");
+      if (response.statusCode! >= 200 && response.statusCode! < 300) {
+        emit(AddVehicleSuccess(response.data));
+      } else {
+        emit(AddVehicleFailure(
+            "Error: ${response.statusCode} - ${response.data.toString()}"));
+      }
+    } on DioException catch (e) {
+      String errorMessage = "Request failed";
+
+      if (e.response != null) {
+        errorMessage =
+            "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        errorMessage = "Connection timeout";
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = "Receive timeout";
+      } else if (e.type == DioExceptionType.sendTimeout) {
+        errorMessage = "Send timeout";
+      } else {
+        errorMessage = "Error: ${e.message}";
+      }
+
+      emit(AddVehicleFailure(errorMessage));
+    } catch (e) {
+      emit(AddVehicleFailure("Unexpected error: $e"));
+    }
   }
 }
