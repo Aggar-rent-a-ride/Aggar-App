@@ -38,4 +38,10 @@ class ApiKey {
   static String vehicleType = "VehicleTypeId";
   static String vehicleAddress = "Address";
   static String vehiclLocation = "Location";
+  static String vehicleLocationLatitude = "Latitude";
+  static String vehicleLocationLongitude = "Longitude";
+  static String vehicleAddressCountry = "Country";
+  static String vehicleAddressState = "State";
+  static String vehicleAddressCity = "City";
+  static String vehicleAddressStreet = "Street";
 }
