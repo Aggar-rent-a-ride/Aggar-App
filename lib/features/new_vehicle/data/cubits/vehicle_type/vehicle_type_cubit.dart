@@ -8,7 +8,7 @@ import 'vehicle_type_state.dart';
 
 class VehicleTypeCubit extends Cubit<VehicleTypeState> {
   VehicleTypeCubit() : super(VehicleTypeInitial());
-  final List<String> vehicletypes = [];
+  final List<String> vehicleTypes = [];
   Future<void> fetchVehicleTypes(String accessToken) async {
     try {
       // TODO : edit it with api comusmer but it not work man !!!!
@@ -19,20 +19,20 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
           'Authorization': "Bearer $accessToken",
         },
       );
-      print(response.body);
+      //print(response.body);
       final Map<String, dynamic> decodedJson = jsonDecode(response.body);
       if (decodedJson['statusCode'] == 200) {
-        List<VehicleType> vehicleTypes = (decodedJson['data'] as List)
+        List<VehicleType> vehicleTypesData = (decodedJson['data'] as List)
             .map((item) => VehicleType.fromJson(item))
             .toList();
-        for (var vehicle in vehicleTypes) {
-          vehicletypes.add(vehicle.name);
+        for (var vehicle in vehicleTypesData) {
+          vehicleTypes.add(vehicle.name);
         }
       } else {
         emit(VehicleTypeError(message: decodedJson['message']));
       }
       emit(VehicleTypeLoaded());
-      print(vehicletypes);
+      // print(vehicletypes);
     } catch (error) {
       emit(VehicleTypeError(message: error.toString()));
     }
