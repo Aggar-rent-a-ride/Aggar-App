@@ -7,6 +7,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart'
     show AddVehicleScreen;
 import 'package:device_preview/device_preview.dart';
@@ -41,6 +42,9 @@ class MyApp extends StatelessWidget {
             create: (context) => MapLocationCubit(),
           ),
           BlocProvider(
+            create: (context) => VehicleTypeCubit(),
+          ),
+          BlocProvider(
             create: (context) => AdditionalImageCubit(),
           ),
           BlocProvider(
@@ -62,7 +66,7 @@ class MyApp extends StatelessWidget {
                 LoginCubit(dioConsumer: DioConsumer(dio: Dio())),
           ),
         ],
-        child: const SignInView(),
+        child: const AddVehicleScreen(),
       ),
     );
   }
