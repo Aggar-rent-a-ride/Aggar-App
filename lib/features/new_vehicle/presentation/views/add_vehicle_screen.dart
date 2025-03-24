@@ -1,7 +1,4 @@
 // ignore_for_file: avoid_print, unused_local_variable
-
-import 'dart:io';
-
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
@@ -9,12 +6,12 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -69,89 +66,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             onPressed: () async {
-              await context.read<AddVehicleCubit>().postData(
+              /* await context.read<AddVehicleCubit>().postData(
                     context.read<MapLocationCubit>().selectedLocation,
                     context.read<AdditionalImageCubit>().images,
                     context.read<MainImageCubit>().image!,
-                  );
-              if (context
-                      .read<AddVehicleCubit>()
-                      .addVehicleFormKey
-                      .currentState
-                      ?.validate() ??
-                  false) {
-                int transmissionMode = context
-                        .read<AddVehicleCubit>()
-                        .selectedTransmissionModeValue ??
-                    0;
-                String vehicleRentalPrice =
-                    context.read<AddVehicleCubit>().vehicleRentalPrice.text;
-                String vehicleModel =
-                    context.read<AddVehicleCubit>().vehicleModelController.text;
-                int vehicleYearOfManufaction = int.parse(context
-                    .read<AddVehicleCubit>()
-                    .vehicleYearOfManufactureController
-                    .text);
-                String vehicleColor =
-                    context.read<AddVehicleCubit>().vehicleColorController.text;
-                String vehicleOverView = context
-                    .read<AddVehicleCubit>()
-                    .vehicleProperitesOverviewController
-                    .text;
-                String vehicleSeatsNo = context
-                    .read<AddVehicleCubit>()
-                    .vehicleSeatsNoController
-                    .text;
-                List<File?> images =
-                    context.read<AdditionalImageCubit>().images;
-                File? mainImage = context.read<MainImageCubit>().image!;
-                String vehicleHealth =
-                    context.read<AddVehicleCubit>().selectedVehicleHealthValue!;
-                String vehicleType =
-                    context.read<AddVehicleCubit>().vehicleTypeController.text;
-                String vehicleBrand =
-                    context.read<AddVehicleCubit>().vehicleBrandController.text;
-                String vehicleStatus = context
-                    .read<AddVehicleCubit>()
-                    .vehicleStatusController
-                    .text;
-
-                // Get the address from the address controller
-                String vehicleAddress = context
-                    .read<AddVehicleCubit>()
-                    .vehicleAddressController
-                    .text;
-
-                // Use the stored location or default to 0,0 if not set
-                double vehicleLatitude = selectedLocation?.latitude ?? 0.0;
-                double vehicleLongitude = selectedLocation?.longitude ?? 0.0;
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VehiclesDetailsView(
-                      initialLocation: selectedLocation,
-                      onLocationSelected: _handleLocationSelected,
-                      vehicleAddress: vehicleAddress,
-                      vehicleLatitude: vehicleLatitude,
-                      vehicleLongitude: vehicleLongitude,
-                      yearOfManufaction: vehicleYearOfManufaction,
-                      vehicleModel: vehicleModel,
-                      vehicleRentPrice: double.parse(vehicleRentalPrice),
-                      vehicleColor: vehicleColor,
-                      vehicleOverView: vehicleOverView,
-                      vehiceSeatsNo: vehicleSeatsNo,
-                      images: images,
-                      mainImage: mainImage,
-                      vehicleHealth: vehicleHealth,
-                      vehicleStatus: vehicleStatus,
-                      transmissionMode: transmissionMode,
-                      vehicleType: vehicleType,
-                      vehicleBrand: vehicleBrand,
-                    ),
-                  ),
-                );
-              }
+                  );*/
+              await context.read<VehicleTypeCubit>().fetchVehicleTypes(
+                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiZWQ0OGM1NmQtMDJkOS00NjAzLTgwOTYtYWZmMGY0YTU5NmVhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyODM0ODM4LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.csh03MrwwCADHn6GEYSofKKxvGHeXdvUO_xGhS96lVY");
             },
           ),
           backgroundColor: AppLightColors.myWhite100_1,
@@ -231,3 +152,75 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 }
+/**if (context
+                      .read<AddVehicleCubit>()
+                      .addVehicleFormKey
+                      .currentState
+                      ?.validate() ??
+                  false) {
+                int transmissionMode = context
+                        .read<AddVehicleCubit>()
+                        .selectedTransmissionModeValue ??
+                    0;
+                String vehicleRentalPrice =
+                    context.read<AddVehicleCubit>().vehicleRentalPrice.text;
+                String vehicleModel =
+                    context.read<AddVehicleCubit>().vehicleModelController.text;
+                int vehicleYearOfManufaction = int.parse(context
+                    .read<AddVehicleCubit>()
+                    .vehicleYearOfManufactureController
+                    .text);
+                String vehicleColor =
+                    context.read<AddVehicleCubit>().vehicleColorController.text;
+                String vehicleOverView = context
+                    .read<AddVehicleCubit>()
+                    .vehicleProperitesOverviewController
+                    .text;
+                String vehicleSeatsNo = context
+                    .read<AddVehicleCubit>()
+                    .vehicleSeatsNoController
+                    .text;
+                List<File?> images =
+                    context.read<AdditionalImageCubit>().images;
+                File? mainImage = context.read<MainImageCubit>().image!;
+                String vehicleHealth =
+                    context.read<AddVehicleCubit>().selectedVehicleHealthValue!;
+                String vehicleType =
+                    context.read<AddVehicleCubit>().vehicleTypeController.text;
+                String vehicleBrand =
+                    context.read<AddVehicleCubit>().vehicleBrandController.text;
+                String vehicleStatus = context
+                    .read<AddVehicleCubit>()
+                    .vehicleStatusController
+                    .text;
+                String vehicleAddress = context.read<AddVehicleCubit>().vehicleAddressController.text;
+                double vehicleLatitude = selectedLocation?.latitude ?? 0.0;
+                double vehicleLongitude = selectedLocation?.longitude ?? 0.0;
+/*
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VehiclesDetailsView(
+                      initialLocation: selectedLocation,
+                      onLocationSelected: _handleLocationSelected,
+                      vehicleAddress: vehicleAddress,
+                      vehicleLatitude: vehicleLatitude,
+                      vehicleLongitude: vehicleLongitude,
+                      yearOfManufaction: vehicleYearOfManufaction,
+                      vehicleModel: vehicleModel,
+                      vehicleRentPrice: double.parse(vehicleRentalPrice),
+                      vehicleColor: vehicleColor,
+                      vehicleOverView: vehicleOverView,
+                      vehiceSeatsNo: vehicleSeatsNo,
+                      images: images,
+                      mainImage: mainImage,
+                      vehicleHealth: vehicleHealth,
+                      vehicleStatus: vehicleStatus,
+                      transmissionMode: transmissionMode,
+                      vehicleType: vehicleType,
+                      vehicleBrand: vehicleBrand,
+                    ),
+                  ),
+                );
+              }*/
+            }, */
