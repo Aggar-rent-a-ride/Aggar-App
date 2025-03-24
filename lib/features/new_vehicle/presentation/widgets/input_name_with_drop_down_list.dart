@@ -14,17 +14,20 @@ class InputNameWithDropDownList extends StatefulWidget {
     required this.hintText,
     this.width,
     required this.items,
+    required this.ids,
     this.flag = false,
     this.onSaved,
     this.validator,
     this.controller,
     this.initialValue,
   });
+
   final String hintTextSearch;
   final String lableText;
   final String hintText;
   final double? width;
   final List<String> items;
+  final List<int> ids;
   final bool? flag;
   final void Function(String?)? onSaved;
   final String? Function(String?)? validator;
@@ -47,13 +50,16 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
     textEditingController = TextEditingController();
     dropdownController = widget.controller ?? TextEditingController();
 
-    // Initialize selectedValue from the controller or initialValue
     if (widget.initialValue != null) {
       selectedValue = widget.initialValue;
       dropdownController.text = widget.initialValue!;
     } else if (widget.items == vehicleStatus) {
       selectedValue = widget.items.first;
       dropdownController.text = widget.items.first;
+    } else if (widget.items.isNotEmpty) {
+      // Default to first item if no initial value
+      selectedValue = widget.ids.first.toString();
+      dropdownController.text = widget.ids.first.toString();
     }
   }
 
@@ -64,6 +70,28 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
       dropdownController.dispose();
     }
     super.dispose();
+  }
+
+  // Helper method to get text style based on item
+  TextStyle getItemTextStyle(
+      BuildContext context, String item, String? selectedItem) {
+    if (item == selectedItem) {
+      if (item == "active") {
+        return AppStyles.medium15(context).copyWith(
+          color: AppLightColors.myGreen100_1,
+        );
+      } else if (item == "out of stock") {
+        return AppStyles.medium15(context).copyWith(
+          color: AppLightColors.myRed100_1,
+        );
+      }
+      return AppStyles.medium15(context).copyWith(
+        color: AppLightColors.myBlack100,
+      );
+    }
+    return AppStyles.medium15(context).copyWith(
+      color: AppLightColors.myBlack100,
+    );
   }
 
   @override
@@ -90,35 +118,24 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                     color: AppLightColors.myBlack50,
                   ),
                 ),
-                items: widget.items
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: item,
-                        child: Text(
-                          item,
-                          style: item == selectedValue
-                              ? (item == "active"
-                                  ? AppStyles.medium15(context).copyWith(
-                                      color: AppLightColors.myGreen100_1,
-                                    )
-                                  : item == "out of stock"
-                                      ? AppStyles.medium15(context).copyWith(
-                                          color: AppLightColors.myRed100_1,
-                                        )
-                                      : AppStyles.medium15(context).copyWith(
-                                          color: AppLightColors.myBlack100,
-                                        ))
-                              : AppStyles.medium15(context).copyWith(
-                                  color: AppLightColors.myBlack50,
-                                ),
-                        ),
-                      ),
-                    )
-                    .toList(),
+                items: List.generate(
+                  widget.items.length,
+                  (index) => DropdownMenuItem(
+                    value: widget.items == vehicleStatus
+                        ? widget.items[index]
+                        : widget.ids[index].toString(),
+                    child: Text(
+                      widget.items[index],
+                      style: getItemTextStyle(
+                          context, widget.items[index], selectedValue),
+                    ),
+                  ),
+                ),
                 value: selectedValue,
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value;
+                    //print(value);
                     dropdownController.text = value ?? '';
                     state.didChange(value);
                   });
@@ -162,7 +179,15 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                           ),
                         ),
                         searchMatchFn: (item, searchValue) {
-                          return item.value.toString().contains(searchValue);
+                          if (widget.items == vehicleStatus) {
+                            return item.value.toString().contains(searchValue);
+                          }
+                          int index = widget.ids.indexWhere(
+                            (id) => id.toString() == item.value,
+                          );
+                          return widget.items[index]
+                              .toLowerCase()
+                              .contains(searchValue.toLowerCase());
                         },
                       )
                     : const DropdownSearchData(),

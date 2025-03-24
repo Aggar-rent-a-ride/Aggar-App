@@ -55,6 +55,7 @@ class VehicleRentalPriceSection extends StatelessWidget {
               hintTextSearch: "Search for Vehicle status",
               lableText: "status",
               hintText: "ex: active",
+              ids: const [1, 2],
             ),
           ],
         )

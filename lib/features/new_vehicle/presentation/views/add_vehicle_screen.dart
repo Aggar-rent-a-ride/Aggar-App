@@ -3,11 +3,6 @@ import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/vehicle_brand/vehicle_brand_cubit.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -66,17 +61,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
-            onPressed: () async {
-              /* await context.read<AddVehicleCubit>().postData(
-                    context.read<MapLocationCubit>().selectedLocation,
-                    context.read<AdditionalImageCubit>().images,
-                    context.read<MainImageCubit>().image!,
-                  );*/
-              await context.read<VehicleBrandCubit>().fetchVehicleBrands(
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiZWQ0OGM1NmQtMDJkOS00NjAzLTgwOTYtYWZmMGY0YTU5NmVhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyODM0ODM4LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.csh03MrwwCADHn6GEYSofKKxvGHeXdvUO_xGhS96lVY");
-              await context.read<VehicleTypeCubit>().fetchVehicleTypes(
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiZWQ0OGM1NmQtMDJkOS00NjAzLTgwOTYtYWZmMGY0YTU5NmVhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyODM0ODM4LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.csh03MrwwCADHn6GEYSofKKxvGHeXdvUO_xGhS96lVY");
-            },
+            onPressed: () async {},
           ),
           backgroundColor: AppLightColors.myWhite100_1,
           appBar: AppBar(
