@@ -9,6 +9,7 @@ import '../../../../../core/api/end_points.dart';
 class VehicleBrandCubit extends Cubit<VehicleBrandState> {
   VehicleBrandCubit() : super(VehicleBrandInitial());
   final List<String> vehicleBrands = [];
+  final List<int> vehicleBrandIds = [];
 
   Future<void> fetchVehicleBrands(String accessToken) async {
     try {
@@ -28,6 +29,7 @@ class VehicleBrandCubit extends Cubit<VehicleBrandState> {
             .toList();
         for (var vehicle in vehicleBrandsData) {
           vehicleBrands.add(vehicle.name);
+          vehicleBrandIds.add(vehicle.id);
         }
         emit(VehicleBrandLoaded());
         print(vehicleBrands);
