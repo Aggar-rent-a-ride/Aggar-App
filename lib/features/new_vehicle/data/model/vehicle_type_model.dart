@@ -1,3 +1,5 @@
+import 'package:aggar/core/api/end_points.dart';
+
 class VehicleType {
   final int id;
   final String name;
@@ -11,9 +13,9 @@ class VehicleType {
 
   factory VehicleType.fromJson(Map<String, dynamic> json) {
     return VehicleType(
-      id: json['id'],
-      name: json['name'],
-      slogenPath: json['slogenPath'],
+      id: json[ApiKey.vehicleTypeId],
+      name: json[ApiKey.vehicleTypeName],
+      slogenPath: json[ApiKey.vehicleTypeSlogen],
     );
   }
 }
