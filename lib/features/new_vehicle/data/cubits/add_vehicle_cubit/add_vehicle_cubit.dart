@@ -159,10 +159,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         MapEntry(ApiKey.vehicleBrand, selectedVehicleBrandValue ?? "1"),
         MapEntry(ApiKey.vehicleStatus, getVehicleStatus()),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
-        MapEntry(
-          ApiKey.vehicleTransmissionMode,
-          getVehicleTransmission(),
-        ),
+        MapEntry(ApiKey.vehicleTransmissionMode, getVehicleTransmission()),
         MapEntry(ApiKey.vehicleHealth, getVehicleHealth()),
         MapEntry(
             "Location.Latitude", (location?.latitude ?? 30.0444).toString()),
@@ -210,6 +207,41 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         emit(AddVehicleFailure(
             "Error: ${response.statusCode} - ${response.data.toString()}"));
       }
+    } on DioException catch (e) {
+      String errorMessage = "Request failed";
+
+      if (e.response != null) {
+        errorMessage =
+            "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        errorMessage = "Connection timeout";
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = "Receive timeout";
+      } else if (e.type == DioExceptionType.sendTimeout) {
+        errorMessage = "Send timeout";
+      } else {
+        errorMessage = "Error: ${e.message}";
+      }
+
+      emit(AddVehicleFailure(errorMessage));
+    } catch (e) {
+      emit(AddVehicleFailure("Unexpected error: $e"));
+    }
+  }
+
+  Future<void> getData(String id) async {
+    try {
+      emit(AddVehicleLoading());
+      final response = await _dio.get(
+        '${EndPoint.addVehicle}+$id',
+        options: Options(
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print("Response: $response");
+      emit(AddVehicleSuccess(response.data));
     } on DioException catch (e) {
       String errorMessage = "Request failed";
 
