@@ -9,7 +9,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
-import 'dart:convert';
 import 'package:path/path.dart' show basename;
 import '../../../../../core/api/end_points.dart';
 import 'add_vehicle_state.dart';
@@ -32,7 +31,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       baseUrl: "https://aggarapi.runasp.net",
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUzIiwianRpIjoiZWFiYTJhYWYtYzE5NC00ODA1LTlkOWItMWVlMWJjYTE1Y2M0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q4IiwidWlkIjoiMTA1MyIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyNzU2NTQxLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.1a-meZ0E3Iu1HuLYvbg60QhPsVZGibqBrOVkeoucGI8',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiYmY4NDYwZTQtNDQ4Zi00YjczLWE2NTQtY2E0OTQxMDU0OGU3IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyOTAwMTUwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.sRrj1a9g30SxNB7muOS29e6UYRhUsNHJb-E5J0wYrTI',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -91,6 +90,54 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     emit(VehicleHealthUpdated(selectedVehicleHealthValue));
   }
 
+  String getVehicleTransmission() {
+    String transmissionMode;
+    switch (selectedTransmissionModeValue) {
+      case 0:
+        transmissionMode = "None";
+        break;
+      case 1:
+        transmissionMode = "Manual";
+        break;
+      default:
+        transmissionMode = "Automatic";
+    }
+    return transmissionMode;
+  }
+
+  String getVehicleHealth() {
+    String health;
+    switch (selectedVehicleHealthValue) {
+      case "Excellent":
+        health = "Excellent";
+        break;
+      case "Minor dents":
+        health = "Scratched";
+        break;
+      case "Good":
+        health = "Good";
+        break;
+      case "Not bad":
+        health = "NotBad";
+        break;
+      default:
+        health = "None";
+    }
+    return health;
+  }
+
+  String getVehicleStatus() {
+    String status;
+    switch (selectedVehicleStatusValue) {
+      case "out of stock":
+        status = "OutOfService";
+        break;
+      default:
+        status = "Active";
+    }
+    return status;
+  }
+
   Future<void> postData(
     LatLng? location,
     List<File?> additionalImages,
@@ -99,13 +146,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     try {
       emit(AddVehicleLoading());
       FormData formData = FormData();
-
-      // Create location JSON with default values if location is null
-      final locationJson = jsonEncode({
-        "Latitude": location?.latitude ?? 30.0444,
-        "Longitude": location?.longitude ?? 31.2357,
-      });
-
       formData.fields.addAll([
         MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
         MapEntry(ApiKey.vehicleModel, vehicleModelController.text),
@@ -115,12 +155,15 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
         MapEntry(ApiKey.vehicleProperitesOverview,
             vehicleProperitesOverviewController.text),
-        MapEntry(ApiKey.vehicleType, "1"),
-        MapEntry(ApiKey.vehicleBrand, "1"),
-        MapEntry(ApiKey.vehicleStatus, vehicleStatusController.text),
+        MapEntry(ApiKey.vehicleType, selectedVehicleTypeValue ?? "1"),
+        MapEntry(ApiKey.vehicleBrand, selectedVehicleBrandValue ?? "1"),
+        MapEntry(ApiKey.vehicleStatus, getVehicleStatus()),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
-        MapEntry(ApiKey.vehicleTransmissionMode, "Manual"),
-        MapEntry(ApiKey.vehicleHealth, selectedVehicleHealthValue ?? "Good"),
+        MapEntry(
+          ApiKey.vehicleTransmissionMode,
+          getVehicleTransmission(),
+        ),
+        MapEntry(ApiKey.vehicleHealth, getVehicleHealth()),
         MapEntry(
             "Location.Latitude", (location?.latitude ?? 30.0444).toString()),
         MapEntry(
