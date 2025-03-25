@@ -3,6 +3,7 @@ import 'package:aggar/core/cache/cache_helper.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
+import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
                 LoginCubit(dioConsumer: DioConsumer(dio: Dio())),
           ),
         ],
-        child: const AddVehicleScreen(),
+        child: const MainScreen(),
       ),
     );
   }

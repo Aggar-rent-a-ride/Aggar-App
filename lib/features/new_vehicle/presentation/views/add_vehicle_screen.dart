@@ -74,11 +74,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       .currentState
                       ?.validate() ??
                   false) {
-                await context.read<AddVehicleCubit>().postData(
+                /* await context.read<AddVehicleCubit>().postData(
                       context.read<MapLocationCubit>().selectedLocation,
                       context.read<AdditionalImageCubit>().images,
                       context.read<MainImageCubit>().image!,
-                    );
+                    );*/
+                await context.read<AddVehicleCubit>().getData("67");
                 int transmissionMode = context
                         .read<AddVehicleCubit>()
                         .selectedTransmissionModeValue ??

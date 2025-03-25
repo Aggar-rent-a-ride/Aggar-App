@@ -9,6 +9,7 @@ class EndPoint {
   static String vehicle = "https://aggarapi.runasp.net/api/vehicle/";
   static String vehicleType = "https://aggarapi.runasp.net/api/vehicletype/";
   static String vehicleBrand = "https://aggarapi.runasp.net/api/vehiclebrand/";
+  static String addVehicle = "https://aggarapi.runasp.net/api/vehicle/?id=";
 }
 
 class ApiKey {
