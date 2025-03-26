@@ -1,17 +1,16 @@
 // ignore_for_file: avoid_print, unused_local_variable
 import 'dart:io';
 
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -79,7 +78,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       context.read<AdditionalImageCubit>().images,
                       context.read<MainImageCubit>().image!,
                     );*/
-                await context.read<AddVehicleCubit>().getData("67");
+                /*await context.read<AddVehicleCubit>().getData("67");*/
                 int transmissionMode = context
                         .read<AddVehicleCubit>()
                         .selectedTransmissionModeValue ??
@@ -121,7 +120,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     .text;
                 double vehicleLatitude = selectedLocation?.latitude ?? 0.0;
                 double vehicleLongitude = selectedLocation?.longitude ?? 0.0;
+                print("location : $vehicleLongitude , $vehicleLatitude");
+                print(
+                    "brand : $vehicleBrand and type: $vehicleType and model: $vehicleModel and year :$vehicleYearOfManufaction");
+                print(
+                    "Image path :$mainImage , addithinal images:$images , color: $vehicleColor , seatsNo : $vehicleSeatsNo");
 
+/**
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -146,11 +151,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       vehicleBrand: vehicleBrand,
                     ),
                   ),
-                );
+                ); */
               }
             },
           ),
-          backgroundColor: AppLightColors.myWhite100_1,
+          backgroundColor: context.theme.white100_1,
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {

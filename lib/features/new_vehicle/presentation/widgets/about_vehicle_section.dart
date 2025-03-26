@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
@@ -48,7 +49,7 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
         Text(
           "About Vehicle :",
           style: AppStyles.bold22(context).copyWith(
-            color: AppLightColors.myBlue100_2,
+            color: context.theme.blue100_2,
           ),
         ),
         Row(
@@ -59,12 +60,12 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
               ids: context.watch<VehicleBrandCubit>().vehicleBrandIds,
               controller: widget.vehicleBrandController,
               onSaved: widget.onSavedBrand,
-              validator: (value) {
+              /*validator: (value) {
                 if (value == null) {
                   return "required";
                 }
                 return null;
-              },
+              },*/
               items: context.watch<VehicleBrandCubit>().vehicleBrands,
               flag: true,
               hintTextSearch: "Search for vehicle brand ...",
@@ -87,12 +88,12 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
             InputNameWithDropDownList(
               controller: widget.vehicleTypeController,
               onSaved: widget.onSavedType,
-              validator: (value) {
+              /*validator: (value) {
                 if (value == null) {
                   return "required";
                 }
                 return null;
-              },
+              },*/
               flag: true,
               items: context.watch<VehicleTypeCubit>().vehicleTypes,
               hintTextSearch: "Search for vehicle type ...",
