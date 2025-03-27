@@ -2,6 +2,7 @@ import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_se
 import 'package:aggar/features/main_screen/presentation/widgets/main_header.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_section.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicles_type_section.dart';
+import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -13,6 +14,17 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          splashColor: AppLightColors.myBlue100_1,
+          child: const Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddVehicleScreen(),
+              ),
+            );
+          }),
       backgroundColor: AppLightColors.myWhite100_1,
       body: SingleChildScrollView(
         child: Column(

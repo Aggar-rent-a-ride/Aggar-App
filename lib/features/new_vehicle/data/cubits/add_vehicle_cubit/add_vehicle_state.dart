@@ -1,3 +1,4 @@
+import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AddVehicleState extends Equatable {
@@ -10,12 +11,10 @@ class AddVehicleInitial extends AddVehicleState {}
 class AddVehicleLoading extends AddVehicleState {}
 
 class AddVehicleSuccess extends AddVehicleState {
-  final String successMessage;
+  final VehicleDataModel vehicleData;
 
-  AddVehicleSuccess(this.successMessage);
-
-  @override
-  List<Object> get props => [successMessage];
+  AddVehicleSuccess(Map<String, dynamic> responseData)
+      : vehicleData = VehicleDataModel.fromJson(responseData);
 }
 
 class VehicleHealthSelected extends AddVehicleState {
