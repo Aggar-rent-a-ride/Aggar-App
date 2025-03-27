@@ -21,7 +21,7 @@ class PickImage extends StatelessWidget {
     super.key,
     this.userData,
     this.controller,
-    this.onRegistrationSuccess,
+    this.onRegistrationSuccess, required Null Function() onSubmit,
   });
 
   @override
@@ -85,7 +85,6 @@ class PickImageContent extends StatelessWidget {
                 {ApiKey.message: 'Registration successful!'});
           }
 
-          // Get registration response data to pass to verification screen
           final registrationResponse =
               context.read<PickImageCubit>().registrationResponse;
 
