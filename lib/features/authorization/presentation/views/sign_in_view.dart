@@ -14,6 +14,7 @@ import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:gap/gap.dart';
 
 class SignInView extends StatelessWidget {
   const SignInView({super.key});
@@ -41,34 +42,36 @@ class _SignInContent extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppLightColors.myWhite100_1,
-      body: SafeArea(
-        child: BlocConsumer<LoginCubit, LoginState>(
-          listener: (context, state) {
-            if (state is LoginSuccess) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()));
-            } else if (state is LoginFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage),
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            final isLoading = state is LoginLoading;
+      body: BlocConsumer<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state is LoginSuccess) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MainScreen()));
+          } else if (state is LoginFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is LoginLoading;
 
-            return SingleChildScrollView(
+          return SafeArea(
+            child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
                   children: [
+                    const Gap(20),
                     const SignInImageWithText(),
                     SignInEmailAndPasswordFields(
                       emailController: loginCubit.emailController,
                       passwordController: loginCubit.passwordController,
                       formKey: loginCubit.formKey,
                     ),
+                    const Gap(20),
                     SignInForgetPasswordButton(
                       onPressed: () {
                         Navigator.push(
@@ -79,20 +82,24 @@ class _SignInContent extends StatelessWidget {
                         );
                       },
                     ),
+                    const Gap(10),
                     CustomElevatedButton(
                       onPressed: isLoading ? null : loginCubit.handleLogin,
                       text: 'Login',
                       isLoading: isLoading,
                     ),
+                    const Gap(20),
                     const DividerWithText(),
+                    const Gap(20),
                     const SignInFaceBookAndGoogleButtons(),
+                    const Gap(10),
                     const SignInDoNotHaveAnAccountSection(),
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
