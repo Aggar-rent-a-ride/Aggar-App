@@ -1,9 +1,17 @@
+import 'dart:io';
+
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
+import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+
+import '../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 
 class PopularVehiclesCarCard extends StatelessWidget {
   final String carName;
@@ -23,50 +31,89 @@ class PopularVehiclesCarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppLightColors.myWhite100_1,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: AppLightColors.myBlack10,
-            blurRadius: 6,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PopularVehiclesCarCardNameWithRating(
-                      carName: carName, rating: rating),
-                  PopularVehiclesCarCardCarType(carType: carType),
-                  const Gap(10),
-                  PopularVehicleCarCardPrice(pricePerHour: pricePerHour),
-                ],
-              ),
+    return BlocBuilder<AddVehicleCubit, AddVehicleState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () async {
+            context.read<AddVehicleCubit>().getData("74");
+
+            if (context.read<AddVehicleCubit>().vehicleData != null) {
+              VehicleDataModel vehicle =
+                  context.read<AddVehicleCubit>().vehicleData;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VehiclesDetailsView(
+                    yearOfManufaction: vehicle.year,
+                    vehicleModel: vehicle.model,
+                    vehicleRentPrice: vehicle.pricePerDay,
+                    vehicleColor: vehicle.color,
+                    vehicleOverView: vehicle.extraDetails ?? "",
+                    vehiceSeatsNo: vehicle.numOfPassengers.toString(),
+                    images: vehicle.vehicleImages
+                        .map((path) => File(path))
+                        .toList(),
+                    mainImage: File(vehicle.mainImagePath),
+                    vehicleHealth: vehicle.physicalStatus,
+                    vehicleStatus: vehicle.status,
+                    transmissionMode: 1,
+                    vehicleType: vehicle.vehicleType.name,
+                    vehicleBrand: vehicle.vehicleBrand.name,
+                    vehicleAddress: vehicle.address,
+                    vehicleLongitude: vehicle.location.longitude,
+                    vehicleLatitude: vehicle.location.latitude,
+                  ),
+                ),
+              );
+            }
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppLightColors.myWhite100_1,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppLightColors.myBlack10,
+                  blurRadius: 6,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PopularVehiclesCarCardNameWithRating(
+                            carName: carName, rating: rating),
+                        PopularVehiclesCarCardCarType(carType: carType),
+                        const Gap(10),
+                        PopularVehicleCarCardPrice(pricePerHour: pricePerHour),
+                      ],
+                    ),
+                  ),
+                ),
+                const Gap(20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    assetImagePath,
+                    height: 100,
+                    width: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
             ),
           ),
-          const Gap(20),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              assetImagePath,
-              height: 100,
-              width: 150,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

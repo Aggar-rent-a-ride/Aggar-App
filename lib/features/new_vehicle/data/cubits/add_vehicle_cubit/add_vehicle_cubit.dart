@@ -5,6 +5,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/ad
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart'
     show MainImageCubit;
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -31,7 +32,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       baseUrl: "https://aggarapi.runasp.net",
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiYmY4NDYwZTQtNDQ4Zi00YjczLWE2NTQtY2E0OTQxMDU0OGU3IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyOTAwMTUwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.sRrj1a9g30SxNB7muOS29e6UYRhUsNHJb-E5J0wYrTI',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU3IiwianRpIjoiZTRkZWFkMTUtNWYyNS00MzFlLWEwMzMtYmVkNzZjMzIzZmEwIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMCIsInVpZCI6IjEwNTciLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzEwODMxMCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.uCuZwbjfX05Qe5Px3Tj6ai1SkfxAUZtzBxX4E2D9hnU',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -229,38 +230,52 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     }
   }
 
+  var vehicleData;
+  ///////////////////////////////////////////////////////////////////////////////////////////
   Future<void> getData(String id) async {
     try {
       emit(AddVehicleLoading());
       final response = await _dio.get(
-        '${EndPoint.addVehicle}+$id',
+        '${EndPoint.addVehicle}$id',
         options: Options(
           validateStatus: (status) {
             return status! < 500;
           },
         ),
       );
-      print("Response: $response");
+      //print(response.data["data"]);
+      // ignore: unused_local_variable
+      vehicleData = VehicleDataModel.fromJson(response.data["data"]);
+      print(vehicleData);
+
       emit(AddVehicleSuccess(response.data));
     } on DioException catch (e) {
-      String errorMessage = "Request failed";
-
-      if (e.response != null) {
-        errorMessage =
-            "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
-      } else if (e.type == DioExceptionType.connectionTimeout) {
-        errorMessage = "Connection timeout";
-      } else if (e.type == DioExceptionType.receiveTimeout) {
-        errorMessage = "Receive timeout";
-      } else if (e.type == DioExceptionType.sendTimeout) {
-        errorMessage = "Send timeout";
-      } else {
-        errorMessage = "Error: ${e.message}";
-      }
-
+      String errorMessage = _handleDioError(e);
       emit(AddVehicleFailure(errorMessage));
     } catch (e) {
       emit(AddVehicleFailure("Unexpected error: $e"));
+    }
+  }
+
+  // Helper method to handle Dio errors
+  String _handleDioError(DioException e) {
+    if (e.response != null) {
+      return "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
+    }
+
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        return "Connection timeout";
+      case DioExceptionType.receiveTimeout:
+        return "Receive timeout";
+      case DioExceptionType.sendTimeout:
+        return "Send timeout";
+      case DioExceptionType.badResponse:
+        return "Bad response from server";
+      case DioExceptionType.cancel:
+        return "Request cancelled";
+      default:
+        return "Error: ${e.message}";
     }
   }
 }

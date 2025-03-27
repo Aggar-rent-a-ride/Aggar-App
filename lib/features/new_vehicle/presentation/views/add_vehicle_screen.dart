@@ -6,6 +6,7 @@ import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -73,85 +74,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       .currentState
                       ?.validate() ??
                   false) {
-                /* await context.read<AddVehicleCubit>().postData(
+                await context.read<AddVehicleCubit>().postData(
                       context.read<MapLocationCubit>().selectedLocation,
                       context.read<AdditionalImageCubit>().images,
                       context.read<MainImageCubit>().image!,
-                    );*/
-                /*await context.read<AddVehicleCubit>().getData("67");*/
-                int transmissionMode = context
-                        .read<AddVehicleCubit>()
-                        .selectedTransmissionModeValue ??
-                    0;
-                String vehicleRentalPrice =
-                    context.read<AddVehicleCubit>().vehicleRentalPrice.text;
-                String vehicleModel =
-                    context.read<AddVehicleCubit>().vehicleModelController.text;
-                int vehicleYearOfManufaction = int.parse(context
-                    .read<AddVehicleCubit>()
-                    .vehicleYearOfManufactureController
-                    .text);
-                String vehicleColor =
-                    context.read<AddVehicleCubit>().vehicleColorController.text;
-                String vehicleOverView = context
-                    .read<AddVehicleCubit>()
-                    .vehicleProperitesOverviewController
-                    .text;
-                String vehicleSeatsNo = context
-                    .read<AddVehicleCubit>()
-                    .vehicleSeatsNoController
-                    .text;
-                List<File?> images =
-                    context.read<AdditionalImageCubit>().images;
-                File? mainImage = context.read<MainImageCubit>().image!;
-                String vehicleHealth =
-                    context.read<AddVehicleCubit>().selectedVehicleHealthValue!;
-                String vehicleType =
-                    context.read<AddVehicleCubit>().vehicleTypeController.text;
-                String vehicleBrand =
-                    context.read<AddVehicleCubit>().vehicleBrandController.text;
-                String vehicleStatus = context
-                    .read<AddVehicleCubit>()
-                    .vehicleStatusController
-                    .text;
-                String vehicleAddress = context
-                    .read<AddVehicleCubit>()
-                    .vehicleAddressController
-                    .text;
-                double vehicleLatitude = selectedLocation?.latitude ?? 0.0;
-                double vehicleLongitude = selectedLocation?.longitude ?? 0.0;
-                print("location : $vehicleLongitude , $vehicleLatitude");
-                print(
-                    "brand : $vehicleBrand and type: $vehicleType and model: $vehicleModel and year :$vehicleYearOfManufaction");
-                print(
-                    "Image path :$mainImage , addithinal images:$images , color: $vehicleColor , seatsNo : $vehicleSeatsNo");
-
-/**
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VehiclesDetailsView(
-                      initialLocation: selectedLocation,
-                      onLocationSelected: _handleLocationSelected,
-                      vehicleAddress: vehicleAddress,
-                      vehicleLatitude: vehicleLatitude,
-                      vehicleLongitude: vehicleLongitude,
-                      yearOfManufaction: vehicleYearOfManufaction,
-                      vehicleModel: vehicleModel,
-                      vehicleRentPrice: double.parse(vehicleRentalPrice),
-                      vehicleColor: vehicleColor,
-                      vehicleOverView: vehicleOverView,
-                      vehiceSeatsNo: vehicleSeatsNo,
-                      images: images,
-                      mainImage: mainImage,
-                      vehicleHealth: vehicleHealth,
-                      vehicleStatus: vehicleStatus,
-                      transmissionMode: transmissionMode,
-                      vehicleType: vehicleType,
-                      vehicleBrand: vehicleBrand,
-                    ),
-                  ),
-                ); */
+                    );
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
               }
             },
           ),

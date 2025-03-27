@@ -1,5 +1,4 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
@@ -34,9 +33,9 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
   @override
   void initState() {
     context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiYmY4NDYwZTQtNDQ4Zi00YjczLWE2NTQtY2E0OTQxMDU0OGU3IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyOTAwMTUwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.sRrj1a9g30SxNB7muOS29e6UYRhUsNHJb-E5J0wYrTI");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU3IiwianRpIjoiZTRkZWFkMTUtNWYyNS00MzFlLWEwMzMtYmVkNzZjMzIzZmEwIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMCIsInVpZCI6IjEwNTciLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzEwODMxMCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.uCuZwbjfX05Qe5Px3Tj6ai1SkfxAUZtzBxX4E2D9hnU");
     context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU2IiwianRpIjoiYmY4NDYwZTQtNDQ4Zi00YjczLWE2NTQtY2E0OTQxMDU0OGU3IiwidXNlcm5hbWUiOiJlc3JhYXRlc3Q5IiwidWlkIjoiMTA1NiIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzQyOTAwMTUwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.sRrj1a9g30SxNB7muOS29e6UYRhUsNHJb-E5J0wYrTI");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU3IiwianRpIjoiZTRkZWFkMTUtNWYyNS00MzFlLWEwMzMtYmVkNzZjMzIzZmEwIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMCIsInVpZCI6IjEwNTciLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzEwODMxMCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.uCuZwbjfX05Qe5Px3Tj6ai1SkfxAUZtzBxX4E2D9hnU");
     super.initState();
   }
 
@@ -60,12 +59,12 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
               ids: context.watch<VehicleBrandCubit>().vehicleBrandIds,
               controller: widget.vehicleBrandController,
               onSaved: widget.onSavedBrand,
-              /*validator: (value) {
+              validator: (value) {
                 if (value == null) {
                   return "required";
                 }
                 return null;
-              },*/
+              },
               items: context.watch<VehicleBrandCubit>().vehicleBrands,
               flag: true,
               hintTextSearch: "Search for vehicle brand ...",
@@ -88,12 +87,12 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
             InputNameWithDropDownList(
               controller: widget.vehicleTypeController,
               onSaved: widget.onSavedType,
-              /*validator: (value) {
+              validator: (value) {
                 if (value == null) {
                   return "required";
                 }
                 return null;
-              },*/
+              },
               flag: true,
               items: context.watch<VehicleTypeCubit>().vehicleTypes,
               hintTextSearch: "Search for vehicle type ...",
