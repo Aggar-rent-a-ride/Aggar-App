@@ -18,6 +18,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location
 import 'package:aggar/features/new_vehicle/data/cubits/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
+import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +28,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   CacheHelper().init();
-
-  // Initialize FlutterSecureStorage
   const secureStorage = FlutterSecureStorage();
-
   runApp(
     const MyApp(secureStorage: secureStorage),
   );
@@ -99,7 +97,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            home: const SignInView(),
+            home: const SettingsScreen(),
           );
         },
       ),

@@ -19,7 +19,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
       emit(TokenRefreshLoading());
 
       final currentRefreshToken = await secureStorage.read(key: 'refreshToken');
-      
+
       if (currentRefreshToken == null) {
         throw Exception('No refresh token available');
       }
@@ -40,17 +40,16 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
 
         final newAccessToken = tokenData[ApiKey.accessToken];
         final newRefreshToken = tokenData[ApiKey.refreshToken];
-       
+
         DateTime? expirationDate;
         if (tokenData[ApiKey.refreshTokenExpiration] != null) {
-          expirationDate = DateTime.parse(tokenData[ApiKey.refreshTokenExpiration]);
+          expirationDate =
+              DateTime.parse(tokenData[ApiKey.refreshTokenExpiration]);
         }
 
         // Enhanced token storage with error handling
         await _secureStoreTokens(
-          accessToken: newAccessToken, 
-          refreshToken: newRefreshToken
-        );
+            accessToken: newAccessToken, refreshToken: newRefreshToken);
 
         emit(TokenRefreshSuccess(
           accessToken: newAccessToken,
@@ -62,26 +61,22 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
       }
     } catch (error) {
       print('Token Refresh Error: $error');
-      
+
       emit(TokenRefreshFailure(error.toString()));
-      
+
       rethrow;
     }
   }
 
   // Enhanced token storage method
-  Future<void> _secureStoreTokens({
-    required String accessToken, 
-    required String refreshToken
-  }) async {
+  Future<void> _secureStoreTokens(
+      {required String accessToken, required String refreshToken}) async {
     try {
       await Future.wait([
         secureStorage.write(key: 'accessToken', value: accessToken),
         secureStorage.write(key: 'refreshToken', value: refreshToken),
         secureStorage.write(
-          key: 'tokenStoredAt', 
-          value: DateTime.now().toIso8601String()
-        )
+            key: 'tokenStoredAt', value: DateTime.now().toIso8601String())
       ]);
     } catch (e) {
       print('Error storing tokens: $e');
@@ -92,28 +87,26 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   Future<bool> shouldRefreshToken() async {
     final refreshToken = await secureStorage.read(key: 'refreshToken');
     final accessToken = await secureStorage.read(key: 'accessToken');
-    
-    return refreshToken == null || accessToken == null || await isTokenExpired();
+
+    return refreshToken == null ||
+        accessToken == null ||
+        await isTokenExpired();
   }
 
   Future<bool> isTokenExpired() async {
     try {
       final accessToken = await secureStorage.read(key: 'accessToken');
-      
+
       if (accessToken == null) return true;
 
-      // Using jwt_decoder package for robust token expiration check
-      // Make sure to add jwt_decoder to your pubspec.yaml
       if (JwtDecoder.isExpired(accessToken)) {
         print('Access token has expired');
         return true;
       }
 
-      // Optional: You can also get the exact expiration time
-      final DateTime? expirationDate = JwtDecoder.getExpirationDate(accessToken);
-      if (expirationDate != null) {
-        print('Token expires at: $expirationDate');
-      }
+      // Optional: exact expiration time
+      final DateTime expirationDate = JwtDecoder.getExpirationDate(accessToken);
+      print('Token expires at: $expirationDate');
 
       return false;
     } catch (e) {
