@@ -1,5 +1,3 @@
-// Vehicle Data Model
-
 class RenterModel {
   final int id;
   final String? imagePath;
@@ -15,10 +13,12 @@ class RenterModel {
 
   factory RenterModel.fromJson(Map<String, dynamic> json) {
     return RenterModel(
-      id: json['id'],
+      id: json['id'] ?? 0,
       imagePath: json['imagePath'],
-      name: json['name'],
-      rate: json['rate'],
+      name: json['name'] ?? '',
+      rate: json['rate'] != null
+          ? double.tryParse(json['rate'].toString())
+          : null,
     );
   }
 }

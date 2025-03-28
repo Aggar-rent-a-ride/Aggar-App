@@ -43,9 +43,9 @@ class _MapScreenState extends State<ImageOfCurrentVehicleLocation> {
     return FlutterMap(
       options: MapOptions(
         initialCenter: staticLocation,
-        initialZoom: 16.0,
-        maxZoom: 16.0,
-        minZoom: 16.0,
+        initialZoom: 15.0,
+        maxZoom: 15.0,
+        minZoom: 15.0,
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.none,
         ),

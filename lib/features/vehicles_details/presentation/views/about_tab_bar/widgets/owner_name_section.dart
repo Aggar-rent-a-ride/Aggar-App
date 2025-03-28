@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class OwnerNameSection extends StatelessWidget {
   const OwnerNameSection({
     super.key,
+    required this.renterName,
   });
-
+  final String renterName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -15,7 +16,7 @@ class OwnerNameSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Brian Smith",
+            renterName,
             style: AppStyles.bold16(context).copyWith(
               color: AppLightColors.myBlue100_2,
             ),
@@ -25,7 +26,7 @@ class OwnerNameSection extends StatelessWidget {
             style: AppStyles.semiBold14(context).copyWith(
               color: AppLightColors.myBlack50,
             ),
-          )
+          ),
         ],
       ),
     );

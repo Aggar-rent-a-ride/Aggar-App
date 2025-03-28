@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
@@ -35,8 +33,8 @@ class PopularVehiclesCarCard extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
-            context.read<AddVehicleCubit>().getData("74");
-
+            print("here");
+            context.read<AddVehicleCubit>().getData("85");
             if (context.read<AddVehicleCubit>().vehicleData != null) {
               VehicleDataModel vehicle =
                   context.read<AddVehicleCubit>().vehicleData;
@@ -44,16 +42,15 @@ class PopularVehiclesCarCard extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => VehiclesDetailsView(
+                    renterName: vehicle.renter!.name,
                     yearOfManufaction: vehicle.year,
                     vehicleModel: vehicle.model,
                     vehicleRentPrice: vehicle.pricePerDay,
                     vehicleColor: vehicle.color,
                     vehicleOverView: vehicle.extraDetails ?? "",
                     vehiceSeatsNo: vehicle.numOfPassengers.toString(),
-                    images: vehicle.vehicleImages
-                        .map((path) => File(path))
-                        .toList(),
-                    mainImage: File(vehicle.mainImagePath),
+                    images: vehicle.vehicleImages,
+                    mainImage: vehicle.mainImagePath,
                     vehicleHealth: vehicle.physicalStatus,
                     vehicleStatus: vehicle.status,
                     transmissionMode: 1,

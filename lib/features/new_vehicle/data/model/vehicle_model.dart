@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:aggar/features/new_vehicle/data/model/location_model.dart';
 import 'package:aggar/features/new_vehicle/data/model/renter_model.dart';
 import 'package:aggar/features/new_vehicle/data/model/vehicle_brand_model.dart';
@@ -12,7 +11,7 @@ class VehicleDataModel {
   final int year;
   final String model;
   final String color;
-  final String mainImagePath; // Changed from File to String
+  final String mainImagePath;
   final String status;
   final String physicalStatus;
   final String transmission;
@@ -23,7 +22,7 @@ class VehicleDataModel {
   final LocationModel location;
   final VehicleType vehicleType;
   final VehicleBrand vehicleBrand;
-  final List<String> vehicleImages; // Changed from List<File?> to List<String>
+  final List<String> vehicleImages;
   final List<dynamic> discounts;
 
   VehicleDataModel({
@@ -50,39 +49,41 @@ class VehicleDataModel {
   });
 
   factory VehicleDataModel.fromJson(Map<String, dynamic> json) {
+    // Safely handle nested data structure
+    final data = json['data'] ?? json;
+
     return VehicleDataModel(
-      id: json['id'] ?? 0,
+      id: data['id'] ?? 0,
       renter:
-          json['renter'] != null ? RenterModel.fromJson(json['renter']) : null,
-      numOfPassengers: json['numOfPassengers'] ?? 0,
-      rate: json['rate'] != null
-          ? double.tryParse(json['rate'].toString())
+          data['renter'] != null ? RenterModel.fromJson(data['renter']) : null,
+      numOfPassengers: data['numOfPassengers'] ?? 0,
+      rate: data['rate'] != null
+          ? double.tryParse(data['rate'].toString())
           : null,
-      year: json['year'] ?? 0,
-      model: json['model'] ?? '',
-      color: json['color'] ?? '',
-      mainImagePath: json['mainImagePath'] is String
-          ? json['mainImagePath'] ?? ''
-          : '', // Handle potential non-string values
-      status: json['status'] ?? '',
-      physicalStatus: json['physicalStatus'] ?? '',
-      transmission: json['transmission'] ?? '',
-      pricePerDay: json['pricePerDay'] != null
-          ? double.tryParse(json['pricePerDay'].toString()) ?? 0.0
+      year: data['year'] ?? 0,
+      model: data['model'] ?? '',
+      color: data['color'] ?? '',
+      mainImagePath:
+          data['mainImagePath'] is String ? data['mainImagePath'] ?? '' : '',
+      status: data['status'] ?? '',
+      physicalStatus: data['physicalStatus'] ?? '',
+      transmission: data['transmission'] ?? '',
+      pricePerDay: data['pricePerDay'] != null
+          ? double.tryParse(data['pricePerDay'].toString()) ?? 0.0
           : 0.0,
-      requirements: json['requirements'],
-      extraDetails: json['extraDetails'],
-      address: json['address'] ?? '',
-      location: json['location'] != null
-          ? LocationModel.fromJson(json['location'])
+      requirements: data['requirements'],
+      extraDetails: data['extraDetails'],
+      address: data['address'] ?? '',
+      location: data['location'] != null
+          ? LocationModel.fromJson(data['location'])
           : LocationModel(latitude: 0, longitude: 0),
-      vehicleType: VehicleType.fromJson(json['vehicleType']),
-      vehicleBrand: VehicleBrand.fromJson(json['vehicleBrand']),
-      vehicleImages: json['vehicleImages'] != null
-          ? List<String>.from(json['vehicleImages']
+      vehicleType: VehicleType.fromJson(data['vehicleType']),
+      vehicleBrand: VehicleBrand.fromJson(data['vehicleBrand']),
+      vehicleImages: data['vehicleImages'] != null
+          ? List<String>.from(data['vehicleImages']
               .map((image) => image is String ? image : image.toString()))
           : [],
-      discounts: json['discounts'] ?? [],
+      discounts: data['discounts'] ?? [],
     );
   }
 }

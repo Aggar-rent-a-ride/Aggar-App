@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +7,7 @@ class CustomImageCar extends StatelessWidget {
     super.key,
     required this.mainImage,
   });
-  final File mainImage;
+  final String mainImage;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,8 +31,8 @@ class CustomImageCar extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.file(
-          mainImage,
+        child: Image.network(
+          "${EndPoint.baseUrl}$mainImage",
           fit: BoxFit.cover,
         ),
       ),

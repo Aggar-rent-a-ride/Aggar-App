@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
@@ -19,8 +17,8 @@ class ProperitiesTabBarView extends StatelessWidget {
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
-  final List<File?> images;
-  final File mainImage;
+  final List<String?> images;
+  final String mainImage;
   final String vehicleHealth;
   final String vehicleStatus;
 
