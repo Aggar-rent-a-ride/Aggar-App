@@ -6,6 +6,7 @@ class EndPoint {
   static String sendActivationCode = "api/auth/send-activation-code";
   static String activate = "/api/auth/activate";
   static String refreshToken = "api/auth/refresh";
+  static String logout = "api/auth/logout";
   //TODO: error will be updated in the future
   static String vehicle = "https://aggarapi.runasp.net/api/vehicle/";
   static String vehicleType = "https://aggarapi.runasp.net/api/vehicletype/";
