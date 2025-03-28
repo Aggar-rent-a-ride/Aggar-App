@@ -1,12 +1,15 @@
-import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/utils/app_assets.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../../../core/api/end_points.dart';
 
 class OwnerImageSection extends StatelessWidget {
   const OwnerImageSection({
     super.key,
+    this.pfpImage,
   });
-
+  final String? pfpImage;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,14 +24,17 @@ class OwnerImageSection extends StatelessWidget {
           )
         ],
       ),
-      child: const ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(50)),
-        child: Image(
-          image: AssetImage(
-            AppAssets.assetsImagesAvatar,
-          ),
-          height: 45,
-        ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        child: pfpImage == null
+            ? Image.asset(
+                AppAssets.assetsImagesDafaultPfp,
+                height: 45,
+              )
+            : Image.network(
+                "${EndPoint.baseUrl}$pfpImage",
+                height: 45,
+              ),
       ),
     );
   }

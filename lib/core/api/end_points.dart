@@ -1,17 +1,17 @@
 class EndPoint {
-  static String baseUrl = "https://aggarapi.runasp.net/";
+  static String baseUrl = "https://aggarapi.runasp.net";
 
-  static String login = "api/auth/login";
-  static String register = "api/auth/register";
-  static String sendActivationCode = "api/auth/send-activation-code";
+  static String login = "/api/auth/login";
+  static String register = "/api/auth/register";
+  static String sendActivationCode = "/api/auth/send-activation-code";
   static String activate = "/api/auth/activate";
-  static String refreshToken = "api/auth/refresh";
-  static String logout = "api/auth/logout";
+  static String refreshToken = "/api/auth/refresh";
+  static String logout = "/api/auth/logout";
   //TODO: error will be updated in the future
-  static String vehicle = "https://aggarapi.runasp.net/api/vehicle/";
-  static String vehicleType = "https://aggarapi.runasp.net/api/vehicletype/";
-  static String vehicleBrand = "https://aggarapi.runasp.net/api/vehiclebrand/";
-  static String addVehicle = "https://aggarapi.runasp.net/api/vehicle/?id=";
+  static String vehicle = "/api/vehicle/";
+  static String vehicleType = "$baseUrl/api/vehicletype/";
+  static String vehicleBrand = "$baseUrl/api/vehiclebrand/";
+  static String addVehicle = "$baseUrl/api/vehicle/?id=";
 }
 
 class ApiKey {

@@ -29,10 +29,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
     // Initialize Dio with base URL and default options
     _dio = Dio(BaseOptions(
-      baseUrl: "https://aggarapi.runasp.net",
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDU3IiwianRpIjoiZTRkZWFkMTUtNWYyNS00MzFlLWEwMzMtYmVkNzZjMzIzZmEwIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMCIsInVpZCI6IjEwNTciLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzEwODMxMCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.uCuZwbjfX05Qe5Px3Tj6ai1SkfxAUZtzBxX4E2D9hnU',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiMWQ5NjNiMGItZTczYy00NGVmLWJmNDUtNWQxYjgxMTYxZWI4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzE3OTMyMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.C0vOhjp1oNy3hukChswkszoJAJ0sFGdPObZ49p0iwk0',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -139,14 +138,25 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     return status;
   }
 
-  Future<void> postData(
+  Future<void> postData({
     LatLng? location,
-    List<File?> additionalImages,
+    List<File?> additionalImages = const [],
     File? mainImageFile,
-  ) async {
+  }) async {
     try {
       emit(AddVehicleLoading());
+
+      // Validate required fields before making the request
+      if (mainImageFile == null) {
+        //print('Error: Main image file is required');
+        emit(AddVehicleFailure('Main image file is required'));
+        return;
+      }
+
       FormData formData = FormData();
+
+      // Print out form data fields for debugging
+      //print('Form Data Fields:');
       formData.fields.addAll([
         MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
         MapEntry(ApiKey.vehicleModel, vehicleModelController.text),
@@ -162,19 +172,23 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
         MapEntry(ApiKey.vehicleTransmissionMode, getVehicleTransmission()),
         MapEntry(ApiKey.vehicleHealth, getVehicleHealth()),
-        MapEntry(
-            "Location.Latitude", (location?.latitude ?? 30.0444).toString()),
-        MapEntry(
-            "Location.Longitude", (location?.longitude ?? 31.2357).toString()),
+        MapEntry("Location.Latitude", (location?.latitude).toString()),
+        MapEntry("Location.Longitude", (location?.longitude).toString()),
+        MapEntry("Address", vehicleAddressController.text),
       ]);
+      // Add main image
       formData.files.add(MapEntry(
         "MainImage",
         await MultipartFile.fromFile(
-          mainImageFile!.path,
+          mainImageFile.path,
           filename: basename(mainImageFile.path),
         ),
       ));
+      //print('Main Image Path: ${mainImageFile.path}');
+
+      // Add additional images
       if (additionalImages.isNotEmpty) {
+        // print('Additional Images Count: ${additionalImages.length}');
         for (int i = 0; i < additionalImages.length; i++) {
           if (additionalImages[i] != null) {
             formData.files.add(MapEntry(
@@ -184,55 +198,87 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
                 filename: basename(additionalImages[i]!.path),
               ),
             ));
+            //  print('Additional Image $i Path: ${additionalImages[i]!.path}');
           }
         }
       }
+      //  print('API Endpoint: ${EndPoint.vehicle}');
 
-      final response = await _dio.post(
-        EndPoint.vehicle,
-        data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-          followRedirects: false,
-          validateStatus: (status) {
-            return status! < 500;
-          },
-        ),
-      );
-
-      print("Response: $response");
-
-      if (response.statusCode! >= 200 && response.statusCode! < 300) {
-        emit(AddVehicleSuccess(response.data));
-      } else {
-        emit(AddVehicleFailure(
-            "Error: ${response.statusCode} - ${response.data.toString()}"));
+      try {
+        final response = await _dio.post(
+          "https://aggarapi.runasp.net/api/vehicle/",
+          data: formData,
+          options: Options(
+            contentType: 'multipart/form-data',
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            },
+          ),
+        );
+/*
+        // Extensive response logging
+        print('Response Status Code: ${response.statusCode}');
+        print('Response Headers: ${response.headers}');
+        print('Response Data Type: ${response.data.runtimeType}');*/
+        print('Full Response Data: ${response.data}');
+        if (response.statusCode! >= 200 && response.statusCode! < 300) {
+          //print('Request Successful');
+          emit(AddVehicleSuccess(response.data));
+        } else {
+          // print('Request Failed');
+          emit(AddVehicleFailure(
+              "Error: ${response.statusCode} - ${response.data.toString()}"));
+        }
+      } catch (networkError) {
+        // print('Network Error: $networkError');
+        rethrow;
       }
     } on DioException catch (e) {
+      // Detailed Dio Exception logging
+      // print('Dio Exception Type: ${e.type}');
+      // print('Dio Exception Message: ${e.message}');
+
       String errorMessage = "Request failed";
 
       if (e.response != null) {
+        // print('Error Response Status Code: ${e.response!.statusCode}');
+        // print('Error Response Data: ${e.response!.data}');
         errorMessage =
             "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
-      } else if (e.type == DioExceptionType.connectionTimeout) {
-        errorMessage = "Connection timeout";
-      } else if (e.type == DioExceptionType.receiveTimeout) {
-        errorMessage = "Receive timeout";
-      } else if (e.type == DioExceptionType.sendTimeout) {
-        errorMessage = "Send timeout";
-      } else {
-        errorMessage = "Error: ${e.message}";
       }
 
+      // Handle specific Dio exception types
+      switch (e.type) {
+        case DioExceptionType.connectionTimeout:
+          errorMessage = "Connection timeout";
+          break;
+        case DioExceptionType.receiveTimeout:
+          errorMessage = "Receive timeout";
+          break;
+        case DioExceptionType.sendTimeout:
+          errorMessage = "Send timeout";
+          break;
+        case DioExceptionType.badResponse:
+          errorMessage = "Bad response from server";
+          break;
+        default:
+          errorMessage = "Error: ${e.message}";
+      }
+
+      // print('Final Error Message: $errorMessage');
       emit(AddVehicleFailure(errorMessage));
     } catch (e) {
+      //print('Unexpected Error: $e');
       emit(AddVehicleFailure("Unexpected error: $e"));
     }
   }
 
+  // ignore: prefer_typing_uninitialized_variables
   var vehicleData;
   ///////////////////////////////////////////////////////////////////////////////////////////
   Future<void> getData(String id) async {
+    //print("Fetching vehicle data for ID: $id");
     try {
       emit(AddVehicleLoading());
       final response = await _dio.get(
@@ -243,39 +289,34 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           },
         ),
       );
-      //print(response.data["data"]);
-      // ignore: unused_local_variable
-      vehicleData = VehicleDataModel.fromJson(response.data["data"]);
-      print(vehicleData);
 
-      emit(AddVehicleSuccess(response.data));
+      // Debug print of entire response
+      // print('Full Response: ${response.data}');
+
+      // Check if response has data
+      if (response.data == null || response.data['data'] == null) {
+        //print('No data found in response');
+        emit(AddVehicleFailure('No vehicle data found'));
+        return;
+      }
+
+      // Print raw JSON data before parsing
+      print('Raw Vehicle JSON: ${response.data["data"]}');
+
+      try {
+        vehicleData = VehicleDataModel.fromJson(response.data["data"]);
+        emit(AddVehicleSuccess(response.data));
+      } catch (parseError) {
+        // print('Error parsing vehicle data: $parseError');
+        emit(AddVehicleFailure('Failed to parse vehicle data: $parseError'));
+      }
     } on DioException catch (e) {
-      String errorMessage = _handleDioError(e);
+      String errorMessage = e.toString();
+      //print('Dio Error: $errorMessage');
       emit(AddVehicleFailure(errorMessage));
     } catch (e) {
+      //print('Unexpected error: $e');
       emit(AddVehicleFailure("Unexpected error: $e"));
-    }
-  }
-
-  // Helper method to handle Dio errors
-  String _handleDioError(DioException e) {
-    if (e.response != null) {
-      return "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
-    }
-
-    switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-        return "Connection timeout";
-      case DioExceptionType.receiveTimeout:
-        return "Receive timeout";
-      case DioExceptionType.sendTimeout:
-        return "Send timeout";
-      case DioExceptionType.badResponse:
-        return "Bad response from server";
-      case DioExceptionType.cancel:
-        return "Request cancelled";
-      default:
-        return "Error: ${e.message}";
     }
   }
 }

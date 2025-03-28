@@ -2,7 +2,6 @@ import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/rent_partner_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:latlong2/latlong.dart';
 
 class AboutTabBarView extends StatelessWidget {
   const AboutTabBarView({
@@ -10,25 +9,26 @@ class AboutTabBarView extends StatelessWidget {
     required this.vehicleAddress,
     required this.vehicleLongitude,
     required this.vehicleLatitude,
-    this.initialLocation,
-    this.onLocationSelected,
+    this.pfpImage,
+    required this.renterName,
   });
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
-  final LatLng? initialLocation;
-  final Function(LatLng, String)? onLocationSelected;
+  final String? pfpImage;
+  final String renterName;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const RentPartnerSection(),
+        RentPartnerSection(
+          pfpImage: pfpImage,
+          renterName: renterName,
+        ),
         LocationSection(
           vehicleAddress: vehicleAddress,
           vehicleLongitude: vehicleLongitude,
           vehicleLatitude: vehicleLatitude,
-          initialLocation: initialLocation,
-          onLocationSelected: onLocationSelected,
         ),
         const Gap(25),
       ],

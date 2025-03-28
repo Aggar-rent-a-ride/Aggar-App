@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
@@ -7,37 +5,37 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_wi
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
 
 class VehiclesDetailsView extends StatelessWidget {
-  const VehiclesDetailsView(
-      {super.key,
-      required this.yearOfManufaction,
-      required this.vehicleModel,
-      required this.vehicleRentPrice,
-      required this.vehicleColor,
-      required this.vehicleOverView,
-      required this.vehiceSeatsNo,
-      required this.images,
-      required this.mainImage,
-      required this.vehicleHealth,
-      required this.vehicleStatus,
-      required this.transmissionMode,
-      required this.vehicleType,
-      required this.vehicleBrand,
-      required this.vehicleAddress,
-      required this.vehicleLongitude,
-      required this.vehicleLatitude,
-      this.initialLocation,
-      this.onLocationSelected});
+  const VehiclesDetailsView({
+    super.key,
+    required this.yearOfManufaction,
+    required this.vehicleModel,
+    required this.vehicleRentPrice,
+    required this.vehicleColor,
+    required this.vehicleOverView,
+    required this.vehiceSeatsNo,
+    required this.images,
+    required this.mainImage,
+    required this.vehicleHealth,
+    required this.vehicleStatus,
+    required this.transmissionMode,
+    required this.vehicleType,
+    required this.vehicleBrand,
+    required this.vehicleAddress,
+    required this.vehicleLongitude,
+    required this.vehicleLatitude,
+    this.pfpImage,
+    required this.renterName,
+  });
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
-  final List<File?> images;
-  final File mainImage;
+  final List<String?> images;
+  final String mainImage;
   final String vehicleHealth;
   final String vehicleStatus;
   final int transmissionMode;
@@ -46,8 +44,8 @@ class VehiclesDetailsView extends StatelessWidget {
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
-  final LatLng? initialLocation;
-  final Function(LatLng, String)? onLocationSelected;
+  final String? pfpImage;
+  final String renterName;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -109,8 +107,8 @@ class VehiclesDetailsView extends StatelessWidget {
                       transmissionType: transmissionMode,
                     ),
                     TabBarSection(
-                      initialLocation: initialLocation,
-                      onLocationSelected: onLocationSelected,
+                      pfpImage: pfpImage,
+                      renterName: renterName,
                       vehicleColor: vehicleColor,
                       vehicleOverView: vehicleOverView,
                       vehiceSeatsNo: vehiceSeatsNo,

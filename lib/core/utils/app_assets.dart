@@ -150,6 +150,10 @@ class AppAssets {
   /// assets/images/car.png
   static const String assetsImagesCar = "assets/images/car.png";
 
+  /// Assets for assetsImagesDafaultPfp
+  /// assets/images/dafault_pfp.jpeg
+  static const String assetsImagesDafaultPfp = "assets/images/dafault_pfp.jpeg";
+
   /// Assets for assetsImagesMap
   /// assets/images/map.png
   static const String assetsImagesMap = "assets/images/map.png";

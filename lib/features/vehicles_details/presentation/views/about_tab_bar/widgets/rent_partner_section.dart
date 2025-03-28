@@ -9,8 +9,11 @@ import 'package:flutter/material.dart';
 class RentPartnerSection extends StatelessWidget {
   const RentPartnerSection({
     super.key,
+    this.pfpImage,
+    required this.renterName,
   });
-
+  final String? pfpImage;
+  final String renterName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,14 +27,18 @@ class RentPartnerSection extends StatelessWidget {
               color: AppLightColors.myGray100_3,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               children: [
-                OwnerImageSection(),
-                OwnerNameSection(),
-                Spacer(),
-                CustomIconButton(
+                OwnerImageSection(
+                  pfpImage: pfpImage,
+                ),
+                OwnerNameSection(
+                  renterName: renterName,
+                ),
+                const Spacer(),
+                const CustomIconButton(
                   imageIcon: AppAssets.assetsIconsChat,
                   flag: false,
                 )

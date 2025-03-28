@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
+import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card_network.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
@@ -9,8 +8,8 @@ import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 class GallarySection extends StatelessWidget {
   GallarySection({super.key, required this.images, required this.mainImage});
   final ScrollController _scrollController = ScrollController();
-  final List<File?> images;
-  final File mainImage;
+  final List<String?> images;
+  final String mainImage;
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +43,11 @@ class GallarySection extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
                   children: [
-                    AdditionalImageCard(image: mainImage),
+                    AdditionalImageCardNetwork(image: mainImage),
                     ...List.generate(images.length, (index) {
                       if (images[index] != null) {
-                        return AdditionalImageCard(image: images[index]!);
+                        return AdditionalImageCardNetwork(
+                            image: images[index]!);
                       } else {
                         return const SizedBox();
                       }
