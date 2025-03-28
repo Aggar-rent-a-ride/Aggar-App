@@ -14,6 +14,7 @@ import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 
 class SignInView extends StatelessWidget {
@@ -27,9 +28,13 @@ class SignInView extends StatelessWidget {
     );
   }
 
-  LoginCubit _createLoginCubit() {
+   LoginCubit _createLoginCubit() {
     final dio = Dio();
-    return LoginCubit(dioConsumer: DioConsumer(dio: dio));
+    const secureStorage = FlutterSecureStorage();
+    return LoginCubit(
+      dioConsumer: DioConsumer(dio: dio),
+      secureStorage: secureStorage,
+    );
   }
 }
 

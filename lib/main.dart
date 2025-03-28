@@ -1,6 +1,6 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cache/cache_helper.dart';
-import 'package:aggar/core/cubit/theme_cubit.dart';
+import 'package:aggar/core/cubit/theme/theme_cubit.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/themes/light_theme.dart';
@@ -22,21 +22,24 @@ import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   CacheHelper().init();
+
+  // Initialize FlutterSecureStorage
+  const secureStorage = FlutterSecureStorage();
+
   runApp(
-    // DevicePreview(
-    //   enabled: !kReleaseMode,
-    //   builder: (context) => const MyApp(),
-    // ),
-    const MyApp(),
+    const MyApp(secureStorage: secureStorage),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final FlutterSecureStorage secureStorage;
+
+  const MyApp({super.key, required this.secureStorage});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,10 @@ class MyApp extends StatelessWidget {
           create: (context) => PersonalInfoCubit(),
         ),
         BlocProvider(
-          create: (context) => LoginCubit(dioConsumer: DioConsumer(dio: Dio())),
+          create: (context) => LoginCubit(
+            dioConsumer: DioConsumer(dio: Dio()),
+            secureStorage: secureStorage,
+          ),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
@@ -93,7 +99,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            home: const MainScreen(),
+            home: const SignInView(),
           );
         },
       ),
