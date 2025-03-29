@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print, unused_local_variable
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -13,6 +12,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_p
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:latlong2/latlong.dart';
 import '../../data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import '../../data/cubits/main_image_cubit/main_image_cubit.dart';
 import '../widgets/about_vehicle_section.dart';
@@ -32,21 +32,41 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             onPressed: () async {
+              // Get the MapLocationCubit instance
+              final mapLocationCubit = context.read<MapLocationCubit>();
+              print(context
+                  .read<AddVehicleCubit>()
+                  .selectedTransmissionModeValue);
+              print(context.read<AddVehicleCubit>().selectedVehicleHealthValue);
+
+              // Validate the form
               if (context
                       .read<AddVehicleCubit>()
                       .addVehicleFormKey
                       .currentState
                       ?.validate() ??
                   false) {
-                print(
-                    context.read<MapLocationCubit>().getSelectedLocationData());
+                // Ensure a location is selected
+                if (mapLocationCubit.selectedLocation == null) {
+                  // Show an error if no location is selected
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a location on the map'),
+                    ),
+                  );
+                  return;
+                }
+
+                // Post data with the selected location
                 await context.read<AddVehicleCubit>().postData(
                       additionalImages:
                           context.read<AdditionalImageCubit>().images,
-                      location:
-                          context.read<MapLocationCubit>().selectedLocation,
+                      location: mapLocationCubit
+                          .selectedLocation!, // Ensure location is sent
                       mainImageFile: context.read<MainImageCubit>().image!,
                     );
+
+                // Navigate back after successful submission
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               }
@@ -107,6 +127,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       vehicleAddressController: context
                           .read<AddVehicleCubit>()
                           .vehicleAddressController,
+                      onLocationSelected: (LatLng location, String address) {
+                        context
+                            .read<MapLocationCubit>()
+                            .updateSelectedLocation(location);
+                      },
                     ),
                     const Gap(25),
                     VehicleRentalPriceSection(

@@ -34,7 +34,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
         return GestureDetector(
           onTap: () async {
             print("here");
-            context.read<AddVehicleCubit>().getData("85");
+            context.read<AddVehicleCubit>().getData("110");
             if (context.read<AddVehicleCubit>().vehicleData != null) {
               VehicleDataModel vehicle =
                   context.read<AddVehicleCubit>().vehicleData;
@@ -51,9 +51,21 @@ class PopularVehiclesCarCard extends StatelessWidget {
                     vehiceSeatsNo: vehicle.numOfPassengers.toString(),
                     images: vehicle.vehicleImages,
                     mainImage: vehicle.mainImagePath,
-                    vehicleHealth: vehicle.physicalStatus,
-                    vehicleStatus: vehicle.status,
-                    transmissionMode: 1,
+                    vehicleHealth: vehicle.physicalStatus == "Excellent"
+                        ? "excellent"
+                        : vehicle.physicalStatus == "Good"
+                            ? "good"
+                            : vehicle.physicalStatus == "Scratched"
+                                ? "minor dents"
+                                : "not bad",
+                    vehicleStatus: vehicle.status == "OutOfService"
+                        ? "out of stock"
+                        : "active",
+                    transmissionMode: vehicle.transmission == "Automatic"
+                        ? 1
+                        : vehicle.transmission == "None"
+                            ? 0
+                            : 2,
                     vehicleType: vehicle.vehicleType.name,
                     vehicleBrand: vehicle.vehicleBrand.name,
                     vehicleAddress: vehicle.address,

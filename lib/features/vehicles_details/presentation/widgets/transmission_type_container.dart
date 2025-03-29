@@ -14,12 +14,12 @@ class TransmissionTypeContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-            color: context.theme.black25,
+            color: context.theme.black100.withOpacity(0.2),
             offset: const Offset(0, 0),
             blurRadius: 4,
           ),
@@ -28,8 +28,8 @@ class TransmissionTypeContainer extends StatelessWidget {
       ),
       child: Text(
         transmissionType,
-        style: AppStyles.semiBold12(context).copyWith(
-          color: context.theme.blue100_4,
+        style: AppStyles.semiBold14(context).copyWith(
+          color: context.theme.blue100_2,
         ),
       ),
     );

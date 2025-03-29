@@ -1,5 +1,4 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
-import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card_network.dart';
 import 'package:flutter/material.dart';
 
