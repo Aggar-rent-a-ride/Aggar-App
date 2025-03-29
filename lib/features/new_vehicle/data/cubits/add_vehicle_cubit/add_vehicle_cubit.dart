@@ -26,12 +26,12 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       : super(AddVehicleInitial()) {
     selectedTransmissionModeValue = 0;
     emit(TransmissionModeUpdated(selectedTransmissionModeValue));
-
+    emit(VehicleStatusUpdated(selectedVehicleStatusValue));
     // Initialize Dio with base URL and default options
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiMWQ5NjNiMGItZTczYy00NGVmLWJmNDUtNWQxYjgxMTYxZWI4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzE3OTMyMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.C0vOhjp1oNy3hukChswkszoJAJ0sFGdPObZ49p0iwk0',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiMTU5MGY1ZWQtMWQzNy00NzE1LTkyNjQtZTM1NTFkMTlkOWIyIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzI1Mjc2NCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.AV32iGRQX8waS2WIIukSe13GA5LgXpTW-yAzuaGGlmo',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -52,20 +52,20 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   TextEditingController vehicleStatusController = TextEditingController();
   TextEditingController vehicleAddressController = TextEditingController();
   int? selectedTransmissionModeValue;
+  String? selectedVehicleBrandValue;
+  String? selectedVehicleStatusValue;
 
   void setTransmissionMode(int value) {
     selectedTransmissionModeValue = value;
     emit(TransmissionModeUpdated(selectedTransmissionModeValue));
   }
 
-  String? selectedVehicleBrandValue;
   void setVehicleBrand(String value) {
     selectedVehicleBrandValue = value;
     vehicleBrandController.text = value;
     emit(VehicleBrandUpdated(selectedVehicleBrandValue));
   }
 
-  String? selectedVehicleStatusValue;
   void setVehicleStatus(String value) {
     selectedVehicleStatusValue = value;
     vehicleStatusController.text = value;
@@ -93,14 +93,17 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   String getVehicleTransmission() {
     String transmissionMode;
     switch (selectedTransmissionModeValue) {
+      case 2:
+        transmissionMode = "Manual";
+        break;
+      case 1:
+        transmissionMode = "Automatic";
+        break;
       case 0:
         transmissionMode = "None";
         break;
-      case 1:
-        transmissionMode = "Manual";
-        break;
       default:
-        transmissionMode = "Automatic";
+        transmissionMode = "None";
     }
     return transmissionMode;
   }
@@ -128,9 +131,12 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
   String getVehicleStatus() {
     String status;
-    switch (selectedVehicleStatusValue) {
+    switch (vehicleStatusController.text) {
       case "out of stock":
         status = "OutOfService";
+        break;
+      case "active":
+        status = "Active";
         break;
       default:
         status = "Active";
