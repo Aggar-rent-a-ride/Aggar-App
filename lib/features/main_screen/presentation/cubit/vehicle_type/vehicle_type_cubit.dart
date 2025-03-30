@@ -8,6 +8,7 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
   VehicleTypeCubit() : super(VehicleTypeInitial());
   final List<String> vehicleTypes = [];
   final List<int> vehicleTypeIds = [];
+  final List<String> vehicleTypeSlogenPaths = [];
   Future<void> fetchVehicleTypes(String accessToken) async {
     try {
       // TODO : edit it with api comusmer but it not work man !!!!
@@ -22,11 +23,18 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
       if (decodedJson['statusCode'] == 200) {
         vehicleTypes.clear();
         vehicleTypeIds.clear();
+        vehicleTypeSlogenPaths.clear();
         for (var item in decodedJson['data']) {
           vehicleTypes.add(item[ApiKey.vehicleTypeName]);
           vehicleTypeIds.add(item[ApiKey.vehicleTypeId]);
+          if (item[ApiKey.vehicleTypeSlogen] != null) {
+            vehicleTypeSlogenPaths.add(item[ApiKey.vehicleTypeSlogen]);
+          } else {
+            vehicleTypeSlogenPaths.add("null");
+          }
         }
         print(vehicleTypes);
+        print(vehicleTypeSlogenPaths);
         emit(VehicleTypeLoaded());
       } else {
         emit(VehicleTypeError(message: decodedJson['message']));

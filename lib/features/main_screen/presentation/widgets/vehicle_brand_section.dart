@@ -1,13 +1,27 @@
-import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
-import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_card.dart';
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
+import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_card_net_work_image.dart';
+
+import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import '../../../../core/utils/app_styles.dart';
 
-class BrandsSection extends StatelessWidget {
+class BrandsSection extends StatefulWidget {
   const BrandsSection({super.key});
+
+  @override
+  State<BrandsSection> createState() => _BrandsSectionState();
+}
+
+class _BrandsSectionState extends State<BrandsSection> {
+  @override
+  void initState() {
+    context.read<VehicleBrandCubit>().fetchVehicleBrands(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiODAwYWFkYTktYWU0ZS00OGViLTllOGUtY2FlYzdiYmNmZmUwIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzM1NjQ5MCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.umzyAFQ25uvEfoVQdzzDafEWpggwu2inEgcVareibb0");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,33 +35,21 @@ class BrandsSection extends StatelessWidget {
           ),
         ),
         const Gap(5),
-        const SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              VehicleBrandCard(
-                imgPrv: AppAssets.assetsImagesTesla,
-                label: "Tesla",
-                numOfBrands: 8,
-              ),
-              VehicleBrandCard(
-                imgPrv: AppAssets.assetsImagesTesla,
-                label: "Tesla",
-                numOfBrands: 9,
-              ),
-              VehicleBrandCard(
-                imgPrv: AppAssets.assetsImagesTesla,
-                label: "Tesla",
-                numOfBrands: 1800,
-              ),
-              VehicleBrandCard(
-                imgPrv: AppAssets.assetsImagesTesla,
-                label: "Tesla",
-                numOfBrands: 0,
-              ),
-            ],
+        SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.width * 0.27,
+          child: ListView.builder(
+            itemBuilder: (context, index) => VehicleBrandCardNetWorkImage(
+              numOfBrands: 30,
+              imgPrv: context
+                  .read<VehicleBrandCubit>()
+                  .vehicleBrandLogoPaths[index],
+              label: context.read<VehicleBrandCubit>().vehicleBrands[index],
+            ),
+            itemCount: context.read<VehicleBrandCubit>().vehicleBrands.length,
+            scrollDirection: Axis.horizontal,
           ),
-        ),
+        )
       ],
     );
   }

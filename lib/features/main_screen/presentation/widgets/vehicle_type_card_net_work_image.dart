@@ -1,11 +1,11 @@
+import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class VehicleTypeCard extends StatelessWidget {
-  const VehicleTypeCard(
+class VehicleTypeCardNetWorkImage extends StatelessWidget {
+  const VehicleTypeCardNetWorkImage(
       {super.key, required this.iconPrv, required this.label});
   final String iconPrv;
   final String label;
@@ -28,12 +28,15 @@ class VehicleTypeCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Row(
           children: [
-            CustomIcon(
-              hight: 35,
-              width: 35,
-              flag: false,
-              imageIcon: iconPrv,
-            ),
+            iconPrv == "null"
+                ? const SizedBox()
+                : SizedBox(
+                    height: 35,
+                    width: 35,
+                    child: Image.network(
+                      "${EndPoint.baseUrl}$iconPrv",
+                    ),
+                  ),
             const Gap(10),
             Text(
               label,
