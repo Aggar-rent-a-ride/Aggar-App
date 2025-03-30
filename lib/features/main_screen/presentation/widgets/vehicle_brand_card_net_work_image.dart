@@ -1,11 +1,11 @@
+import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicles_brand_number_of_brands.dart';
 import 'package:flutter/material.dart';
 
-class VehicleBrandCard extends StatelessWidget {
-  const VehicleBrandCard(
+class VehicleBrandCardNetWorkImage extends StatelessWidget {
+  const VehicleBrandCardNetWorkImage(
       {super.key,
       required this.imgPrv,
       required this.label,
@@ -18,6 +18,7 @@ class VehicleBrandCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
       width: MediaQuery.of(context).size.width * 0.27,
+      height: MediaQuery.of(context).size.width * 0.27,
       decoration: BoxDecoration(
         color: AppLightColors.myWhite100_2,
         borderRadius: BorderRadius.circular(8),
@@ -33,12 +34,15 @@ class VehicleBrandCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           children: [
-            CustomIcon(
-              hight: 80,
-              width: 80,
-              flag: false,
-              imageIcon: imgPrv,
-            ),
+            imgPrv == "null"
+                ? const SizedBox()
+                : SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: Image.network(
+                      "${EndPoint.baseUrl}$imgPrv",
+                    ),
+                  ),
             Row(
               children: [
                 Text(

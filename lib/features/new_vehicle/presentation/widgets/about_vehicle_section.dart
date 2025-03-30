@@ -1,14 +1,13 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/vehicle_type/vehicle_type_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/cubits/vehicle_brand/vehicle_brand_cubit.dart';
-
-class AboutVehicleSection extends StatefulWidget {
+class AboutVehicleSection extends StatelessWidget {
   const AboutVehicleSection({
     super.key,
     required this.modelController,
@@ -24,20 +23,6 @@ class AboutVehicleSection extends StatefulWidget {
   final TextEditingController vehicleTypeController;
   final void Function(String?)? onSavedBrand;
   final void Function(String?)? onSavedType;
-
-  @override
-  State<AboutVehicleSection> createState() => _AboutVehicleSectionState();
-}
-
-class _AboutVehicleSectionState extends State<AboutVehicleSection> {
-  @override
-  void initState() {
-    context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiMTU5MGY1ZWQtMWQzNy00NzE1LTkyNjQtZTM1NTFkMTlkOWIyIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzI1Mjc2NCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.AV32iGRQX8waS2WIIukSe13GA5LgXpTW-yAzuaGGlmo");
-    context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiMTU5MGY1ZWQtMWQzNy00NzE1LTkyNjQtZTM1NTFkMTlkOWIyIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzI1Mjc2NCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.AV32iGRQX8waS2WIIukSe13GA5LgXpTW-yAzuaGGlmo");
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +42,8 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
           children: [
             InputNameWithDropDownList(
               ids: context.watch<VehicleBrandCubit>().vehicleBrandIds,
-              controller: widget.vehicleBrandController,
-              onSaved: widget.onSavedBrand,
+              controller: vehicleBrandController,
+              onSaved: onSavedBrand,
               validator: (value) {
                 if (value == null) {
                   return "required";
@@ -74,7 +59,7 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
             ),
             InputNameWithInputFieldSection(
               width: MediaQuery.of(context).size.width * 0.4,
-              controller: widget.modelController,
+              controller: modelController,
               hintText: "ex: model x",
               label: "model",
             ),
@@ -85,8 +70,8 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputNameWithDropDownList(
-              controller: widget.vehicleTypeController,
-              onSaved: widget.onSavedType,
+              controller: vehicleTypeController,
+              onSaved: onSavedType,
               validator: (value) {
                 if (value == null) {
                   return "required";
@@ -108,7 +93,7 @@ class _AboutVehicleSectionState extends State<AboutVehicleSection> {
                 }
                 return null;
               },
-              controller: widget.yearOfManufactureController,
+              controller: yearOfManufactureController,
               hintText: "ex: 1980",
               label: "year of manufacture",
               width: MediaQuery.of(context).size.width * 0.4,
