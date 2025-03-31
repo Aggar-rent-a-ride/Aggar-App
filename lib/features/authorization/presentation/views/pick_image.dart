@@ -16,12 +16,14 @@ class PickImage extends StatelessWidget {
   final Map<String, dynamic>? userData;
   final PageController? controller;
   final Function(Map<String, dynamic>)? onRegistrationSuccess;
+  final VoidCallback onSubmit;
 
   const PickImage({
     super.key,
     this.userData,
     this.controller,
-    this.onRegistrationSuccess, required Null Function() onSubmit,
+    this.onRegistrationSuccess,
+    required this.onSubmit,
   });
 
   @override
@@ -33,6 +35,7 @@ class PickImage extends StatelessWidget {
       child: PickImageContent(
         controller: controller,
         onRegistrationSuccess: onRegistrationSuccess,
+        onSubmit: onSubmit,
       ),
     );
   }
@@ -41,11 +44,13 @@ class PickImage extends StatelessWidget {
 class PickImageContent extends StatelessWidget {
   final PageController? controller;
   final Function(Map<String, dynamic>)? onRegistrationSuccess;
+  final VoidCallback onSubmit;
 
   const PickImageContent({
     super.key,
     this.controller,
     this.onRegistrationSuccess,
+    required this.onSubmit,
   });
 
   void _previousPage(BuildContext context) {
@@ -80,7 +85,6 @@ class PickImageContent extends StatelessWidget {
           );
 
           if (onRegistrationSuccess != null) {
-            // You may need to adapt this based on your needs
             onRegistrationSuccess!(
                 {ApiKey.message: 'Registration successful!'});
           }
@@ -197,9 +201,12 @@ class PickImageContent extends StatelessWidget {
                                 )
                               : CustomElevatedButton(
                                   onPressed: state.isFormValid
-                                      ? () => context
-                                          .read<PickImageCubit>()
-                                          .register()
+                                      ? () {
+                                          context
+                                              .read<PickImageCubit>()
+                                              .register();
+                                          onSubmit();
+                                        }
                                       : null,
                                   text: 'Register',
                                 ),
