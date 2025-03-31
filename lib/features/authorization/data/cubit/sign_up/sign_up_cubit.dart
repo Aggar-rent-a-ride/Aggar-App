@@ -1,48 +1,39 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-
-part 'sign_up_state.dart';
+import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
-  SignUpCubit() : super(SignUpInitial());
+  SignUpCubit() : super(const SignUpState());
 
-  // Store collected user data
-  Map<String, dynamic> userData = {};
+  Map<String, dynamic> get userData => state.userData;
 
-  // Update form data
-  void updateFormData(Map<String, String> data) {
-    userData.addAll(data);
-    emit(SignUpDataUpdated(userData));
+  void updateFormData(Map<String, dynamic> data) {
+    final updatedUserData = {...state.userData, ...data};
+    emit(state.copyWith(userData: updatedUserData));
   }
 
-  // Move to next page
-  void nextPage(PageController pageController) {
-    pageController.nextPage(
-      duration: const Duration(milliseconds: 300), 
-      curve: Curves.easeInOut
-    );
+  void resetError() {
+    emit(state.copyWith(error: null));
   }
 
-  // Move to previous page
-  void previousPage(PageController pageController) {
-    pageController.previousPage(
-      duration: const Duration(milliseconds: 300), 
-      curve: Curves.easeInOut
-    );
+  void submitSignUp() async {
+    emit(state.copyWith(isLoading: true, error: null));
+    
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+      
+      emit(state.copyWith(
+        isLoading: false,
+        isSuccess: true,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      ));
+    }
   }
 
-  // Final submission method (you can add validation and submission logic)
-  void submitSignUp() {
-    // Implement your sign-up submission logic here
-    emit(SignUpSubmitting());
-    // Simulate submission
-    Future.delayed(const Duration(seconds: 2), () {
-      if (userData.isNotEmpty) {
-        emit(SignUpSuccess(userData));
-      } else {
-        emit(SignUpFailure('Incomplete user data'));
-      }
-    });
+  void resetRegistration() {
+    emit(const SignUpState());
   }
 }

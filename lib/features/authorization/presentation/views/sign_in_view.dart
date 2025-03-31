@@ -28,7 +28,7 @@ class SignInView extends StatelessWidget {
     );
   }
 
-   LoginCubit _createLoginCubit() {
+  LoginCubit _createLoginCubit() {
     final dio = Dio();
     const secureStorage = FlutterSecureStorage();
     return LoginCubit(
@@ -52,6 +52,15 @@ class _SignInContent extends StatelessWidget {
           if (state is LoginSuccess) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const MainScreen()));
+          } else if (state is LoginInactiveAccount) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerificationView(
+                  userData: state.userData,
+                ),
+              ),
+            );
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

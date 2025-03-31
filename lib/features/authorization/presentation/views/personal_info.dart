@@ -9,11 +9,13 @@ import 'package:aggar/features/authorization/presentation/widget/custom_text_fro
 class PersonalInfoPage extends StatefulWidget {
   final PageController controller;
   final Function(Map<String, String>) onFormDataChanged;
+  final Map<String, dynamic>? initialData;
 
   const PersonalInfoPage({
     super.key,
     required this.controller,
     required this.onFormDataChanged,
+    this.initialData,
   });
 
   @override
@@ -22,18 +24,30 @@ class PersonalInfoPage extends StatefulWidget {
 
 class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _usernameController;
+  late final TextEditingController _dateController;
 
   bool _isFormValid = false;
 
   @override
   void initState() {
     super.initState();
+
+    _nameController = TextEditingController(
+        text: widget.initialData?['name'] as String? ?? '');
+
+    _usernameController = TextEditingController(
+        text: widget.initialData?['username'] as String? ?? '');
+
+    _dateController = TextEditingController(
+        text: widget.initialData?['dateOfBirth'] as String? ?? '');
+
     _nameController.addListener(_updateFormData);
     _usernameController.addListener(_updateFormData);
     _dateController.addListener(_updateFormData);
+
+    _updateFormData();
   }
 
   void _updateFormData() {
@@ -78,9 +92,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   @override
   void dispose() {
-    // _nameController.dispose();
-    // _usernameController.dispose();
-    // _dateController.dispose();
+    _nameController.dispose();
+    _usernameController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 

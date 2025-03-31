@@ -14,6 +14,8 @@ class PickImageCubit extends Cubit<PickImageState> {
     _apiConsumer = DioConsumer(dio: Dio());
   }
 
+  Map<String, dynamic>? get registrationResponse => _registrationResponse;
+
   void updateSelectedType(String type) {
     emit(state.copyWith(selectedType: type));
   }
@@ -30,9 +32,6 @@ class PickImageCubit extends Cubit<PickImageState> {
     emit(state.copyWith(errorMessage: null));
   }
 
-  // Getter to access registration response
-  Map<String, dynamic>? get registrationResponse => _registrationResponse;
-
   Future<void> register() async {
     if (!state.isFormValid) {
       emit(state.copyWith(
@@ -41,18 +40,26 @@ class PickImageCubit extends Cubit<PickImageState> {
       return;
     }
 
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    emit(state.copyWith(isLoading: true, errorMessage: null, isSuccess: false));
 
     try {
+      String addressString = "";
+      if (userData != null && userData!.containsKey("address")) {
+        final address = userData!["address"];
+        if (address is Map) {
+          addressString =
+              "${address['street'] ?? ''}, ${address['city'] ?? ''}, ${address['state'] ?? ''}, ${address['country'] ?? ''}";
+        } else if (address is String) {
+          addressString = address;
+        }
+      }
+
       final Map<String, dynamic> jsonData = {
         ...(userData ?? {}),
         "aggreedTheTerms": state.termsAccepted,
-        "isCustomer":
-            state.selectedType == "user", // user → true, renter → false
-        // Include these fields if they aren't already in userData
+        "isCustomer": state.selectedType == "user",
         "location": userData?["location"] ?? {"longitude": 0, "latitude": 0},
-        "address": userData?["address"] ??
-            {"country": "", "state": "", "city": "", "street": ""}
+        "address": addressString.isNotEmpty ? addressString : null,
       };
 
       print('Sending JSON data: ${jsonEncode(jsonData)}');
@@ -62,25 +69,53 @@ class PickImageCubit extends Cubit<PickImageState> {
         data: jsonData,
       );
 
-      print('Registration successful: $response');
+      print('Received response: $response');
 
-      // Store the response for verification
-      _registrationResponse = response;
+      if (response is Map<String, dynamic>) {
+        if (response.containsKey('statusCode')) {
+          int? statusCode = response['statusCode'] is int
+              ? response['statusCode']
+              : int.tryParse(response['statusCode'].toString());
 
-      emit(state.copyWith(isLoading: false, isSuccess: true));
+          if (statusCode != null && (statusCode < 200 || statusCode >= 300)) {
+            String errorMessage = response['message'] ?? 'Registration failed';
+            throw Exception(errorMessage);
+          }
+        }
+
+        _registrationResponse = response;
+        emit(state.copyWith(
+            isLoading: false, isSuccess: true, errorMessage: null));
+      } else {
+        throw Exception('Unexpected response format');
+      }
     } on DioException catch (e) {
       print('Dio exception: ${e.message}');
       print('Response data: ${e.response?.data}');
+
+      String errorMessage = 'Registration failed';
+
+      if (e.response?.data is Map<String, dynamic>) {
+        final responseData = e.response!.data as Map<String, dynamic>;
+
+        if (responseData.containsKey('message')) {
+          errorMessage = responseData['message'];
+        } else if (responseData.containsKey('title')) {
+          errorMessage = responseData['title'];
+        }
+      }
+
       emit(state.copyWith(
         isLoading: false,
-        errorMessage:
-            'Registration failed: ${e.response?.data?.toString() ?? e.message}',
+        isSuccess: false,
+        errorMessage: errorMessage,
       ));
     } catch (error) {
       print('Registration error: $error');
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: 'Registration failed: $error',
+        isSuccess: false,
+        errorMessage: error.toString(),
       ));
     }
   }

@@ -1,4 +1,5 @@
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
+import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'credentials.dart';
@@ -38,40 +39,45 @@ class _SignUpPageViewState extends State<SignUpPageView> {
     return Scaffold(
       body: BlocConsumer<SignUpCubit, SignUpState>(
         listener: (context, state) {
-          if (state is SignUpSuccess) {
-            // Handle successful sign-up
+          if (state.isSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Sign Up Successful: ${state.userData}')),
+              const SnackBar(content: Text('Sign Up Successful!')),
             );
-          } else if (state is SignUpFailure) {
-            // Handle sign-up failure
+          } else if (state.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Sign Up Failed: ${state.error}')),
             );
           }
         },
         builder: (context, state) {
+          final SignUpCubit cubit = context.read<SignUpCubit>();
+
           return PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
             children: [
               PersonalInfoPage(
                 controller: _pageController,
+                initialData: cubit.userData,
                 onFormDataChanged: (data) {
-                  context.read<SignUpCubit>().updateFormData(data);
+                  cubit.updateFormData(data);
                 },
               ),
               CredentialsPage(
                 controller: _pageController,
+                initialData: cubit.userData,
                 onFormDataChanged: (data) {
-                  context.read<SignUpCubit>().updateFormData(data);
+                  cubit.updateFormData(data);
                 },
               ),
               PickImage(
-                userData: context.read<SignUpCubit>().userData,
+                userData: cubit.userData,
                 controller: _pageController,
+                onRegistrationSuccess: (data) {
+                  cubit.updateFormData(data);
+                },
                 onSubmit: () {
-                  context.read<SignUpCubit>().submitSignUp();
+                  cubit.submitSignUp();
                 },
               ),
             ],
