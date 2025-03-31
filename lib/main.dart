@@ -9,6 +9,7 @@ import 'package:aggar/features/authorization/data/cubit/credentials/credentials_
 import 'package:aggar/features/authorization/data/cubit/personal_info/personal_info_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/views/bottom_navigation_bar_views.dart';
 import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
@@ -94,7 +95,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            home: const MainScreen(),
+            home: const BottomNavigationBarViews(),
           );
         },
       ),

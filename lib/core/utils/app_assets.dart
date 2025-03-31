@@ -18,6 +18,10 @@ class AppAssets {
   /// assets/icons/chat.png
   static const String assetsIconsChat = "assets/icons/chat.png";
 
+  /// Assets for assetsIconsChats
+  /// assets/icons/chats.png
+  static const String assetsIconsChats = "assets/icons/chats.png";
+
   /// Assets for assetsIconsClosedEyeIcon
   /// assets/icons/closed_eye_icon.png
   static const String assetsIconsClosedEyeIcon = "assets/icons/closed_eye_icon.png";
@@ -49,6 +53,10 @@ class AppAssets {
   /// Assets for assetsIconsHelpCenter
   /// assets/icons/help_center.png
   static const String assetsIconsHelpCenter = "assets/icons/help_center.png";
+
+  /// Assets for assetsIconsHome
+  /// assets/icons/home.png
+  static const String assetsIconsHome = "assets/icons/home.png";
 
   /// Assets for assetsIconsLanguage
   /// assets/icons/language.png
@@ -94,6 +102,10 @@ class AppAssets {
   /// assets/icons/pickimage.png
   static const String assetsIconsPickimage = "assets/icons/pickimage.png";
 
+  /// Assets for assetsIconsProfile
+  /// assets/icons/profile.png
+  static const String assetsIconsProfile = "assets/icons/profile.png";
+
   /// Assets for assetsIconsRecreationalIcon
   /// assets/icons/recreational_icon.png
   static const String assetsIconsRecreationalIcon = "assets/icons/recreational_icon.png";
@@ -121,6 +133,10 @@ class AppAssets {
   /// Assets for assetsIconsSeatsno
   /// assets/icons/seatsno.png
   static const String assetsIconsSeatsno = "assets/icons/seatsno.png";
+
+  /// Assets for assetsIconsSettings
+  /// assets/icons/settings.png
+  static const String assetsIconsSettings = "assets/icons/settings.png";
 
   /// Assets for assetsIconsSort
   /// assets/icons/sort.png
