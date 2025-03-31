@@ -6,9 +6,9 @@ import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/themes/light_theme.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
-import 'package:aggar/features/authorization/data/cubit/personal_info/personal_info_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
@@ -76,9 +76,6 @@ class MyApp extends StatelessWidget {
           create: (context) => CredentialsCubit(),
         ),
         BlocProvider(
-          create: (context) => PersonalInfoCubit(),
-        ),
-        BlocProvider(
           create: (context) => LoginCubit(
             dioConsumer: DioConsumer(dio: Dio()),
             secureStorage: secureStorage,
@@ -94,7 +91,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            home: const MainScreen(),
+            home: const SignInView(),
           );
         },
       ),

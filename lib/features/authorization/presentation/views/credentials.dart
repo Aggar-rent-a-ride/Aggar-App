@@ -11,11 +11,13 @@ import 'package:aggar/features/authorization/presentation/widget/custom_text_fro
 class CredentialsPage extends StatelessWidget {
   final PageController controller;
   final Function(Map<String, String>) onFormDataChanged;
+  final Map<String, dynamic>? initialData;
 
   const CredentialsPage({
     super.key,
     required this.controller,
     required this.onFormDataChanged,
+    this.initialData,
   });
 
   void _nextPage(BuildContext context) {
@@ -40,10 +42,26 @@ class CredentialsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CredentialsCubit(),
+      create: (context) {
+        final cubit = CredentialsCubit();
+
+        if (initialData != null) {
+          if (initialData!.containsKey('email')) {
+            cubit.updateEmail(initialData!['email'] as String);
+          }
+          if (initialData!.containsKey('password')) {
+            cubit.updatePassword(initialData!['password'] as String);
+          }
+          if (initialData!.containsKey('confirmPassword')) {
+            cubit.updateConfirmPassword(
+                initialData!['confirmPassword'] as String);
+          }
+        }
+
+        return cubit;
+      },
       child: BlocConsumer<CredentialsCubit, CredentialsState>(
         listener: (context, state) {
-          // Notify parent widget about form data changes
           onFormDataChanged({
             'email': state.email,
             'password': state.password,
@@ -72,6 +90,7 @@ class CredentialsPage extends StatelessWidget {
                           inputType: TextInputType.emailAddress,
                           obscureText: false,
                           hintText: "Enter your Email",
+                          initialValue: state.email,
                           onChanged: cubit.updateEmail,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -88,6 +107,7 @@ class CredentialsPage extends StatelessWidget {
                           inputType: TextInputType.text,
                           obscureText: !state.passwordVisible,
                           hintText: "Enter password",
+                          initialValue: state.password,
                           onChanged: cubit.updatePassword,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -110,6 +130,7 @@ class CredentialsPage extends StatelessWidget {
                           inputType: TextInputType.text,
                           obscureText: !state.confirmPasswordVisible,
                           hintText: "Enter your password again",
+                          initialValue: state.confirmPassword,
                           onChanged: cubit.updateConfirmPassword,
                           validator: (value) {
                             if (value == null || value.isEmpty) {

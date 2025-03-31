@@ -15,6 +15,7 @@ class LoginCubit extends Cubit<LoginState> {
   final formKey = GlobalKey<FormState>();
 
   bool obscurePassword = true;
+  Map<String, dynamic>? userData;
 
   LoginCubit({
     required this.dioConsumer,
@@ -60,7 +61,15 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
+      userData = response;
+
       if (data[ApiKey.isAuthenticated] == true) {
+        final accountStatus = data['accountStatus'];
+        if (accountStatus == 'inactive') {
+          emit(LoginInactiveAccount(userData: response));
+          return;
+        }
+
         final accessToken = data[ApiKey.accessToken] ?? "";
         final refreshToken = data[ApiKey.refreshToken] ?? "";
 

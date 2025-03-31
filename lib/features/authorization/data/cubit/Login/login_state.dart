@@ -1,4 +1,3 @@
-// login_state.dart
 import 'package:equatable/equatable.dart';
 
 abstract class LoginState extends Equatable {
@@ -38,9 +37,20 @@ class LoginFailure extends LoginState {
 
 class LoginPasswordVisibilityChanged extends LoginState {
   final bool obscurePassword;
-  
+ 
   const LoginPasswordVisibilityChanged({required this.obscurePassword});
-  
+ 
   @override
   List<Object> get props => [obscurePassword];
+}
+
+class LoginInactiveAccount extends LoginState {
+  final Map<String, dynamic> userData;
+  
+  const LoginInactiveAccount({
+    required this.userData,
+  });
+  
+  @override
+  List<Object> get props => [userData];
 }

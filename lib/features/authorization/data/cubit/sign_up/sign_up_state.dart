@@ -1,39 +1,32 @@
-part of 'sign_up_cubit.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class SignUpState extends Equatable {
-  const SignUpState();
-  
-  @override
-  List<Object> get props => [];
-}
-
-class SignUpInitial extends SignUpState {}
-
-class SignUpDataUpdated extends SignUpState {
+class SignUpState extends Equatable {
   final Map<String, dynamic> userData;
-  
-  const SignUpDataUpdated(this.userData);
-  
-  @override
-  List<Object> get props => [userData];
-}
+  final bool isLoading;
+  final String? error;
+  final bool isSuccess;
 
-class SignUpSubmitting extends SignUpState {}
+  const SignUpState({
+    this.userData = const {},
+    this.isLoading = false,
+    this.error,
+    this.isSuccess = false,
+  });
 
-class SignUpSuccess extends SignUpState {
-  final Map<String, dynamic> userData;
-  
-  const SignUpSuccess(this.userData);
-  
-  @override
-  List<Object> get props => [userData];
-}
+  SignUpState copyWith({
+    Map<String, dynamic>? userData,
+    bool? isLoading,
+    String? error,
+    bool? isSuccess,
+  }) {
+    return SignUpState(
+      userData: userData ?? this.userData,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+      isSuccess: isSuccess ?? this.isSuccess,
+    );
+  }
 
-class SignUpFailure extends SignUpState {
-  final String error;
-  
-  const SignUpFailure(this.error);
-  
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [userData, isLoading, error, isSuccess];
 }
