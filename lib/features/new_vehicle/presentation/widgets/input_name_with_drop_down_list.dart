@@ -44,7 +44,6 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
   String? selectedValue;
   late final TextEditingController textEditingController;
   late final TextEditingController dropdownController;
-
   @override
   void initState() {
     super.initState();
@@ -55,12 +54,17 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
       selectedValue = widget.initialValue;
       dropdownController.text = widget.initialValue!;
     } else if (widget.items == vehicleStatus) {
-      selectedValue = widget.items.first;
-      dropdownController.text = widget.items.first;
-    } else if (widget.items.isNotEmpty) {
-      // Default to first item if no initial value
-      selectedValue = widget.ids.first.toString();
-      dropdownController.text = widget.ids.first.toString();
+      int activeIndex = widget.items.indexOf("active");
+      if (activeIndex != -1) {
+        selectedValue = widget.items[activeIndex];
+        dropdownController.text = widget.items[activeIndex];
+      } else {
+        selectedValue = null;
+        dropdownController.text = '';
+      }
+    } else {
+      selectedValue = null;
+      dropdownController.text = '';
     }
   }
 
@@ -73,7 +77,6 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
     super.dispose();
   }
 
-  // Helper method to get text style based on item
   TextStyle getItemTextStyle(
       BuildContext context, String item, String? selectedItem) {
     if (item == selectedItem) {
@@ -136,7 +139,6 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value;
-                    //print(value);
                     dropdownController.text = value ?? '';
                     state.didChange(value);
                   });
