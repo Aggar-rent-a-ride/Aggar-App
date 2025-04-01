@@ -1,16 +1,26 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'pick_image_state.dart';
 
+enum ErrorFieldType {
+  username,
+  email,
+  password,
+  general,
+}
+
 class PickImageCubit extends Cubit<PickImageState> {
   final Map<String, dynamic>? userData;
   late final DioConsumer _apiConsumer;
   Map<String, dynamic>? _registrationResponse;
+  final PageController? controller;
 
-  PickImageCubit({this.userData}) : super(const PickImageState()) {
+  PickImageCubit({this.userData, this.controller})
+      : super(const PickImageState()) {
     _apiConsumer = DioConsumer(dio: Dio());
   }
 
@@ -32,7 +42,57 @@ class PickImageCubit extends Cubit<PickImageState> {
     emit(state.copyWith(errorMessage: null));
   }
 
-  Future<void> register() async {
+  void navigateToPageForError(BuildContext context, ErrorFieldType errorType) {
+    if (controller == null) return;
+
+    switch (errorType) {
+      case ErrorFieldType.username:
+        controller!.animateToPage(
+          0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        break;
+      case ErrorFieldType.email:
+      case ErrorFieldType.password:
+        controller!.animateToPage(
+          1,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        break;
+      case ErrorFieldType.general:
+      break;
+    }
+  }
+
+  ErrorFieldType determineErrorType(String errorMessage) {
+    errorMessage = errorMessage.toLowerCase();
+
+    if (errorMessage.contains('username')) {
+      return ErrorFieldType.username;
+    } else if (errorMessage.contains('email')) {
+      return ErrorFieldType.email;
+    } else if (errorMessage.contains('password')) {
+      return ErrorFieldType.password;
+    } else {
+      return ErrorFieldType.general;
+    }
+  }
+
+  void handleErrorAndNavigate(BuildContext context, String errorMessage) {
+    emit(state.copyWith(
+      isLoading: false,
+      isSuccess: false,
+      errorMessage: errorMessage,
+    ));
+
+    ErrorFieldType errorType = determineErrorType(errorMessage);
+    print('Error type: $errorType for message: $errorMessage');
+    navigateToPageForError(context, errorType);
+  }
+
+  Future<void> register(BuildContext context) async {
     if (!state.isFormValid) {
       emit(state.copyWith(
         errorMessage: 'Please select an image and accept the terms.',
@@ -79,7 +139,9 @@ class PickImageCubit extends Cubit<PickImageState> {
 
           if (statusCode != null && (statusCode < 200 || statusCode >= 300)) {
             String errorMessage = response['message'] ?? 'Registration failed';
-            throw Exception(errorMessage);
+            print('Error in response: $errorMessage');
+            handleErrorAndNavigate(context, errorMessage);
+            return;
           }
         }
 
@@ -105,18 +167,16 @@ class PickImageCubit extends Cubit<PickImageState> {
         }
       }
 
-      emit(state.copyWith(
-        isLoading: false,
-        isSuccess: false,
-        errorMessage: errorMessage,
-      ));
+      handleErrorAndNavigate(context, errorMessage);
     } catch (error) {
       print('Registration error: $error');
-      emit(state.copyWith(
-        isLoading: false,
-        isSuccess: false,
-        errorMessage: error.toString(),
-      ));
+
+      String errorMessage = error.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage = errorMessage.substring('Exception: '.length);
+      }
+
+      handleErrorAndNavigate(context, errorMessage);
     }
   }
 }
