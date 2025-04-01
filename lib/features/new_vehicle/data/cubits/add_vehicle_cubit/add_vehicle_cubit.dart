@@ -31,7 +31,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYwIiwianRpIjoiMTU5MGY1ZWQtMWQzNy00NzE1LTkyNjQtZTM1NTFkMTlkOWIyIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMSIsInVpZCI6IjEwNjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzI1Mjc2NCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.AV32iGRQX8waS2WIIukSe13GA5LgXpTW-yAzuaGGlmo',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiOGJjMzA4NDItNTgyZS00ZjhhLThlNTUtNzNkYjExZjgxOTM0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzUzNzU3NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.anUiZ3X1S6d7e8nxzG1uiG7G3WGr5xkg6ctYPfcqeH0',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -172,19 +172,20 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
         MapEntry(ApiKey.vehicleProperitesOverview,
             vehicleProperitesOverviewController.text),
-        MapEntry(ApiKey.vehicleType, selectedVehicleTypeValue ?? "1"),
-        MapEntry(ApiKey.vehicleBrand, selectedVehicleBrandValue ?? "1"),
+        MapEntry(ApiKey.vehicleType, vehicleTypeController.text),
+        MapEntry(ApiKey.vehicleBrand, vehicleBrandController.text),
         MapEntry(ApiKey.vehicleStatus, getVehicleStatus()),
-        MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
         MapEntry(ApiKey.vehicleTransmissionMode, getVehicleTransmission()),
         MapEntry(ApiKey.vehicleHealth, getVehicleHealth()),
-        MapEntry("Location.Latitude", (location?.latitude).toString()),
-        MapEntry("Location.Longitude", (location?.longitude).toString()),
-        MapEntry("Address", vehicleAddressController.text),
+        MapEntry(
+            ApiKey.vehicleLocationLatitude, (location?.latitude).toString()),
+        MapEntry(
+            ApiKey.vehicleLocationLongitude, (location?.longitude).toString()),
+        MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
       ]);
       // Add main image
       formData.files.add(MapEntry(
-        "MainImage",
+        ApiKey.vehicleMainImage,
         await MultipartFile.fromFile(
           mainImageFile.path,
           filename: basename(mainImageFile.path),
@@ -197,8 +198,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         // print('Additional Images Count: ${additionalImages.length}');
         for (int i = 0; i < additionalImages.length; i++) {
           if (additionalImages[i] != null) {
+            print(additionalImages[i]);
             formData.files.add(MapEntry(
-              "AdditionalImages",
+              ApiKey.vehicleImages,
               await MultipartFile.fromFile(
                 additionalImages[i]!.path,
                 filename: basename(additionalImages[i]!.path),
