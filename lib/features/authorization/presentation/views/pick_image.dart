@@ -31,6 +31,7 @@ class PickImage extends StatelessWidget {
     return BlocProvider(
       create: (context) => PickImageCubit(
         userData: userData,
+        controller: controller, 
       ),
       child: PickImageContent(
         controller: controller,
@@ -204,7 +205,7 @@ class PickImageContent extends StatelessWidget {
                                       ? () {
                                           context
                                               .read<PickImageCubit>()
-                                              .register();
+                                              .register(context);
                                           onSubmit();
                                         }
                                       : null,
