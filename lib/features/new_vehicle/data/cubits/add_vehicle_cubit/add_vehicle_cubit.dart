@@ -160,9 +160,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       }
 
       FormData formData = FormData();
-
-      // Print out form data fields for debugging
-      //print('Form Data Fields:');
       formData.fields.addAll([
         MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
         MapEntry(ApiKey.vehicleModel, vehicleModelController.text),
@@ -191,9 +188,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           filename: basename(mainImageFile.path),
         ),
       ));
-      //print('Main Image Path: ${mainImageFile.path}');
-
-      // Add additional images
       if (additionalImages.isNotEmpty) {
         // print('Additional Images Count: ${additionalImages.length}');
         for (int i = 0; i < additionalImages.length; i++) {
@@ -224,11 +218,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
             },
           ),
         );
-/*
-        // Extensive response logging
-        print('Response Status Code: ${response.statusCode}');
-        print('Response Headers: ${response.headers}');
-        print('Response Data Type: ${response.data.runtimeType}');*/
         print('Full Response Data: ${response.data}');
         if (response.statusCode! >= 200 && response.statusCode! < 300) {
           //print('Request Successful');

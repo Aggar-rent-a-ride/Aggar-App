@@ -13,13 +13,18 @@ class MainImageInitial extends MainImageState {}
 
 class MainImageLoading extends MainImageState {}
 
+// In main_image_state.dart, make sure your MainImageLoaded state looks like this:
 class MainImageLoaded extends MainImageState {
-  final File image;
+  final File? imageFile;
+  final String? imageUrl;
 
-  const MainImageLoaded(this.image);
+  const MainImageLoaded({this.imageFile, this.imageUrl});
+
+  bool get hasImage =>
+      imageFile != null || (imageUrl != null && imageUrl!.isNotEmpty);
 
   @override
-  List<Object?> get props => [image];
+  List<Object?> get props => [imageFile, imageUrl];
 }
 
 class MainImageFaliure extends MainImageState {

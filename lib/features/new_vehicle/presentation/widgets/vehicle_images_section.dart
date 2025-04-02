@@ -1,13 +1,19 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_list_view.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_main_image_button_content.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-class VehicleImagesSection extends StatefulWidget {
-  const VehicleImagesSection({super.key});
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+class VehicleImagesSection extends StatefulWidget {
+  const VehicleImagesSection({
+    super.key,
+    this.initialMainImageUrl,
+  });
+  final String? initialMainImageUrl;
   @override
   _VehicleImagesSectionState createState() => _VehicleImagesSectionState();
 }
@@ -34,7 +40,10 @@ class _VehicleImagesSectionState extends State<VehicleImagesSection> {
           ),
         ),
         PickMainImageButtonContent(
-          onImagePicked: onMainImagePicked,
+          onImagePicked: (file) {
+            context.read<EditVehicleCubit>().setMainImageFile(file);
+          },
+          initialImageUrl: widget.initialMainImageUrl,
         ),
         Text(
           "additional images",

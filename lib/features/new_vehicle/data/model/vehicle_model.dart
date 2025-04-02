@@ -23,7 +23,7 @@ class VehicleDataModel {
   final VehicleType vehicleType;
   final VehicleBrand vehicleBrand;
   final List<String> vehicleImages;
-  final List<dynamic> discounts;
+  final List<dynamic>? discounts;
 
   VehicleDataModel({
     required this.id,
@@ -45,7 +45,7 @@ class VehicleDataModel {
     required this.vehicleType,
     required this.vehicleBrand,
     required this.vehicleImages,
-    required this.discounts,
+    this.discounts,
   });
 
   factory VehicleDataModel.fromJson(Map<String, dynamic> json) {
