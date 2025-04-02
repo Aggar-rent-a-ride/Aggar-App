@@ -15,7 +15,7 @@ class VehicleType {
     return VehicleType(
       id: json[ApiKey.vehicleTypeId],
       name: json[ApiKey.vehicleTypeName],
-      slogenPath: json[ApiKey.vehicleTypeSlogen],
+      slogenPath: json[ApiKey.vehicleTypeSlogen] ?? "",
     );
   }
 }
