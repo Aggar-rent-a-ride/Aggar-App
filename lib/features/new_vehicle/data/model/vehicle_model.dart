@@ -22,7 +22,7 @@ class VehicleDataModel {
   final LocationModel location;
   final VehicleType vehicleType;
   final VehicleBrand vehicleBrand;
-  final List<String> vehicleImages;
+  final List<String?> vehicleImages;
   final List<dynamic>? discounts;
 
   VehicleDataModel({

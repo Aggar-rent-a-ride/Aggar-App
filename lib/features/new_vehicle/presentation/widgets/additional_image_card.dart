@@ -1,7 +1,6 @@
 import 'dart:io';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:flutter/material.dart';
-
+/*
 class AdditionalImageCard extends StatelessWidget {
   const AdditionalImageCard({
     super.key,
@@ -31,6 +30,56 @@ class AdditionalImageCard extends StatelessWidget {
           width: MediaQuery.sizeOf(context).height * 0.03 + 50,
         ),
       ),
+    );
+  }
+}*/
+
+class AdditionalImageCard extends StatelessWidget {
+  final File image;
+  final VoidCallback? onRemove;
+
+  const AdditionalImageCard({
+    super.key,
+    required this.image,
+    this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          width: 80,
+          height: 80,
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            image: DecorationImage(
+              image: FileImage(image),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        if (onRemove != null)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

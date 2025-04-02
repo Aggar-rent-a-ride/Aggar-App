@@ -31,7 +31,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiOGJjMzA4NDItNTgyZS00ZjhhLThlNTUtNzNkYjExZjgxOTM0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzUzNzU3NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.anUiZ3X1S6d7e8nxzG1uiG7G3WGr5xkg6ctYPfcqeH0',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNWRkOWRjMmUtMjUxZS00ZWZlLWJlMTQtNzAzOWNmNGUxOTk5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyMzc2NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.1qoXOcPy6u0NS3AzQpcAEskWPSzsDc3jLvNg-CRCN-Q',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -151,10 +151,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   }) async {
     try {
       emit(AddVehicleLoading());
-
-      // Validate required fields before making the request
       if (mainImageFile == null) {
-        //print('Error: Main image file is required');
         emit(AddVehicleFailure('Main image file is required'));
         return;
       }
@@ -189,7 +186,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         ),
       ));
       if (additionalImages.isNotEmpty) {
-        // print('Additional Images Count: ${additionalImages.length}');
         for (int i = 0; i < additionalImages.length; i++) {
           if (additionalImages[i] != null) {
             print(additionalImages[i]);
@@ -200,12 +196,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
                 filename: basename(additionalImages[i]!.path),
               ),
             ));
-            //  print('Additional Image $i Path: ${additionalImages[i]!.path}');
           }
         }
       }
-      //  print('API Endpoint: ${EndPoint.vehicle}');
-
       try {
         final response = await _dio.post(
           "https://aggarapi.runasp.net/api/vehicle/",
@@ -220,27 +213,18 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         );
         print('Full Response Data: ${response.data}');
         if (response.statusCode! >= 200 && response.statusCode! < 300) {
-          //print('Request Successful');
           emit(AddVehicleSuccess(response.data));
         } else {
-          // print('Request Failed');
           emit(AddVehicleFailure(
               "Error: ${response.statusCode} - ${response.data.toString()}"));
         }
       } catch (networkError) {
-        // print('Network Error: $networkError');
         rethrow;
       }
     } on DioException catch (e) {
-      // Detailed Dio Exception logging
-      // print('Dio Exception Type: ${e.type}');
-      // print('Dio Exception Message: ${e.message}');
-
       String errorMessage = "Request failed";
 
       if (e.response != null) {
-        // print('Error Response Status Code: ${e.response!.statusCode}');
-        // print('Error Response Data: ${e.response!.data}');
         errorMessage =
             "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
       }
