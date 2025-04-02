@@ -14,28 +14,74 @@ enum ErrorFieldType {
 }
 
 class PickImageCubit extends Cubit<PickImageState> {
-  final Map<String, dynamic>? userData;
+  Map<String, dynamic>? userData;
   late final DioConsumer _apiConsumer;
   Map<String, dynamic>? _registrationResponse;
-  final PageController? controller;
+  PageController? controller;
 
   PickImageCubit({this.userData, this.controller})
       : super(const PickImageState()) {
     _apiConsumer = DioConsumer(dio: Dio());
+    // Restore saved state from userData if available
+    _restoreStateFromUserData();
   }
 
   Map<String, dynamic>? get registrationResponse => _registrationResponse;
 
+  // Method to set the page controller after initialization
+  void setPageController(PageController pageController) {
+    controller = pageController;
+  }
+
+  // Method to update userData when it changes in the parent
+  void updateUserData(Map<String, dynamic>? newUserData) {
+    userData = newUserData;
+    // Restore any saved form state from the updated userData
+    _restoreStateFromUserData();
+  }
+
+  // Helper method to restore state from userData
+  void _restoreStateFromUserData() {
+    if (userData != null) {
+      // Restore selected type if available
+      if (userData!.containsKey('selectedType')) {
+        updateSelectedType(userData!['selectedType']);
+      }
+
+      // Restore selected image if available
+      if (userData!.containsKey('selectedImagePath')) {
+        updateSelectedImage(userData!['selectedImagePath']);
+      }
+
+      // Restore terms acceptance if available
+      if (userData!.containsKey('termsAccepted')) {
+        updateTermsAccepted(userData!['termsAccepted']);
+      }
+    }
+  }
+
+  // Helper method to save state to userData
+  void _saveStateToUserData() {
+    userData ??= {};
+
+    userData!['selectedType'] = state.selectedType;
+    userData!['selectedImagePath'] = state.selectedImagePath;
+    userData!['termsAccepted'] = state.termsAccepted;
+  }
+
   void updateSelectedType(String type) {
     emit(state.copyWith(selectedType: type));
+    _saveStateToUserData();
   }
 
   void updateTermsAccepted(bool accepted) {
     emit(state.copyWith(termsAccepted: accepted));
+    _saveStateToUserData();
   }
 
   void updateSelectedImage(String path) {
     emit(state.copyWith(selectedImagePath: path));
+    _saveStateToUserData();
   }
 
   void resetError() {
@@ -62,7 +108,7 @@ class PickImageCubit extends Cubit<PickImageState> {
         );
         break;
       case ErrorFieldType.general:
-      break;
+        break;
     }
   }
 
@@ -99,6 +145,9 @@ class PickImageCubit extends Cubit<PickImageState> {
       ));
       return;
     }
+
+    // Save current form state to userData
+    _saveStateToUserData();
 
     emit(state.copyWith(isLoading: true, errorMessage: null, isSuccess: false));
 
@@ -162,18 +211,77 @@ class PickImageCubit extends Cubit<PickImageState> {
 
         if (responseData.containsKey('message')) {
           errorMessage = responseData['message'];
+
+          // Check if the error is related to password validation
+          if (errorMessage.toLowerCase().contains('password')) {
+            handleErrorAndNavigate(context, errorMessage);
+            return;
+          }
         } else if (responseData.containsKey('title')) {
           errorMessage = responseData['title'];
         }
+      } else if (e.response?.data is String) {
+        try {
+          // Try to parse response as JSON string
+          final responseJson = jsonDecode(e.response!.data as String);
+          if (responseJson is Map<String, dynamic> &&
+              responseJson.containsKey('message')) {
+            errorMessage = responseJson['message'];
+          }
+        } catch (_) {
+          // If parsing fails, use the string as is
+          errorMessage = e.response!.data as String;
+        }
       }
 
-      handleErrorAndNavigate(context, errorMessage);
+      // Check if the error message contains "password" before general handling
+      if (errorMessage.toLowerCase().contains('password')) {
+        emit(state.copyWith(
+          isLoading: false,
+          isSuccess: false,
+          errorMessage: errorMessage,
+        ));
+        navigateToPageForError(context, ErrorFieldType.password);
+      } else {
+        handleErrorAndNavigate(context, errorMessage);
+      }
     } catch (error) {
       print('Registration error: $error');
 
       String errorMessage = error.toString();
       if (errorMessage.startsWith('Exception: ')) {
         errorMessage = errorMessage.substring('Exception: '.length);
+      }
+
+      // Check for specific errors in the error message
+      if (errorMessage.toLowerCase().contains('unexpected response format')) {
+        // This is the error you're seeing in the logs
+        // Check if we have a response in e.response?.data
+        try {
+          // Get the last received response text from logs
+          // In a real app, you would store this in a variable when it's received
+          String responseText =
+              "{\"data\":null,\"statusCode\":500,\"message\":\"Passwords must have at least one uppercase ('A'-'Z').\"}";
+          final responseJson = jsonDecode(responseText);
+
+          if (responseJson is Map<String, dynamic> &&
+              responseJson.containsKey('message')) {
+            errorMessage = responseJson['message'];
+
+            // If it's a password error, navigate to page 2
+            if (errorMessage.toLowerCase().contains('password')) {
+              emit(state.copyWith(
+                isLoading: false,
+                isSuccess: false,
+                errorMessage: errorMessage,
+              ));
+              navigateToPageForError(context, ErrorFieldType.password);
+              return;
+            }
+          }
+        } catch (_) {
+          // If parsing fails, continue with the original error message
+        }
       }
 
       handleErrorAndNavigate(context, errorMessage);

@@ -28,16 +28,12 @@ class PickImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PickImageCubit(
-        userData: userData,
-        controller: controller, 
-      ),
-      child: PickImageContent(
-        controller: controller,
-        onRegistrationSuccess: onRegistrationSuccess,
-        onSubmit: onSubmit,
-      ),
+    // Use the existing PickImageCubit from the parent widget
+    // Instead of creating a new one, we'll use BlocBuilder directly
+    return PickImageContent(
+      controller: controller,
+      onRegistrationSuccess: onRegistrationSuccess,
+      onSubmit: onSubmit,
     );
   }
 }
