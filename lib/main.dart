@@ -99,7 +99,8 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            home: const EditVehicleView(vehicleId: "121"),
+            home: const SignInView(),
+
           );
         },
       ),
