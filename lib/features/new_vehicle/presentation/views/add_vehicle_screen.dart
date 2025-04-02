@@ -17,13 +17,8 @@ import '../../data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import '../../data/cubits/main_image_cubit/main_image_cubit.dart';
 import '../widgets/about_vehicle_section.dart';
 
-class AddVehicleScreen extends StatefulWidget {
+class AddVehicleScreen extends StatelessWidget {
   const AddVehicleScreen({super.key});
-  @override
-  State<AddVehicleScreen> createState() => _AddVehicleScreenState();
-}
-
-class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddVehicleCubit, AddVehicleState>(
@@ -109,7 +104,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           context.read<AddVehicleCubit>().vehicleTypeController,
                     ),
                     const Gap(25),
-                    const VehicleImagesSection(),
+                    VehicleImagesSection(
+                      initialMainImageUrl:
+                          context.read<MainImageCubit>().imageUrl,
+                    ),
                     const Gap(25),
                     VehicleProperitesSection(
                       vehicleOverviewController: context

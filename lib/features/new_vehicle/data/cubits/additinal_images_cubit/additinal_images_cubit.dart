@@ -1,29 +1,74 @@
 import 'dart:io';
-
-import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'additinal_images_state.dart';
 
 class AdditionalImageCubit extends Cubit<AdditionalImageState> {
   AdditionalImageCubit() : super(AdditionalImagesInitial());
+
   List<File?> images = [];
+  List<String?> imagesUrl = [];
+
   void initializeImages(File? mainImage) {
-    emit(AdditionalImagesLoaded([mainImage, null]));
+    images = [mainImage, null];
+    emit(AdditionalImagesLoaded(images));
   }
 
   Future<void> pickImage(int index) async {
-    final currentState = state as AdditionalImagesLoaded;
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      images = List<File?>.from(currentState.images);
-      images[index] = File(pickedFile.path);
-      if (index == images.length - 1) {
-        images.add(null);
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        // Create a new list to avoid mutation issues
+        images = List.from(images);
+        images[index] = File(pickedFile.path);
+
+        // Add a new null slot if we're filling the last position
+        if (index == images.length - 1) {
+          images.add(null);
+        }
+
+        emit(AdditionalImagesLoaded(images));
       }
-      emit(AdditionalImagesLoaded(images));
-    } else {
-      emit(const AdditionalImagesFailure('Failed to pick image'));
+    } catch (e) {
+      emit(AdditionalImagesFailure('Failed to pick image: ${e.toString()}'));
     }
+  }
+
+  void setImagesUrl(String url, int index) {
+    if (url.isNotEmpty) {
+      // Ensure imagesUrl is large enough
+      while (imagesUrl.length <= index) {
+        imagesUrl.add(null);
+      }
+
+      imagesUrl[index] = url;
+      emit(AdditionalImagesLoaded(images));
+    }
+  }
+
+  void addImage(File file) {
+    images.add(file);
+    emit(AdditionalImagesLoaded(images));
+  }
+
+  void removeImageAt(int index) {
+    if (index >= 0 && index < images.length) {
+      images.removeAt(index);
+
+      // Also remove corresponding URL if it exists
+      if (index < imagesUrl.length) {
+        imagesUrl.removeAt(index);
+      }
+
+      emit(AdditionalImagesLoaded(images));
+    }
+  }
+
+  void reset() {
+    images.clear();
+    imagesUrl.clear();
+    emit(AdditionalImagesInitial());
   }
 }
