@@ -32,7 +32,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZGI3MjQ2NjgtOTVkYS00ZTg4LWI2OTQtN2ZiNjUyYzk1M2EzIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYxMDY5NiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.blWZfBkyeDteNwVq3Fu_Xwv_nBtVl3HcSpu9iEcEKBk',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiODQ5MTJkOGQtOGU1MS00ODA2LWI1ODYtODY3YWFkN2I5YWZhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyNzE2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.MBd_neCb8vQU99Pid0GoBoUuV02KYJRQZiHzwLnujSA',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -64,13 +64,12 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   // Images
   File? mainImageFile;
   List<File?> additionalImagesFiles = [];
-  List<String> existingAdditionalImagesUrls = [];
+  List<String?> existingAdditionalImagesUrls = [];
   String? mainImageUrl;
 
   // Location
   LatLng? selectedLocation;
 
-  // Initialize with vehicle data for editing
   void initWithVehicleData(VehicleDataModel vehicle, String id) {
     vehicleId = id;
 
@@ -238,7 +237,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   // Add additional image file
   void addAdditionalImageFile(File file) {
     additionalImagesFiles.add(file);
-    additionalImageCubit.addImage(file);
+    additionalImageCubit.images.add(file);
     emit(AdditionalImagesEdited(additionalImagesFiles));
   }
 

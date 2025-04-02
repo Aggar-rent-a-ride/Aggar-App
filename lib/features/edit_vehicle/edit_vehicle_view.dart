@@ -35,9 +35,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZGI3MjQ2NjgtOTVkYS00ZTg4LWI2OTQtN2ZiNjUyYzk1M2EzIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYxMDY5NiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.blWZfBkyeDteNwVq3Fu_Xwv_nBtVl3HcSpu9iEcEKBk");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiODQ5MTJkOGQtOGU1MS00ODA2LWI1ODYtODY3YWFkN2I5YWZhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyNzE2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.MBd_neCb8vQU99Pid0GoBoUuV02KYJRQZiHzwLnujSA");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZGI3MjQ2NjgtOTVkYS00ZTg4LWI2OTQtN2ZiNjUyYzk1M2EzIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYxMDY5NiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.blWZfBkyeDteNwVq3Fu_Xwv_nBtVl3HcSpu9iEcEKBk");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiODQ5MTJkOGQtOGU1MS00ODA2LWI1ODYtODY3YWFkN2I5YWZhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyNzE2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.MBd_neCb8vQU99Pid0GoBoUuV02KYJRQZiHzwLnujSA");
     });
   }
 
@@ -136,6 +136,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                             initialMainImageUrl: state is EditVehicleDataLoaded
                                 ? state.vehicleData.mainImagePath
                                 : null,
+                            initialMainImagesUrl: state is EditVehicleDataLoaded
+                                ? state.vehicleData.vehicleImages
+                                : [],
                           ),
                           const Gap(25),
                           VehicleProperitesSection(

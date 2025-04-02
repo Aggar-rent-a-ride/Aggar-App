@@ -1,6 +1,8 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
@@ -17,8 +19,23 @@ import '../../data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import '../../data/cubits/main_image_cubit/main_image_cubit.dart';
 import '../widgets/about_vehicle_section.dart';
 
-class AddVehicleScreen extends StatelessWidget {
+class AddVehicleScreen extends StatefulWidget {
   const AddVehicleScreen({super.key});
+
+  @override
+  State<AddVehicleScreen> createState() => _AddVehicleScreenState();
+}
+
+class _AddVehicleScreenState extends State<AddVehicleScreen> {
+  @override
+  void initState() {
+    context.read<VehicleBrandCubit>().fetchVehicleBrands(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMTU3Yzc1MzktNjNlZC00MDIwLTkyMDktMWE5Mzg1M2M2N2I5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyMTEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.0mwKtDOt_-lPklr_bHk47cH6a2YhREhDx7BO9l-tI2Y");
+    context.read<VehicleTypeCubit>().fetchVehicleTypes(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMTU3Yzc1MzktNjNlZC00MDIwLTkyMDktMWE5Mzg1M2M2N2I5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyMTEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.0mwKtDOt_-lPklr_bHk47cH6a2YhREhDx7BO9l-tI2Y");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddVehicleCubit, AddVehicleState>(
@@ -105,6 +122,8 @@ class AddVehicleScreen extends StatelessWidget {
                     ),
                     const Gap(25),
                     VehicleImagesSection(
+                      initialMainImagesUrl:
+                          context.read<AdditionalImageCubit>().imagesUrl,
                       initialMainImageUrl:
                           context.read<MainImageCubit>().imageUrl,
                     ),

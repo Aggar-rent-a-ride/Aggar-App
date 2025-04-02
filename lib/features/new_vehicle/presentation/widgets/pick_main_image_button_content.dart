@@ -26,7 +26,6 @@ class PickMainImageButtonContent extends StatefulWidget {
 
 class _PickMainImageButtonContentState
     extends State<PickMainImageButtonContent> {
-  // In _PickMainImageButtonContentState class:
   @override
   void initState() {
     super.initState();
@@ -106,11 +105,7 @@ class _PickMainImageButtonContentState
           ],
         ),
       );
-    }
-    // Inside the _buildImageContent method, modify the image loading part:
-    else if (state is MainImageLoaded) {
-      print(
-          "Rendering MainImageLoaded - imageFile: ${state.imageFile}, imageUrl: ${state.imageUrl}");
+    } else if (state is MainImageLoaded) {
       return GestureDetector(
         onTap: () => _pickImage(field, context),
         child: state.imageFile != null
@@ -126,7 +121,6 @@ class _PickMainImageButtonContentState
                       width: double.infinity,
                       height: MediaQuery.of(context).size.width * 0.5,
                       errorBuilder: (context, error, stackTrace) {
-                        print("Error loading image: $error");
                         return Container(
                           color: Colors.grey[300],
                           child: Center(
@@ -141,7 +135,6 @@ class _PickMainImageButtonContentState
                           ),
                         );
                       },
-                      // Rest of your code remains the same
                     ),
                   )
                 : Container(

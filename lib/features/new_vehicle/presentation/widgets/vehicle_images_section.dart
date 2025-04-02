@@ -12,8 +12,10 @@ class VehicleImagesSection extends StatefulWidget {
   const VehicleImagesSection({
     super.key,
     this.initialMainImageUrl,
+    required this.initialMainImagesUrl,
   });
   final String? initialMainImageUrl;
+  final List<String?> initialMainImagesUrl;
   @override
   _VehicleImagesSectionState createState() => _VehicleImagesSectionState();
 }
@@ -53,6 +55,7 @@ class _VehicleImagesSectionState extends State<VehicleImagesSection> {
         ),
         AdditionalImageListView(
           mainImage: mainImage,
+          initialImagesUrl: widget.initialMainImagesUrl,
         ),
       ],
     );

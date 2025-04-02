@@ -1,74 +1,58 @@
 import 'dart:io';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'additinal_images_state.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_state.dart';
 
 class AdditionalImageCubit extends Cubit<AdditionalImageState> {
+  List<File?> images = [];
+  List<String?> imagesUrl = []; // Keep this for network images
+
   AdditionalImageCubit() : super(AdditionalImagesInitial());
 
-  List<File?> images = [];
-  List<String?> imagesUrl = [];
-
   void initializeImages(File? mainImage) {
-    images = [mainImage, null];
-    emit(AdditionalImagesLoaded(images));
-  }
-
-  Future<void> pickImage(int index) async {
-    try {
-      final pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-
-      if (pickedFile != null) {
-        // Create a new list to avoid mutation issues
-        images = List.from(images);
-        images[index] = File(pickedFile.path);
-
-        // Add a new null slot if we're filling the last position
-        if (index == images.length - 1) {
-          images.add(null);
-        }
-
-        emit(AdditionalImagesLoaded(images));
-      }
-    } catch (e) {
-      emit(AdditionalImagesFailure('Failed to pick image: ${e.toString()}'));
+    // Initialize with empty list
+    images = [];
+    if (mainImage != null) {
+      // You might want to add the main image
+      // images.add(mainImage);
     }
+    emit(AdditionalImagesLoaded(images));
   }
 
   void setImagesUrl(String url, int index) {
-    if (url.isNotEmpty) {
-      // Ensure imagesUrl is large enough
-      while (imagesUrl.length <= index) {
-        imagesUrl.add(null);
-      }
-
+    // This is for handling network images, keep it as is
+    if (index >= 0 && index < imagesUrl.length) {
       imagesUrl[index] = url;
-      emit(AdditionalImagesLoaded(images));
     }
   }
 
-  void addImage(File file) {
-    images.add(file);
-    emit(AdditionalImagesLoaded(images));
+  Future<void> pickImage(int index) async {
+    emit(AdditionalImagesLoading());
+
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        final imageFile = File(pickedFile.path);
+
+        // Add the new image
+        images.add(imageFile);
+
+        emit(AdditionalImagesLoaded(images));
+      } else {
+        // User canceled the picker
+        emit(AdditionalImagesLoaded(images));
+      }
+    } catch (e) {
+      emit(AdditionalImagesFailure(e.toString()));
+    }
   }
 
   void removeImageAt(int index) {
     if (index >= 0 && index < images.length) {
       images.removeAt(index);
-
-      // Also remove corresponding URL if it exists
-      if (index < imagesUrl.length) {
-        imagesUrl.removeAt(index);
-      }
-
       emit(AdditionalImagesLoaded(images));
     }
-  }
-
-  void reset() {
-    images.clear();
-    imagesUrl.clear();
-    emit(AdditionalImagesInitial());
   }
 }
