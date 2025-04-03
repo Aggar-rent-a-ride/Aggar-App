@@ -16,6 +16,9 @@ class AboutVehicleSection extends StatelessWidget {
     required this.vehicleTypeController,
     this.onSavedBrand,
     this.onSavedType,
+    this.initialVehicleBrand,
+    this.initialVehicleType,
+    this.isEditing = false,
   });
   final TextEditingController modelController;
   final TextEditingController yearOfManufactureController;
@@ -23,6 +26,9 @@ class AboutVehicleSection extends StatelessWidget {
   final TextEditingController vehicleTypeController;
   final void Function(String?)? onSavedBrand;
   final void Function(String?)? onSavedType;
+  final String? initialVehicleBrand;
+  final String? initialVehicleType;
+  final bool? isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +51,7 @@ class AboutVehicleSection extends StatelessWidget {
               controller: vehicleBrandController,
               onSaved: onSavedBrand,
               validator: (value) {
-                if (value == null) {
+                if (value == null && isEditing == false) {
                   return "required";
                 }
                 return null;
@@ -55,6 +61,7 @@ class AboutVehicleSection extends StatelessWidget {
               hintTextSearch: "Search for vehicle brand ...",
               lableText: "brand",
               hintText: "ex: Tesla",
+              initialValue: initialVehicleBrand,
               width: MediaQuery.of(context).size.width * 0.4,
             ),
             InputNameWithInputFieldSection(
@@ -73,7 +80,7 @@ class AboutVehicleSection extends StatelessWidget {
               controller: vehicleTypeController,
               onSaved: onSavedType,
               validator: (value) {
-                if (value == null) {
+                if (value == null && isEditing == false) {
                   return "required";
                 }
                 return null;
@@ -82,6 +89,7 @@ class AboutVehicleSection extends StatelessWidget {
               items: context.watch<VehicleTypeCubit>().vehicleTypes,
               hintTextSearch: "Search for vehicle type ...",
               lableText: "vehicle",
+              initialValue: initialVehicleType,
               hintText: "ex: car",
               width: MediaQuery.of(context).size.width * 0.4,
               ids: context.watch<VehicleTypeCubit>().vehicleTypeIds,

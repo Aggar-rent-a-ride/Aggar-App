@@ -6,22 +6,22 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/transmission_mod
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_health_options.dart';
 import 'package:flutter/material.dart';
 
-class VehicleProperitesSection extends StatefulWidget {
+class VehicleProperitesSection extends StatelessWidget {
+  final TextEditingController vehicleColorController;
+  final TextEditingController vehicleSeatsNoController;
+  final TextEditingController vehicleOverviewController;
+  final bool isEditing;
+  final String? initialTransmissionMode;
+
   const VehicleProperitesSection({
     super.key,
     required this.vehicleColorController,
     required this.vehicleSeatsNoController,
     required this.vehicleOverviewController,
+    this.isEditing = false,
+    this.initialTransmissionMode,
   });
-  final TextEditingController vehicleColorController;
-  final TextEditingController vehicleSeatsNoController;
-  final TextEditingController vehicleOverviewController;
-  @override
-  State<VehicleProperitesSection> createState() =>
-      _VehicleProperitesSectionState();
-}
 
-class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,16 +35,17 @@ class _VehicleProperitesSectionState extends State<VehicleProperitesSection> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 10,
           children: [
             PickColorAndSeatsNumFields(
-              vehicleColorController: widget.vehicleColorController,
-              vehicleSeatsNoController: widget.vehicleSeatsNoController,
+              vehicleColorController: vehicleColorController,
+              vehicleSeatsNoController: vehicleSeatsNoController,
             ),
             ProperitesOverViewField(
-              vehicleOverviewController: widget.vehicleOverviewController,
+              vehicleOverviewController: vehicleOverviewController,
             ),
-            const VehicleHealthOptions(),
+            const VehicleHealthOptions(
+              isEditing: true,
+            ),
             const TransmissionModeOptions(),
           ],
         )

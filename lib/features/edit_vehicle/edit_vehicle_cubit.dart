@@ -32,7 +32,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZTQ2NjU0M2UtZTQyMS00OWMzLTg4NWItZjlmNWFlOWJjMjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzcwMDc3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pjyBdvBEnilOQ1mLLGI31wFALUNw02IgeyRmZXyPueI',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -57,6 +57,8 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   // Selected Values
   int? selectedTransmissionModeValue;
   String? selectedVehicleBrandValue;
+  int? selectedVehicleBrandId;
+  int? selectedVehicleTypeId;
   String? selectedVehicleStatusValue;
   String? selectedVehicleTypeValue;
   String? selectedVehicleHealthValue;
@@ -72,8 +74,11 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
 
   void initWithVehicleData(VehicleDataModel vehicle, String id) {
     vehicleId = id;
-
-    // Populate text controllers
+    int transmissionValue = getTransmissionModeValue(vehicle.transmission);
+    print(
+        "Setting initial transmission value: $transmissionValue from ${vehicle.transmission}");
+    setTransmissionMode(transmissionValue);
+    emit(TransmissionModeEdited(selectedTransmissionModeValue));
     vehicleModelController.text = vehicle.model;
     vehicleRentalPrice.text = (vehicle.pricePerDay.toString());
     vehicleYearOfManufactureController.text = vehicle.year.toString();
@@ -90,11 +95,11 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       mainImageCubit.setImageUrl(mainImageUrl!);
     }
     // Set selected values
-    setTransmissionMode(_getTransmissionModeValue(vehicle.transmission));
-    setVehicleBrand(vehicle.vehicleBrand.name);
+    setTransmissionMode(getTransmissionModeValue(vehicle.transmission));
+    setVehicleBrand(vehicle.vehicleBrand.name, vehicle.vehicleBrand.id);
     setVehicleStatus(
         vehicle.status == "OutOfService" ? "out of stock" : "active");
-    setVehicleType(vehicle.vehicleType.name);
+    setVehicleType(vehicle.vehicleType.name, vehicle.vehicleType.id);
     setVehicleHealth(_getVehicleHealthValue(vehicle.physicalStatus));
 
     // Set location
@@ -112,7 +117,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   }
 
   // Helper method to convert transmission mode string to int value
-  int _getTransmissionModeValue(String? transmissionMode) {
+  int getTransmissionModeValue(String? transmissionMode) {
     switch (transmissionMode) {
       case "Manual":
         return 2;
@@ -139,14 +144,15 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     }
   }
 
-  // Setter methods for form fields
   void setTransmissionMode(int value) {
+    print("Cubit updating transmission mode to: $value");
     selectedTransmissionModeValue = value;
-    emit(TransmissionModeEdited(selectedTransmissionModeValue));
+    emit(TransmissionModeEdited(value));
   }
 
-  void setVehicleBrand(String value) {
+  void setVehicleBrand(String value, int id) {
     selectedVehicleBrandValue = value;
+    selectedVehicleBrandId = id;
     vehicleBrandController.text = value;
     emit(VehicleBrandEdited(selectedVehicleBrandValue));
   }
@@ -157,13 +163,17 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     emit(VehicleStatusEdited(selectedVehicleStatusValue));
   }
 
-  void setVehicleType(String value) {
+  void setVehicleType(String value, int id) {
     selectedVehicleTypeValue = value;
+    selectedVehicleTypeId = id;
     vehicleTypeController.text = value;
     emit(VehicleTypeEdited(selectedVehicleTypeValue));
   }
 
   void setVehicleHealth(String value) {
+    if (value == selectedVehicleHealthValue) {
+      return;
+    }
     if (selectedVehicleHealthValue == value) {
       selectedVehicleHealthValue = null;
     } else {
@@ -227,21 +237,18 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     return status;
   }
 
-  // Set main image file
   void setMainImageFile(File file) {
     mainImageFile = file;
     mainImageCubit.updateImage(file);
     emit(MainImageEdited(file));
   }
 
-  // Add additional image file
   void addAdditionalImageFile(File file) {
     additionalImagesFiles.add(file);
     additionalImageCubit.images.add(file);
     emit(AdditionalImagesEdited(additionalImagesFiles));
   }
 
-  // Remove additional image at index
   void removeAdditionalImageFile(int index) {
     if (index >= 0 && index < additionalImagesFiles.length) {
       additionalImagesFiles.removeAt(index);
@@ -266,17 +273,13 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         emit(const EditVehicleFailure('No response data found'));
         return;
       }
-
-      // Handle different response structures
       var data = response.data;
-      // If there's a nested 'data' field, use that
       if (response.data['data'] != null) {
         data = response.data['data'];
       }
 
       print('Processing vehicle data: $data');
       try {
-        // Manual parsing to avoid model mismatch issues
         final vehicle = VehicleDataModel(
           id: data['id'],
           model: data['model'],
@@ -316,7 +319,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     List<File?>? additionalImages,
     File? updatedMainImageFile,
   ) async {
-    print(vehicleId);
+    print(selectedVehicleBrandValue);
     if (vehicleId == null) {
       print(vehicleId);
       emit(const EditVehicleFailure('Vehicle ID is missing'));
@@ -326,6 +329,11 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       emit(EditVehicleLoading());
       FormData formData = FormData();
       FormData formDataImages = FormData();
+
+      // Make sure transmission mode is properly set
+      String transmissionMode = getVehicleTransmission();
+      print('Updating vehicle with transmission mode: $transmissionMode');
+
       formData.fields.addAll([
         MapEntry("Id", vehicleId!),
         MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
@@ -336,10 +344,10 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
         MapEntry(ApiKey.vehicleProperitesOverview,
             vehicleProperitesOverviewController.text),
-        MapEntry(ApiKey.vehicleType, vehicleTypeController.text),
-        MapEntry(ApiKey.vehicleBrand, vehicleBrandController.text),
+        MapEntry(ApiKey.vehicleType, selectedVehicleTypeId.toString()),
+        MapEntry(ApiKey.vehicleBrand, selectedVehicleBrandId.toString()),
         MapEntry(ApiKey.vehicleStatus, getVehicleStatus()),
-        MapEntry(ApiKey.vehicleTransmissionMode, getVehicleTransmission()),
+        MapEntry(ApiKey.vehicleTransmissionMode, transmissionMode),
         MapEntry(ApiKey.vehicleHealth, getVehicleHealth()),
         MapEntry(
             ApiKey.vehicleLocationLatitude, (location?.latitude).toString()),

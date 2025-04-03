@@ -58,9 +58,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                       .currentState
                       ?.validate() ??
                   false) {
-                // Ensure a location is selected
                 if (mapLocationCubit.selectedLocation == null) {
-                  // Show an error if no location is selected
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Please select a location on the map'),
@@ -68,8 +66,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   );
                   return;
                 }
-
-                // Post data with the selected location
                 await context.read<AddVehicleCubit>().postData(
                       additionalImages:
                           context.read<AdditionalImageCubit>().images,
@@ -77,9 +73,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           .selectedLocation!, // Ensure location is sent
                       mainImageFile: context.read<MainImageCubit>().image!,
                     );
-
-                // Navigate back after successful submission
-                // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               }
             },
