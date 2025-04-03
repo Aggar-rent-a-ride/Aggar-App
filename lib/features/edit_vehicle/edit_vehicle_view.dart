@@ -35,9 +35,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiODQ5MTJkOGQtOGU1MS00ODA2LWI1ODYtODY3YWFkN2I5YWZhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyNzE2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.MBd_neCb8vQU99Pid0GoBoUuV02KYJRQZiHzwLnujSA");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiODQ5MTJkOGQtOGU1MS00ODA2LWI1ODYtODY3YWFkN2I5YWZhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyNzE2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.MBd_neCb8vQU99Pid0GoBoUuV02KYJRQZiHzwLnujSA");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk");
     });
   }
 
@@ -82,14 +82,11 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                         );
                         return;
                       }
-
-                      // Update vehicle data
                       await editVehicleCubit.updateVehicle(
-                        additionalImages:
-                            context.read<AdditionalImageCubit>().images,
-                        location: mapLocationCubit.selectedLocation!,
-                        updatedMainImageFile:
-                            context.read<MainImageCubit>().image,
+                        widget.vehicleId,
+                        mapLocationCubit.selectedLocation!,
+                        context.read<AdditionalImageCubit>().images,
+                        context.read<MainImageCubit>().image,
                       );
                     }
                   },
