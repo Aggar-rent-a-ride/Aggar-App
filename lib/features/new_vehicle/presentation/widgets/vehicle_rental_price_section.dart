@@ -13,10 +13,12 @@ class VehicleRentalPriceSection extends StatelessWidget {
     required this.vehicleRentalPrice,
     required this.vehicleStatusController,
     this.onSavedStatus,
+    this.initialVehicleStatus,
   });
   final TextEditingController vehicleRentalPrice;
   final TextEditingController vehicleStatusController;
   final void Function(String?)? onSavedStatus;
+  final String? initialVehicleStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,7 @@ class VehicleRentalPriceSection extends StatelessWidget {
               lableText: "status",
               hintText: "ex: active",
               ids: const [1, 2],
+              initialValue: initialVehicleStatus,
             ),
           ],
         )

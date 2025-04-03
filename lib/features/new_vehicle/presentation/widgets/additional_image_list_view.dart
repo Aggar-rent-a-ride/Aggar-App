@@ -19,17 +19,23 @@ class AdditionalImageListView extends StatefulWidget {
 }
 
 class _AdditionalImageListViewState extends State<AdditionalImageListView> {
+  List<String?> _cachedImagesUrl = [];
+
   @override
   void initState() {
     super.initState();
+    _cachedImagesUrl = List<String?>.from(widget.initialImagesUrl);
     context.read<AdditionalImageCubit>().initializeImages(widget.mainImage);
-    if (widget.initialImagesUrl.isNotEmpty) {
-      for (int i = 0; i < widget.initialImagesUrl.length; i++) {
-        if (widget.initialImagesUrl[i] != null &&
-            widget.initialImagesUrl[i]!.isNotEmpty) {
+    _setInitialImagesUrl();
+  }
+
+  void _setInitialImagesUrl() {
+    if (_cachedImagesUrl.isNotEmpty) {
+      for (int i = 0; i < _cachedImagesUrl.length; i++) {
+        if (_cachedImagesUrl[i] != null && _cachedImagesUrl[i]!.isNotEmpty) {
           context
               .read<AdditionalImageCubit>()
-              .setImagesUrl(widget.initialImagesUrl[i]!, i);
+              .setImagesUrl(_cachedImagesUrl[i]!, i);
         }
       }
     }
@@ -37,86 +43,90 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 90,
-      width: double.infinity,
-      child: BlocBuilder<AdditionalImageCubit, AdditionalImageState>(
-        builder: (context, state) {
-          if (state is AdditionalImagesLoaded) {
-            final localImages = state.images;
-
-            // Calculate total items
-            final initialImagesCount = widget.initialImagesUrl
-                .where((url) => url != null && url.isNotEmpty)
-                .length;
-            final totalItems = initialImagesCount +
-                localImages.length +
-                1; // +1 for AddImageButton
-
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: totalItems,
-              itemBuilder: (context, index) {
-                // Display network images first
-                if (index < initialImagesCount) {
-                  final url = widget.initialImagesUrl[index];
-                  if (url != null && url.isNotEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: NetworkImageCard(
-                        imageUrl: url,
-                        onRemove: () {
-                          // Handle network image removal if needed
-                        },
-                      ),
-                    );
+    return BlocListener<AdditionalImageCubit, AdditionalImageState>(
+      listener: (context, state) {
+        if (state is AdditionalImagesFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${state.message}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: SizedBox(
+        height: 90,
+        width: double.infinity,
+        child: BlocBuilder<AdditionalImageCubit, AdditionalImageState>(
+          buildWhen: (previous, current) {
+            return current is AdditionalImagesLoaded ||
+                current is AdditionalImagesLoading ||
+                current is AdditionalImagesFailure;
+          },
+          builder: (context, state) {
+            if (state is AdditionalImagesLoaded) {
+              final localImages = state.images;
+              final initialImagesCount = _cachedImagesUrl
+                  .where((url) => url != null && url.isNotEmpty)
+                  .length;
+              final totalItems = initialImagesCount + localImages.length + 1;
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: totalItems,
+                itemBuilder: (context, index) {
+                  if (index < initialImagesCount) {
+                    final url = _cachedImagesUrl[index];
+                    if (url != null && url.isNotEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: NetworkImageCard(
+                          imageUrl: url,
+                          onRemove: () {
+                            setState(() {
+                              _cachedImagesUrl[index] = null;
+                            });
+                          },
+                        ),
+                      );
+                    }
                   }
-                }
-
-                // Display local file images
-                final localIndex = index - initialImagesCount;
-                if (localIndex >= 0 && localIndex < localImages.length) {
-                  final file = localImages[localIndex];
-                  if (file != null) {
-                    return AdditionalImageCard(
-                      image: file,
-                      onRemove: () {
+                  final localIndex = index - initialImagesCount;
+                  if (localIndex >= 0 && localIndex < localImages.length) {
+                    final file = localImages[localIndex];
+                    if (file != null) {
+                      return AdditionalImageCard(
+                        image: file,
+                        onRemove: () {
+                          context
+                              .read<AdditionalImageCubit>()
+                              .removeImageAt(localIndex);
+                        },
+                      );
+                    }
+                  }
+                  if (index == totalItems - 1) {
+                    return AddImageButton(
+                      onPressed: () {
                         context
                             .read<AdditionalImageCubit>()
-                            .removeImageAt(localIndex);
+                            .pickImage(localImages.length);
                       },
                     );
                   }
-                }
 
-                // Show Add Image button at the end
-                if (index == totalItems - 1) {
-                  return AddImageButton(
-                    onPressed: () {
-                      context
-                          .read<AdditionalImageCubit>()
-                          .pickImage(localImages.length);
-                    },
-                  );
-                }
-
-                return const SizedBox.shrink();
-              },
-            );
-          }
-
-          // Show loading indicator when images are being loaded
-          if (state is AdditionalImagesLoading) {
+                  return const SizedBox.shrink();
+                },
+              );
+            }
+            if (state is AdditionalImagesLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is AdditionalImagesFailure) {
+              return Center(child: Text('Error: ${state.message}'));
+            }
             return const Center(child: CircularProgressIndicator());
-          }
-
-          // Show error if there's a failure
-          if (state is AdditionalImagesFailure) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-
-          return const Center(child: CircularProgressIndicator());
-        },
+          },
+        ),
       ),
     );
   }

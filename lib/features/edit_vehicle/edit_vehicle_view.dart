@@ -8,6 +8,7 @@ import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehic
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/about_vehicle_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
@@ -35,9 +36,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZTQ2NjU0M2UtZTQyMS00OWMzLTg4NWItZjlmNWFlOWJjMjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzcwMDc3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pjyBdvBEnilOQ1mLLGI31wFALUNw02IgeyRmZXyPueI");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZTQ2NjU0M2UtZTQyMS00OWMzLTg4NWItZjlmNWFlOWJjMjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzcwMDc3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pjyBdvBEnilOQ1mLLGI31wFALUNw02IgeyRmZXyPueI");
     });
   }
 
@@ -58,7 +59,8 @@ class _EditVehicleViewState extends State<EditVehicleView> {
       },
       builder: (context, state) {
         final isLoading = state is EditVehicleLoading;
-
+        VehicleDataModel? vehicleData =
+            state is EditVehicleDataLoaded ? state.vehicleData : null;
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             onPressed: isLoading
@@ -115,6 +117,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                       child: Column(
                         children: [
                           AboutVehicleSection(
+                            isEditing: true,
                             modelController: context
                                 .read<EditVehicleCubit>()
                                 .vehicleModelController,
@@ -127,6 +130,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                             vehicleTypeController: context
                                 .read<EditVehicleCubit>()
                                 .vehicleTypeController,
+                            // Pass these values from your vehicleData
+                            initialVehicleBrand: vehicleData?.vehicleBrand.name,
+                            initialVehicleType: vehicleData?.vehicleType.name,
                           ),
                           const Gap(25),
                           VehicleImagesSection(
@@ -139,6 +145,11 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                           ),
                           const Gap(25),
                           VehicleProperitesSection(
+                            isEditing: true,
+                            initialTransmissionMode:
+                                state is EditVehicleDataLoaded
+                                    ? state.vehicleData.transmission
+                                    : null,
                             vehicleOverviewController: context
                                 .read<EditVehicleCubit>()
                                 .vehicleProperitesOverviewController,
@@ -167,6 +178,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                           ),
                           const Gap(25),
                           VehicleRentalPriceSection(
+                            initialVehicleStatus: vehicleData?.status,
                             vehicleRentalPrice: context
                                 .read<EditVehicleCubit>()
                                 .vehicleRentalPrice,

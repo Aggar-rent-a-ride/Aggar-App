@@ -51,8 +51,18 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
     dropdownController = widget.controller ?? TextEditingController();
 
     if (widget.initialValue != null) {
-      selectedValue = widget.initialValue;
-      dropdownController.text = widget.initialValue!;
+      if (widget.items == vehicleStatus) {
+        if (widget.items.contains(widget.initialValue)) {
+          selectedValue = widget.initialValue;
+          dropdownController.text = widget.initialValue!;
+        }
+      } else {
+        int index = widget.items.indexOf(widget.initialValue!);
+        if (index != -1 && index < widget.ids.length) {
+          selectedValue = widget.ids[index].toString();
+          dropdownController.text = widget.initialValue!;
+        }
+      }
     } else if (widget.items == vehicleStatus) {
       int activeIndex = widget.items.indexOf("active");
       if (activeIndex != -1) {

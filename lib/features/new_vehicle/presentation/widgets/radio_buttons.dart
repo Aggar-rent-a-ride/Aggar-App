@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class RadioButtons extends StatelessWidget {
   const RadioButtons({
@@ -8,7 +9,6 @@ class RadioButtons extends StatelessWidget {
     required this.selectedValue,
     required this.onChanged,
   });
-
   final int? selectedValue;
   final ValueChanged<int> onChanged;
 
@@ -24,7 +24,12 @@ class RadioButtons extends StatelessWidget {
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: 2,
                 groupValue: selectedValue,
-                onChanged: (value) => onChanged(2),
+                onChanged: (value) {
+                  if (value != null) {
+                    print("Manual selected");
+                    onChanged(value);
+                  }
+                },
               ),
               Text(
                 'Manual Transmission',
@@ -41,7 +46,12 @@ class RadioButtons extends StatelessWidget {
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: 1,
                 groupValue: selectedValue,
-                onChanged: (value) => onChanged(1),
+                onChanged: (value) {
+                  if (value != null) {
+                    print("Automatic selected");
+                    onChanged(value);
+                  }
+                },
               ),
               Text(
                 'Automatic Transmission',
@@ -58,7 +68,12 @@ class RadioButtons extends StatelessWidget {
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: 0,
                 groupValue: selectedValue,
-                onChanged: (value) => onChanged(0),
+                onChanged: (value) {
+                  if (value != null) {
+                    print("None selected");
+                    onChanged(value);
+                  }
+                },
               ),
               Text(
                 'None',
