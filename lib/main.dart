@@ -4,16 +4,14 @@ import 'package:aggar/core/cubit/theme/theme_cubit.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/themes/light_theme.dart';
+import 'package:aggar/features/Splash/presentation/views/splash_view.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
-import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_view.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
-import 'package:aggar/features/main_screen/presentation/views/bottom_navigation_bar_views.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
@@ -101,7 +99,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
-            home: const EditVehicleView(vehicleId: "124"),
+            home: const SplashView(),
           );
         },
       ),
