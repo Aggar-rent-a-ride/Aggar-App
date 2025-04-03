@@ -32,7 +32,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiODQ5MTJkOGQtOGU1MS00ODA2LWI1ODYtODY3YWFkN2I5YWZhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyNzE2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.MBd_neCb8vQU99Pid0GoBoUuV02KYJRQZiHzwLnujSA',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -310,22 +310,22 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     }
   }
 
-  Future<void> updateVehicle({
+  Future<void> updateVehicle(
+    String id,
     LatLng? location,
     List<File?>? additionalImages,
     File? updatedMainImageFile,
-  }) async {
+  ) async {
+    print(vehicleId);
     if (vehicleId == null) {
+      print(vehicleId);
       emit(const EditVehicleFailure('Vehicle ID is missing'));
       return;
     }
-
     try {
       emit(EditVehicleLoading());
-
       FormData formData = FormData();
-
-      // Add form fields
+      FormData formDataImages = FormData();
       formData.fields.addAll([
         MapEntry("Id", vehicleId!),
         MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
@@ -347,8 +347,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
             ApiKey.vehicleLocationLongitude, (location?.longitude).toString()),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
       ]);
-
-      // Add main image if updated
       if (updatedMainImageFile != null) {
         formData.files.add(MapEntry(
           ApiKey.vehicleMainImage,
@@ -358,13 +356,14 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           ),
         ));
       }
-
-      // Add additional images if any
+      formDataImages.fields.add(
+        MapEntry("VehicleId", vehicleId!),
+      );
       if (additionalImages != null && additionalImages.isNotEmpty) {
         for (int i = 0; i < additionalImages.length; i++) {
           if (additionalImages[i] != null) {
-            formData.files.add(MapEntry(
-              ApiKey.vehicleImages,
+            formDataImages.files.add(MapEntry(
+              "NewImages",
               await MultipartFile.fromFile(
                 additionalImages[i]!.path,
                 filename: basename(additionalImages[i]!.path),
@@ -375,7 +374,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       }
 
       final response = await _dio.put(
-        "https://aggarapi.runasp.net//api/vehicle/",
+        "https://aggarapi.runasp.net/api/vehicle/",
         data: formData,
         options: Options(
           contentType: 'multipart/form-data',
@@ -385,7 +384,19 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           },
         ),
       );
-
+      // print(response.data);
+      final ImagesResonse = await _dio.put(
+        data: formDataImages,
+        "https://aggarapi.runasp.net/api/vehicle/vehicle-images",
+        options: Options(
+          contentType: 'multipart/form-data',
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print(ImagesResonse.data);
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         emit(EditVehicleSuccess(response.data));
       } else {
@@ -399,8 +410,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         errorMessage =
             "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
       }
-
-      // Handle specific Dio exception types
       switch (e.type) {
         case DioExceptionType.connectionTimeout:
           errorMessage = "Connection timeout";
