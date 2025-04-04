@@ -30,7 +30,6 @@ class _VehicleLocationSectionState extends State<VehicleLocationSection> {
   void initState() {
     super.initState();
     selectedLocation = widget.initialLocation;
-    // Initialize address from controller if it's not empty
     if (widget.vehicleAddressController.text.isNotEmpty) {
       selectedAddress = widget.vehicleAddressController.text;
     }
@@ -40,11 +39,9 @@ class _VehicleLocationSectionState extends State<VehicleLocationSection> {
     setState(() {
       selectedLocation = location;
       selectedAddress = address;
-      // Update the text controller with the new address
       widget.vehicleAddressController.text = address;
     });
 
-    // Pass the location and address to parent
     if (widget.onLocationSelected != null) {
       widget.onLocationSelected!(location, address);
     }

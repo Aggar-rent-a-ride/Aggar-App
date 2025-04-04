@@ -32,14 +32,12 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZTQ2NjU0M2UtZTQyMS00OWMzLTg4NWItZjlmNWFlOWJjMjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzcwMDc3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pjyBdvBEnilOQ1mLLGI31wFALUNw02IgeyRmZXyPueI',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
     ));
   }
-
-  // Form Controllers
   GlobalKey<FormState> editVehicleFormKey = GlobalKey();
   TextEditingController vehicleModelController = TextEditingController();
   TextEditingController vehicleRentalPrice = TextEditingController();
@@ -53,8 +51,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   TextEditingController vehicleTypeController = TextEditingController();
   TextEditingController vehicleStatusController = TextEditingController();
   TextEditingController vehicleAddressController = TextEditingController();
-
-  // Selected Values
   int? selectedTransmissionModeValue;
   String? selectedVehicleBrandValue;
   int? selectedVehicleBrandId;
@@ -62,21 +58,15 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   String? selectedVehicleStatusValue;
   String? selectedVehicleTypeValue;
   String? selectedVehicleHealthValue;
-
-  // Images
   File? mainImageFile;
   List<File?> additionalImagesFiles = [];
   List<String?> existingAdditionalImagesUrls = [];
   String? mainImageUrl;
-
-  // Location
   LatLng? selectedLocation;
 
   void initWithVehicleData(VehicleDataModel vehicle, String id) {
     vehicleId = id;
     int transmissionValue = getTransmissionModeValue(vehicle.transmission);
-    print(
-        "Setting initial transmission value: $transmissionValue from ${vehicle.transmission}");
     setTransmissionMode(transmissionValue);
     emit(TransmissionModeEdited(selectedTransmissionModeValue));
     vehicleModelController.text = vehicle.model;
@@ -94,8 +84,8 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     if (mainImageUrl != null && mainImageUrl!.isNotEmpty) {
       mainImageCubit.setImageUrl(mainImageUrl!);
     }
-    // Set selected values
-    setTransmissionMode(getTransmissionModeValue(vehicle.transmission));
+
+    // Make sure to properly set the IDs, not just the display values
     setVehicleBrand(vehicle.vehicleBrand.name, vehicle.vehicleBrand.id);
     setVehicleStatus(
         vehicle.status == "OutOfService" ? "out of stock" : "active");
@@ -113,6 +103,8 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       existingAdditionalImagesUrls = vehicle.vehicleImages;
     }
 
+    print(
+        'Initialized vehicle with brandId: $selectedVehicleBrandId, typeId: $selectedVehicleTypeId');
     emit(EditVehicleDataLoaded(vehicle));
   }
 
@@ -154,31 +146,29 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     selectedVehicleBrandValue = value;
     selectedVehicleBrandId = id;
     vehicleBrandController.text = value;
-    emit(VehicleBrandEdited(selectedVehicleBrandValue));
+    print('Setting vehicle brand: $value, ID: $id');
+    emit(VehicleBrandEdited(value));
   }
 
   void setVehicleStatus(String value) {
     selectedVehicleStatusValue = value;
     vehicleStatusController.text = value;
-    emit(VehicleStatusEdited(selectedVehicleStatusValue));
+    emit(VehicleStatusEdited(value));
   }
 
   void setVehicleType(String value, int id) {
     selectedVehicleTypeValue = value;
     selectedVehicleTypeId = id;
     vehicleTypeController.text = value;
-    emit(VehicleTypeEdited(selectedVehicleTypeValue));
+    print('Setting vehicle type: $value, ID: $id');
+    emit(VehicleTypeEdited(value));
   }
 
   void setVehicleHealth(String value) {
     if (value == selectedVehicleHealthValue) {
       return;
     }
-    if (selectedVehicleHealthValue == value) {
-      selectedVehicleHealthValue = null;
-    } else {
-      selectedVehicleHealthValue = value;
-    }
+    selectedVehicleHealthValue = value;
     emit(VehicleHealthEdited(selectedVehicleHealthValue));
   }
 
@@ -193,8 +183,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         transmissionMode = "Automatic";
         break;
       case 0:
-        transmissionMode = "None";
-        break;
       default:
         transmissionMode = "None";
     }
@@ -319,20 +307,34 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     List<File?>? additionalImages,
     File? updatedMainImageFile,
   ) async {
-    print(selectedVehicleBrandValue);
     if (vehicleId == null) {
-      print(vehicleId);
       emit(const EditVehicleFailure('Vehicle ID is missing'));
       return;
     }
+
     try {
       emit(EditVehicleLoading());
+
+      // Debug prints to verify values before making the request
+      print('Updating vehicle with ID: $vehicleId');
+      print('Vehicle Brand ID: $selectedVehicleBrandId');
+      print('Vehicle Type ID: $selectedVehicleTypeId');
+
+      if (selectedVehicleBrandId == null) {
+        emit(const EditVehicleFailure('Vehicle Brand ID is missing'));
+        return;
+      }
+
+      if (selectedVehicleTypeId == null) {
+        emit(const EditVehicleFailure('Vehicle Type ID is missing'));
+        return;
+      }
+
       FormData formData = FormData();
       FormData formDataImages = FormData();
 
       // Make sure transmission mode is properly set
       String transmissionMode = getVehicleTransmission();
-      print('Updating vehicle with transmission mode: $transmissionMode');
 
       formData.fields.addAll([
         MapEntry("Id", vehicleId!),
@@ -344,6 +346,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
         MapEntry(ApiKey.vehicleProperitesOverview,
             vehicleProperitesOverviewController.text),
+        // Ensure we're sending the IDs, not the display names
         MapEntry(ApiKey.vehicleType, selectedVehicleTypeId.toString()),
         MapEntry(ApiKey.vehicleBrand, selectedVehicleBrandId.toString()),
         MapEntry(ApiKey.vehicleStatus, getVehicleStatus()),
@@ -355,6 +358,13 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
             ApiKey.vehicleLocationLongitude, (location?.longitude).toString()),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
       ]);
+
+      // Print form data for debugging
+      print('Form data fields:');
+      for (var field in formData.fields) {
+        print('${field.key}: ${field.value}');
+      }
+
       if (updatedMainImageFile != null) {
         formData.files.add(MapEntry(
           ApiKey.vehicleMainImage,
@@ -364,9 +374,11 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           ),
         ));
       }
+
       formDataImages.fields.add(
         MapEntry("VehicleId", vehicleId!),
       );
+
       if (additionalImages != null && additionalImages.isNotEmpty) {
         for (int i = 0; i < additionalImages.length; i++) {
           if (additionalImages[i] != null) {
@@ -392,19 +404,26 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           },
         ),
       );
-      // print(response.data);
-      final ImagesResonse = await _dio.put(
-        data: formDataImages,
-        "https://aggarapi.runasp.net/api/vehicle/vehicle-images",
-        options: Options(
-          contentType: 'multipart/form-data',
-          followRedirects: false,
-          validateStatus: (status) {
-            return status! < 500;
-          },
-        ),
-      );
-      print(ImagesResonse.data);
+
+      print('Update vehicle response: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
+      if (additionalImages != null && additionalImages.isNotEmpty) {
+        final imagesResponse = await _dio.put(
+          "https://aggarapi.runasp.net/api/vehicle/vehicle-images",
+          data: formDataImages,
+          options: Options(
+            contentType: 'multipart/form-data',
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            },
+          ),
+        );
+        print('Update images response: ${imagesResponse.statusCode}');
+        print('Images response data: ${imagesResponse.data}');
+      }
+
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         emit(EditVehicleSuccess(response.data));
       } else {

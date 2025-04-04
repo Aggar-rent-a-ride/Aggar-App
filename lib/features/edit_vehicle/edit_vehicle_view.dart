@@ -36,9 +36,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZTQ2NjU0M2UtZTQyMS00OWMzLTg4NWItZjlmNWFlOWJjMjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzcwMDc3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pjyBdvBEnilOQ1mLLGI31wFALUNw02IgeyRmZXyPueI");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZTQ2NjU0M2UtZTQyMS00OWMzLTg4NWItZjlmNWFlOWJjMjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzcwMDc3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pjyBdvBEnilOQ1mLLGI31wFALUNw02IgeyRmZXyPueI");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
     });
   }
 
@@ -162,6 +162,12 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                           ),
                           const Gap(25),
                           VehicleLocationSection(
+                            initialLocation: state is EditVehicleDataLoaded
+                                ? LatLng(
+                                    state.vehicleData.location.latitude,
+                                    state.vehicleData.location.longitude,
+                                  )
+                                : null,
                             vehicleAddressController: context
                                 .read<EditVehicleCubit>()
                                 .vehicleAddressController,
@@ -178,13 +184,26 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                           ),
                           const Gap(25),
                           VehicleRentalPriceSection(
-                            initialVehicleStatus: vehicleData?.status,
+                            isEditing: true,
                             vehicleRentalPrice: context
                                 .read<EditVehicleCubit>()
                                 .vehicleRentalPrice,
                             vehicleStatusController: context
                                 .read<EditVehicleCubit>()
                                 .vehicleStatusController,
+                            initialVehicleStatus: context
+                                .read<EditVehicleCubit>()
+                                .selectedVehicleStatusValue,
+                            onSavedStatus: (value) {
+                              context
+                                  .read<EditVehicleCubit>()
+                                  .selectedVehicleStatusValue = value;
+                            },
+                            onStatusChanged: (value, id) {
+                              context
+                                  .read<EditVehicleCubit>()
+                                  .setVehicleStatus(value);
+                            },
                           ),
                           const Gap(25),
                         ],

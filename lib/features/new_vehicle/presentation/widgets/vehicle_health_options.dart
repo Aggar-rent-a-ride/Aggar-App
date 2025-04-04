@@ -84,13 +84,29 @@ class VehicleHealthOptions extends StatelessWidget {
                         VehicleHealthButton(
                           text: 'Excellent',
                           isSelected: selectedValue == 'Excellent',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            if (isEditing == true) {
+                              cubit.setVehicleHealth(value);
+                            } else {
+                              context
+                                  .read<AddVehicleCubit>()
+                                  .setVehicleHealth(value);
+                            }
+                          },
                         ),
                         const SizedBox(height: 25),
                         VehicleHealthButton(
                           text: 'Minor dents',
                           isSelected: selectedValue == 'Minor dents',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            if (isEditing == true) {
+                              cubit.setVehicleHealth(value);
+                            } else {
+                              context
+                                  .read<AddVehicleCubit>()
+                                  .setVehicleHealth(value);
+                            }
+                          },
                         ),
                       ],
                     ),
@@ -102,13 +118,29 @@ class VehicleHealthOptions extends StatelessWidget {
                         VehicleHealthButton(
                           text: 'Good',
                           isSelected: selectedValue == 'Good',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            if (isEditing == true) {
+                              cubit.setVehicleHealth(value);
+                            } else {
+                              context
+                                  .read<AddVehicleCubit>()
+                                  .setVehicleHealth(value);
+                            }
+                          },
                         ),
                         const SizedBox(height: 25),
                         VehicleHealthButton(
                           text: 'Not bad',
                           isSelected: selectedValue == 'Not bad',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            if (isEditing == true) {
+                              cubit.setVehicleHealth(value);
+                            } else {
+                              context
+                                  .read<AddVehicleCubit>()
+                                  .setVehicleHealth(value);
+                            }
+                          },
                         ),
                       ],
                     ),

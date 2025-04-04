@@ -27,25 +27,6 @@ class NetworkImageCard extends StatelessWidget {
             ),
           ),
         ),
-        if (onRemove != null)
-          Positioned(
-            top: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: onRemove,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }

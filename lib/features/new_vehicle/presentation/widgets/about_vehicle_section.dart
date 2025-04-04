@@ -1,7 +1,9 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_drop_down_list.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/input_name_with_input_field_section.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +49,15 @@ class AboutVehicleSection extends StatelessWidget {
           spacing: 20,
           children: [
             InputNameWithDropDownList(
+              onValueChanged: (value, id) {
+                if (isEditing == true) {
+                  context.read<EditVehicleCubit>().setVehicleBrand(value, id);
+                } else {
+                  context.read<AddVehicleCubit>().setVehicleBrnd(value, id);
+                }
+              },
               ids: context.watch<VehicleBrandCubit>().vehicleBrandIds,
               controller: vehicleBrandController,
-              onSaved: onSavedBrand,
               validator: (value) {
                 if (value == null && isEditing == false) {
                   return "required";
@@ -77,8 +85,14 @@ class AboutVehicleSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputNameWithDropDownList(
+              onValueChanged: (value, id) {
+                if (isEditing == true) {
+                  context.read<EditVehicleCubit>().setVehicleType(value, id);
+                } else {
+                  context.read<AddVehicleCubit>().setVehicleType(value, id);
+                }
+              },
               controller: vehicleTypeController,
-              onSaved: onSavedType,
               validator: (value) {
                 if (value == null && isEditing == false) {
                   return "required";
