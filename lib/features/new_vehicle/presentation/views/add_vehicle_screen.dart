@@ -30,16 +30,42 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   void initState() {
     context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMTU3Yzc1MzktNjNlZC00MDIwLTkyMDktMWE5Mzg1M2M2N2I5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyMTEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.0mwKtDOt_-lPklr_bHk47cH6a2YhREhDx7BO9l-tI2Y");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
     context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMTU3Yzc1MzktNjNlZC00MDIwLTkyMDktMWE5Mzg1M2M2N2I5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzYyMTEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.0mwKtDOt_-lPklr_bHk47cH6a2YhREhDx7BO9l-tI2Y");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddVehicleCubit, AddVehicleState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        // Handle state changes here
+        if (state is AddVehicleSuccess) {
+          // Access the response data through the cubit
+          final responseData =
+              context.read<AddVehicleCubit>().getResponseData();
+
+          // Show success message with data if available
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Vehicle added successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          // Log the full response data for verification
+          print('Full Response Data in UI: $responseData');
+        } else if (state is AddVehicleFailure) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to add vehicle: ${state.errorMessage}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
@@ -73,7 +99,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           .selectedLocation!, // Ensure location is sent
                       mainImageFile: context.read<MainImageCubit>().image!,
                     );
-                Navigator.pop(context);
+
+                // Check if the request was successful before navigating back
+                if (context.read<AddVehicleCubit>().state
+                    is AddVehicleSuccess) {
+                  Navigator.pop(context);
+                }
               }
             },
           ),
@@ -93,69 +124,85 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               style: AppStyles.semiBold24(context),
             ),
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Form(
-                key: context.read<AddVehicleCubit>().addVehicleFormKey,
-                child: Column(
-                  children: [
-                    AboutVehicleSection(
-                      modelController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleModelController,
-                      yearOfManufactureController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleYearOfManufactureController,
-                      vehicleBrandController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleBrandController,
-                      vehicleTypeController:
-                          context.read<AddVehicleCubit>().vehicleTypeController,
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Form(
+                    key: context.read<AddVehicleCubit>().addVehicleFormKey,
+                    child: Column(
+                      children: [
+                        AboutVehicleSection(
+                          modelController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleModelController,
+                          yearOfManufactureController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleYearOfManufactureController,
+                          vehicleBrandController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleBrandController,
+                          vehicleTypeController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleTypeController,
+                        ),
+                        const Gap(25),
+                        VehicleImagesSection(
+                          initialMainImagesUrl:
+                              context.read<AdditionalImageCubit>().imagesUrl,
+                          initialMainImageUrl:
+                              context.read<MainImageCubit>().imageUrl,
+                        ),
+                        const Gap(25),
+                        VehicleProperitesSection(
+                          vehicleOverviewController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleProperitesOverviewController,
+                          vehicleColorController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleColorController,
+                          vehicleSeatsNoController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleSeatsNoController,
+                        ),
+                        const Gap(25),
+                        VehicleLocationSection(
+                          vehicleAddressController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleAddressController,
+                          onLocationSelected:
+                              (LatLng location, String address) {
+                            context
+                                .read<MapLocationCubit>()
+                                .updateSelectedLocation(location);
+                          },
+                        ),
+                        const Gap(25),
+                        VehicleRentalPriceSection(
+                          isEditing: true,
+                          vehicleRentalPrice: context
+                              .read<AddVehicleCubit>()
+                              .vehicleRentalPrice,
+                          vehicleStatusController: context
+                              .read<AddVehicleCubit>()
+                              .vehicleStatusController,
+                        ),
+                        const Gap(25),
+                      ],
                     ),
-                    const Gap(25),
-                    VehicleImagesSection(
-                      initialMainImagesUrl:
-                          context.read<AdditionalImageCubit>().imagesUrl,
-                      initialMainImageUrl:
-                          context.read<MainImageCubit>().imageUrl,
-                    ),
-                    const Gap(25),
-                    VehicleProperitesSection(
-                      vehicleOverviewController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleProperitesOverviewController,
-                      vehicleColorController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleColorController,
-                      vehicleSeatsNoController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleSeatsNoController,
-                    ),
-                    const Gap(25),
-                    VehicleLocationSection(
-                      vehicleAddressController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleAddressController,
-                      onLocationSelected: (LatLng location, String address) {
-                        context
-                            .read<MapLocationCubit>()
-                            .updateSelectedLocation(location);
-                      },
-                    ),
-                    const Gap(25),
-                    VehicleRentalPriceSection(
-                      vehicleRentalPrice:
-                          context.read<AddVehicleCubit>().vehicleRentalPrice,
-                      vehicleStatusController: context
-                          .read<AddVehicleCubit>()
-                          .vehicleStatusController,
-                    ),
-                    const Gap(25),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              // Loading indicator
+              if (state is AddVehicleLoading)
+                Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+            ],
           ),
         );
       },

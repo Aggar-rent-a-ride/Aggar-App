@@ -3,11 +3,16 @@ import 'package:flutter/material.dart';
 
 class AddImageButton extends StatelessWidget {
   const AddImageButton({super.key, this.onPressed});
+
   final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
+    const double buttonSize = 50;
+
     return Container(
+      width: buttonSize,
+      height: buttonSize,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -16,28 +21,22 @@ class AddImageButton extends StatelessWidget {
             blurRadius: 4,
           )
         ],
-        borderRadius: BorderRadius.circular(50),
+        shape: BoxShape.circle,
       ),
-      child: IconButton(
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.zero),
-          elevation: WidgetStateProperty.all(0),
-          backgroundColor: WidgetStateProperty.all(AppLightColors.myBlue100_2),
-          overlayColor: WidgetStateProperty.all(
-            AppLightColors.myWhite50_1,
+      child: ClipOval(
+        child: MaterialButton(
+          padding: EdgeInsets.zero,
+          elevation: 0,
+          color: AppLightColors.myBlue100_2,
+          splashColor: AppLightColors.myWhite50_1,
+          highlightColor: AppLightColors.myWhite50_1,
+          shape: const CircleBorder(),
+          onPressed: onPressed,
+          child: Icon(
+            Icons.add,
+            size: MediaQuery.sizeOf(context).height * 0.03,
+            color: AppLightColors.myWhite100_1,
           ),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-          ),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        onPressed: onPressed,
-        icon: Icon(
-          Icons.add,
-          size: MediaQuery.sizeOf(context).height * 0.03,
-          color: AppLightColors.myWhite100_1,
         ),
       ),
     );

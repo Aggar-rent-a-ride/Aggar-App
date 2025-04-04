@@ -1,12 +1,12 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:aggar/features/edit_vehicle/edit_vehicle_state.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/radio_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart' show StatelessWidget;
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../edit_vehicle/edit_vehicle_cubit.dart';
 
 class TransmissionModeOptions extends StatelessWidget {
   const TransmissionModeOptions({
@@ -14,38 +14,36 @@ class TransmissionModeOptions extends StatelessWidget {
     this.isEditing = false,
     this.initialVehicleTransmissionMode,
   });
+
   final bool isEditing;
   final String? initialVehicleTransmissionMode;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EditVehicleCubit, EditVehicleState>(
+    if (isEditing) {
+      return _buildEditingMode(context);
+    } else {
+      return _buildAddingMode(context);
+    }
+  }
+
+  Widget _buildAddingMode(BuildContext context) {
+    return BlocBuilder<AddVehicleCubit, AddVehicleState>(
       buildWhen: (previous, current) =>
-          current is TransmissionModeEdited ||
-          current is EditVehicleInitial ||
-          current is EditVehicleDataLoaded,
+          current is TransmissionModeUpdated || current is AddVehicleInitial,
       builder: (context, state) {
-        if (isEditing &&
-            initialVehicleTransmissionMode != null &&
-            context.read<EditVehicleCubit>().selectedTransmissionModeValue ==
-                null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final cubit = context.read<EditVehicleCubit>();
-            if (cubit.selectedTransmissionModeValue == null) {
-              cubit.setTransmissionMode(cubit
-                  .getTransmissionModeValue(initialVehicleTransmissionMode!));
-            }
-          });
-        }
-        final selectedValue =
-            context.read<EditVehicleCubit>().selectedTransmissionModeValue;
+        final cubit = context.read<AddVehicleCubit>();
+        final selectedValue = cubit.selectedTransmissionModeValue;
+
+        print("Building Add TransmissionMode with value: $selectedValue");
+
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                "transmission mode :",
+                "Transmission Mode:",
                 style: AppStyles.medium18(context).copyWith(
                   color: AppLightColors.myBlue100_1,
                 ),
@@ -54,8 +52,61 @@ class TransmissionModeOptions extends StatelessWidget {
             RadioButtons(
               selectedValue: selectedValue,
               onChanged: (value) {
-                print("Transmission changed to: $value");
-                context.read<EditVehicleCubit>().setTransmissionMode(value);
+                print("Add Mode - Transmission changed to: $value");
+                cubit.setTransmissionMode(value);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildEditingMode(BuildContext context) {
+    return BlocBuilder<EditVehicleCubit, EditVehicleState>(
+      buildWhen: (previous, current) =>
+          current is TransmissionModeEdited ||
+          current is EditVehicleInitial ||
+          current is EditVehicleDataLoaded,
+      builder: (context, state) {
+        final cubit = context.read<EditVehicleCubit>();
+
+        if (initialVehicleTransmissionMode != null &&
+            cubit.selectedTransmissionModeValue == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (cubit.selectedTransmissionModeValue == null) {
+              cubit.setTransmissionMode(cubit
+                  .getTransmissionModeValue(initialVehicleTransmissionMode!));
+            }
+          });
+        }
+
+        final selectedValue = cubit.selectedTransmissionModeValue;
+
+        print("Building Edit TransmissionMode with value: $selectedValue");
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                "Transmission Mode:",
+                style: AppStyles.medium18(context).copyWith(
+                  color: AppLightColors.myBlue100_1,
+                ),
+              ),
+            ),
+            RadioButtons(
+              selectedValue: selectedValue,
+              onChanged: (value) {
+                if (isEditing == true) {
+                  print("Transmission changed to: $value");
+                  context.read<EditVehicleCubit>().setTransmissionMode(value);
+                } else {
+                  print("Transmission changed to: $value");
+                  context.read<AddVehicleCubit>().setTransmissionMode(value);
+                }
               },
             ),
           ],

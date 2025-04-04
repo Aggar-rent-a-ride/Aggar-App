@@ -18,7 +18,7 @@ class _VehiclesTypeSectionState extends State<VehiclesTypeSection> {
   @override
   void initState() {
     context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
     super.initState();
   }
 
@@ -34,20 +34,24 @@ class _VehiclesTypeSectionState extends State<VehiclesTypeSection> {
           ),
         ),
         const Gap(8),
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ListView.builder(
-            itemBuilder: (context, index) => VehicleTypeCardNetWorkImage(
-              iconPrv: context
-                  .read<VehicleTypeCubit>()
-                  .vehicleTypeSlogenPaths[index],
-              label: context.read<VehicleTypeCubit>().vehicleTypes[index],
-            ),
-            itemCount: context.read<VehicleTypeCubit>().vehicleTypes.length,
-            scrollDirection: Axis.horizontal,
-          ),
-        )
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(
+                  context.read<VehicleTypeCubit>().vehicleTypes.length,
+                  (index) => VehicleTypeCardNetWorkImage(
+                    iconPrv: context
+                        .read<VehicleTypeCubit>()
+                        .vehicleTypeSlogenPaths[index],
+                    label: context.read<VehicleTypeCubit>().vehicleTypes[index],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

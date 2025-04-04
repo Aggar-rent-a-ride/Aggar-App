@@ -21,6 +21,7 @@ class InputNameWithDropDownList extends StatefulWidget {
     this.validator,
     this.controller,
     this.initialValue,
+    this.onValueChanged,
   });
 
   final String hintTextSearch;
@@ -34,6 +35,8 @@ class InputNameWithDropDownList extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextEditingController? controller;
   final String? initialValue;
+  // Add a callback that includes both the display value and the ID
+  final void Function(String value, int id)? onValueChanged;
 
   @override
   State<InputNameWithDropDownList> createState() =>
@@ -44,6 +47,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
   String? selectedValue;
   late final TextEditingController textEditingController;
   late final TextEditingController dropdownController;
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +63,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
       } else {
         int index = widget.items.indexOf(widget.initialValue!);
         if (index != -1 && index < widget.ids.length) {
+          // For non-status items, store the ID as the value, but display the name
           selectedValue = widget.ids[index].toString();
           dropdownController.text = widget.initialValue!;
         }
@@ -140,8 +145,8 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                         : widget.ids[index].toString(),
                     child: Text(
                       widget.items[index],
-                      style: getItemTextStyle(
-                          context, widget.items[index], selectedValue),
+                      style: getItemTextStyle(context, widget.items[index],
+                          dropdownController.text),
                     ),
                   ),
                 ),
@@ -149,8 +154,24 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value;
-                    dropdownController.text = value ?? '';
-                    state.didChange(value);
+
+                    if (widget.items == vehicleStatus) {
+                      // For vehicle status, the value is the same as the display text
+                      dropdownController.text = value ?? '';
+                      state.didChange(value);
+                    } else {
+                      // For non-status items, find the corresponding name from the ID
+                      int idValue = int.parse(value ?? '0');
+                      int index = widget.ids.indexOf(idValue);
+                      if (index != -1) {
+                        dropdownController.text = widget.items[index];
+                        state.didChange(value);
+
+                        // Call the callback with both name and ID
+                        widget.onValueChanged
+                            ?.call(widget.items[index], idValue);
+                      }
+                    }
                   });
                 },
                 dropdownStyleData: DropdownStyleData(

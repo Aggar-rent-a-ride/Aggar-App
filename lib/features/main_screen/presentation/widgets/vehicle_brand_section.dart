@@ -19,7 +19,7 @@ class _BrandsSectionState extends State<BrandsSection> {
   @override
   void initState() {
     context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmU3YTc0ZTktZmJhYS00N2YxLWEyNzktMjYxZmQ1ZDA4ZDA0IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0MzY0NTEzNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.KNJIlZ1O6lk9g7J6m2CmSIVpjGflg8Tr9kE5B80P0Hk");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
     super.initState();
   }
 
@@ -37,17 +37,26 @@ class _BrandsSectionState extends State<BrandsSection> {
         const Gap(5),
         SizedBox(
           width: double.infinity,
-          height: MediaQuery.of(context).size.width * 0.32,
-          child: ListView.builder(
-            itemBuilder: (context, index) => VehicleBrandCardNetWorkImage(
-              numOfBrands: 30,
-              imgPrv: context
-                  .read<VehicleBrandCubit>()
-                  .vehicleBrandLogoPaths[index],
-              label: context.read<VehicleBrandCubit>().vehicleBrands[index],
-            ),
-            itemCount: context.read<VehicleBrandCubit>().vehicleBrands.length,
-            scrollDirection: Axis.horizontal,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    context.read<VehicleBrandCubit>().vehicleBrands.length,
+                    (index) => VehicleBrandCardNetWorkImage(
+                      numOfBrands: 30,
+                      imgPrv: context
+                          .read<VehicleBrandCubit>()
+                          .vehicleBrandLogoPaths[index],
+                      label: context
+                          .read<VehicleBrandCubit>()
+                          .vehicleBrands[index],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         )
       ],

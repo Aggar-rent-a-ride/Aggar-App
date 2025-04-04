@@ -18,7 +18,6 @@ class VehicleBrandCardNetWorkImage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
       width: MediaQuery.of(context).size.width * 0.27,
-      height: MediaQuery.of(context).size.width * 0.27,
       decoration: BoxDecoration(
         color: AppLightColors.myWhite100_2,
         borderRadius: BorderRadius.circular(8),
@@ -35,7 +34,10 @@ class VehicleBrandCardNetWorkImage extends StatelessWidget {
         child: Column(
           children: [
             imgPrv == "null"
-                ? const SizedBox()
+                ? const SizedBox(
+                    height: 80,
+                    width: 80,
+                  )
                 : SizedBox(
                     height: 80,
                     width: 80,

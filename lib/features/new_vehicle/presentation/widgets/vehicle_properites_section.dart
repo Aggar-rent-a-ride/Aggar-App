@@ -43,10 +43,12 @@ class VehicleProperitesSection extends StatelessWidget {
             ProperitesOverViewField(
               vehicleOverviewController: vehicleOverviewController,
             ),
-            const VehicleHealthOptions(
-              isEditing: true,
+            VehicleHealthOptions(
+              isEditing: isEditing,
             ),
-            const TransmissionModeOptions(),
+            TransmissionModeOptions(
+              isEditing: isEditing,
+            ),
           ],
         )
       ],
