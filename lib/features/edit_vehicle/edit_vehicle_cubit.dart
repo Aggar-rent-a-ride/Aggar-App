@@ -32,7 +32,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiM2RhNzQ0MzYtZDZmNS00MDBiLWFmNjQtMmYyNmI0YThkOWU1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzg4ODAwNiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.coSCavP2QOl_A0VKWApHbnYF-tAhMp_asI5loHNjsZA',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -454,6 +454,31 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           errorMessage = "Error: ${e.message}";
       }
 
+      emit(EditVehicleFailure(errorMessage));
+    } catch (e) {
+      emit(EditVehicleFailure("Unexpected error: $e"));
+    }
+  }
+
+  Future<void> deleteVehicle(String id) async {
+    try {
+      emit(EditVehicleLoading());
+      final response = await _dio.delete(
+        "${EndPoint.baseUrl}/api/vehicle/$id",
+        options: Options(
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print(response.data);
+      if (response.statusCode == 200) {
+        emit(EditVehicleSuccess(response.data));
+      } else {
+        emit(EditVehicleFailure("Error: ${response.statusCode}"));
+      }
+    } on DioException catch (e) {
+      String errorMessage = e.toString();
       emit(EditVehicleFailure(errorMessage));
     } catch (e) {
       emit(EditVehicleFailure("Unexpected error: $e"));

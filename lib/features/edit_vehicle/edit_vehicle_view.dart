@@ -3,6 +3,7 @@ import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:aggar/features/edit_vehicle/edit_vehicle_state.dart';
+import 'package:aggar/core/widgets/custom_dialog.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
@@ -36,9 +37,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiM2RhNzQ0MzYtZDZmNS00MDBiLWFmNjQtMmYyNmI0YThkOWU1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzg4ODAwNiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.coSCavP2QOl_A0VKWApHbnYF-tAhMp_asI5loHNjsZA");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiM2RhNzQ0MzYtZDZmNS00MDBiLWFmNjQtMmYyNmI0YThkOWU1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzg4ODAwNiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.coSCavP2QOl_A0VKWApHbnYF-tAhMp_asI5loHNjsZA");
     });
   }
 
@@ -95,11 +96,45 @@ class _EditVehicleViewState extends State<EditVehicleView> {
           ),
           backgroundColor: context.theme.white100_1,
           appBar: AppBar(
+            elevation: 1,
+            shadowColor: AppLightColors.myBlack50,
+            centerTitle: false,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomDialog(
+                        action: "Delete",
+                        title: "Delete vehicle",
+                        subtitle:
+                            "Are you sure you want to delete this vehicle ?",
+                        onPressed: () {
+                          context.read<EditVehicleCubit>().deleteVehicle(
+                                widget.vehicleId,
+                              );
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  color: AppLightColors.myBlack100,
+                ),
+              ),
+              const Gap(20),
+            ],
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: const Icon(Icons.arrow_back_ios),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: AppLightColors.myBlack100,
+              ),
             ),
             backgroundColor: AppLightColors.myWhite100_1,
             title: Text(
@@ -111,7 +146,8 @@ class _EditVehicleViewState extends State<EditVehicleView> {
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 15),
                     child: Form(
                       key: context.read<EditVehicleCubit>().editVehicleFormKey,
                       child: Column(
