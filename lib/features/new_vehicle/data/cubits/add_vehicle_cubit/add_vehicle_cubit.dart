@@ -34,7 +34,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMTU3NWYwZjMtZWJjMy00NGE0LWE3M2MtMDE5MTJhOWYxOWE3IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2NDQyMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pn0xktKVIaxuMv2NUsmq_guqbJvZ7eU63PBTzaVlcrg',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZmJmMmEzMzgtZDRlZS00NjNiLTk4MmItYWY5NDFkZTBjZDY4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2OTI0NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.FcT6dJxHy4UMdBc48Ah03ZqkgwOBz6zhsqhIzsfbJkk',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
