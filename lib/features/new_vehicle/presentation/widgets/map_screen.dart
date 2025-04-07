@@ -43,30 +43,28 @@ class _MapScreenContent extends StatelessWidget {
           final currentAddress = getAddressFromState(state);
           final isLoading = isAddressLoadingFromState(state);
 
-          return SafeArea(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: PickImageMap(markers: currentMarkers),
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: PickImageMap(markers: currentMarkers),
+              ),
+              const Positioned(
+                top: 35,
+                left: 16,
+                right: 16,
+                child: AddressSearchBar(),
+              ),
+              const ConfirmLocationWithPickCurrentLocation(),
+              if (currentAddress.isNotEmpty)
+                SelectedLocationSection(
+                  isLoading: isLoading,
+                  address: currentAddress,
                 ),
-                const Positioned(
-                  top: 15,
-                  left: 16,
-                  right: 16,
-                  child: AddressSearchBar(),
+              if (state is MapLocationLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
                 ),
-                const ConfirmLocationWithPickCurrentLocation(),
-                if (currentAddress.isNotEmpty)
-                  SelectedLocationSection(
-                    isLoading: isLoading,
-                    address: currentAddress,
-                  ),
-                if (state is MapLocationLoading)
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-              ],
-            ),
+            ],
           );
         },
       ),
