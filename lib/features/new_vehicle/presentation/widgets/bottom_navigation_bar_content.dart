@@ -6,8 +6,10 @@ class BottomNavigationBarContent extends StatelessWidget {
   const BottomNavigationBarContent({
     super.key,
     this.onPressed,
+    required this.title,
   });
   final void Function()? onPressed;
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,7 +45,7 @@ class BottomNavigationBarContent extends StatelessWidget {
           ),
           onPressed: onPressed,
           child: Text(
-            'Add Vehicle',
+            title,
             style: AppStyles.bold20(context).copyWith(
               color: AppLightColors.myWhite100_1,
             ),

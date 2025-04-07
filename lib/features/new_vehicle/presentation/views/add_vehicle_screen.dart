@@ -6,6 +6,7 @@ import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehic
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/new_vehicle/presentation/views/add_discount_screen.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -69,6 +70,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
+            title: "Add Vehicle",
             onPressed: () async {
               // Get the MapLocationCubit instance
               final mapLocationCubit = context.read<MapLocationCubit>();
@@ -99,11 +101,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                           .selectedLocation!, // Ensure location is sent
                       mainImageFile: context.read<MainImageCubit>().image!,
                     );
-
-                // Check if the request was successful before navigating back
                 if (context.read<AddVehicleCubit>().state
                     is AddVehicleSuccess) {
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DiscountScreen(),
+                    ),
+                  );
                 }
               }
             },
