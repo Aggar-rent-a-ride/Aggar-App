@@ -6,7 +6,7 @@ import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehic
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
-import 'package:aggar/features/new_vehicle/presentation/views/add_discount_screen.dart';
+import 'package:aggar/features/discount/presentation/views/discount_screen.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
@@ -31,9 +31,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   @override
   void initState() {
     context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZmJmMmEzMzgtZDRlZS00NjNiLTk4MmItYWY5NDFkZTBjZDY4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2OTI0NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.FcT6dJxHy4UMdBc48Ah03ZqkgwOBz6zhsqhIzsfbJkk");
     context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYTM5N2M5OWMtNDU0Yy00NDhhLThhOTYtOTJjYmMxM2ZhOWFhIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Mzc2Nzc4NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.rnUtM_eX8sLV7NtCvN2pwv3a0HZAJVAex58c5f02orM");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZmJmMmEzMzgtZDRlZS00NjNiLTk4MmItYWY5NDFkZTBjZDY4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2OTI0NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.FcT6dJxHy4UMdBc48Ah03ZqkgwOBz6zhsqhIzsfbJkk");
     super.initState();
   }
 
