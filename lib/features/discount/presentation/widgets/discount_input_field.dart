@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class DiscountInputField extends StatelessWidget {
   final String hintText;
   final String suffixText;
-  final String initialValue;
+  final String? initialValue;
   final Function(String) onChanged;
 
   const DiscountInputField({
     super.key,
     required this.hintText,
     required this.suffixText,
-    required this.initialValue,
+    this.initialValue,
     required this.onChanged,
   });
 

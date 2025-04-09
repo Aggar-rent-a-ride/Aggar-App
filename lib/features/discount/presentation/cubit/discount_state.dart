@@ -1,37 +1,30 @@
-part of 'discount_cubit.dart';
+import 'package:equatable/equatable.dart';
 
-class DiscountState extends Equatable {
-  final bool showDiscountList;
-  final bool isYesSelected;
-  final bool isNoSelected;
-  final String days;
-  final String percentage;
-
-  const DiscountState({
-    this.showDiscountList = false,
-    this.isYesSelected = false,
-    this.isNoSelected = false,
-    this.days = '',
-    this.percentage = '',
-  });
-
-  DiscountState copyWith({
-    bool? showDiscountList,
-    bool? isYesSelected,
-    bool? isNoSelected,
-    String? days,
-    String? percentage,
-  }) {
-    return DiscountState(
-      showDiscountList: showDiscountList ?? this.showDiscountList,
-      isYesSelected: isYesSelected ?? this.isYesSelected,
-      isNoSelected: isNoSelected ?? this.isNoSelected,
-      days: days ?? this.days,
-      percentage: percentage ?? this.percentage,
-    );
-  }
+abstract class DiscountState extends Equatable {
+  const DiscountState();
 
   @override
-  List<Object?> get props =>
-      [showDiscountList, isYesSelected, isNoSelected, days, percentage];
+  List<Object?> get props => [];
+}
+
+class DiscountInitial extends DiscountState {}
+
+class DiscountLoading extends DiscountState {}
+
+class DiscountSuccess extends DiscountState {
+  final dynamic response;
+
+  const DiscountSuccess(this.response);
+
+  @override
+  List<Object?> get props => [response];
+}
+
+class DiscountFailure extends DiscountState {
+  final String errorMessage;
+
+  const DiscountFailure(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
 }

@@ -1,5 +1,6 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
+import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:aggar/features/discount/presentation/widgets/add_discount_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,9 +68,7 @@ class DiscountListSection extends StatelessWidget {
                         child: DiscountInputField(
                           hintText: 'ex: 8',
                           suffixText: 'days',
-                          initialValue: state.days,
-                          onChanged: (value) =>
-                              context.read<DiscountCubit>().updateDays(value),
+                          onChanged: (value) {},
                         ),
                       ),
                       const Gap(10),
@@ -77,10 +76,7 @@ class DiscountListSection extends StatelessWidget {
                         child: DiscountInputField(
                           hintText: 'ex: 25',
                           suffixText: '%',
-                          initialValue: state.percentage,
-                          onChanged: (value) => context
-                              .read<DiscountCubit>()
-                              .updatePercentage(value),
+                          onChanged: (value) {},
                         ),
                       ),
                     ],

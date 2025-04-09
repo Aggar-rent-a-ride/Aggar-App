@@ -1,6 +1,6 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
-import 'package:aggar/features/discount/presentation/widgets/discount_list_section.dart';
+import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:aggar/features/discount/presentation/widgets/yes_no_buttons_row.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:flutter/material.dart';
@@ -52,12 +52,9 @@ class DiscountScreenView extends StatelessWidget {
                   ),
                 ),
                 const Gap(20),
-
-                // Yes/No buttons
-                const YesNoButtonsRow(),
-
-                // Discount List section (shown conditionally)
-                if (state.showDiscountList) const DiscountListSection(),
+                const YesNoButtonsRow(
+                  isSelected: false,
+                ),
               ],
             );
           },
@@ -67,7 +64,7 @@ class DiscountScreenView extends StatelessWidget {
         builder: (context, state) {
           return BottomNavigationBarContent(
             title: "Continue",
-            onPressed: () => context.read<DiscountCubit>().continueProcess(),
+            onPressed: () {},
           );
         },
       ),
