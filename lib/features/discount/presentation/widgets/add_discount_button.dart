@@ -1,7 +1,5 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
-import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddDiscountButton extends StatelessWidget {
   const AddDiscountButton({super.key});
@@ -11,7 +9,7 @@ class AddDiscountButton extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: ElevatedButton.icon(
-        onPressed: () => context.read<DiscountCubit>().addDiscount(),
+        onPressed: () {},
         icon: const Icon(Icons.add),
         label: const Text('Add Discount'),
         style: ElevatedButton.styleFrom(
