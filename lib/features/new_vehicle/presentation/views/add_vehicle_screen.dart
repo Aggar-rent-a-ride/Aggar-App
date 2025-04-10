@@ -107,7 +107,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const DiscountScreen(),
+                      builder: (context) => const DiscountScreenView(),
                     ),
                   );
                 }

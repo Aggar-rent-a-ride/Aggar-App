@@ -43,7 +43,7 @@ class CustomElevationButton extends StatelessWidget {
           AppLightColors.myWhite50_1,
         ),
         backgroundColor: WidgetStatePropertyAll(
-          isSelected ? AppLightColors.myWhite100_1 : AppLightColors.myBlue100_2,
+          isSelected ? AppLightColors.myBlue100_2 : AppLightColors.myWhite100_1,
         ),
       ),
       onPressed: onPressed,
@@ -51,8 +51,8 @@ class CustomElevationButton extends StatelessWidget {
         title,
         style: AppStyles.semiBold16(context).copyWith(
           color: isSelected
-              ? AppLightColors.myBlue100_2
-              : AppLightColors.myWhite100_1,
+              ? AppLightColors.myWhite100_1
+              : AppLightColors.myBlue100_2,
         ),
       ),
     );

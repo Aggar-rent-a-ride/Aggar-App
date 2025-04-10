@@ -1,10 +1,13 @@
 import 'package:equatable/equatable.dart';
 
 abstract class DiscountState extends Equatable {
-  const DiscountState();
+  final bool showDiscountSection;
+  const DiscountState({
+    this.showDiscountSection = false,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [showDiscountSection];
 }
 
 class DiscountInitial extends DiscountState {}
