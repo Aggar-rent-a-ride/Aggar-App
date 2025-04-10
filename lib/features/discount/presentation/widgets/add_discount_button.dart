@@ -2,14 +2,14 @@ import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:flutter/material.dart';
 
 class AddDiscountButton extends StatelessWidget {
-  const AddDiscountButton({super.key});
-
+  const AddDiscountButton({super.key, this.onPressed});
+  final VoidCallback? onPressed;
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerRight,
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: onPressed,
         icon: const Icon(Icons.add),
         label: const Text('Add Discount'),
         style: ElevatedButton.styleFrom(

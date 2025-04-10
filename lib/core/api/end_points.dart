@@ -12,6 +12,7 @@ class EndPoint {
   static String vehicleType = "$baseUrl/api/vehicletype/";
   static String vehicleBrand = "$baseUrl/api/vehiclebrand/";
   static String addVehicle = "$baseUrl/api/vehicle/?id=";
+  static String vehicleDiscount = "$baseUrl/api/vehicle/vehicle-discounts";
 }
 
 class ApiKey {
@@ -58,4 +59,9 @@ class ApiKey {
   static String vehicleBrandName = "name";
   static String vehicleBrandCountry = "country";
   static String vehicleBrandLogo = "logoPath";
+  ///////////////vehicleDiscount//////////////////////
+  static String vehicleDiscountDaysRequired = "daysRequired";
+  static String vehicleDiscountPercentage = "discountPercentage";
+  static String vehicleDiscountVehicleId = "vehicleId";
+  static String vehicleDiscountDiscounts = "discounts";
 }

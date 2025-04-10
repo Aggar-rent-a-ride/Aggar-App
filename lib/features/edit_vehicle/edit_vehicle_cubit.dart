@@ -28,7 +28,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   EditVehicleCubit(this.apiConsumer, this.mainImageCubit,
       this.additionalImageCubit, this.mapLocationCubit)
       : super(EditVehicleInitial()) {
-    // Initialize Dio with base URL and default options
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
@@ -90,7 +89,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     setVehicleStatus(
         vehicle.status == "OutOfService" ? "out of stock" : "active");
     setVehicleType(vehicle.vehicleType.name, vehicle.vehicleType.id);
-    setVehicleHealth(_getVehicleHealthValue(vehicle.physicalStatus));
+    setVehicleHealth(getVehicleHealthValue(vehicle.physicalStatus));
 
     // Set location
     selectedLocation =
@@ -121,7 +120,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   }
 
   // Helper method to get health value from string
-  String _getVehicleHealthValue(String? health) {
+  String getVehicleHealthValue(String? health) {
     switch (health) {
       case "Excellent":
         return "Excellent";
