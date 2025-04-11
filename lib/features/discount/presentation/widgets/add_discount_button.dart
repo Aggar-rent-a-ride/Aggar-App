@@ -2,28 +2,25 @@ import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:flutter/material.dart';
 
 class AddDiscountButton extends StatelessWidget {
-  const AddDiscountButton({super.key, this.onPressed});
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
+  final String text;
+
+  const AddDiscountButton({
+    super.key,
+    required this.onPressed,
+    this.text = 'Add Discount',
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Discount'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppLightColors.myBlue100_2,
-          foregroundColor: AppLightColors.myWhite100_1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppLightColors.myBlue100_5,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(double.infinity, 48),
       ),
+      child: Text(text),
     );
   }
 }

@@ -20,18 +20,39 @@ class DiscountListSection extends StatelessWidget {
           children: [
             const Gap(25),
             Text(
-              'Discount List :',
+              'Discount List:',
               style: AppStyles.semiBold18(context).copyWith(
                 color: AppLightColors.myBlue100_5,
               ),
             ),
             const Gap(15),
-            const DiscountCard(),
+            // Display all discount cards
+            if (state.discounts.isNotEmpty)
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.discounts.length,
+                separatorBuilder: (context, index) => const Gap(10),
+                itemBuilder: (context, index) {
+                  return DiscountCard(
+                    discount: state.discounts[index],
+                    index: index,
+                  );
+                },
+              )
+            else
+              const Text('No discounts added yet'),
             const Gap(20),
+            // Add the discount form
+            const AddDiscountForm(),
+            const Gap(20),
+            // Button to save all discounts to the API
             AddDiscountButton(
               onPressed: () {
+                print("Save All Discounts Button Pressed");
                 context.read<DiscountCubit>().addDiscount("146");
               },
+              text: 'Save All Discounts',
             ),
           ],
         );

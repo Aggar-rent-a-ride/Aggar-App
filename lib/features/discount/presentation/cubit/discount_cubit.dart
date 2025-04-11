@@ -2,16 +2,17 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiscountCubit extends Cubit<DiscountState> {
   late Dio dio;
+  List<DiscountItem> discounts = [];
+
   DiscountCubit() : super(DiscountInitial()) {
     dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZGE3MDBkMTUtNWI1Yy00OWM1LTgzOWQtZmNlYTZjZGYzMzBiIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDMyNDM5MSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.U-P9W6fP6kNuO_3_SFAlT6AwnpRmcW-2u_J5M9FILsE',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNWVmN2UxNzYtYTZiNS00Njk5LTllZWUtOGY5YjY1Yzg0ZjUxIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDQxMDE5NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.GnY2EvTnZXNtD1f1lb9MkmwaB83zA6gjVRvGIoVsnLg',
       },
       responseType: ResponseType.json,
     ));
@@ -20,19 +21,35 @@ class DiscountCubit extends Cubit<DiscountState> {
   TextEditingController daysRequired = TextEditingController();
   TextEditingController discountPercentage = TextEditingController();
 
+  void addDiscountToList() {
+    final days = int.tryParse(daysRequired.text) ?? 0;
+    final percentage = double.tryParse(discountPercentage.text) ?? 0.0;
+
+    if (days > 0 && percentage > 0) {
+      discounts.add(DiscountItem(
+        daysRequired: days,
+        discountPercentage: percentage,
+      ));
+
+      emit(DiscountSuccess('Discount added to list',
+          discounts: List.from(discounts)));
+      daysRequired.clear();
+      discountPercentage.clear();
+    }
+  }
+
   Future<void> addDiscount(String id) async {
-    emit(DiscountLoading());
+    emit(DiscountLoading(discounts: List.from(discounts)));
     try {
-      final data = {
-        "vehicleId": id,
-        "discounts": [
-          {
-            "daysRequired": int.tryParse(daysRequired.text) ?? 0,
-            "discountPercentage":
-                double.tryParse(discountPercentage.text) ?? 0.0,
-          }
-        ]
-      };
+      final discountsData = discounts
+          .map((discount) => {
+                "daysRequired": discount.daysRequired,
+                "discountPercentage": discount.discountPercentage,
+              })
+          .toList();
+
+      final data = {"vehicleId": id, "discounts": discountsData};
+
       final response = await dio.put(
         EndPoint.vehicleDiscount,
         data: data,
@@ -43,13 +60,23 @@ class DiscountCubit extends Cubit<DiscountState> {
           },
         ),
       );
+      print("Response: ${response.data}");
       if (response.statusCode == 200) {
-        emit(DiscountSuccess(response.data));
+        emit(DiscountSuccess(response.data, discounts: List.from(discounts)));
       } else {
-        emit(DiscountFailure("Error: ${response.statusCode}"));
+        emit(DiscountFailure("Error: ${response.statusCode}",
+            discounts: List.from(discounts)));
       }
     } catch (e) {
-      emit(DiscountFailure('Error: $e'));
+      emit(DiscountFailure('Error: $e', discounts: List.from(discounts)));
+    }
+  }
+
+  void removeDiscount(int index) {
+    if (index >= 0 && index < discounts.length) {
+      discounts.removeAt(index);
+      emit(
+          DiscountSuccess('Discount removed', discounts: List.from(discounts)));
     }
   }
 }
