@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class DiscountItem {
   final int daysRequired;
-  final double discountPercentage;
+  final int discountPercentage;
 
   DiscountItem({required this.daysRequired, required this.discountPercentage});
 }
