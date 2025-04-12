@@ -2,6 +2,7 @@ import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:aggar/features/discount/presentation/widgets/add_discount_button.dart';
+import 'package:aggar/features/discount/presentation/widgets/add_discount_form.dart';
 import 'package:aggar/features/discount/presentation/widgets/discount_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
