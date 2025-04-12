@@ -1,9 +1,10 @@
+import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
+import 'package:aggar/features/discount/presentation/widgets/custom_display_discount_column.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
-import '../../../../core/utils/app_styles.dart';
 
 class DiscountCard extends StatelessWidget {
   final DiscountItem discount;
@@ -57,35 +58,33 @@ class DiscountCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: AppLightColors.myWhite100_1,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
+              color: AppLightColors.myBlack25,
+              blurRadius: 4,
+              offset: const Offset(0, 0),
             ),
           ],
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(
-                  'Days Required: ${discount.daysRequired}',
-                  style: AppStyles.regular14(context),
+                CustomDisplayDiscountColumn(
+                  hint: "days",
+                  subtitle: discount.daysRequired.toString(),
+                  title: 'Days Required:',
                 ),
-                const Gap(8),
-                Text(
-                  'Discount: ${discount.discountPercentage}%',
-                  style: AppStyles.regular14(context),
+                CustomDisplayDiscountColumn(
+                  hint: "%",
+                  subtitle: discount.discountPercentage.toString(),
+                  title: 'Discount Percentage:',
                 ),
               ],
             ),
-            const Icon(Icons.swipe_left, color: Colors.grey),
           ],
         ),
       ),

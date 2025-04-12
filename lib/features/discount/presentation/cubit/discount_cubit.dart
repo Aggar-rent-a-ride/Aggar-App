@@ -22,8 +22,8 @@ class DiscountCubit extends Cubit<DiscountState> {
   TextEditingController discountPercentage = TextEditingController();
 
   void addDiscountToList() {
-    final days = int.tryParse(daysRequired.text) ?? 0;
-    final percentage = double.tryParse(discountPercentage.text) ?? 0.0;
+    final int days = int.tryParse(daysRequired.text) ?? 0;
+    final int percentage = int.tryParse(discountPercentage.text) ?? 0;
 
     if (days > 0 && percentage > 0) {
       discounts.add(DiscountItem(

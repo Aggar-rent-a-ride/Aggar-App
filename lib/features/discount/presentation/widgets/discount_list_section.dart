@@ -1,7 +1,6 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
-import 'package:aggar/features/discount/presentation/widgets/add_discount_button.dart';
 import 'package:aggar/features/discount/presentation/widgets/add_discount_form.dart';
 import 'package:aggar/features/discount/presentation/widgets/discount_card.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +19,14 @@ class DiscountListSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Gap(25),
+            const AddDiscountForm(),
             Text(
               'Discount List:',
-              style: AppStyles.semiBold18(context).copyWith(
+              style: AppStyles.bold22(context).copyWith(
                 color: AppLightColors.myBlue100_5,
               ),
             ),
-            const Gap(15),
-            // Display all discount cards
+            const Gap(20),
             if (state.discounts.isNotEmpty)
               ListView.separated(
                 shrinkWrap: true,
@@ -43,18 +42,6 @@ class DiscountListSection extends StatelessWidget {
               )
             else
               const Text('No discounts added yet'),
-            const Gap(20),
-            // Add the discount form
-            const AddDiscountForm(),
-            const Gap(20),
-            // Button to save all discounts to the API
-            AddDiscountButton(
-              onPressed: () {
-                print("Save All Discounts Button Pressed");
-                context.read<DiscountCubit>().addDiscount("146");
-              },
-              text: 'Save All Discounts',
-            ),
           ],
         );
       },
