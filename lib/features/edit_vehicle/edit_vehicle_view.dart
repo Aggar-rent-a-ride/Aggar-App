@@ -4,6 +4,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
 import 'package:aggar/features/edit_vehicle/edit_vehicle_state.dart';
 import 'package:aggar/core/widgets/custom_dialog.dart';
+import 'package:aggar/features/edit_vehicle/widgets/loading_edit_vehicle_view_body.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shimmer/shimmer.dart';
 
 class EditVehicleView extends StatefulWidget {
   final String vehicleId;
@@ -37,9 +39,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZGRiNjZhYjMtMGE4ZC00ZTIwLTllYmMtM2I3NDhkNDhhMzQ5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDAzMTk2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pg7NQyLaO5K50eyZGxuvUEQOVJc5v5NFn7zeuHZe_i8");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMmVhY2ZiMWQtNTJmMC00ZjllLThhNTEtZGExMTk2NGRhNGM1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDY2NzEwMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.5KMoRM1ERq2yVOaqR4l8wuqB-CDTrLaziF_n2ukvFxs");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZGRiNjZhYjMtMGE4ZC00ZTIwLTllYmMtM2I3NDhkNDhhMzQ5IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDAzMTk2OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pg7NQyLaO5K50eyZGxuvUEQOVJc5v5NFn7zeuHZe_i8");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMmVhY2ZiMWQtNTJmMC00ZjllLThhNTEtZGExMTk2NGRhNGM1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDY2NzEwMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.5KMoRM1ERq2yVOaqR4l8wuqB-CDTrLaziF_n2ukvFxs");
     });
   }
 
@@ -68,15 +70,11 @@ class _EditVehicleViewState extends State<EditVehicleView> {
             onPressed: isLoading
                 ? null
                 : () async {
-                    // Get the MapLocationCubit instance
                     final mapLocationCubit = context.read<MapLocationCubit>();
                     final editVehicleCubit = context.read<EditVehicleCubit>();
-
-                    // Validate the form
                     if (editVehicleCubit.editVehicleFormKey.currentState
                             ?.validate() ??
                         false) {
-                      // Ensure a location is selected
                       if (mapLocationCubit.selectedLocation == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -144,7 +142,10 @@ class _EditVehicleViewState extends State<EditVehicleView> {
             ),
           ),
           body: isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? Shimmer.fromColors(
+                  baseColor: AppLightColors.myGray100_1,
+                  highlightColor: AppLightColors.myWhite100_1,
+                  child: const LoadingEditVehicleViewBody())
               : SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -167,7 +168,6 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                             vehicleTypeController: context
                                 .read<EditVehicleCubit>()
                                 .vehicleTypeController,
-                            // Pass these values from your vehicleData
                             initialVehicleBrand: vehicleData?.vehicleBrand.name,
                             initialVehicleType: vehicleData?.vehicleType.name,
                           ),
