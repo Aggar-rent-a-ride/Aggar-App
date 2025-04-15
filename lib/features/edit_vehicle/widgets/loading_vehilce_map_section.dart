@@ -1,9 +1,8 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_vehicle_additinal_images_section.dart';
 import 'package:flutter/material.dart';
 
-class LoadingVehicleImageSection extends StatelessWidget {
-  const LoadingVehicleImageSection({
+class LoadingVehilceMapSection extends StatelessWidget {
+  const LoadingVehilceMapSection({
     super.key,
   });
 
@@ -29,15 +28,6 @@ class LoadingVehicleImageSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
           ),
         ),
-        Container(
-          height: 25,
-          width: 140,
-          decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-        const LoadingVehicleAdditinalImagesSection()
       ],
     );
   }

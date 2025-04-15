@@ -145,109 +145,122 @@ class _EditVehicleViewState extends State<EditVehicleView> {
               ? Shimmer.fromColors(
                   baseColor: AppLightColors.myGray100_1,
                   highlightColor: AppLightColors.myWhite100_1,
-                  child: const LoadingEditVehicleViewBody())
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 15),
-                    child: Form(
-                      key: context.read<EditVehicleCubit>().editVehicleFormKey,
-                      child: Column(
-                        children: [
-                          AboutVehicleSection(
-                            isEditing: true,
-                            modelController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleModelController,
-                            yearOfManufactureController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleYearOfManufactureController,
-                            vehicleBrandController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleBrandController,
-                            vehicleTypeController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleTypeController,
-                            initialVehicleBrand: vehicleData?.vehicleBrand.name,
-                            initialVehicleType: vehicleData?.vehicleType.name,
-                          ),
-                          const Gap(25),
-                          VehicleImagesSection(
-                            initialMainImageUrl: state is EditVehicleDataLoaded
-                                ? state.vehicleData.mainImagePath
-                                : null,
-                            initialMainImagesUrl: state is EditVehicleDataLoaded
-                                ? state.vehicleData.vehicleImages
-                                : [],
-                          ),
-                          const Gap(25),
-                          VehicleProperitesSection(
-                            isEditing: true,
-                            initialTransmissionMode:
-                                state is EditVehicleDataLoaded
-                                    ? state.vehicleData.transmission
+                  child: const LoadingEditVehicleViewBody(),
+                )
+              : state is EditVehicleFailure
+                  ? Shimmer.fromColors(
+                      baseColor: AppLightColors.myGray100_1,
+                      highlightColor: AppLightColors.myWhite100_1,
+                      child: const LoadingEditVehicleViewBody(),
+                    )
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 15),
+                        child: Form(
+                          key: context
+                              .read<EditVehicleCubit>()
+                              .editVehicleFormKey,
+                          child: Column(
+                            children: [
+                              AboutVehicleSection(
+                                isEditing: true,
+                                modelController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleModelController,
+                                yearOfManufactureController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleYearOfManufactureController,
+                                vehicleBrandController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleBrandController,
+                                vehicleTypeController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleTypeController,
+                                initialVehicleBrand:
+                                    vehicleData?.vehicleBrand.name,
+                                initialVehicleType:
+                                    vehicleData?.vehicleType.name,
+                              ),
+                              const Gap(25),
+                              VehicleImagesSection(
+                                initialMainImageUrl:
+                                    state is EditVehicleDataLoaded
+                                        ? state.vehicleData.mainImagePath
+                                        : null,
+                                initialMainImagesUrl:
+                                    state is EditVehicleDataLoaded
+                                        ? state.vehicleData.vehicleImages
+                                        : [],
+                              ),
+                              const Gap(25),
+                              VehicleProperitesSection(
+                                isEditing: true,
+                                initialTransmissionMode:
+                                    state is EditVehicleDataLoaded
+                                        ? state.vehicleData.transmission
+                                        : null,
+                                vehicleOverviewController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleProperitesOverviewController,
+                                vehicleColorController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleColorController,
+                                vehicleSeatsNoController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleSeatsNoController,
+                              ),
+                              const Gap(25),
+                              VehicleLocationSection(
+                                initialLocation: state is EditVehicleDataLoaded
+                                    ? LatLng(
+                                        state.vehicleData.location.latitude,
+                                        state.vehicleData.location.longitude,
+                                      )
                                     : null,
-                            vehicleOverviewController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleProperitesOverviewController,
-                            vehicleColorController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleColorController,
-                            vehicleSeatsNoController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleSeatsNoController,
+                                vehicleAddressController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleAddressController,
+                                onLocationSelected:
+                                    (LatLng location, String address) {
+                                  context
+                                      .read<MapLocationCubit>()
+                                      .updateSelectedLocation(location);
+                                  context
+                                      .read<EditVehicleCubit>()
+                                      .vehicleAddressController
+                                      .text = address;
+                                },
+                              ),
+                              const Gap(25),
+                              VehicleRentalPriceSection(
+                                isEditing: true,
+                                vehicleRentalPrice: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleRentalPrice,
+                                vehicleStatusController: context
+                                    .read<EditVehicleCubit>()
+                                    .vehicleStatusController,
+                                initialVehicleStatus: context
+                                    .read<EditVehicleCubit>()
+                                    .selectedVehicleStatusValue,
+                                onSavedStatus: (value) {
+                                  context
+                                      .read<EditVehicleCubit>()
+                                      .selectedVehicleStatusValue = value;
+                                },
+                                onStatusChanged: (value, id) {
+                                  context
+                                      .read<EditVehicleCubit>()
+                                      .setVehicleStatus(value);
+                                },
+                              ),
+                              const Gap(25),
+                            ],
                           ),
-                          const Gap(25),
-                          VehicleLocationSection(
-                            initialLocation: state is EditVehicleDataLoaded
-                                ? LatLng(
-                                    state.vehicleData.location.latitude,
-                                    state.vehicleData.location.longitude,
-                                  )
-                                : null,
-                            vehicleAddressController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleAddressController,
-                            onLocationSelected:
-                                (LatLng location, String address) {
-                              context
-                                  .read<MapLocationCubit>()
-                                  .updateSelectedLocation(location);
-                              context
-                                  .read<EditVehicleCubit>()
-                                  .vehicleAddressController
-                                  .text = address;
-                            },
-                          ),
-                          const Gap(25),
-                          VehicleRentalPriceSection(
-                            isEditing: true,
-                            vehicleRentalPrice: context
-                                .read<EditVehicleCubit>()
-                                .vehicleRentalPrice,
-                            vehicleStatusController: context
-                                .read<EditVehicleCubit>()
-                                .vehicleStatusController,
-                            initialVehicleStatus: context
-                                .read<EditVehicleCubit>()
-                                .selectedVehicleStatusValue,
-                            onSavedStatus: (value) {
-                              context
-                                  .read<EditVehicleCubit>()
-                                  .selectedVehicleStatusValue = value;
-                            },
-                            onStatusChanged: (value, id) {
-                              context
-                                  .read<EditVehicleCubit>()
-                                  .setVehicleStatus(value);
-                            },
-                          ),
-                          const Gap(25),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
         );
       },
     );
