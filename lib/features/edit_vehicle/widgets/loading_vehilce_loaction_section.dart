@@ -1,9 +1,11 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/edit_vehicle/widgets/loading_field.dart';
+import 'package:aggar/features/edit_vehicle/widgets/loading_vehilce_map_section.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class LoadingAboutVehicleSection extends StatelessWidget {
-  const LoadingAboutVehicleSection({
+class LoadingVehilceLoactionSection extends StatelessWidget {
+  const LoadingVehilceLoactionSection({
     super.key,
   });
 
@@ -11,7 +13,6 @@ class LoadingAboutVehicleSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 20,
       children: [
         Container(
           height: 25,
@@ -21,20 +22,14 @@ class LoadingAboutVehicleSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
         ),
+        const Gap(15),
         const Row(
-          spacing: 15,
           children: [
-            LoadingField(),
             LoadingField(),
           ],
         ),
-        const Row(
-          spacing: 15,
-          children: [
-            LoadingField(),
-            LoadingField(),
-          ],
-        ),
+        const Gap(15),
+        const LoadingVehilceMapSection()
       ],
     );
   }

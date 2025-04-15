@@ -5,7 +5,6 @@ class LoadingField extends StatelessWidget {
   const LoadingField({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -19,7 +18,7 @@ class LoadingField extends StatelessWidget {
             color: AppLightColors.myWhite100_1,
           ),
           Container(
-            height: 35,
+            height: 40,
             width: double.infinity,
             decoration: BoxDecoration(
               color: AppLightColors.myWhite100_1,
