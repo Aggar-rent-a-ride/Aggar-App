@@ -1,15 +1,17 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card_network.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class GallarySection extends StatelessWidget {
-  GallarySection({super.key, required this.images, required this.mainImage});
+  GallarySection(
+      {super.key, required this.images, required this.mainImage, this.style});
   final ScrollController _scrollController = ScrollController();
   final List<String?> images;
   final String mainImage;
-
+  final TextStyle? style;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,14 +21,16 @@ class GallarySection extends StatelessWidget {
         children: [
           Text(
             "Gallary",
-            style: AppStyles.bold18(context).copyWith(
-              color: AppLightColors.myGray100_3,
-            ),
+            style: style ??
+                AppStyles.bold18(context).copyWith(
+                  color: AppLightColors.myGray100_3,
+                ),
           ),
+          const Gap(10),
           RawScrollbar(
             thumbVisibility: true,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 135), // must be dynamic
+            // padding: const EdgeInsets.symmetric(
+            //  horizontal: 135), //TODO : must be dynamic
             minThumbLength: 40, // must be dynamic
             trackVisibility: true,
             trackRadius: const Radius.circular(50),
@@ -39,7 +43,7 @@ class GallarySection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               controller: _scrollController,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(bottom: 15),
                 child: Row(
                   children: [
                     AdditionalImageCardNetwork(image: mainImage),

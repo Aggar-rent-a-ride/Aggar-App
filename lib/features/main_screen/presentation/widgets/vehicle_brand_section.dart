@@ -19,7 +19,7 @@ class _BrandsSectionState extends State<BrandsSection> {
   @override
   void initState() {
     context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMTU3NWYwZjMtZWJjMy00NGE0LWE3M2MtMDE5MTJhOWYxOWE3IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2NDQyMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.pn0xktKVIaxuMv2NUsmq_guqbJvZ7eU63PBTzaVlcrg");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZjlmYTExMTgtMzRhMy00MGM4LWFmMDUtNGUxMTMwYWQ5NGM1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDg0MTg3MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VtnbAG6gTUxVfyDUsXw4MRXGzF1SS_db5Fj8FmMFuYg");
     super.initState();
   }
 

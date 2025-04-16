@@ -1,4 +1,3 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,8 @@ class ProperitiesTabBarView extends StatelessWidget {
       required this.images,
       required this.mainImage,
       required this.vehicleHealth,
-      required this.vehicleStatus});
+      required this.vehicleStatus,
+      required this.vehicleType});
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
@@ -21,6 +21,7 @@ class ProperitiesTabBarView extends StatelessWidget {
   final String mainImage;
   final String vehicleHealth;
   final String vehicleStatus;
+  final String vehicleType;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +35,10 @@ class ProperitiesTabBarView extends StatelessWidget {
           mainImage: mainImage,
         ),
         OverViewSection(
+          vehicleType: vehicleType,
           color: vehicleColor,
           carHealth: vehicleHealth,
-          carHealthContainerColor: AppLightColors.myYellow10_1,
-          carHealthTextColor: AppLightColors.myYellow100_1,
           carStatus: vehicleStatus,
-          carStatusContainerColor: AppLightColors.myRed10_1,
-          carStatusTextColor: AppLightColors.myRed100_1,
           overviewText: vehicleOverView,
           seatsno: vehiceSeatsNo,
         ),

@@ -21,6 +21,7 @@ class TabBarSection extends StatefulWidget {
     required this.vehicleLatitude,
     this.pfpImage,
     required this.renterName,
+    required this.vehilceType,
   });
   final String vehicleColor;
   final String vehicleOverView;
@@ -29,6 +30,7 @@ class TabBarSection extends StatefulWidget {
   final String mainImage;
   final String vehicleHealth;
   final String vehicleStatus;
+  final String vehilceType;
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
@@ -100,6 +102,7 @@ class _TabBarSectionState extends State<TabBarSection>
               renterName: widget.renterName,
             ),
             ProperitiesTabBarView(
+              vehicleType: widget.vehilceType,
               vehicleHealth: widget.vehicleHealth,
               vehicleStatus: widget.vehicleStatus,
               vehicleColor: widget.vehicleColor,
