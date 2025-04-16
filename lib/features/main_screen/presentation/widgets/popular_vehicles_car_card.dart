@@ -4,7 +4,8 @@ import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
-import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/views/vehicle_details_after_adding_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -38,10 +39,11 @@ class PopularVehiclesCarCard extends StatelessWidget {
             if (context.read<AddVehicleCubit>().vehicleData != null) {
               VehicleDataModel vehicle =
                   context.read<AddVehicleCubit>().vehicleData;
+              // TODO : here will change the navigator
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VehiclesDetailsView(
+                  builder: (context) => VehicleDetailsAfterAddingScreen(
                     renterName: vehicle.renter!.name,
                     yearOfManufaction: vehicle.year,
                     vehicleModel: vehicle.model,

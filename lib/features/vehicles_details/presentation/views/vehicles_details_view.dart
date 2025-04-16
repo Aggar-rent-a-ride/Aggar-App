@@ -107,6 +107,7 @@ class VehiclesDetailsView extends StatelessWidget {
                       transmissionType: transmissionMode,
                     ),
                     TabBarSection(
+                      vehilceType: vehicleType,
                       pfpImage: pfpImage,
                       renterName: renterName,
                       vehicleColor: vehicleColor,

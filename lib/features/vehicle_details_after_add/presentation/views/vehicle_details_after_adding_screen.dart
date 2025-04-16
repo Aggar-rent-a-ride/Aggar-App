@@ -1,14 +1,16 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
-import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class VehicleDetailsBeforeAddingScreen extends StatelessWidget {
-  const VehicleDetailsBeforeAddingScreen({
+class VehicleDetailsAfterAddingScreen extends StatelessWidget {
+  const VehicleDetailsAfterAddingScreen({
     super.key,
     required this.yearOfManufaction,
     required this.vehicleModel,
@@ -90,43 +92,42 @@ class VehicleDetailsBeforeAddingScreen extends StatelessWidget {
         ),
         backgroundColor: AppLightColors.myWhite100_1,
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          // TODO: sub screens with no space
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomImageCar(
-                      mainImage: mainImage,
-                    ),
-                    CarNameWithTypeAndYearOfManifiction(
-                      carName: '$vehicleBrand $vehicleModel',
-                      manifactionYear: yearOfManufaction,
-                      transmissionType: transmissionMode,
-                    ),
-                    TabBarSection(
-                      pfpImage: pfpImage,
-                      renterName: renterName,
-                      vehicleColor: vehicleColor,
-                      vehicleOverView: vehicleOverView,
-                      vehiceSeatsNo: vehiceSeatsNo,
-                      images: images,
-                      mainImage: mainImage,
-                      vehicleHealth: vehicleHealth,
-                      vehicleStatus: vehicleStatus,
-                      vehicleAddress: vehicleAddress,
-                      vehicleLongitude: vehicleLongitude,
-                      vehicleLatitude: vehicleLatitude,
-                    ),
-                  ],
-                )
+                CustomImageCar(
+                  mainImage: mainImage,
+                ),
+                CarNameWithTypeAndYearOfManifiction(
+                  carName: '$vehicleBrand $vehicleModel',
+                  manifactionYear: yearOfManufaction,
+                  transmissionType: transmissionMode,
+                ),
+                GallarySection(
+                  images: images,
+                  mainImage: mainImage,
+                  style: AppStyles.bold18(context).copyWith(
+                    color: AppLightColors.myBlue100_2,
+                  ),
+                ),
+                OverViewSection(
+                  style: AppStyles.bold18(context).copyWith(
+                    color: AppLightColors.myBlue100_2,
+                  ),
+                  vehicleType: vehicleType,
+                  color: vehicleColor,
+                  seatsno: vehiceSeatsNo,
+                  overviewText: vehicleOverView,
+                  carHealth: vehicleHealth,
+                  carStatus: vehicleStatus,
+                ),
               ],
             ),
           ),
         ),
+        // TODO :what to edit with edit button
         bottomNavigationBar: BottomNavigationBarSection(
             price: vehicleRentPrice, onPressed: () {}),
       ),
