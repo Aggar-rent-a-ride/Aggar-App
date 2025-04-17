@@ -1,8 +1,8 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card_network.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/photo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class GallarySection extends StatelessWidget {
@@ -12,6 +12,21 @@ class GallarySection extends StatelessWidget {
   final List<String?> images;
   final String mainImage;
   final TextStyle? style;
+
+  void _openGallery(BuildContext context, int initialIndex) {
+    List<String> allImages = [
+      mainImage,
+      ...images.where((img) => img != null).map((img) => img!)
+    ];
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoScreen(allImages: allImages),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +35,7 @@ class GallarySection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Gallary",
+            "Gallery",
             style: style ??
                 AppStyles.bold18(context).copyWith(
                   color: AppLightColors.myGray100_3,
@@ -28,10 +43,9 @@ class GallarySection extends StatelessWidget {
           ),
           const Gap(10),
           RawScrollbar(
+            padding: const EdgeInsets.symmetric(horizontal: 140),
             thumbVisibility: true,
-            // padding: const EdgeInsets.symmetric(
-            //  horizontal: 135), //TODO : must be dynamic
-            minThumbLength: 40, // must be dynamic
+            minThumbLength: 40,
             trackVisibility: true,
             trackRadius: const Radius.circular(50),
             trackColor: AppLightColors.myGray100_1,
@@ -46,11 +60,23 @@ class GallarySection extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Row(
                   children: [
-                    AdditionalImageCardNetwork(image: mainImage),
+                    GestureDetector(
+                      onTap: () => _openGallery(context, 0),
+                      child: Hero(
+                        tag: "image_0",
+                        child: AdditionalImageCardNetwork(image: mainImage),
+                      ),
+                    ),
                     ...List.generate(images.length, (index) {
                       if (images[index] != null) {
-                        return AdditionalImageCardNetwork(
-                            image: images[index]!);
+                        return GestureDetector(
+                          onTap: () => _openGallery(context, index + 1),
+                          child: Hero(
+                            tag: "image_${index + 1}",
+                            child: AdditionalImageCardNetwork(
+                                image: images[index]!),
+                          ),
+                        );
                       } else {
                         return const SizedBox();
                       }

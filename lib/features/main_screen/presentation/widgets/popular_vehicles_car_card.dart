@@ -35,7 +35,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
         return GestureDetector(
           onTap: () async {
             print("here");
-            context.read<AddVehicleCubit>().getData("110");
+            context.read<AddVehicleCubit>().getData("147");
             if (context.read<AddVehicleCubit>().vehicleData != null) {
               VehicleDataModel vehicle =
                   context.read<AddVehicleCubit>().vehicleData;
