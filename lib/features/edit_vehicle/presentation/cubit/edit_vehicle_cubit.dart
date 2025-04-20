@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' show basename;
-import '../../../../../core/api/end_points.dart';
+import '../../../../../../../core/api/end_points.dart';
 import 'edit_vehicle_state.dart';
 
 class EditVehicleCubit extends Cubit<EditVehicleState> {

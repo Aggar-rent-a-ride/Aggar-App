@@ -1,10 +1,9 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_state.dart';
+import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_state.dart';
 import 'package:aggar/core/widgets/custom_dialog.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_edit_vehicle_view_body.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_edit_vehicle_view_body.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
@@ -96,7 +95,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
           backgroundColor: context.theme.white100_1,
           appBar: AppBar(
             elevation: 1,
-            shadowColor: AppLightColors.myBlack50,
+            shadowColor: context.theme.black50,
             centerTitle: false,
             actions: [
               IconButton(
@@ -121,7 +120,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                 },
                 icon: Icon(
                   Icons.more_vert_rounded,
-                  color: AppLightColors.myBlack100,
+                  color: context.theme.black100,
                 ),
               ),
               const Gap(20),
@@ -132,10 +131,10 @@ class _EditVehicleViewState extends State<EditVehicleView> {
               },
               icon: Icon(
                 Icons.arrow_back_ios,
-                color: AppLightColors.myBlack100,
+                color: context.theme.black100,
               ),
             ),
-            backgroundColor: AppLightColors.myWhite100_1,
+            backgroundColor: context.theme.white100_1,
             title: Text(
               'Edit Vehicle',
               style: AppStyles.semiBold24(context),
@@ -143,14 +142,14 @@ class _EditVehicleViewState extends State<EditVehicleView> {
           ),
           body: isLoading
               ? Shimmer.fromColors(
-                  baseColor: AppLightColors.myGray100_1,
-                  highlightColor: AppLightColors.myWhite100_1,
+                  baseColor: context.theme.gray100_1,
+                  highlightColor: context.theme.white100_1,
                   child: const LoadingEditVehicleViewBody(),
                 )
               : state is EditVehicleFailure
                   ? Shimmer.fromColors(
-                      baseColor: AppLightColors.myGray100_1,
-                      highlightColor: AppLightColors.myWhite100_1,
+                      baseColor: context.theme.gray100_1,
+                      highlightColor: context.theme.white100_1,
                       child: const LoadingEditVehicleViewBody(),
                     )
                   : SingleChildScrollView(

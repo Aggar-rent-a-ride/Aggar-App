@@ -1,7 +1,7 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_state.dart';
+import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_health_button.dart';
@@ -34,7 +34,7 @@ class VehicleHealthOptions extends StatelessWidget {
         Text(
           "Vehicle Health",
           style: AppStyles.medium18(context).copyWith(
-            color: AppLightColors.myBlue100_1,
+            color: context.theme.blue100_1,
           ),
         ),
         const Gap(10),
@@ -153,7 +153,7 @@ class VehicleHealthOptions extends StatelessWidget {
                   child: Text(
                     field.errorText!,
                     style: AppStyles.regular14(context).copyWith(
-                      color: AppLightColors.myRed100_1,
+                      color: context.theme.red100_1,
                     ),
                   ),
                 ),
@@ -225,7 +225,7 @@ class VehicleHealthOptions extends StatelessWidget {
                   child: Text(
                     field.errorText!,
                     style: AppStyles.regular14(context).copyWith(
-                      color: AppLightColors.myRed100_1,
+                      color: context.theme.red100_1,
                     ),
                   ),
                 ),

@@ -1,5 +1,4 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
@@ -124,7 +123,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 Icons.arrow_back_ios,
               ),
             ),
-            backgroundColor: AppLightColors.myWhite100_1,
+            backgroundColor: context.theme.white100_1,
             title: Text(
               'Add Vehicle',
               style: AppStyles.semiBold24(context),

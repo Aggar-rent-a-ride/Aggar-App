@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_card_net_work_image.dart';
 
@@ -31,7 +31,7 @@ class _BrandsSectionState extends State<BrandsSection> {
         Text(
           "Brands",
           style: AppStyles.bold24(context).copyWith(
-            color: AppLightColors.myBlue100_5,
+            color: context.theme.blue100_5,
           ),
         ),
         const Gap(5),

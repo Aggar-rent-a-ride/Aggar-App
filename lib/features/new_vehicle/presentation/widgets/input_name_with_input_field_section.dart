@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_light_colors.dart';
 import '../../../../core/utils/app_styles.dart' show AppStyles;
 
 class InputNameWithInputFieldSection extends StatelessWidget {
@@ -32,41 +32,40 @@ class InputNameWithInputFieldSection extends StatelessWidget {
         Text(
           label,
           style: AppStyles.medium18(context).copyWith(
-            color: AppLightColors.myBlue100_1,
+            color: context.theme.blue100_1,
           ),
         ),
         SizedBox(
           width: width ?? MediaQuery.of(context).size.width * 0.3,
           child: TextFormField(
-            // Remove `initialValue` and ensure controller is used
             controller: controller,
             validator: validator,
             maxLines: maxLines,
             decoration: InputDecoration(
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppLightColors.myRed100_1,
+                  color: context.theme.red100_1,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: AppLightColors.myRed100_1,
+                color: context.theme.red100_1,
               )),
               errorStyle: AppStyles.regular14(context).copyWith(
-                color: AppLightColors.myRed100_1,
+                color: context.theme.red100_1,
               ),
               hintText: hintText,
               hintStyle: AppStyles.medium15(context).copyWith(
-                color: AppLightColors.myBlack50,
+                color: context.theme.black50,
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
-              fillColor: AppLightColors.myWhite100_1,
+              fillColor: context.theme.white100_1,
               filled: true,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: AppLightColors.myBlack50,
+                  color: context.theme.black50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -74,7 +73,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: AppLightColors.myBlack50,
+                  color: context.theme.black50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -82,7 +81,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: AppLightColors.myBlack50,
+                  color: context.theme.black50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -90,7 +89,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               suffix: foundIcon == true ? widget : const SizedBox(),
             ),
             style: AppStyles.medium15(context).copyWith(
-              color: AppLightColors.myBlack100,
+              color: context.theme.black100,
             ),
           ),
         )

@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:flutter/material.dart';
 
 class AdditionalImageButton extends StatelessWidget {
@@ -20,7 +20,7 @@ class AdditionalImageButton extends StatelessWidget {
         decoration:
             BoxDecoration(borderRadius: BorderRadius.circular(5), boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             offset: const Offset(0, 0),
             blurRadius: 2,
           )
@@ -29,9 +29,9 @@ class AdditionalImageButton extends StatelessWidget {
           onPressed: onPressed,
           style: ButtonStyle(
             elevation: WidgetStateProperty.all(0),
-            overlayColor: WidgetStateProperty.all(AppLightColors.myBlue50_2),
+            overlayColor: WidgetStateProperty.all(context.theme.blue50_2),
             backgroundColor: WidgetStateProperty.all(
-              AppLightColors.myBlue10_2,
+              context.theme.blue10_2,
             ),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +22,13 @@ class AddingVehicleFloatingActionButton extends StatelessWidget {
         ],
       ),
       child: FloatingActionButton(
-          splashColor: AppLightColors.myBlue100_1,
-          backgroundColor: AppLightColors.myBlue100_1,
+          splashColor: context.theme.blue100_1,
+          backgroundColor: context.theme.blue100_1,
           elevation: 0,
           shape: const CircleBorder(),
           child: Icon(
             Icons.add,
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
             size: 28,
           ),
           onPressed: () {
