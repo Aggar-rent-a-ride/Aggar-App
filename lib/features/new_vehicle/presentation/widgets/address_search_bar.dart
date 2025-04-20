@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_state.dart';
@@ -24,18 +24,18 @@ class AddressSearchBar extends StatelessWidget {
                     BoxShadow(
                       offset: const Offset(0, 0),
                       blurRadius: 4,
-                      color: AppLightColors.myBlack25,
+                      color: context.theme.black25,
                     )
                   ],
                 ),
                 child: TextField(
                   controller: context.read<MapLocationCubit>().searchController,
                   decoration: InputDecoration(
-                    fillColor: AppLightColors.myWhite100_1,
+                    fillColor: context.theme.white100_1,
                     filled: true,
                     hintText: 'Search location',
                     hintStyle: AppStyles.regular15(context).copyWith(
-                      color: AppLightColors.myBlack50,
+                      color: context.theme.black50,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -44,19 +44,19 @@ class AddressSearchBar extends StatelessWidget {
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: AppLightColors.myBlack10,
+                        color: context.theme.black10,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: AppLightColors.myBlue100_2,
+                        color: context.theme.blue100_2,
                       ),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: AppLightColors.myBlack10,
+                        color: context.theme.black10,
                       ),
                     ),
                   ),

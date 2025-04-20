@@ -3,7 +3,6 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/search_text_fiel
     show SearchTextField;
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_light_colors.dart' show AppLightColors;
 import '../../../../core/utils/app_styles.dart' show AppStyles;
 import '../../data/model/dropbown_button.dart';
 
@@ -35,7 +34,6 @@ class InputNameWithDropDownList extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextEditingController? controller;
   final String? initialValue;
-  // Add a callback that includes both the display value and the ID
   final void Function(String value, int id)? onValueChanged;
 
   @override
@@ -63,7 +61,6 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
       } else {
         int index = widget.items.indexOf(widget.initialValue!);
         if (index != -1 && index < widget.ids.length) {
-          // For non-status items, store the ID as the value, but display the name
           selectedValue = widget.ids[index].toString();
           dropdownController.text = widget.initialValue!;
         }
@@ -156,18 +153,14 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                     selectedValue = value;
 
                     if (widget.items == vehicleStatus) {
-                      // For vehicle status, the value is the same as the display text
                       dropdownController.text = value ?? '';
                       state.didChange(value);
                     } else {
-                      // For non-status items, find the corresponding name from the ID
                       int idValue = int.parse(value ?? '0');
                       int index = widget.ids.indexOf(idValue);
                       if (index != -1) {
                         dropdownController.text = widget.items[index];
                         state.didChange(value);
-
-                        // Call the callback with both name and ID
                         widget.onValueChanged
                             ?.call(widget.items[index], idValue);
                       }
@@ -175,7 +168,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                   });
                 },
                 dropdownStyleData: DropdownStyleData(
-                  decoration: BoxDecoration(color: AppLightColors.myWhite100_1),
+                  decoration: BoxDecoration(color: context.theme.white100_1),
                   maxHeight: 200,
                 ),
                 buttonStyleData: ButtonStyleData(
@@ -187,8 +180,8 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: state.hasError
-                          ? AppLightColors.myRed100_1
-                          : AppLightColors.myBlack50,
+                          ? context.theme.red100_1
+                          : context.theme.black50,
                       width: 1,
                       style: BorderStyle.solid,
                     ),

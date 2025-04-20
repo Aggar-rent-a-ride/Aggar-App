@@ -1,7 +1,7 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_cubit.dart';
-import 'package:aggar/features/edit_vehicle/edit_vehicle_state.dart';
+import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/radio_buttons.dart';
@@ -34,9 +34,6 @@ class TransmissionModeOptions extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<AddVehicleCubit>();
         final selectedValue = cubit.selectedTransmissionModeValue;
-
-        print("Building Add TransmissionMode with value: $selectedValue");
-
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,14 +42,13 @@ class TransmissionModeOptions extends StatelessWidget {
               child: Text(
                 "Transmission Mode:",
                 style: AppStyles.medium18(context).copyWith(
-                  color: AppLightColors.myBlue100_1,
+                  color: context.theme.blue100_1,
                 ),
               ),
             ),
             RadioButtons(
               selectedValue: selectedValue,
               onChanged: (value) {
-                print("Add Mode - Transmission changed to: $value");
                 cubit.setTransmissionMode(value);
               },
             ),
@@ -82,9 +78,6 @@ class TransmissionModeOptions extends StatelessWidget {
         }
 
         final selectedValue = cubit.selectedTransmissionModeValue;
-
-        print("Building Edit TransmissionMode with value: $selectedValue");
-
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -93,7 +86,7 @@ class TransmissionModeOptions extends StatelessWidget {
               child: Text(
                 "Transmission Mode:",
                 style: AppStyles.medium18(context).copyWith(
-                  color: AppLightColors.myBlue100_1,
+                  color: context.theme.blue100_1,
                 ),
               ),
             ),
@@ -101,10 +94,8 @@ class TransmissionModeOptions extends StatelessWidget {
               selectedValue: selectedValue,
               onChanged: (value) {
                 if (isEditing == true) {
-                  print("Transmission changed to: $value");
                   context.read<EditVehicleCubit>().setTransmissionMode(value);
                 } else {
-                  print("Transmission changed to: $value");
                   context.read<AddVehicleCubit>().setTransmissionMode(value);
                 }
               },

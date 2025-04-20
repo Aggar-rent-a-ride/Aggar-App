@@ -1,10 +1,10 @@
-import 'package:aggar/features/edit_vehicle/widgets/loading_about_vehicle_section.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_field.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_seats_no_with_overview_fields.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_transmission_mode_section.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_vehicle_health_section.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_vehicle_image_section.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_vehilce_loaction_section.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_about_vehicle_section.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_field.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_seats_no_with_overview_fields.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_transmission_mode_section.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_vehicle_health_section.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_vehicle_image_section.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_vehilce_loaction_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

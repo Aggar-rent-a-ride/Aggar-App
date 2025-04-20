@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -23,7 +23,7 @@ class SelectedLocationMapContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             offset: const Offset(0, 0),
             blurRadius: 2,
           )
@@ -59,7 +59,7 @@ class SelectedLocationMapContent extends StatelessWidget {
                       height: 40,
                       child: Icon(
                         Icons.location_on,
-                        color: AppLightColors.myRed100_1,
+                        color: context.theme.red100_1,
                         size: 36,
                       ),
                     ),
@@ -67,28 +67,6 @@ class SelectedLocationMapContent extends StatelessWidget {
                 ),
               ],
             ),
-            /* if (address.isNotEmpty)
-              Positioned(
-                bottom: 40,
-                left: 8,
-                right: 48,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    address,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.myBlack100,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),*/
             Positioned(
               bottom: 8,
               right: 8,
@@ -109,10 +87,10 @@ class SelectedLocationMapContent extends StatelessWidget {
                     onEditLocation(LatLng(latitude, longitude), newAddress);
                   }
                 },
-                backgroundColor: AppLightColors.myBlue100_2,
+                backgroundColor: context.theme.blue100_2,
                 child: Icon(
                   Icons.edit_location_alt_rounded,
-                  color: AppLightColors.myBlue10_2,
+                  color: context.theme.blue10_2,
                 ),
               ),
             ),

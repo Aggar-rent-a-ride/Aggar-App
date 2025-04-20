@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -14,10 +14,10 @@ class BottomNavigationBarContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppLightColors.myWhite100_1,
+        color: context.theme.white100_1,
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack10,
+            color: context.theme.black10,
             offset: const Offset(0, -1),
             blurRadius: 10,
           ),
@@ -37,17 +37,17 @@ class BottomNavigationBarContent extends StatelessWidget {
               EdgeInsets.symmetric(horizontal: 0, vertical: 20),
             ),
             overlayColor: WidgetStatePropertyAll(
-              AppLightColors.myWhite50_1,
+              context.theme.white50_1,
             ),
             backgroundColor: WidgetStatePropertyAll(
-              AppLightColors.myBlue100_2,
+              context.theme.blue100_2,
             ),
           ),
           onPressed: onPressed,
           child: Text(
             title,
             style: AppStyles.bold20(context).copyWith(
-              color: AppLightColors.myWhite100_1,
+              color: context.theme.white100_1,
             ),
           ),
         ),

@@ -1,5 +1,5 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_vehicle_health_buttons.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_vehicle_health_buttons.dart';
 import 'package:flutter/material.dart';
 
 class LoadingVehicleHealthSection extends StatelessWidget {
@@ -17,7 +17,7 @@ class LoadingVehicleHealthSection extends StatelessWidget {
           height: 25,
           width: 140,
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(4),
           ),
         ),

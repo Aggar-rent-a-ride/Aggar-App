@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_type_card_net_work_image.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class _VehiclesTypeSectionState extends State<VehiclesTypeSection> {
         Text(
           "Vehicles Type",
           style: AppStyles.bold24(context).copyWith(
-            color: AppLightColors.myBlue100_5,
+            color: context.theme.blue100_5,
           ),
         ),
         const Gap(8),

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -16,7 +16,7 @@ class LoadingTransmissionModeSection extends StatelessWidget {
           height: 30,
           width: 180,
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -29,7 +29,7 @@ class LoadingTransmissionModeSection extends StatelessWidget {
               height: 25,
               width: 180,
               decoration: BoxDecoration(
-                color: AppLightColors.myWhite100_1,
+                color: context.theme.white100_1,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -37,7 +37,7 @@ class LoadingTransmissionModeSection extends StatelessWidget {
               height: 25,
               width: 180,
               decoration: BoxDecoration(
-                color: AppLightColors.myWhite100_1,
+                color: context.theme.white100_1,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -45,7 +45,7 @@ class LoadingTransmissionModeSection extends StatelessWidget {
               height: 25,
               width: 180,
               decoration: BoxDecoration(
-                color: AppLightColors.myWhite100_1,
+                color: context.theme.white100_1,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),

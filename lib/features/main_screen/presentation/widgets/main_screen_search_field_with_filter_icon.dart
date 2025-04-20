@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/main_screen_search_field.dart';
@@ -22,7 +22,7 @@ class MainScreenSearchFieldWithFilterIcon extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.12,
           child: Container(
             decoration: BoxDecoration(
-              color: AppLightColors.myWhite100_1.withOpacity(0.1),
+              color: context.theme.white100_1.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
@@ -32,7 +32,7 @@ class _BottomNavigationBarViewsState extends State<BottomNavigationBarViews> {
       const ProfileScreen(),
     ];
     return Scaffold(
-      backgroundColor: AppLightColors.myWhite100_1,
+      backgroundColor: context.theme.white100_1,
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         transitionBuilder: (Widget child, Animation<double> animation) {

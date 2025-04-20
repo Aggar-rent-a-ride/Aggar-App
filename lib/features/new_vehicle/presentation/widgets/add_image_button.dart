@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
 class AddImageButton extends StatelessWidget {
@@ -16,7 +16,7 @@ class AddImageButton extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             offset: const Offset(0, 0),
             blurRadius: 4,
           )
@@ -27,15 +27,15 @@ class AddImageButton extends StatelessWidget {
         child: MaterialButton(
           padding: EdgeInsets.zero,
           elevation: 0,
-          color: AppLightColors.myBlue100_2,
-          splashColor: AppLightColors.myWhite50_1,
-          highlightColor: AppLightColors.myWhite50_1,
+          color: context.theme.blue100_2,
+          splashColor: context.theme.white50_1,
+          highlightColor: context.theme.white50_1,
           shape: const CircleBorder(),
           onPressed: onPressed,
           child: Icon(
             Icons.add,
             size: MediaQuery.sizeOf(context).height * 0.03,
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
           ),
         ),
       ),

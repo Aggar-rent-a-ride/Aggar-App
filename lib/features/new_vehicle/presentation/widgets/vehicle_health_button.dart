@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +24,7 @@ class VehicleHealthButton extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 0),
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             blurRadius: 4,
           )
         ],
@@ -36,9 +36,8 @@ class VehicleHealthButton extends StatelessWidget {
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: BorderSide(
-                color: isSelected
-                    ? AppLightColors.myBlue100_1
-                    : Colors.transparent,
+                color:
+                    isSelected ? context.theme.blue100_1 : Colors.transparent,
                 width: 1.5,
               ),
             ),
@@ -47,21 +46,18 @@ class VehicleHealthButton extends StatelessWidget {
             EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           ),
           overlayColor: WidgetStatePropertyAll(
-            AppLightColors.myWhite50_1,
+            context.theme.white50_1,
           ),
           backgroundColor: WidgetStatePropertyAll(
-            isSelected
-                ? AppLightColors.myWhite100_1
-                : AppLightColors.myBlue100_2,
+            isSelected ? context.theme.white100_1 : context.theme.blue100_2,
           ),
         ),
         onPressed: () => onPressed(text),
         child: Text(
           text,
           style: AppStyles.semiBold16(context).copyWith(
-            color: isSelected
-                ? AppLightColors.myBlue100_1
-                : AppLightColors.myWhite100_1,
+            color:
+                isSelected ? context.theme.blue100_1 : context.theme.white100_1,
           ),
         ),
       ),

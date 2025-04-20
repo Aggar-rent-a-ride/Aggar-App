@@ -1,9 +1,8 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
-import 'package:aggar/features/edit_vehicle/widgets/loading_vehicle_additinal_images_section.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
-class LoadingVehicleImageSection extends StatelessWidget {
-  const LoadingVehicleImageSection({
+class LoadingVehilceMapSection extends StatelessWidget {
+  const LoadingVehilceMapSection({
     super.key,
   });
 
@@ -17,7 +16,7 @@ class LoadingVehicleImageSection extends StatelessWidget {
           height: 25,
           width: 140,
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -25,19 +24,10 @@ class LoadingVehicleImageSection extends StatelessWidget {
           height: MediaQuery.of(context).size.height * 0.25,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(5),
           ),
         ),
-        Container(
-          height: 25,
-          width: 140,
-          decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-        const LoadingVehicleAdditinalImagesSection()
       ],
     );
   }

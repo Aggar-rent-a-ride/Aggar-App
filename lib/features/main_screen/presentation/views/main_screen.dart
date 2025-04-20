@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/adding_vehicle_floating_action_button.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_section.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/main_header.dart';
@@ -5,8 +6,6 @@ import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles
 import 'package:aggar/features/main_screen/presentation/widgets/vehicles_type_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
-import '../../../../core/themes/app_light_colors.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -16,14 +15,14 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: const AddingVehicleFloatingActionButton(),
-      backgroundColor: AppLightColors.myWhite100_1,
+      backgroundColor: context.theme.white100_1,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppLightColors.myBlue100_1,
+                color: context.theme.blue100_1,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),

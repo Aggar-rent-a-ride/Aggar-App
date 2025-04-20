@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class NotificationIconButton extends StatelessWidget {
           height: 40,
           width: 40,
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1.withOpacity(0.1),
+            color: context.theme.white100_1.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Padding(
@@ -36,7 +36,7 @@ class NotificationIconButton extends StatelessWidget {
             height: 8,
             width: 8,
             decoration: BoxDecoration(
-              color: AppLightColors.myGreen100_1,
+              color: context.theme.green100_1,
               shape: BoxShape.circle,
             ),
           ),
