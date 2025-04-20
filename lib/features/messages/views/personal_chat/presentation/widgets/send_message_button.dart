@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
 class SendMessageButton extends StatelessWidget {
@@ -13,7 +13,7 @@ class SendMessageButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             blurRadius: 4,
             offset: const Offset(0, 0),
           ),
@@ -30,13 +30,13 @@ class SendMessageButton extends StatelessWidget {
             ),
           ),
           backgroundColor: WidgetStateProperty.all<Color>(
-            AppLightColors.myWhite100_2,
+            context.theme.white100_2,
           ),
         ),
         onPressed: () {},
         icon: Icon(
           Icons.send,
-          color: AppLightColors.myBlack50,
+          color: context.theme.black50,
         ),
       ),
     );

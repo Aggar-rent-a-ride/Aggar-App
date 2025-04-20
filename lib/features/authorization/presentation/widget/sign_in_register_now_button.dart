@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_up_view.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ class SignInRegisterNowButton extends StatelessWidget {
       child: Text(
         "Register now",
         style: AppStyles.medium18(context).copyWith(
-          color: AppLightColors.myBlue100_1,
+          color: context.theme.blue100_1,
         ),
       ),
     );

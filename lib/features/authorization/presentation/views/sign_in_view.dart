@@ -1,5 +1,5 @@
 import 'package:aggar/core/api/dio_consumer.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_state.dart';
@@ -46,7 +46,7 @@ class _SignInContent extends StatelessWidget {
     final loginCubit = context.read<LoginCubit>();
 
     return Scaffold(
-      backgroundColor: AppLightColors.myWhite100_1,
+      backgroundColor: context.theme.white100_1,
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {

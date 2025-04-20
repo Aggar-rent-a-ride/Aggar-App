@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/app_bar_personal_message_section.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +16,10 @@ class AppBarPersonalChat extends StatelessWidget {
       height: MediaQuery.sizeOf(context).height * 0.13,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppLightColors.myBlue100_1,
+        color: context.theme.blue100_1,
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack10,
+            color: context.theme.black10,
             blurRadius: 4,
             spreadRadius: 0,
             offset: const Offset(0, 4),

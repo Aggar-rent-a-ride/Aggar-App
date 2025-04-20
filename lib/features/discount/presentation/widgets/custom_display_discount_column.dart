@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -21,7 +21,7 @@ class CustomDisplayDiscountColumn extends StatelessWidget {
         Text(
           title,
           style: AppStyles.medium18(context).copyWith(
-            color: AppLightColors.myBlue100_5,
+            color: context.theme.blue100_5,
           ),
         ),
         Row(
@@ -29,14 +29,14 @@ class CustomDisplayDiscountColumn extends StatelessWidget {
             Text(
               subtitle,
               style: AppStyles.bold28(context).copyWith(
-                color: AppLightColors.myBlack50,
+                color: context.theme.black50,
               ),
             ),
             const Gap(5),
             Text(
               hint,
               style: AppStyles.bold18(context).copyWith(
-                color: AppLightColors.myBlack50,
+                color: context.theme.black50,
               ),
             ),
           ],

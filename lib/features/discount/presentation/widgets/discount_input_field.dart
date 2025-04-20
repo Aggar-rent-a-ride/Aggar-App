@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/discount/presentation/widgets/custom_suffix_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,33 +19,33 @@ class DiscountInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       style: AppStyles.medium15(context).copyWith(
-        color: AppLightColors.myBlack100,
+        color: context.theme.black100,
       ),
       controller: controller,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         filled: true,
-        fillColor: AppLightColors.myWhite100_1,
+        fillColor: context.theme.white100_1,
         hintStyle: AppStyles.medium15(context).copyWith(
-          color: AppLightColors.myBlack50,
+          color: context.theme.black50,
         ),
         hintText: hintText,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: AppLightColors.myBlack50,
+            color: context.theme.black50,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: AppLightColors.myBlue100_2,
+            color: context.theme.blue100_2,
           ),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: AppLightColors.myBlack50,
+            color: context.theme.black50,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(

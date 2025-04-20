@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/name_and_message_chat_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/time_and_number_of_msg_chat_view.dart';
@@ -28,7 +28,7 @@ class ChatPerson extends StatelessWidget {
         ElevatedButton(
           onPressed: onTap,
           style: ButtonStyle(
-            overlayColor: WidgetStateProperty.all(AppLightColors.myBlue10_2),
+            overlayColor: WidgetStateProperty.all(context.theme.blue10_2),
             backgroundColor: WidgetStateProperty.all(
               Colors.transparent,
             ),

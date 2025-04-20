@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -22,7 +22,7 @@ class NameAndMessageChatView extends StatelessWidget {
             name,
             overflow: TextOverflow.ellipsis,
             style: AppStyles.bold20(context).copyWith(
-              color: AppLightColors.myBlue100_2,
+              color: context.theme.blue100_2,
             ),
           ),
           const Gap(6),
@@ -30,7 +30,7 @@ class NameAndMessageChatView extends StatelessWidget {
             msg,
             overflow: TextOverflow.ellipsis,
             style: AppStyles.medium16(context)
-                .copyWith(color: AppLightColors.myBlack50),
+                .copyWith(color: context.theme.black50),
           ),
         ],
       ),
