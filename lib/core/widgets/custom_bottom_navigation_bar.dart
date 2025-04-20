@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/widgets/selected_tab_bottom_navigation_bar.dart';
@@ -17,7 +18,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppLightColors.myWhite100_1,
+        color: context.theme.white100_3,
         boxShadow: [
           BoxShadow(
             color: AppLightColors.myBlack100.withOpacity(0.1),
