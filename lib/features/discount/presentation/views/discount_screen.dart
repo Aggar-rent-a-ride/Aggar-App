@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/widgets/discount_list_section.dart';
 import 'package:aggar/features/discount/presentation/widgets/yes_no_buttons_row.dart';
@@ -26,12 +26,12 @@ class _DiscountScreenViewState extends State<DiscountScreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppLightColors.myWhite100_1,
+      backgroundColor: context.theme.white100_1,
       appBar: AppBar(
         elevation: 1,
-        shadowColor: AppLightColors.myBlack50,
+        shadowColor: context.theme.black50,
         centerTitle: false,
-        backgroundColor: AppLightColors.myWhite100_1,
+        backgroundColor: context.theme.white100_1,
         title: Text(
           'Discounts',
           style: AppStyles.semiBold24(context),
@@ -47,7 +47,7 @@ class _DiscountScreenViewState extends State<DiscountScreenView> {
               Text(
                 'Add Discount to this vehicle ?',
                 style: AppStyles.bold22(context).copyWith(
-                  color: AppLightColors.myBlue100_5,
+                  color: context.theme.blue100_5,
                 ),
               ),
               const Gap(20),

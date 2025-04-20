@@ -1,8 +1,7 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:aggar/features/discount/presentation/widgets/custom_display_discount_column.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,10 +22,10 @@ class DiscountCard extends StatelessWidget {
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
-        color: Colors.red,
-        child: const Icon(
+        color: context.theme.red100_1,
+        child: Icon(
           Icons.delete,
-          color: Colors.white,
+          color: context.theme.white100_1,
         ),
       ),
       direction: DismissDirection.endToStart,
@@ -58,10 +57,10 @@ class DiscountCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppLightColors.myWhite100_1,
+          color: context.theme.white100_1,
           boxShadow: [
             BoxShadow(
-              color: AppLightColors.myBlack25,
+              color: context.theme.black25,
               blurRadius: 4,
               offset: const Offset(0, 0),
             ),

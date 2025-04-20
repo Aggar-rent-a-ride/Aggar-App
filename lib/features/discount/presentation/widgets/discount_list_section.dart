@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:aggar/features/discount/presentation/widgets/add_discount_form.dart';
@@ -23,7 +23,7 @@ class DiscountListSection extends StatelessWidget {
             Text(
               'Discount List:',
               style: AppStyles.bold22(context).copyWith(
-                color: AppLightColors.myBlue100_5,
+                color: context.theme.blue100_5,
               ),
             ),
             const Gap(20),

@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -25,7 +25,7 @@ class ImageAndNamePersonMessage extends StatelessWidget {
         Text(
           name,
           style: AppStyles.bold20(context).copyWith(
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
           ),
         ),
       ],

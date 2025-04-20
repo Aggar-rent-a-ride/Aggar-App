@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_register_now_button.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class SignInDoNotHaveAnAccountSection extends StatelessWidget {
         Text(
           "Don't have an account?",
           style: AppStyles.medium18(context).copyWith(
-            color: AppLightColors.myBlack50,
+            color: context.theme.black50,
           ),
         ),
         const SignInRegisterNowButton(),

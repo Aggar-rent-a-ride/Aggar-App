@@ -1,16 +1,16 @@
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_state.dart';
 import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/card_type.dart';
 import 'package:aggar/features/authorization/presentation/widget/pick_image_icon_with_title_and_subtitle.dart';
 import 'package:aggar/features/authorization/presentation/widget/terms_check.dart';
+import 'package:gap/gap.dart';
 
 class PickImage extends StatelessWidget {
   final Map<String, dynamic>? userData;
@@ -67,7 +67,7 @@ class PickImageContent extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
+              backgroundColor: context.theme.red100_1,
             ),
           );
           context.read<PickImageCubit>().resetError();
@@ -75,9 +75,9 @@ class PickImageContent extends StatelessWidget {
 
         if (state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registration successful!'),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: const Text('Registration successful!'),
+              backgroundColor: context.theme.green100_1,
             ),
           );
 
@@ -101,7 +101,7 @@ class PickImageContent extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: AppLightColors.myWhite100_1,
+          backgroundColor: context.theme.white100_1,
           body: SafeArea(
             child: SingleChildScrollView(
               child: Padding(

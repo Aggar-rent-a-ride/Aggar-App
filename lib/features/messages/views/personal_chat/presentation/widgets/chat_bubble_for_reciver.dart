@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class ChatBubbleForReciver extends StatelessWidget {
             vertical: 3,
           ),
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_4,
+            color: context.theme.white100_4,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -36,14 +36,14 @@ class ChatBubbleForReciver extends StatelessWidget {
               Text(
                 message.message,
                 style: AppStyles.medium16(context).copyWith(
-                  color: AppLightColors.myBlue100_1,
+                  color: context.theme.blue100_1,
                 ),
               ),
               const Gap(5),
               Text(
                 message.time,
                 style: AppStyles.medium12(context).copyWith(
-                  color: AppLightColors.myBlue100_1,
+                  color: context.theme.blue100_1,
                 ),
               ),
             ],

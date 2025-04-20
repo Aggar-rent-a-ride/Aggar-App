@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +19,8 @@ class AddDiscountButtonList extends StatelessWidget {
         icon: const Icon(Icons.add),
         label: const Text('Add Discount'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppLightColors.myBlue100_2,
-          foregroundColor: AppLightColors.myWhite100_1,
+          backgroundColor: context.theme.blue100_2,
+          foregroundColor: context.theme.white100_1,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

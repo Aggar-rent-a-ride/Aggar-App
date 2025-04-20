@@ -1,9 +1,9 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
@@ -72,7 +72,7 @@ class CredentialsPage extends StatelessWidget {
           final cubit = context.read<CredentialsCubit>();
 
           return Scaffold(
-            backgroundColor: AppLightColors.myWhite100_1,
+            backgroundColor: context.theme.white100_1,
             body: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
