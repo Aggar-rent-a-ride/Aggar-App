@@ -1,8 +1,7 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_graph_section.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../../core/themes/app_light_colors.dart';
 
 class RatingAndReviewsSection extends StatelessWidget {
   const RatingAndReviewsSection({super.key});
@@ -17,7 +16,7 @@ class RatingAndReviewsSection extends StatelessWidget {
           Text(
             "Rating and Reviews",
             style: AppStyles.bold18(context).copyWith(
-              color: AppLightColors.myGray100_3,
+              color: context.theme.gray100_3,
             ),
           ),
           const RatingGraphSection()

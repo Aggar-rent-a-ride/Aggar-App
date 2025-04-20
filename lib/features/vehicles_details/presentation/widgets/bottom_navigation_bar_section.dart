@@ -1,4 +1,5 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_rental_price.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_book_button.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,10 @@ class BottomNavigationBarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppLightColors.myWhite100_1,
+        color: context.theme.white100_1,
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack10,
+            color: context.theme.black10,
             offset: const Offset(0, -1),
             blurRadius: 10,
           ),

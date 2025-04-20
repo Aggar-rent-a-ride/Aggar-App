@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
 class CustomIconButton extends StatelessWidget {
@@ -25,10 +25,10 @@ class CustomIconButton extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
-          color: AppLightColors.myWhite100_2,
+          color: context.theme.white100_2,
           boxShadow: [
             BoxShadow(
-              color: AppLightColors.myBlack25,
+              color: context.theme.black25,
               offset: const Offset(0, 0),
               spreadRadius: 0,
               blurRadius: 4,

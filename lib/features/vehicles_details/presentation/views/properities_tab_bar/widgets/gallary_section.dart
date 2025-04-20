@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/additional_image_card_network.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/photo_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class GallarySection extends StatelessWidget {
             "Gallery",
             style: style ??
                 AppStyles.bold18(context).copyWith(
-                  color: AppLightColors.myGray100_3,
+                  color: context.theme.gray100_3,
                 ),
           ),
           const Gap(10),
@@ -48,9 +48,9 @@ class GallarySection extends StatelessWidget {
             minThumbLength: 40,
             trackVisibility: true,
             trackRadius: const Radius.circular(50),
-            trackColor: AppLightColors.myGray100_1,
+            trackColor: context.theme.gray100_1,
             controller: _scrollController,
-            thumbColor: AppLightColors.myBlue100_2,
+            thumbColor: context.theme.blue100_2,
             radius: const Radius.circular(20),
             thickness: 8,
             child: SingleChildScrollView(

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -23,7 +23,7 @@ class TextAndIconSection extends StatelessWidget {
         Text(
           title,
           style: AppStyles.semiBold16(context).copyWith(
-            color: AppLightColors.myBlue100_2,
+            color: context.theme.blue100_2,
           ),
         ),
       ],

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
@@ -52,7 +52,7 @@ class VehiclesDetailsView extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppLightColors.myWhite100_1,
+          backgroundColor: context.theme.white100_1,
           actions: [
             IconButton(
               style: ButtonStyle(
@@ -62,7 +62,7 @@ class VehiclesDetailsView extends StatelessWidget {
               ),
               icon: Icon(
                 Icons.favorite_border,
-                color: AppLightColors.myBlack100,
+                color: context.theme.black100,
               ),
               onPressed: () {},
             ),
@@ -71,7 +71,7 @@ class VehiclesDetailsView extends StatelessWidget {
           title: Text(
             "Vehicles Details",
             style: AppStyles.semiBold24(context).copyWith(
-              color: AppLightColors.myBlack100,
+              color: context.theme.black100,
             ),
           ),
           leading: IconButton(
@@ -82,12 +82,12 @@ class VehiclesDetailsView extends StatelessWidget {
             ),
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: AppLightColors.myBlack100,
+              color: context.theme.black100,
             ),
             onPressed: () {},
           ),
         ),
-        backgroundColor: AppLightColors.myWhite100_1,
+        backgroundColor: context.theme.white100_1,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           // TODO: sub screens with no space
