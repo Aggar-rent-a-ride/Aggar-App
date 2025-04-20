@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +41,7 @@ class OverViewSection extends StatelessWidget {
               "OverView",
               style: style ??
                   AppStyles.bold18(context).copyWith(
-                    color: AppLightColors.myGray100_3,
+                    color: context.theme.gray100_3,
                   ),
             ),
           ],
@@ -49,7 +49,7 @@ class OverViewSection extends StatelessWidget {
         Text(
           "Experience our $vehicleType with $color color and its modern design. seating for up to $seatsno persons. With $carHealth physical status and currently it is $carStatus .",
           style: AppStyles.medium15(context).copyWith(
-            color: AppLightColors.myBlack50,
+            color: context.theme.black50,
           ),
         ),
         /*VehicleHealthWithStatusContainer(

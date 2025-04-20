@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -31,7 +31,7 @@ class _MapScreenState extends State<ImageOfCurrentVehicleLocation> {
         point: staticLocation,
         child: Icon(
           Icons.my_location,
-          color: AppLightColors.myBlue100_1,
+          color: context.theme.blue100_1,
           size: 40.0,
         ),
       ));

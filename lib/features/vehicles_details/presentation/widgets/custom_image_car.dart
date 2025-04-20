@@ -1,5 +1,5 @@
 import 'package:aggar/core/api/end_points.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
 class CustomImageCar extends StatelessWidget {
@@ -22,7 +22,7 @@ class CustomImageCar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             offset: const Offset(0, 0),
             spreadRadius: 0,
             blurRadius: 4,

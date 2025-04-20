@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart' show AppStyles;
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class BottomNavigationBarRentalPrice extends StatelessWidget {
           Text(
             "Rental Price",
             style: AppStyles.bold18(context).copyWith(
-              color: AppLightColors.myGray100_2,
+              color: context.theme.gray100_2,
             ),
           ),
           Text.rich(
@@ -27,7 +27,7 @@ class BottomNavigationBarRentalPrice extends StatelessWidget {
                 TextSpan(
                   text: '$price\$',
                   style: AppStyles.bold28(context).copyWith(
-                    color: AppLightColors.myBlue100_2,
+                    color: context.theme.blue100_2,
                   ), // Bold text style
                 ),
                 const TextSpan(
@@ -36,7 +36,7 @@ class BottomNavigationBarRentalPrice extends StatelessWidget {
               ],
             ),
             style: AppStyles.medium20(context).copyWith(
-              color: AppLightColors.myBlack50,
+              color: context.theme.black50,
             ), // Base text style
           ),
         ],

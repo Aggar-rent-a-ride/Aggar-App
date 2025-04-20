@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -18,13 +18,13 @@ class OwnerNameSection extends StatelessWidget {
           Text(
             renterName,
             style: AppStyles.bold16(context).copyWith(
-              color: AppLightColors.myBlue100_2,
+              color: context.theme.blue100_2,
             ),
           ),
           Text(
             "Owner",
             style: AppStyles.semiBold14(context).copyWith(
-              color: AppLightColors.myBlack50,
+              color: context.theme.black50,
             ),
           ),
         ],
