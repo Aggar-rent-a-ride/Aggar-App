@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:aggar/features/settings/presentation/widgets/dark_mode_switch.dart';
@@ -16,7 +16,7 @@ class DarkModeCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 1,
-      backgroundColor: AppLightColors.myBlue100_7,
+      backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
           const Image(
@@ -30,7 +30,7 @@ class DarkModeCard extends StatelessWidget {
           Text(
             "Dark Mode",
             style: AppStyles.bold16(context).copyWith(
-              color: AppLightColors.myBlue100_1,
+              color: context.theme.blue100_1,
             ),
           ),
           const Spacer(),

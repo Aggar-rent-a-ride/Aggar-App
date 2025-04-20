@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -12,7 +12,7 @@ class DarkModeSwitch extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
-          color: AppLightColors.myBlue100_1,
+          color: context.theme.blue100_1,
           borderRadius: const BorderRadius.all(
             Radius.circular(
               25,
@@ -22,7 +22,7 @@ class DarkModeSwitch extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            color: AppLightColors.myWhite100_1,
+            color: context.theme.white100_1,
             borderRadius: const BorderRadius.all(
               Radius.circular(
                 25,
@@ -38,10 +38,10 @@ class DarkModeSwitch extends StatelessWidget {
             totalSwitches: 2,
             labels: const ['', ''],
             onToggle: (index) {},
-            activeBgColor: [AppLightColors.myBlue100_1],
-            activeFgColor: AppLightColors.myWhite100_1,
-            inactiveBgColor: AppLightColors.myWhite100_1,
-            inactiveFgColor: AppLightColors.myBlue100_1,
+            activeBgColor: [context.theme.blue100_1],
+            activeFgColor: context.theme.white100_1,
+            inactiveBgColor: context.theme.white100_1,
+            inactiveFgColor: context.theme.blue100_1,
           ),
         ),
       ),

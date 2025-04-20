@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_cubit.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_state.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
@@ -47,7 +47,7 @@ class LogoutCard extends StatelessWidget {
             onPressed: state is! LogoutLoading
                 ? () => context.read<LogoutCubit>().logout()
                 : null,
-            backgroundColor: AppLightColors.myBlue100_7,
+            backgroundColor: context.theme.blue100_7,
             child: Row(
               children: [
                 const Image(

@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/widgets/horizontal_line.dart';
 import 'package:aggar/features/settings/presentation/widgets/dark_mode_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/language_card.dart';
@@ -21,7 +21,7 @@ class SettingsAndPreferencesSection extends StatelessWidget {
         Text(
           "Settings and Preferences",
           style: AppStyles.bold18(context).copyWith(
-            color: AppLightColors.myBlue100_1,
+            color: context.theme.blue100_1,
           ),
         ),
         const Gap(20),

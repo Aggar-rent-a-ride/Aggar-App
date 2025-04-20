@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:aggar/features/settings/presentation/widgets/language_switch.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class LanguageCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 0,
-      backgroundColor: AppLightColors.myBlue100_7,
+      backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
           const Image(
@@ -31,7 +31,7 @@ class LanguageCard extends StatelessWidget {
           Text(
             "Language",
             style: AppStyles.bold16(context).copyWith(
-              color: AppLightColors.myBlue100_1,
+              color: context.theme.blue100_1,
             ),
           ),
           const Spacer(),

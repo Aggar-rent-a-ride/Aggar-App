@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class DenyButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: AppLightColors.myBlack25,
+            color: context.theme.black25,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(5),
@@ -29,7 +29,7 @@ class DenyButton extends StatelessWidget {
       child: Text(
         "Deny",
         style: AppStyles.semiBold18(context).copyWith(
-          color: AppLightColors.myBlack25,
+          color: context.theme.black25,
         ),
       ),
     );
