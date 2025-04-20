@@ -18,10 +18,11 @@ class _VehiclesTypeSectionState extends State<VehiclesTypeSection> {
   @override
   void initState() {
     context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNjU3NDc2YjgtMjA3Ny00M2I4LWEzM2ItZTE4ZGM5NDE0ODUwIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDkxNDE0MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.4sWcih_FErqemrfAK25qRcP8niMa2Pj-apDyZewqlKk");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiYmViMzU2ZGItYTI0MS00NGNlLTk4NDQtMTRhMmJiM2EwM2YzIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTE2MDQ5MSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.m5oSbL6WKHNjEjzE856CB14yBGnY2h4oUTyz8NT_smg");
     super.initState();
   }
 
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,16 +37,35 @@ class _VehiclesTypeSectionState extends State<VehiclesTypeSection> {
         const Gap(8),
         LayoutBuilder(
           builder: (context, constraints) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  context.read<VehicleTypeCubit>().vehicleTypes.length,
-                  (index) => VehicleTypeCardNetWorkImage(
-                    iconPrv: context
-                        .read<VehicleTypeCubit>()
-                        .vehicleTypeSlogenPaths[index],
-                    label: context.read<VehicleTypeCubit>().vehicleTypes[index],
+            return RawScrollbar(
+              // TODO : make them dynamic numbers
+              padding: const EdgeInsets.symmetric(horizontal: 160),
+              thumbVisibility: true,
+              minThumbLength: 65,
+              trackVisibility: true,
+              trackRadius: const Radius.circular(50),
+              trackColor: context.theme.gray100_1,
+              controller: _scrollController,
+              thumbColor: context.theme.blue100_5,
+              radius: const Radius.circular(20),
+              thickness: 8,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(
+                      context.read<VehicleTypeCubit>().vehicleTypes.length,
+                      (index) => VehicleTypeCardNetWorkImage(
+                        iconPrv: context
+                            .read<VehicleTypeCubit>()
+                            .vehicleTypeSlogenPaths[index],
+                        label: context
+                            .read<VehicleTypeCubit>()
+                            .vehicleTypes[index],
+                      ),
+                    ),
                   ),
                 ),
               ),

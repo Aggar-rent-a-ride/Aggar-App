@@ -22,7 +22,7 @@ class MainScreen extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: context.theme.blue100_1,
+                color: context.theme.blue100_8,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -39,9 +39,9 @@ class MainScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   VehiclesTypeSection(),
-                  Gap(20),
+                  Gap(10),
                   BrandsSection(),
-                  Gap(15),
+                  Gap(10),
                   PopularVehiclesSection(),
                 ],
               ),

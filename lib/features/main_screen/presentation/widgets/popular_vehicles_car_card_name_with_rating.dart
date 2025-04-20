@@ -20,7 +20,9 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.32,
           child: Text(
             carName,
-            style: AppStyles.semiBold24(context),
+            style: AppStyles.semiBold24(context).copyWith(
+              color: context.theme.black100,
+            ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
