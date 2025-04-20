@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -15,7 +15,7 @@ class LanguageSwitch extends StatelessWidget {
           vertical: 4,
         ),
         decoration: BoxDecoration(
-          color: AppLightColors.myBlue100_1,
+          color: context.theme.blue100_1,
           borderRadius: const BorderRadius.all(
             Radius.circular(
               10,
@@ -31,10 +31,10 @@ class LanguageSwitch extends StatelessWidget {
           totalSwitches: 2,
           labels: const ['EN', 'AR'],
           onToggle: (index) {},
-          activeBgColor: [AppLightColors.myWhite100_1],
-          activeFgColor: AppLightColors.myBlue100_1,
-          inactiveBgColor: AppLightColors.myBlue100_1,
-          inactiveFgColor: AppLightColors.myWhite100_1,
+          activeBgColor: [context.theme.white100_1],
+          activeFgColor: context.theme.blue100_1,
+          inactiveBgColor: context.theme.blue100_1,
+          inactiveFgColor: context.theme.white100_1,
         ),
       ),
     );

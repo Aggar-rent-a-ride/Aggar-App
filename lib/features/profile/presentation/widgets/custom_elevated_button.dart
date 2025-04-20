@@ -1,4 +1,5 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -18,17 +19,16 @@ class CustomElevatedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isActive ? onPressed : null,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isActive ? AppLightColors.myBlue100_1 : Colors.white,
+        backgroundColor:
+            isActive ? context.theme.blue100_1 : context.theme.white100_1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
       ),
       child: Text(
         label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: isActive ? Colors.white : Colors.black54,
+        style: AppStyles.medium12(context).copyWith(
+          color: isActive ? context.theme.white100_1 : context.theme.black50,
         ),
       ),
     );

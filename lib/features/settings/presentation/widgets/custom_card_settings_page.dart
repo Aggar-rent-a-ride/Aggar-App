@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
 class CustomCardSettingsPage extends StatelessWidget {
@@ -22,7 +22,7 @@ class CustomCardSettingsPage extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        overlayColor: WidgetStateProperty.all(AppLightColors.myBlue10_2),
+        overlayColor: WidgetStateProperty.all(context.theme.blue10_2),
         backgroundColor: WidgetStateProperty.all(backgroundColor),
 
         elevation: WidgetStateProperty.all(0),

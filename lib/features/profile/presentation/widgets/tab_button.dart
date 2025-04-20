@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -26,20 +26,19 @@ class TabButton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? AppLightColors.myBlue100_1 : Colors.white,
+          color:
+              isSelected ? context.theme.blue100_1 : context.theme.white100_1,
           border: Border.all(
-            color: isSelected
-                ? AppLightColors.myBlue100_1
-                : AppLightColors.myGray100_1,
+            color:
+                isSelected ? context.theme.blue100_1 : context.theme.gray100_1,
           ),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           title,
           style: AppStyles.regular16(context).copyWith(
-            color: isSelected
-                ? AppLightColors.myWhite100_1
-                : AppLightColors.myBlack100,
+            color:
+                isSelected ? context.theme.white100_1 : context.theme.black100,
           ),
         ),
       ),

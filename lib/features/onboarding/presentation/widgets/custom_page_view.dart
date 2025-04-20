@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -17,7 +17,7 @@ class CustomPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppLightColors.myWhite100_1,
+      color: context.theme.white100_1,
       child: Column(
         children: [
           Image(
@@ -41,7 +41,7 @@ class CustomPageView extends StatelessWidget {
                 Text(
                   description,
                   style: AppStyles.regular20(context).copyWith(
-                    color: AppLightColors.myBlack50,
+                    color: context.theme.black50,
                   ),
                 ),
               ],

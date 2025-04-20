@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class NotificationSettingsCard extends StatelessWidget {
       padingHorizental: 5,
       padingVeritical: 10,
       onPressed: () {},
-      backgroundColor: AppLightColors.myBlue100_7,
+      backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
           const Image(
@@ -32,7 +32,7 @@ class NotificationSettingsCard extends StatelessWidget {
           Text(
             "Notifications Settings",
             style: AppStyles.bold16(context).copyWith(
-              color: AppLightColors.myBlue100_1,
+              color: context.theme.blue100_1,
             ),
           ),
           const Spacer(),

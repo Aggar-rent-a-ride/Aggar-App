@@ -1,5 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/profile/data/car_model.dart';
@@ -20,7 +20,7 @@ class _CarItemWidgetState extends State<CarItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppLightColors.myWhite100_1,
+      color: context.theme.white100_1,
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -45,14 +45,15 @@ class _CarItemWidgetState extends State<CarItemWidget> {
               Padding(
                 padding: const EdgeInsets.only(right: 8, top: 8),
                 child: CircleAvatar(
-                  backgroundColor: AppLightColors.myWhite100_1,
+                  backgroundColor: context.theme.white100_1,
                   radius: 20,
                   child: IconButton(
                     iconSize: 13,
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color:
-                          isFavorite ? Colors.red : AppLightColors.myBlue100_1,
+                      color: isFavorite
+                          ? context.theme.red100_1
+                          : context.theme.blue100_1,
                       size: 24,
                     ),
                     onPressed: () {
@@ -106,28 +107,28 @@ class _CarItemWidgetState extends State<CarItemWidget> {
                     Text(
                       "\$${widget.car.pricePerHour}",
                       style: AppStyles.regular24(context)
-                          .copyWith(color: AppLightColors.myBlue100_2),
+                          .copyWith(color: context.theme.blue100_2),
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
                         "/hr",
                         style: AppStyles.regular12(context)
-                            .copyWith(color: AppLightColors.myBlue100_2),
+                            .copyWith(color: context.theme.blue100_2),
                       ),
                     ),
                     const Spacer(),
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppLightColors.myWhite100_1,
-                        foregroundColor: AppLightColors.myBlue100_2,
+                        backgroundColor: context.theme.white100_1,
+                        foregroundColor: context.theme.blue100_2,
                         elevation: 2,
                         fixedSize: const Size(60, 20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                           side: BorderSide(
-                            color: AppLightColors.myBlue100_2,
+                            color: context.theme.blue100_2,
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(
@@ -136,7 +137,7 @@ class _CarItemWidgetState extends State<CarItemWidget> {
                       child: Text(
                         "Show more",
                         style: AppStyles.regular12(context).copyWith(
-                          color: AppLightColors.myBlue100_2,
+                          color: context.theme.blue100_2,
                         ),
                       ),
                     ),
