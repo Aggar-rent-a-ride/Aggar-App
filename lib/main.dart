@@ -6,6 +6,7 @@ import 'package:aggar/core/cubit/theme/theme_cubit.dart';
 import 'package:aggar/core/extensions/language_cubit_extension.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
+import 'package:aggar/core/translations/l10n.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
@@ -20,6 +21,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -28,15 +30,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   CacheHelper().init();
   const secureStorage = FlutterSecureStorage();
+
+  final languageCubit = LanguageCubit();
+  languageCubit.changeToEnglish();
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) => const MyApp(
+      builder: (context) => MyApp(
         secureStorage: secureStorage,
+        initialLanguageCubit: languageCubit,
       ),
     ),
   );
@@ -44,8 +51,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   final FlutterSecureStorage secureStorage;
+  final LanguageCubit? initialLanguageCubit;
 
-  const MyApp({super.key, required this.secureStorage});
+  const MyApp({
+    super.key,
+    required this.secureStorage,
+    this.initialLanguageCubit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +67,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ThemeCubit(),
         ),
         BlocProvider(
-          create: (context) => LanguageCubit(),
+          create: (context) => initialLanguageCubit ?? LanguageCubit(),
         ),
         BlocProvider(
           create: (context) => MapLocationCubit(),
@@ -135,12 +147,13 @@ class MyApp extends StatelessWidget {
                   Locale('ar', 'SA'),
                 ],
                 localizationsDelegates: const [
+                  AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 builder: DevicePreview.appBuilder,
-                home: const MainScreen(),
+                home: const OnboardingView(),
               );
             },
           );
