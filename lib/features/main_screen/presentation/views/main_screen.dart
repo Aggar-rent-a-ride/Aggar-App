@@ -1,3 +1,5 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/adding_vehicle_floating_action_button.dart';
@@ -32,19 +34,44 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _loadAccessToken();
+    _setupInternetChecker();
+    _initializeScreen();
+  }
+
+  void _setupInternetChecker() {
     _internetChecker = InternetConnectionChecker.createInstance();
     _checkInternetConnection();
-    _internetChecker.onStatusChange.listen((status) {
-      final hasInternet = status == InternetConnectionStatus.connected;
-      setState(() {
-        isConnected = hasInternet;
-      });
+    _internetChecker.onStatusChange.listen(_handleConnectivityChange);
+  }
 
-      if (!hasInternet) {
-        _showNoNetworkDialog();
+  Future<void> _initializeScreen() async {
+    await _checkAndRefreshToken();
+  }
+
+  Future<void> _checkAndRefreshToken() async {
+    try {
+      final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+      final needsRefresh = await tokenRefreshCubit.shouldRefreshToken();
+
+      if (needsRefresh) {
+        await tokenRefreshCubit.refreshToken();
       }
+
+      await _loadAccessToken();
+    } catch (e) {
+      _handleAuthError('Token refresh error: ${e.toString()}');
+    }
+  }
+
+  void _handleConnectivityChange(InternetConnectionStatus status) {
+    final hasInternet = status == InternetConnectionStatus.connected;
+    setState(() {
+      isConnected = hasInternet;
     });
+
+    if (!hasInternet) {
+      _showNoNetworkDialog();
+    }
   }
 
   Future<void> _checkInternetConnection() async {
@@ -101,27 +128,40 @@ class _MainScreenState extends State<MainScreen> {
 
       if (_accessToken != null) {
         _fetchData();
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Login required. Please sign in again.')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SignInView()),
-        );
+      } else {
+        _navigateToSignIn('Login required. Please sign in again.');
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Error retrieving access token: ${e.toString()}')),
-        );
-      }
+      _handleAuthError('Error retrieving access token: ${e.toString()}');
     }
+  }
+
+  void _handleAuthError(String message) {
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      _navigateToSignIn(null);
+    }
+  }
+
+  void _navigateToSignIn(String? message) {
+    if (!mounted) return;
+
+    if (message != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SignInView()),
+    );
   }
 
   void _fetchData() {
@@ -137,46 +177,60 @@ class _MainScreenState extends State<MainScreen> {
       return const Scaffold(body: LoadingMainScreen());
     }
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton:
-          isConnected ? const AddingVehicleFloatingActionButton() : null,
-      backgroundColor: context.theme.white100_1,
-      body: isConnected
-          ? SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.theme.blue100_8,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                      ),
-                    ),
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, top: 55, bottom: 20),
-                    child: const MainHeader(),
-                  ),
-                  const Gap(15),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        VehiclesTypeSection(),
-                        Gap(10),
-                        BrandsSection(),
-                        Gap(10),
-                        PopularVehiclesSection(),
-                      ],
-                    ),
-                  ),
-                ],
+    return BlocListener<TokenRefreshCubit, TokenRefreshState>(
+      listener: (context, state) {
+        if (state is TokenRefreshSuccess) {
+          setState(() {
+            _accessToken = state.accessToken;
+          });
+          _fetchData();
+        } else if (state is TokenRefreshFailure) {
+          _handleAuthError('Authentication error: ${state.errorMessage}');
+        }
+      },
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        floatingActionButton:
+            isConnected ? const AddingVehicleFloatingActionButton() : null,
+        backgroundColor: context.theme.white100_1,
+        body: isConnected ? _buildMainContent() : const LoadingMainScreen(),
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: context.theme.blue100_8,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
-            )
-          : const LoadingMainScreen(),
+            ),
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 55, bottom: 20),
+            child: const MainHeader(),
+          ),
+          const Gap(15),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                VehiclesTypeSection(),
+                Gap(10),
+                BrandsSection(),
+                Gap(10),
+                PopularVehiclesSection(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
