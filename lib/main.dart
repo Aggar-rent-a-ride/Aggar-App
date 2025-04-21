@@ -3,13 +3,14 @@ import 'package:aggar/core/cache/cache_helper.dart';
 import 'package:aggar/core/cubit/theme/theme_cubit.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
-import 'package:aggar/core/themes/light_theme.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
+
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/views/bottom_navigation_bar_views.dart';
@@ -96,6 +97,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LoginCubit(
             dioConsumer: DioConsumer(dio: Dio()),
+            secureStorage: secureStorage,
+          ),
+        ),
+        // Add MainScreenCubit
+        BlocProvider(
+          create: (context) => MainScreenCubit(
             secureStorage: secureStorage,
           ),
         ),
