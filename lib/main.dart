@@ -1,7 +1,9 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cache/cache_helper.dart';
+import 'package:aggar/core/cubit/language/language_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/theme/theme_cubit.dart';
+import 'package:aggar/core/extensions/language_cubit_extension.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
@@ -24,6 +26,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +53,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => ThemeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => LanguageCubit(),
         ),
         BlocProvider(
           create: (context) => MapLocationCubit(),
@@ -114,15 +120,30 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
-          return MaterialApp(
-              themeMode: context.themeCubit.themeMode,
-              darkTheme: darkTheme,
-              theme: darkTheme,
-              debugShowCheckedModeBanner: false,
-              locale: DevicePreview.locale(context),
-              builder: DevicePreview.appBuilder,
-              home: const MainScreen() //const BottomNavigationBarViews(),
+          return BlocBuilder<LanguageCubit, LanguageState>(
+            builder: (context, languageState) {
+              return MaterialApp(
+                themeMode: context.themeCubit.themeMode,
+                darkTheme: darkTheme,
+                theme: darkTheme,
+                debugShowCheckedModeBanner: false,
+                locale: languageState is LanguageChanged
+                    ? languageState.locale
+                    : DevicePreview.locale(context),
+                supportedLocales: const [
+                  Locale('en', 'US'),
+                  Locale('ar', 'SA'),
+                ],
+                localizationsDelegates: const [
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                builder: DevicePreview.appBuilder,
+                home: const MainScreen(),
               );
+            },
+          );
         },
       ),
     );
