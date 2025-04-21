@@ -1,9 +1,9 @@
 import 'package:aggar/features/Splash/data/splash_state.dart';
+import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
-import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/onboarding/presentation/views/onboarding_view.dart';
 
 class SplashCubit extends Cubit<SplashState> {
