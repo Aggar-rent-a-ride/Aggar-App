@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/translations/l10n.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/custom_page_view.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/next_and_back_button_widget.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/start_now_widget.dart';
@@ -18,8 +19,10 @@ class _OnboardingViewState extends State<OnboardingView> {
   PageController controller = PageController();
   bool lastPage = false;
   bool firstPage = true;
+
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: context.theme.white100_1,
       body: Stack(
@@ -37,25 +40,22 @@ class _OnboardingViewState extends State<OnboardingView> {
                 img: Theme.of(context).brightness == Brightness.light
                     ? AppAssets.assetsImagesOnboarding1
                     : AppAssets.assetsImagesOnboarding1dark,
-                title: "Welcome to Agger",
-                description:
-                    "Whether you're exploring new cities or need a ride for the day, we’ve got you covered with our easy-to-use platform.",
+                title: localizations.translate('onboarding_title_1'),
+                description: localizations.translate('onboarding_subtitle_1'),
               ),
               CustomPageView(
                 img: Theme.of(context).brightness == Brightness.light
                     ? AppAssets.assetsImagesOnboarding2
                     : AppAssets.assetsImagesOnboarding2dark,
-                title: "Meet the owner",
-                description:
-                    "You can connect with the owner for a personalized experience, ensuring you get exactly what you need for a memorable trip.",
+                title: localizations.translate('onboarding_title_2'),
+                description: localizations.translate('onboarding_subtitle_2'),
               ),
               CustomPageView(
                 img: Theme.of(context).brightness == Brightness.light
                     ? AppAssets.assetsImagesOnboarding3
                     : AppAssets.assetsImagesOnboarding3dark,
-                title: "Book your car ",
-                description:
-                    "Agger offers a wide range of vehicles to suit your needs, ensuring a smooth and convenient booking experience.",
+                title: localizations.translate('onboarding_title_3'),
+                description: localizations.translate('onboarding_subtitle_3'),
               ),
             ],
           ),
@@ -68,7 +68,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 firstPage
                     ? const Text("       ")
                     : NextandBackButtonWidget(
-                        label: "Back",
+                        label: localizations.translate('skip'),
                         onPressed: () {
                           controller.previousPage(
                             duration: const Duration(
@@ -89,7 +89,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 lastPage
                     ? StartNowWidget(controller: controller)
                     : NextandBackButtonWidget(
-                        label: "Next",
+                        label: localizations.translate('next'),
                         onPressed: () {
                           controller.nextPage(
                             duration: const Duration(
