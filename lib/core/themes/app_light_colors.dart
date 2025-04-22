@@ -11,7 +11,6 @@ class AppLightColors {
   static Color myGray100_3 = const Color(0xff505050);
   ///////////////////////////////////////
   static Color myWhite100_1 = const Color(0xffffffff);
-  static Color myWhite100_3 = const Color(0xffffffff);
   static Color myWhite50_1 = const Color(0xffffffff).withOpacity(0.5);
   static Color myWhite100_2 = const Color(0xffF7F7F7);
   static Color myWhite100_4 = const Color(0xffE9F0F2);

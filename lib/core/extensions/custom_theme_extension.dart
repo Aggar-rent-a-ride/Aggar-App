@@ -11,7 +11,6 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
   final Color gray100_3;
 
   final Color white100_1;
-  final Color white100_3;
   final Color white50_1;
   final Color white100_2;
   final Color white100_4;
@@ -43,7 +42,6 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     required this.gray100_2,
     required this.gray100_3,
     required this.white100_1,
-    required this.white100_3,
     required this.white50_1,
     required this.white100_2,
     required this.white100_4,
@@ -75,7 +73,6 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     Color? gray100_2,
     Color? gray100_3,
     Color? white100_1,
-    Color? white100_3,
     Color? white50_1,
     Color? white100_2,
     Color? white100_4,
@@ -105,7 +102,6 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
       gray100_2: gray100_2 ?? this.gray100_2,
       gray100_3: gray100_3 ?? this.gray100_3,
       white100_1: white100_1 ?? this.white100_1,
-      white100_3: white100_3 ?? this.white100_3,
       white50_1: white50_1 ?? this.white50_1,
       white100_2: white100_2 ?? this.white100_2,
       white100_4: white100_4 ?? this.white100_4,
@@ -144,7 +140,6 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
       gray100_2: Color.lerp(gray100_2, other.gray100_2, t)!,
       gray100_3: Color.lerp(gray100_3, other.gray100_3, t)!,
       white100_1: Color.lerp(white100_1, other.white100_1, t)!,
-      white100_3: Color.lerp(white100_3, other.white100_3, t)!,
       white50_1: Color.lerp(white50_1, other.white50_1, t)!,
       white100_2: Color.lerp(white100_2, other.white100_2, t)!,
       white100_4: Color.lerp(white100_4, other.white100_4, t)!,

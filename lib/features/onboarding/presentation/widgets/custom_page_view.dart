@@ -27,17 +27,19 @@ class CustomPageView extends StatelessWidget {
             width: MediaQuery.sizeOf(context).width,
             fit: BoxFit.fitWidth,
           ),
-          const Gap(15),
+          const Gap(20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
+              spacing: 12,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppStyles.bold36(context),
+                  style: AppStyles.bold36(context).copyWith(
+                    color: context.theme.black100,
+                  ),
                 ),
-                const Gap(30),
                 Text(
                   description,
                   style: AppStyles.regular20(context).copyWith(

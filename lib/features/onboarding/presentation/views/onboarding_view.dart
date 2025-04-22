@@ -37,17 +37,23 @@ class _OnboardingViewState extends State<OnboardingView> {
             },
             children: [
               CustomPageView(
-                img: AppAssets.assetsImagesOnboarding1,
+                img: Theme.of(context).brightness == Brightness.light
+                    ? AppAssets.assetsImagesOnboarding1
+                    : AppAssets.assetsImagesOnboarding1dark,
                 title: localizations.translate('onboarding_title_1'),
                 description: localizations.translate('onboarding_subtitle_1'),
               ),
               CustomPageView(
-                img: AppAssets.assetsImagesOnboarding2,
+                img: Theme.of(context).brightness == Brightness.light
+                    ? AppAssets.assetsImagesOnboarding2
+                    : AppAssets.assetsImagesOnboarding2dark,
                 title: localizations.translate('onboarding_title_2'),
                 description: localizations.translate('onboarding_subtitle_2'),
               ),
               CustomPageView(
-                img: AppAssets.assetsImagesOnboarding3,
+                img: Theme.of(context).brightness == Brightness.light
+                    ? AppAssets.assetsImagesOnboarding3
+                    : AppAssets.assetsImagesOnboarding3dark,
                 title: localizations.translate('onboarding_title_3'),
                 description: localizations.translate('onboarding_subtitle_3'),
               ),
@@ -55,8 +61,9 @@ class _OnboardingViewState extends State<OnboardingView> {
           ),
           Container(
             alignment: const Alignment(0, 0.75),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 firstPage
                     ? const Text("       ")
@@ -76,7 +83,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   count: 3,
                   effect: WormEffect(
                     dotColor: context.theme.gray100_1,
-                    activeDotColor: context.theme.blue100_2,
+                    activeDotColor: context.theme.blue100_1,
                   ),
                 ),
                 lastPage

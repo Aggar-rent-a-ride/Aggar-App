@@ -1,5 +1,4 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/widgets/selected_tab_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +17,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.theme.white100_3,
-        boxShadow: [
+        color: context.theme.white100_1,
+        boxShadow: const [
           BoxShadow(
-            color: AppLightColors.myBlack100.withOpacity(0.1),
+            color: Colors.black12,
             blurRadius: 4,
-            offset: const Offset(0, -4),
+            offset: Offset(0, -4),
           ),
         ],
       ),

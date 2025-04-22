@@ -77,6 +77,8 @@ class _SignInContent extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Gap(20),
                     const SignInImageWithText(),

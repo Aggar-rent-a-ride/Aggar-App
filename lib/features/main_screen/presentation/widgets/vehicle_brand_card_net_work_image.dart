@@ -19,7 +19,7 @@ class VehicleBrandCardNetWorkImage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
       width: MediaQuery.of(context).size.width * 0.27,
       decoration: BoxDecoration(
-        color: context.theme.white100_3,
+        color: context.theme.white100_1,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(

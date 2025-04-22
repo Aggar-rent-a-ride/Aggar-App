@@ -3,7 +3,6 @@ import 'package:aggar/core/cache/cache_helper.dart';
 import 'package:aggar/core/cubit/language/language_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/theme/theme_cubit.dart';
-import 'package:aggar/core/extensions/language_cubit_extension.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/translations/l10n.dart';
@@ -16,7 +15,6 @@ import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubi
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
-import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';

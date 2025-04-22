@@ -24,7 +24,6 @@ final darkThemeEx = CustomThemeExtension(
   red100_1: AppDarkColors.myRed100_1,
   red10_1: AppDarkColors.myRed10_1,
   white100_1: AppDarkColors.myWhite100_1,
-  white100_3: AppDarkColors.myWhite100_3,
   white100_2: AppDarkColors.myWhite100_2,
   white100_4: AppDarkColors.myWhite100_4,
   white50_1: AppDarkColors.myWhite50_1,

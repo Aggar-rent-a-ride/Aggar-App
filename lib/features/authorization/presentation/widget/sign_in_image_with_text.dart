@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,9 @@ class SignInImageWithText extends StatelessWidget {
         ),
         Text(
           "Let's log you in",
-          style: AppStyles.bold28(context),
+          style: AppStyles.bold28(context).copyWith(
+            color: context.theme.black100,
+          ),
         ),
       ],
     );
