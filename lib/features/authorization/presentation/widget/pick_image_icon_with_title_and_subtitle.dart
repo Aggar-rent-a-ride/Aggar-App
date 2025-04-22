@@ -59,7 +59,12 @@ class _PickImageIconWithTitleAndSubtitleState
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
+                title: Text(
+                  'Gallery',
+                  style: AppStyles.bold20(context).copyWith(
+                    color: context.theme.black100,
+                  ),
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
                   _pickImage(ImageSource.gallery);
@@ -67,7 +72,12 @@ class _PickImageIconWithTitleAndSubtitleState
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(
+                  'Camera',
+                  style: AppStyles.bold20(context).copyWith(
+                    color: context.theme.black100,
+                  ),
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
                   _pickImage(ImageSource.camera);
@@ -91,7 +101,7 @@ class _PickImageIconWithTitleAndSubtitleState
           child: Column(
             children: [
               CircleAvatar(
-                backgroundColor: context.theme.blue100_2,
+                backgroundColor: context.theme.blue100_1,
                 radius: 90,
                 child: _localImagePath != null
                     ? ClipRRect(
@@ -121,7 +131,7 @@ class _PickImageIconWithTitleAndSubtitleState
               ),
               Text(
                 "Please make sure that the photo you \n    upload will not be modified later",
-                style: AppStyles.regular12(context).copyWith(
+                style: AppStyles.regular14(context).copyWith(
                   color: context.theme.black50,
                 ),
               ),

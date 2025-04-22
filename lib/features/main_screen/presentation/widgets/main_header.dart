@@ -21,8 +21,8 @@ class MainHeader extends StatelessWidget {
               children: [
                 Text(
                   "Location",
-                  style: AppStyles.regular14(context)
-                      .copyWith(color: context.theme.white50_1),
+                  style: AppStyles.regular14(context).copyWith(
+                      color: context.theme.black100.withOpacity(0.50)),
                 ),
                 const Gap(5),
                 const MainScreenLocationIconAndLocationText(),

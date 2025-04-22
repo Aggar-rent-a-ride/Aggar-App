@@ -23,8 +23,9 @@ class MainScreenLocationIconAndLocationText extends StatelessWidget {
         const Gap(5),
         Text(
           "Minya al-Qamh, Sharkia, Egypt",
-          style: AppStyles.medium18(context)
-              .copyWith(color: context.theme.white100_1),
+          style: AppStyles.medium18(context).copyWith(
+            color: context.theme.black100,
+          ),
         ),
       ],
     );

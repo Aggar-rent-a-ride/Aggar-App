@@ -12,7 +12,7 @@ class AppLightColors {
   ///////////////////////////////////////
   static Color myWhite100_1 = const Color(0xffffffff);
   static Color myWhite50_1 = const Color(0xffffffff).withOpacity(0.5);
-  static Color myWhite100_2 = const Color(0xffF7F7F7);
+  static Color myWhite100_2 = const Color.fromARGB(255, 249, 249, 249);
   static Color myWhite100_4 = const Color(0xffE9F0F2);
   ///////////////////////////////////////
   static Color myBlue100_1 = const Color(0xff19376d);
@@ -29,7 +29,7 @@ class AppLightColors {
   static Color myYellow100_1 = const Color(0xffFFCC17);
   static Color myYellow10_1 = const Color(0xffFFFDF5);
   static Color myRed100_1 = const Color(0xffFF4D3C);
-  static Color myRed10_1 = const Color(0xffFFEEEC);
+  static Color myRed10_1 = const Color(0xffCF3023);
   static Color myGreen100_1 = const Color(0xff34A853);
   static Color myGreen10_1 = const Color(0xffF2F9F6);
 }

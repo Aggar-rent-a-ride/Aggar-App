@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_state.dart';
+import 'package:aggar/features/authorization/presentation/widget/back_out_line_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -156,25 +157,11 @@ class CredentialsPage extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: OutlinedButton(
+                                child: BackOutLineButton(
                                   onPressed: _previousPage,
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 14),
-                                    side: BorderSide(
-                                        color: Theme.of(context).primaryColor),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Back",
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor),
-                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const Gap(10),
                               Expanded(
                                 child: CustomElevatedButton(
                                   onPressed: state.isFormValid
