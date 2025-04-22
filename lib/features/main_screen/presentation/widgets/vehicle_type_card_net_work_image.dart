@@ -14,7 +14,7 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
       decoration: BoxDecoration(
-        color: context.theme.white100_1,
+        color: context.theme.white100_2,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(

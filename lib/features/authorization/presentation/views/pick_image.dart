@@ -1,8 +1,10 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_state.dart';
 import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
+import 'package:aggar/features/authorization/presentation/widget/back_out_line_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -133,6 +135,7 @@ class PickImageContent extends StatelessWidget {
                       ),
                       const Gap(10),
                       Row(
+                        spacing: 10,
                         children: [
                           Expanded(
                             child: CardType(
@@ -146,7 +149,6 @@ class PickImageContent extends StatelessWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10),
                           Expanded(
                             child: CardType(
                               title: "Renter",
@@ -174,32 +176,17 @@ class PickImageContent extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: OutlinedButton(
-                              onPressed: state.isLoading
-                                  ? null
-                                  : () => _previousPage(context),
-                              style: OutlinedButton.styleFrom(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14),
-                                side: BorderSide(
-                                    color: Theme.of(context).primaryColor),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: Text(
-                                "Back",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
+                              child: BackOutLineButton(
+                            onPressed: state.isLoading
+                                ? null
+                                : () => _previousPage(context),
+                          )),
+                          const Gap(12),
                           Expanded(
                             child: state.isLoading
                                 ? Center(
                                     child: CircularProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
+                                      color: AppConstants.myWhite100_1,
                                     ),
                                   )
                                 : CustomElevatedButton(

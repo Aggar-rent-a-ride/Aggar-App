@@ -30,7 +30,9 @@ class CardType extends StatelessWidget {
             color: isSelected ? context.theme.blue100_2 : context.theme.black25,
           ),
           borderRadius: BorderRadius.circular(10),
-          color: isSelected ? context.theme.blue10_2 : context.theme.white100_1,
+          color: isSelected
+              ? context.theme.blue100_2.withOpacity(0.15)
+              : context.theme.white100_1,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         margin: const EdgeInsets.all(5),

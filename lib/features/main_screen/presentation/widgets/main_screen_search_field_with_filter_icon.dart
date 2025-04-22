@@ -22,7 +22,7 @@ class MainScreenSearchFieldWithFilterIcon extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.12,
           child: Container(
             decoration: BoxDecoration(
-              color: context.theme.gray100_2,
+              color: context.theme.gray100_2.withOpacity(0.25),
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(

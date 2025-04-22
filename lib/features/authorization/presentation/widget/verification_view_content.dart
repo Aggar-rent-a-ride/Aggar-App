@@ -51,8 +51,12 @@ class VerificationViewContent extends StatelessWidget {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
             ),
-            title:
-                Text('Verification Screen', style: AppStyles.medium24(context)),
+            title: Text(
+              'Verification Screen',
+              style: AppStyles.medium24(context).copyWith(
+                color: context.theme.black100,
+              ),
+            ),
             centerTitle: true,
             actions: [
               IconButton(
@@ -79,7 +83,9 @@ class VerificationViewContent extends StatelessWidget {
                   ),
                   Text(
                     state.email ?? 'your email',
-                    style: AppStyles.semiBold20(context),
+                    style: AppStyles.semiBold20(context).copyWith(
+                      color: context.theme.black100,
+                    ),
                   ),
                   const Gap(40),
                   PinCodeTextField(

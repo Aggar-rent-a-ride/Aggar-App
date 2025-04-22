@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 
@@ -20,6 +21,7 @@ class TermsCheck extends StatelessWidget {
           value: isChecked,
           onChanged: (value) => onChanged(value ?? false),
           activeColor: context.theme.blue100_2,
+          checkColor: AppConstants.myWhite100_1,
         ),
         GestureDetector(
           onTap: () {

@@ -18,7 +18,7 @@ class MainScreenSearchField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Search',
           hintStyle: AppStyles.regular18(context).copyWith(
-            color: Colors.black12,
+            color: context.theme.black100.withOpacity(0.5),
           ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16),
