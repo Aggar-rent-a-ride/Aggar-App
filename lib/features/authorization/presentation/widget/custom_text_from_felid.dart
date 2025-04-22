@@ -30,63 +30,87 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text(
-            labelText,
-            style: AppStyles.medium20(context),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha((0.2 * 255).toInt()),
-                blurRadius: 4,
-                offset: const Offset(0, 4),
+    return FormField<String>(
+      initialValue: initialValue ?? controller?.text,
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      builder: (FormFieldState<String> state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                labelText,
+                style: AppStyles.medium20(context).copyWith(
+                  color: context.theme.black100,
+                ),
               ),
-            ],
-          ),
-          child: TextFormField(
-            style: AppStyles.regular16(context).copyWith(
-              color: context.theme.black50,
             ),
-            textAlign: TextAlign.start,
-            keyboardType: inputType,
-            initialValue: initialValue,
-            validator: validator,
-            onChanged: onChanged,
-            obscureText: obscureText,
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: AppStyles.regular16(context).copyWith(
-                color: context.theme.black50,
-              ),
-              filled: true,
-              fillColor: context.theme.gray100_1,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 14,
-                horizontal: 19,
-              ),
-              border: OutlineInputBorder(
+            Container(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide.none,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(4, 4),
+                  ),
+                ],
               ),
-              suffixIcon: suffixIcon != null
-                  ? IconButton(
-                      icon: suffixIcon!,
-                      onPressed: onSuffixIconPressed,
-                    )
-                  : null,
+              child: TextFormField(
+                style: AppStyles.regular16(context).copyWith(
+                  color: context.theme.black100,
+                ),
+                textAlign: TextAlign.start,
+                keyboardType: inputType,
+                initialValue: initialValue,
+                onChanged: (value) {
+                  state.didChange(value);
+                  onChanged?.call(value);
+                },
+                obscureText: obscureText,
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: hintText,
+                  hintStyle: AppStyles.regular16(context).copyWith(
+                    color: context.theme.black50,
+                  ),
+                  filled: true,
+                  fillColor: context.theme.gray100_1,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 19,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  errorStyle:
+                      const TextStyle(height: 0, color: Colors.transparent),
+                  suffixIcon: suffixIcon != null
+                      ? IconButton(
+                          icon: suffixIcon!,
+                          onPressed: onSuffixIconPressed,
+                        )
+                      : null,
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
+            if (state.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 6, left: 4),
+                child: Text(
+                  state.errorText!,
+                  style: TextStyle(
+                    color: context.theme.red10_1,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class NextandBackButtonWidget extends StatelessWidget {
@@ -25,6 +26,9 @@ class NextandBackButtonWidget extends StatelessWidget {
           backgroundColor: const WidgetStatePropertyAll(Colors.transparent)),
       onPressed: onPressed,
       child: Text(
+        style: AppStyles.bold20(context).copyWith(
+          color: context.theme.blue100_1,
+        ),
         label,
       ),
     );

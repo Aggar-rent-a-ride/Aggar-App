@@ -1,4 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -39,11 +41,16 @@ class StartNowWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("Start Now"),
+          Text(
+            "Start Now",
+            style: AppStyles.bold20(context).copyWith(
+              color: AppConstants.myWhite100_1,
+            ),
+          ),
           const Gap(8),
           Icon(
             Icons.arrow_forward_rounded,
-            color: context.theme.white100_1,
+            color: AppConstants.myWhite100_1,
             size: 15,
           ),
         ],

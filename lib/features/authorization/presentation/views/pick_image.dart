@@ -103,114 +103,121 @@ class PickImageContent extends StatelessWidget {
         return Scaffold(
           backgroundColor: context.theme.white100_1,
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Pick image:",
-                      style: AppStyles.regular20(context),
-                    ),
-                    PickImageIconWithTitleAndSubtitle(
-                      onImageSelected: (path) {
-                        context
-                            .read<PickImageCubit>()
-                            .updateSelectedImage(path);
-                      },
-                      selectedImagePath: state.selectedImagePath,
-                    ),
-                    const Gap(20),
-                    Text(
-                      "Choose type:",
-                      style: AppStyles.regular20(context),
-                    ),
-                    const Gap(10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CardType(
-                            title: "User",
-                            subtitle: "Can use cars & buy for them",
-                            isSelected: state.selectedType == "user",
-                            onTap: () {
-                              context
-                                  .read<PickImageCubit>()
-                                  .updateSelectedType("user");
-                            },
-                          ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Pick image:",
+                        style: AppStyles.medium20(context).copyWith(
+                          color: context.theme.black100,
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: CardType(
-                            title: "Renter",
-                            subtitle: "Can rent cars & get money",
-                            isSelected: state.selectedType == "renter",
-                            onTap: () {
-                              context
-                                  .read<PickImageCubit>()
-                                  .updateSelectedType("renter");
-                            },
-                          ),
+                      ),
+                      PickImageIconWithTitleAndSubtitle(
+                        onImageSelected: (path) {
+                          context
+                              .read<PickImageCubit>()
+                              .updateSelectedImage(path);
+                        },
+                        selectedImagePath: state.selectedImagePath,
+                      ),
+                      const Gap(20),
+                      Text(
+                        "Choose type:",
+                        style: AppStyles.regular20(context).copyWith(
+                          color: context.theme.black100,
                         ),
-                      ],
-                    ),
-                    const Gap(25),
-                    TermsCheck(
-                      onChanged: (accepted) {
-                        context
-                            .read<PickImageCubit>()
-                            .updateTermsAccepted(accepted);
-                      },
-                      isChecked: state.termsAccepted,
-                    ),
-                    const Gap(30),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: state.isLoading
-                                ? null
-                                : () => _previousPage(context),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              side: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                      ),
+                      const Gap(10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CardType(
+                              title: "User",
+                              subtitle: "Can use cars & buy for them",
+                              isSelected: state.selectedType == "user",
+                              onTap: () {
+                                context
+                                    .read<PickImageCubit>()
+                                    .updateSelectedType("user");
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: CardType(
+                              title: "Renter",
+                              subtitle: "Can rent cars & get money",
+                              isSelected: state.selectedType == "renter",
+                              onTap: () {
+                                context
+                                    .read<PickImageCubit>()
+                                    .updateSelectedType("renter");
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Gap(25),
+                      TermsCheck(
+                        onChanged: (accepted) {
+                          context
+                              .read<PickImageCubit>()
+                              .updateTermsAccepted(accepted);
+                        },
+                        isChecked: state.termsAccepted,
+                      ),
+                      const Gap(30),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: state.isLoading
+                                  ? null
+                                  : () => _previousPage(context),
+                              style: OutlinedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
+                                side: BorderSide(
+                                    color: Theme.of(context).primaryColor),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                "Back",
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor),
                               ),
                             ),
-                            child: Text(
-                              "Back",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
-                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: state.isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context).primaryColor,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: state.isLoading
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  )
+                                : CustomElevatedButton(
+                                    onPressed: state.isFormValid
+                                        ? () {
+                                            context
+                                                .read<PickImageCubit>()
+                                                .register(context);
+                                            onSubmit();
+                                          }
+                                        : null,
+                                    text: 'Register',
                                   ),
-                                )
-                              : CustomElevatedButton(
-                                  onPressed: state.isFormValid
-                                      ? () {
-                                          context
-                                              .read<PickImageCubit>()
-                                              .register(context);
-                                          onSubmit();
-                                        }
-                                      : null,
-                                  text: 'Register',
-                                ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

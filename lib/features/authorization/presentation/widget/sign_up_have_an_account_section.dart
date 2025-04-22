@@ -12,7 +12,12 @@ class SignUpHaveAnAccountSection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Have an account?"),
+        Text(
+          "Have an account?",
+          style: AppStyles.medium18(context).copyWith(
+            color: context.theme.black50,
+          ),
+        ),
         TextButton(
           onPressed: () {
             Navigator.pop(

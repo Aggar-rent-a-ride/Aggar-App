@@ -24,7 +24,6 @@ final lightThemeEx = CustomThemeExtension(
   red100_1: AppLightColors.myRed100_1,
   red10_1: AppLightColors.myRed10_1,
   white100_1: AppLightColors.myWhite100_1,
-  white100_3: AppLightColors.myWhite100_3,
   white100_2: AppLightColors.myWhite100_2,
   white100_4: AppLightColors.myWhite100_4,
   white50_1: AppLightColors.myWhite50_1,

@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_up_have_an_account_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -68,6 +69,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+      builder: (context, child) {
+        return pickDateOfBirthTheme(context, child!);
+      },
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
@@ -103,75 +107,80 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return Scaffold(
       backgroundColor: context.theme.white100_1,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Gap(20),
-                  Text("Personal Information",
-                      style: AppStyles.medium20(context)),
-                  const Gap(10),
-                  CustomTextField(
-                    labelText: 'Name',
-                    inputType: TextInputType.text,
-                    obscureText: false,
-                    hintText: "Enter your name",
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const Gap(15),
-                  CustomTextField(
-                    labelText: 'Username',
-                    inputType: TextInputType.text,
-                    obscureText: false,
-                    hintText: "Enter name other users will see",
-                    controller: _usernameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a username';
-                      }
-                      return null;
-                    },
-                  ),
-                  const Gap(15),
-                  GestureDetector(
-                    onTap: () => _selectDate(context),
-                    child: AbsorbPointer(
-                      child: CustomTextField(
-                        labelText: 'Date of birth',
-                        inputType: TextInputType.none,
-                        obscureText: false,
-                        hintText: "Select your birth date",
-                        controller: _dateController,
-                        suffixIcon: const Icon(Icons.calendar_today),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select your date of birth';
-                          }
-                          return null;
-                        },
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Personal Information",
+                      style: AppStyles.medium20(context).copyWith(
+                        color: context.theme.black100,
                       ),
                     ),
-                  ),
-                  const Gap(30),
-                  Center(
-                    child: CustomElevatedButton(
-                      onPressed: _isFormValid ? _nextPage : null,
-                      text: "Next",
+                    const Gap(10),
+                    CustomTextField(
+                      labelText: 'Name',
+                      inputType: TextInputType.text,
+                      obscureText: false,
+                      hintText: "Enter your name",
+                      controller: _nameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  const Gap(20),
-                  const SignUpHaveAnAccountSection(),
-                ],
+                    const Gap(15),
+                    CustomTextField(
+                      labelText: 'Username',
+                      inputType: TextInputType.text,
+                      obscureText: false,
+                      hintText: "Enter name other users will see",
+                      controller: _usernameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a username';
+                        }
+                        return null;
+                      },
+                    ),
+                    const Gap(15),
+                    GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: AbsorbPointer(
+                        child: CustomTextField(
+                          labelText: 'Date of birth',
+                          inputType: TextInputType.none,
+                          obscureText: false,
+                          hintText: "Select your birth date",
+                          controller: _dateController,
+                          suffixIcon: const Icon(Icons.calendar_today),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select your date of birth';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                    const Gap(30),
+                    Center(
+                      child: CustomElevatedButton(
+                        onPressed: _isFormValid ? _nextPage : null,
+                        text: "Next",
+                      ),
+                    ),
+                    const Gap(20),
+                    const SignUpHaveAnAccountSection(),
+                  ],
+                ),
               ),
             ),
           ),

@@ -32,21 +32,27 @@ class _OnboardingViewState extends State<OnboardingView> {
                 firstPage = (index == 0);
               });
             },
-            children: const [
+            children: [
               CustomPageView(
-                img: AppAssets.assetsImagesOnboarding1,
+                img: Theme.of(context).brightness == Brightness.light
+                    ? AppAssets.assetsImagesOnboarding1
+                    : AppAssets.assetsImagesOnboarding1dark,
                 title: "Welcome to Agger",
                 description:
                     "Whether you're exploring new cities or need a ride for the day, we’ve got you covered with our easy-to-use platform.",
               ),
               CustomPageView(
-                img: AppAssets.assetsImagesOnboarding2,
+                img: Theme.of(context).brightness == Brightness.light
+                    ? AppAssets.assetsImagesOnboarding2
+                    : AppAssets.assetsImagesOnboarding2dark,
                 title: "Meet the owner",
                 description:
                     "You can connect with the owner for a personalized experience, ensuring you get exactly what you need for a memorable trip.",
               ),
               CustomPageView(
-                img: AppAssets.assetsImagesOnboarding3,
+                img: Theme.of(context).brightness == Brightness.light
+                    ? AppAssets.assetsImagesOnboarding3
+                    : AppAssets.assetsImagesOnboarding3dark,
                 title: "Book your car ",
                 description:
                     "Agger offers a wide range of vehicles to suit your needs, ensuring a smooth and convenient booking experience.",
@@ -55,8 +61,9 @@ class _OnboardingViewState extends State<OnboardingView> {
           ),
           Container(
             alignment: const Alignment(0, 0.75),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 firstPage
                     ? const Text("       ")
@@ -76,7 +83,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   count: 3,
                   effect: WormEffect(
                     dotColor: context.theme.gray100_1,
-                    activeDotColor: context.theme.blue100_2,
+                    activeDotColor: context.theme.blue100_1,
                   ),
                 ),
                 lastPage

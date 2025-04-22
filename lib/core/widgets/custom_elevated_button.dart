@@ -1,4 +1,6 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -17,17 +19,17 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.sizeOf(context).width * 0.8,
-      height: 55,
+      width: MediaQuery.sizeOf(context).width * 0.85,
+      height: 60,
+      // TODO: MAKE IT DYNAMIC HIEHT PLZ
       decoration: BoxDecoration(
-        color: AppLightColors.myBlue100_1,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
+        color: context.theme.blue100_1,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 4),
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -37,15 +39,16 @@ class CustomElevatedButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 24,
                 width: 24,
+                // TODO: USE SPINKIT FOR LOADING
                 child: CircularProgressIndicator(
-                  color: Colors.white,
+                  color: AppConstants.myWhite100_1,
                   strokeWidth: 3,
                 ),
               )

@@ -15,9 +15,8 @@ class SignInFaceBookAndGoogleButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SignInSocialButton(
-          textColor: context.theme.gray100_1,
-          icon: const CustomIcon(
+        const SignInSocialButton(
+          icon: CustomIcon(
             hight: 21,
             width: 21,
             flag: false,

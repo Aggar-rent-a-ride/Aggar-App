@@ -194,13 +194,25 @@ class AppAssets {
   /// assets/images/onboarding1.png
   static const String assetsImagesOnboarding1 = "assets/images/onboarding1.png";
 
+  /// Assets for assetsImagesOnboarding1dark
+  /// assets/images/onboarding1dark.png
+  static const String assetsImagesOnboarding1dark = "assets/images/onboarding1dark.png";
+
   /// Assets for assetsImagesOnboarding2
   /// assets/images/onboarding2.png
   static const String assetsImagesOnboarding2 = "assets/images/onboarding2.png";
 
+  /// Assets for assetsImagesOnboarding2dark
+  /// assets/images/onboarding2dark.png
+  static const String assetsImagesOnboarding2dark = "assets/images/onboarding2dark.png";
+
   /// Assets for assetsImagesOnboarding3
   /// assets/images/onboarding3.png
   static const String assetsImagesOnboarding3 = "assets/images/onboarding3.png";
+
+  /// Assets for assetsImagesOnboarding3dark
+  /// assets/images/onboarding3dark.png
+  static const String assetsImagesOnboarding3dark = "assets/images/onboarding3dark.png";
 
   /// Assets for assetsImagesProfile
   /// assets/images/profile.png

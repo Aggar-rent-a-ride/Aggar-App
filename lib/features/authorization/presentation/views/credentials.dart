@@ -74,114 +74,119 @@ class CredentialsPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: context.theme.white100_1,
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Form(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Gap(20),
-                        Text("Account Credentials",
-                            style: AppStyles.medium20(context)),
-                        const Gap(10),
-                        CustomTextField(
-                          labelText: 'Email',
-                          inputType: TextInputType.emailAddress,
-                          obscureText: false,
-                          hintText: "Enter your Email",
-                          initialValue: state.email,
-                          onChanged: cubit.updateEmail,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            } else if (!state.validateEmail()) {
-                              return 'Please enter a valid email';
-                            }
-                            return null;
-                          },
-                        ),
-                        const Gap(15),
-                        CustomTextField(
-                          labelText: 'Password',
-                          inputType: TextInputType.text,
-                          obscureText: !state.passwordVisible,
-                          hintText: "Enter password",
-                          initialValue: state.password,
-                          onChanged: cubit.updatePassword,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a password';
-                            } else if (!state.validatePassword()) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
-                          suffixIcon: Icon(
-                            state.passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Form(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Account Credentials",
+                            style: AppStyles.medium20(context).copyWith(
+                              color: context.theme.black100,
+                            ),
                           ),
-                          onSuffixIconPressed: cubit.togglePasswordVisibility,
-                        ),
-                        const Gap(15),
-                        CustomTextField(
-                          labelText: 'Confirm Password',
-                          inputType: TextInputType.text,
-                          obscureText: !state.confirmPasswordVisible,
-                          hintText: "Enter your password again",
-                          initialValue: state.confirmPassword,
-                          onChanged: cubit.updateConfirmPassword,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
-                            } else if (!state.validateConfirmPassword()) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                          suffixIcon: Icon(
-                            state.confirmPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                          const Gap(10),
+                          CustomTextField(
+                            labelText: 'Email',
+                            inputType: TextInputType.emailAddress,
+                            obscureText: false,
+                            hintText: "Enter your Email",
+                            initialValue: state.email,
+                            onChanged: cubit.updateEmail,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              } else if (!state.validateEmail()) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
                           ),
-                          onSuffixIconPressed:
-                              cubit.toggleConfirmPasswordVisibility,
-                        ),
-                        const Gap(30),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: _previousPage,
-                                style: OutlinedButton.styleFrom(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
-                                  side: BorderSide(
-                                      color: Theme.of(context).primaryColor),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                          const Gap(15),
+                          CustomTextField(
+                            labelText: 'Password',
+                            inputType: TextInputType.text,
+                            obscureText: !state.passwordVisible,
+                            hintText: "Enter password",
+                            initialValue: state.password,
+                            onChanged: cubit.updatePassword,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a password';
+                              } else if (!state.validatePassword()) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
+                            suffixIcon: Icon(
+                              state.passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onSuffixIconPressed: cubit.togglePasswordVisibility,
+                          ),
+                          const Gap(15),
+                          CustomTextField(
+                            labelText: 'Confirm Password',
+                            inputType: TextInputType.text,
+                            obscureText: !state.confirmPasswordVisible,
+                            hintText: "Enter your password again",
+                            initialValue: state.confirmPassword,
+                            onChanged: cubit.updateConfirmPassword,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              } else if (!state.validateConfirmPassword()) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                            suffixIcon: Icon(
+                              state.confirmPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onSuffixIconPressed:
+                                cubit.toggleConfirmPasswordVisibility,
+                          ),
+                          const Gap(30),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: _previousPage,
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 14),
+                                    side: BorderSide(
+                                        color: Theme.of(context).primaryColor),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Back",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor),
                                   ),
                                 ),
-                                child: Text(
-                                  "Back",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: CustomElevatedButton(
+                                  onPressed: state.isFormValid
+                                      ? () => _nextPage(context)
+                                      : null,
+                                  text: "Next",
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: CustomElevatedButton(
-                                onPressed: state.isFormValid
-                                    ? () => _nextPage(context)
-                                    : null,
-                                text: "Next",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

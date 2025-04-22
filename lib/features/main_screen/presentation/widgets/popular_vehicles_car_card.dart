@@ -81,7 +81,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 8),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
-              color: context.theme.white100_3,
+              color: context.theme.white100_1,
               borderRadius: BorderRadius.circular(12),
               boxShadow: const [
                 BoxShadow(
