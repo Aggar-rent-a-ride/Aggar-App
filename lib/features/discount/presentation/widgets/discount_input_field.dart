@@ -25,7 +25,7 @@ class DiscountInputField extends StatelessWidget {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         filled: true,
-        fillColor: context.theme.white100_1,
+        fillColor: Colors.transparent,
         hintStyle: AppStyles.medium15(context).copyWith(
           color: context.theme.black50,
         ),
@@ -33,7 +33,7 @@ class DiscountInputField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: context.theme.black50,
+            color: context.theme.gray100_2,
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -45,7 +45,7 @@ class DiscountInputField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: context.theme.black50,
+            color: context.theme.gray100_2,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(

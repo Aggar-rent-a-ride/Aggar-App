@@ -11,6 +11,7 @@ import 'package:aggar/features/authorization/data/cubit/credentials/credentials_
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
+import 'package:aggar/features/discount/presentation/views/discount_screen.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
@@ -19,7 +20,6 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
-import 'package:aggar/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -151,7 +151,8 @@ class MyApp extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 builder: DevicePreview.appBuilder,
-                home: const OnboardingView(),
+                home:
+                    const DiscountScreenView(), // Replace with your initial screen
               );
             },
           );

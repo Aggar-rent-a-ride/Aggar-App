@@ -1,5 +1,5 @@
 // lib/features/discount/presentation/widgets/custom_elevation_button.dart
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/utils/app_styles.dart';
 
@@ -28,7 +28,7 @@ class CustomElevationButton extends StatelessWidget {
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
             side: BorderSide(
-              color: AppLightColors.myBlue100_2,
+              color: context.theme.blue100_2,
               width: 1,
             ),
           ),
@@ -40,19 +40,18 @@ class CustomElevationButton extends StatelessWidget {
           ),
         ),
         overlayColor: WidgetStatePropertyAll(
-          AppLightColors.myWhite50_1,
+          context.theme.white100_2,
         ),
         backgroundColor: WidgetStatePropertyAll(
-          isSelected ? AppLightColors.myBlue100_2 : AppLightColors.myWhite100_1,
+          isSelected ? context.theme.blue100_2 : context.theme.white100_1,
         ),
       ),
       onPressed: onPressed,
       child: Text(
         title,
         style: AppStyles.semiBold16(context).copyWith(
-          color: isSelected
-              ? AppLightColors.myWhite100_1
-              : AppLightColors.myBlue100_2,
+          color:
+              isSelected ? context.theme.white100_1 : context.theme.blue100_2,
         ),
       ),
     );
