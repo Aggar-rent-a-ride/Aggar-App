@@ -15,12 +15,12 @@ class AddDiscountForm extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: context.theme.white100_1,
-            boxShadow: [
+            color: context.theme.white100_2,
+            boxShadow: const [
               BoxShadow(
-                color: context.theme.black25,
+                color: Colors.black26,
                 blurRadius: 4,
-                offset: const Offset(0, 0),
+                offset: Offset(0, 0),
               ),
             ],
             borderRadius: BorderRadius.circular(8),

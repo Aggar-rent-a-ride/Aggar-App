@@ -28,13 +28,24 @@ class _DiscountScreenViewState extends State<DiscountScreenView> {
     return Scaffold(
       backgroundColor: context.theme.white100_1,
       appBar: AppBar(
-        elevation: 1,
-        shadowColor: context.theme.black50,
+        elevation: 2,
+        shadowColor: Colors.grey[900],
+        surfaceTintColor: Colors.transparent,
         centerTitle: false,
         backgroundColor: context.theme.white100_1,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: context.theme.black100,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           'Discounts',
-          style: AppStyles.semiBold24(context),
+          style: AppStyles.semiBold24(context)
+              .copyWith(color: context.theme.black100),
         ),
       ),
       body: Padding(

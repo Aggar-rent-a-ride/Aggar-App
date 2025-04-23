@@ -18,14 +18,14 @@ class CustomSuffixWidget extends StatelessWidget {
         border: Border(
           left: BorderSide(
             width: 1,
-            color: context.theme.black50,
+            color: context.theme.gray100_2,
           ),
         ),
       ),
       child: Text(
         suffixText,
         style: AppStyles.medium15(context).copyWith(
-          color: context.theme.black50,
+          color: context.theme.gray100_2,
         ),
       ),
     );

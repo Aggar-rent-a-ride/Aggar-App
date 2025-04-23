@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/widgets/discount_input_field.dart';
@@ -20,7 +21,9 @@ class NumberOfDaysAndPersentageRow extends StatelessWidget {
             children: [
               Text(
                 'Number of days:',
-                style: AppStyles.semiBold16(context),
+                style: AppStyles.semiBold16(context).copyWith(
+                  color: context.theme.black100,
+                ),
               ),
               const Gap(10),
               DiscountInputField(
@@ -38,7 +41,9 @@ class NumberOfDaysAndPersentageRow extends StatelessWidget {
             children: [
               Text(
                 'Percentage',
-                style: AppStyles.semiBold16(context),
+                style: AppStyles.semiBold16(context).copyWith(
+                  color: context.theme.black100,
+                ),
               ),
               const Gap(10),
               DiscountInputField(
