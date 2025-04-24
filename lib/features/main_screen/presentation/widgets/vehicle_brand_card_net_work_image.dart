@@ -49,7 +49,9 @@ class VehicleBrandCardNetWorkImage extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: AppStyles.bold10(context),
+                  style: AppStyles.bold10(context).copyWith(
+                    color: context.theme.black100,
+                  ),
                 ),
                 const Spacer(),
                 VehiclesBrandNumberOfBrands(numOfBrands: numOfBrands)

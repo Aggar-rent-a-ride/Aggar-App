@@ -2,92 +2,135 @@ import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_state.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/adding_vehicle_floating_action_button.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/loading_main_screen.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/loading_vehicle_brand_section.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/loading_vehicle_type_section.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_section.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/main_header.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_section.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicles_type_section.dart';
-import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
-import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:shimmer/shimmer.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  String? _accessToken;
-  bool _isLoading = true;
-  bool isConnected = true;
-  late final InternetConnectionChecker _internetChecker;
-
-  @override
-  void initState() {
-    super.initState();
-    _setupInternetChecker();
-    _initializeScreen();
+  Widget build(BuildContext context) {
+    return BlocConsumer<MainCubit, MainState>(
+      listener: (context, state) {
+        if (state is MainAuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SignInView()),
+          );
+        } else if (state is MainDisconnected) {
+          _showNoNetworkDialog(context);
+        }
+      },
+      builder: (context, state) {
+        return BlocListener<TokenRefreshCubit, TokenRefreshState>(
+          listener: (context, tokenState) {
+            if (tokenState is TokenRefreshSuccess) {
+              context
+                  .read<MainCubit>()
+                  .handleTokenRefreshSuccess(tokenState.accessToken);
+            } else if (tokenState is TokenRefreshFailure) {
+              context
+                  .read<MainCubit>()
+                  .handleTokenRefreshFailure(tokenState.errorMessage);
+            }
+          },
+          child: _buildScreenBasedOnState(context, state),
+        );
+      },
+    );
   }
 
-  void _setupInternetChecker() {
-    _internetChecker = InternetConnectionChecker.createInstance();
-    _checkInternetConnection();
-    _internetChecker.onStatusChange.listen(_handleConnectivityChange);
-  }
-
-  Future<void> _initializeScreen() async {
-    await _checkAndRefreshToken();
-  }
-
-  Future<void> _checkAndRefreshToken() async {
-    try {
-      final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-      final needsRefresh = await tokenRefreshCubit.shouldRefreshToken();
-
-      if (needsRefresh) {
-        await tokenRefreshCubit.refreshToken();
-      }
-
-      await _loadAccessToken();
-    } catch (e) {
-      _handleAuthError('Token refresh error: ${e.toString()}');
+  Widget _buildScreenBasedOnState(BuildContext context, MainState state) {
+    if (state is MainLoading || state is MainInitial) {
+      return const Scaffold(body: LoadingMainScreen());
+    } else if (state is MainDisconnected) {
+      return Scaffold(
+        backgroundColor: context.theme.white100_1,
+        body: const LoadingMainScreen(),
+      );
+    } else if (state is MainConnected) {
+      return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        floatingActionButton: const AddingVehicleFloatingActionButton(),
+        backgroundColor: context.theme.white100_1,
+        body: _buildMainContent(context, state),
+      );
     }
+    return const Scaffold(body: LoadingMainScreen());
   }
 
-  void _handleConnectivityChange(InternetConnectionStatus status) {
-    final hasInternet = status == InternetConnectionStatus.connected;
-    setState(() {
-      isConnected = hasInternet;
-    });
-
-    if (!hasInternet) {
-      _showNoNetworkDialog();
-    }
+  Widget _buildMainContent(BuildContext context, MainConnected state) {
+    // TODO: here is error
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<MainCubit>().refreshData();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: context.theme.blue100_8,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 55, bottom: 20),
+              child: const MainHeader(),
+            ),
+            const Gap(15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                spacing: 10,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  state.isVehicleTypesLoaded
+                      ? const VehiclesTypeSection()
+                      : Shimmer.fromColors(
+                          baseColor: context.theme.gray100_1,
+                          highlightColor: context.theme.white100_1,
+                          child: const LoadingVehicleTypeSection(),
+                        ),
+                  state.isVehicleBrandsLoaded
+                      ? const BrandsSection()
+                      : Shimmer.fromColors(
+                          baseColor: context.theme.gray100_1,
+                          highlightColor: context.theme.white100_1,
+                          child: const LoadingVehicleBrandSection(),
+                        ),
+                  const PopularVehiclesSection(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 100),
+          ],
+        ),
+      ),
+    );
   }
 
-  Future<void> _checkInternetConnection() async {
-    final hasInternet = await _internetChecker.hasConnection;
-    setState(() {
-      isConnected = hasInternet;
-    });
-
-    if (!hasInternet) {
-      _showNoNetworkDialog();
-    }
-  }
-
-  void _showNoNetworkDialog() {
-    if (!mounted) return;
-
+  void _showNoNetworkDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -101,7 +144,7 @@ class _MainScreenState extends State<MainScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _checkInternetConnection();
+                context.read<MainCubit>().checkInternetConnection();
               },
               child: const Text('Retry'),
             ),
@@ -114,123 +157,6 @@ class _MainScreenState extends State<MainScreen> {
           ],
         );
       },
-    );
-  }
-
-  Future<void> _loadAccessToken() async {
-    try {
-      final token = await _secureStorage.read(key: 'accessToken');
-
-      setState(() {
-        _accessToken = token;
-        _isLoading = false;
-      });
-
-      if (_accessToken != null) {
-        _fetchData();
-      } else {
-        _navigateToSignIn('Login required. Please sign in again.');
-      }
-    } catch (e) {
-      _handleAuthError('Error retrieving access token: ${e.toString()}');
-    }
-  }
-
-  void _handleAuthError(String message) {
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-      _navigateToSignIn(null);
-    }
-  }
-
-  void _navigateToSignIn(String? message) {
-    if (!mounted) return;
-
-    if (message != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignInView()),
-    );
-  }
-
-  void _fetchData() {
-    if (_accessToken != null) {
-      context.read<VehicleBrandCubit>().fetchVehicleBrands(_accessToken!);
-      context.read<VehicleTypeCubit>().fetchVehicleTypes(_accessToken!);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(body: LoadingMainScreen());
-    }
-
-    return BlocListener<TokenRefreshCubit, TokenRefreshState>(
-      listener: (context, state) {
-        if (state is TokenRefreshSuccess) {
-          setState(() {
-            _accessToken = state.accessToken;
-          });
-          _fetchData();
-        } else if (state is TokenRefreshFailure) {
-          _handleAuthError('Authentication error: ${state.errorMessage}');
-        }
-      },
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        floatingActionButton:
-            isConnected ? const AddingVehicleFloatingActionButton() : null,
-        backgroundColor: context.theme.white100_1,
-        body: isConnected ? _buildMainContent() : const LoadingMainScreen(),
-      ),
-    );
-  }
-
-  Widget _buildMainContent() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: context.theme.blue100_8,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            padding:
-                const EdgeInsets.only(left: 20, right: 20, top: 55, bottom: 20),
-            child: const MainHeader(),
-          ),
-          const Gap(15),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                VehiclesTypeSection(),
-                Gap(10),
-                BrandsSection(),
-                Gap(10),
-                PopularVehiclesSection(),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

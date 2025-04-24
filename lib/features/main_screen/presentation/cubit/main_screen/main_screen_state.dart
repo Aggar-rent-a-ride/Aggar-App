@@ -1,32 +1,26 @@
-import 'package:equatable/equatable.dart';
+// main_screen_state.dart
+abstract class MainState {}
 
-abstract class MainScreenState extends Equatable {
-  const MainScreenState();
+class MainInitial extends MainState {}
 
-  @override
-  List<Object?> get props => [];
-}
+class MainLoading extends MainState {}
 
-class MainScreenInitial extends MainScreenState {}
-
-class MainScreenLoading extends MainScreenState {}
-
-class MainScreenAuthenticated extends MainScreenState {
+class MainConnected extends MainState {
   final String accessToken;
+  final bool isVehicleBrandsLoaded;
+  final bool isVehicleTypesLoaded;
 
-  const MainScreenAuthenticated({required this.accessToken});
-
-  @override
-  List<Object?> get props => [accessToken];
+  MainConnected({
+    required this.accessToken,
+    this.isVehicleBrandsLoaded = false,
+    this.isVehicleTypesLoaded = false,
+  });
 }
 
-class MainScreenUnauthenticated extends MainScreenState {}
+class MainDisconnected extends MainState {}
 
-class MainScreenError extends MainScreenState {
+class MainAuthError extends MainState {
   final String message;
 
-  const MainScreenError({required this.message});
-
-  @override
-  List<Object?> get props => [message];
+  MainAuthError(this.message);
 }

@@ -29,7 +29,10 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
         child: Row(
           children: [
             iconPrv == "null"
-                ? const SizedBox()
+                ? const SizedBox(
+                    height: 35,
+                    width: 35,
+                  )
                 : SizedBox(
                     height: 35,
                     width: 35,
