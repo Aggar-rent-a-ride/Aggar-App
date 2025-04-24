@@ -18,13 +18,16 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.theme.white100_1,
       appBar: AppBar(
-        toolbarHeight: 80,
-        centerTitle: true,
+        elevation: 2,
+        shadowColor: Colors.grey[900],
+        surfaceTintColor: Colors.transparent,
+        centerTitle: false,
+        backgroundColor: context.theme.white100_1,
         title: Text(
           'Settings',
-          style: AppStyles.bold24(context),
+          style: AppStyles.semiBold24(context)
+              .copyWith(color: context.theme.black100),
         ),
-        backgroundColor: Colors.transparent,
       ),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 25),

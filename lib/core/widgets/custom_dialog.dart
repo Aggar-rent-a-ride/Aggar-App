@@ -1,4 +1,4 @@
-import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -7,48 +7,49 @@ class CustomDialog extends StatelessWidget {
     super.key,
     required this.title,
     this.onPressed,
-    required this.action,
+    required this.actionTitle,
     required this.subtitle,
   });
   final String title;
-  final String action;
+  final String actionTitle;
   final String subtitle;
   final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppLightColors.myWhite100_1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
       ),
+      backgroundColor: context.theme.white100_2,
       title: Text(
         title,
-        style: AppStyles.semiBold24(context)
-            .copyWith(color: AppLightColors.myBlack100),
+        style: AppStyles.semiBold24(context).copyWith(
+          color: context.theme.black100,
+        ),
       ),
       content: Text(
         subtitle,
-        style: AppStyles.regular15(context).copyWith(
-          color: AppLightColors.myBlack100,
+        style: AppStyles.medium18(context).copyWith(
+          color: context.theme.gray100_2,
         ),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).pop(false),
           child: Text(
-            "Cancel",
-            style: AppStyles.semiBold15(context).copyWith(
-              color: AppLightColors.myBlue100_2,
+            'Cancel',
+            style: AppStyles.bold15(context).copyWith(
+              color: context.theme.blue100_1,
             ),
           ),
         ),
         TextButton(
           onPressed: onPressed,
           child: Text(
-            action,
+            actionTitle,
             style: AppStyles.semiBold15(context).copyWith(
-              color: AppLightColors.myRed100_1,
+              color: context.theme.red100_1,
             ),
           ),
         ),

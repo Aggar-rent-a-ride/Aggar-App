@@ -94,8 +94,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
           ),
           backgroundColor: context.theme.white100_1,
           appBar: AppBar(
-            elevation: 1,
-            shadowColor: context.theme.black50,
+            elevation: 2,
+            shadowColor: Colors.grey[900],
+            surfaceTintColor: Colors.transparent,
             centerTitle: false,
             actions: [
               IconButton(
@@ -104,7 +105,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                     context: context,
                     builder: (BuildContext context) {
                       return CustomDialog(
-                        action: "Delete",
+                        actionTitle: "Delete",
                         title: "Delete vehicle",
                         subtitle:
                             "Are you sure you want to delete this vehicle ?",
@@ -137,7 +138,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
             backgroundColor: context.theme.white100_1,
             title: Text(
               'Edit Vehicle',
-              style: AppStyles.semiBold24(context),
+              style: AppStyles.semiBold24(context).copyWith(
+                color: context.theme.black100,
+              ),
             ),
           ),
           body: isLoading

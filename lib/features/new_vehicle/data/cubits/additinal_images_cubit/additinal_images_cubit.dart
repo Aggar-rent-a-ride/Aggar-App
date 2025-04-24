@@ -5,22 +5,18 @@ import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/ad
 
 class AdditionalImageCubit extends Cubit<AdditionalImageState> {
   List<File?> images = [];
-  List<String?> imagesUrl = []; // Keep this for network images
+  List<String?> imagesUrl = [];
+  String? removedImageUrl;
 
   AdditionalImageCubit() : super(AdditionalImagesInitial());
 
   void initializeImages(File? mainImage) {
-    // Initialize with empty list
     images = [];
-    if (mainImage != null) {
-      // You might want to add the main image
-      // images.add(mainImage);
-    }
+    if (mainImage != null) {}
     emit(AdditionalImagesLoaded(images));
   }
 
   void setImagesUrl(String url, int index) {
-    // This is for handling network images, keep it as is
     if (index >= 0 && index < imagesUrl.length) {
       imagesUrl[index] = url;
     }

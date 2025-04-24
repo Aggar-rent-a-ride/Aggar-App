@@ -24,7 +24,7 @@ class AppDarkColors {
   static Color myBlue100_3 = const Color(0xff5A7887);
   static Color myBlue100_4 = const Color(0xff1F2B3F);
   static Color myBlue100_6 = const Color(0xff8AA6D6);
-  static Color myBlue100_7 = const Color(0xff0A0B10);
+  static Color myBlue100_7 = const Color(0xff202020);
   static Color myBlue100_8 = const Color(0xff2E3035);
   ///////////////////////////////////////
   static Color myYellow100_1 = const Color(0xffA67F00);

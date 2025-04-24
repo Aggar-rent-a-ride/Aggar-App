@@ -13,7 +13,12 @@ class NameAndEmailSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Adele Adkins', style: AppStyles.bold20(context)),
+        Text(
+          'Adele Adkins',
+          style: AppStyles.bold20(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
         Text(
           'adeleissomeceleb@gmail.com',
           style: AppStyles.medium15(context).copyWith(

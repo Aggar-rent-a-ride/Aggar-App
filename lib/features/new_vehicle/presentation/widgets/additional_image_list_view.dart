@@ -55,7 +55,7 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
         }
       },
       child: SizedBox(
-        height: 90,
+        height: MediaQuery.sizeOf(context).height * 0.03 + 50,
         width: double.infinity,
         child: BlocBuilder<AdditionalImageCubit, AdditionalImageState>(
           buildWhen: (previous, current) {
