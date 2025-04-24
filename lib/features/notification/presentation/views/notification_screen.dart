@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/features/notification/presentation/widgets/accept_or_feedback_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/deny_button.dart';
@@ -14,6 +15,7 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.theme.white100_1,
       appBar: AppBar(
         toolbarHeight: 50,
         centerTitle: false,
@@ -21,7 +23,9 @@ class NotificationScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             'Notifications',
-            style: AppStyles.bold24(context),
+            style: AppStyles.bold24(context).copyWith(
+              color: context.theme.black100,
+            ),
           ),
         ),
         backgroundColor: Colors.transparent,

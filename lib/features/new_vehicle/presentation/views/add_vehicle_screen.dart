@@ -115,18 +115,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           ),
           backgroundColor: context.theme.white100_1,
           appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-              ),
-            ),
+            elevation: 2,
+            shadowColor: Colors.grey[900],
+            surfaceTintColor: Colors.transparent,
+            centerTitle: false,
             backgroundColor: context.theme.white100_1,
             title: Text(
               'Add Vehicle',
-              style: AppStyles.semiBold24(context),
+              style: AppStyles.semiBold24(context)
+                  .copyWith(color: context.theme.black100),
             ),
           ),
           body: Stack(

@@ -11,15 +11,17 @@ import 'package:aggar/features/authorization/data/cubit/credentials/credentials_
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
-import 'package:aggar/features/discount/presentation/views/discount_screen.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -133,27 +135,26 @@ class MyApp extends StatelessWidget {
           return BlocBuilder<LanguageCubit, LanguageState>(
             builder: (context, languageState) {
               return MaterialApp(
-                themeMode: context.themeCubit.themeMode,
-                darkTheme: darkTheme,
-                theme: darkTheme,
-                debugShowCheckedModeBanner: false,
-                locale: languageState is LanguageChanged
-                    ? languageState.locale
-                    : DevicePreview.locale(context),
-                supportedLocales: const [
-                  Locale('en', 'US'),
-                  Locale('ar', 'SA'),
-                ],
-                localizationsDelegates: const [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                builder: DevicePreview.appBuilder,
-                home:
-                    const DiscountScreenView(), // Replace with your initial screen
-              );
+                  themeMode: context.themeCubit.themeMode,
+                  darkTheme: darkTheme,
+                  theme: darkTheme,
+                  debugShowCheckedModeBanner: false,
+                  locale: languageState is LanguageChanged
+                      ? languageState.locale
+                      : DevicePreview.locale(context),
+                  supportedLocales: const [
+                    Locale('en', 'US'),
+                    Locale('ar', 'SA'),
+                  ],
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  builder: DevicePreview.appBuilder,
+                  home: const MainScreen() //Replace with your initial screen
+                  );
             },
           );
         },

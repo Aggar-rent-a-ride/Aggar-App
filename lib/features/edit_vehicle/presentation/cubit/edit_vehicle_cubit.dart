@@ -31,7 +31,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMmVhY2ZiMWQtNTJmMC00ZjllLThhNTEtZGExMTk2NGRhNGM1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDY2NzEwMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.5KMoRM1ERq2yVOaqR4l8wuqB-CDTrLaziF_n2ukvFxs',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNThhZWEyN2ItNTAwMi00ZjhkLWJmOTUtZjRlMWViMmVlZDAzIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTQ3NTk1MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.iqyuZOMl5-BesWFFgvDkfptaUpX-bkWm78E2UlkYPiw',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -314,11 +314,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     try {
       emit(EditVehicleLoading());
 
-      // Debug prints to verify values before making the request
-      print('Updating vehicle with ID: $vehicleId');
-      print('Vehicle Brand ID: $selectedVehicleBrandId');
-      print('Vehicle Type ID: $selectedVehicleTypeId');
-
       if (selectedVehicleBrandId == null) {
         emit(const EditVehicleFailure('Vehicle Brand ID is missing'));
         return;
@@ -358,7 +353,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
       ]);
 
-      // Print form data for debugging
       print('Form data fields:');
       for (var field in formData.fields) {
         print('${field.key}: ${field.value}');
@@ -377,7 +371,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       formDataImages.fields.add(
         MapEntry("VehicleId", vehicleId!),
       );
-
       if (additionalImages != null && additionalImages.isNotEmpty) {
         for (int i = 0; i < additionalImages.length; i++) {
           if (additionalImages[i] != null) {
@@ -391,7 +384,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           }
         }
       }
-
       final response = await _dio.put(
         "https://aggarapi.runasp.net/api/vehicle/",
         data: formData,

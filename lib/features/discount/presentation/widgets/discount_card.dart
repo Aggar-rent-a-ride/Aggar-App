@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
 import 'package:aggar/features/discount/presentation/widgets/custom_display_discount_column.dart';
@@ -21,8 +22,11 @@ class DiscountCard extends StatelessWidget {
       key: Key('discount_$index'),
       background: Container(
         alignment: Alignment.centerRight,
+        decoration: BoxDecoration(
+          color: context.theme.red100_1.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(8),
+        ),
         padding: const EdgeInsets.only(right: 20),
-        color: context.theme.red100_1,
         child: Icon(
           Icons.delete,
           color: context.theme.white100_1,
@@ -37,17 +41,40 @@ class DiscountCard extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Confirm Deletion'),
-              content:
-                  const Text('Are you sure you want to delete this discount?'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              backgroundColor: context.theme.white100_2,
+              title: Text(
+                'Confirm Deletion',
+                style: AppStyles.bold22(context).copyWith(
+                  color: context.theme.black100,
+                ),
+              ),
+              content: Text(
+                'Are you sure you want to delete this discount?',
+                style: AppStyles.medium18(context).copyWith(
+                  color: context.theme.gray100_2,
+                ),
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Cancel'),
+                  child: Text(
+                    'Cancel',
+                    style: AppStyles.bold15(context).copyWith(
+                      color: context.theme.blue100_1,
+                    ),
+                  ),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Delete'),
+                  child: Text(
+                    'Delete',
+                    style: AppStyles.bold15(context).copyWith(
+                      color: context.theme.blue100_1,
+                    ),
+                  ),
                 ),
               ],
             );

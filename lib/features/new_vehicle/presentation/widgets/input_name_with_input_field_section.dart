@@ -60,12 +60,12 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
-              fillColor: context.theme.white100_1,
+              fillColor: Colors.transparent,
               filled: true,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: context.theme.black50,
+                  color: context.theme.blue100_2,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -73,7 +73,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: context.theme.black50,
+                  color: context.theme.gray100_2,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -81,7 +81,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: context.theme.black50,
+                  color: context.theme.gray100_2,
                   width: 1,
                   style: BorderStyle.solid,
                 ),

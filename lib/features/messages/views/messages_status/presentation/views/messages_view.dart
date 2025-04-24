@@ -12,16 +12,16 @@ class MessagesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
-        shadowColor: context.theme.black50,
+        elevation: 2,
         toolbarHeight: 70,
+        shadowColor: Colors.grey[900],
+        surfaceTintColor: Colors.transparent,
         centerTitle: false,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            'Messages',
-            style: AppStyles.bold24(context),
-          ),
+        backgroundColor: context.theme.white100_1,
+        title: Text(
+          'Messages',
+          style: AppStyles.semiBold24(context)
+              .copyWith(color: context.theme.black100),
         ),
         actions: [
           IconButton(
@@ -33,7 +33,6 @@ class MessagesView extends StatelessWidget {
           ),
           const Gap(20),
         ],
-        backgroundColor: context.theme.white100_1,
       ),
       backgroundColor: context.theme.white100_1,
       body: const AllMessagesView(),
