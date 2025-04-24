@@ -12,6 +12,7 @@ import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cu
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/edit_vehicle/presentation/views/edit_vehicle_view.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
@@ -153,7 +154,8 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   builder: DevicePreview.appBuilder,
-                  home: const MainScreen() //Replace with your initial screen
+                  home: const EditVehicleView(
+                      vehicleId: "127") //Replace with your initial screen
                   );
             },
           );

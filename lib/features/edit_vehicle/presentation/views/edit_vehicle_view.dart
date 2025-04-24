@@ -66,31 +66,37 @@ class _EditVehicleViewState extends State<EditVehicleView> {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
             title: "Edit Vehicle",
-            onPressed: isLoading
-                ? null
-                : () async {
-                    final mapLocationCubit = context.read<MapLocationCubit>();
-                    final editVehicleCubit = context.read<EditVehicleCubit>();
-                    if (editVehicleCubit.editVehicleFormKey.currentState
-                            ?.validate() ??
-                        false) {
-                      if (mapLocationCubit.selectedLocation == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('Please select a location on the map'),
-                          ),
-                        );
-                        return;
-                      }
-                      await editVehicleCubit.updateVehicle(
-                        widget.vehicleId,
-                        mapLocationCubit.selectedLocation!,
-                        context.read<AdditionalImageCubit>().images,
-                        context.read<MainImageCubit>().image,
-                      );
-                    }
-                  },
+            onPressed: () async {
+              final mapLocationCubit = context.read<MapLocationCubit>();
+              final editVehicleCubit = context.read<EditVehicleCubit>();
+              if (editVehicleCubit.editVehicleFormKey.currentState
+                      ?.validate() ??
+                  false) {
+                if (mapLocationCubit.selectedLocation == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a location on the map'),
+                    ),
+                  );
+                  return;
+                }
+                await editVehicleCubit.updateVehicle(
+                  widget.vehicleId,
+                  mapLocationCubit.selectedLocation!,
+                  context.read<AdditionalImageCubit>().images,
+                  context.read<MainImageCubit>().image,
+                  context.read<AdditionalImageCubit>().removedImagesUrls,
+                );
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditVehicleView(
+                    vehicleId: "127",
+                  ),
+                ),
+              );
+            },
           ),
           backgroundColor: context.theme.white100_1,
           appBar: AppBar(

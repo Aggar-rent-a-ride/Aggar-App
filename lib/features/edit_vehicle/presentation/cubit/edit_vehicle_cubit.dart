@@ -31,7 +31,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     _dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNThhZWEyN2ItNTAwMi00ZjhkLWJmOTUtZjRlMWViMmVlZDAzIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTQ3NTk1MywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.iqyuZOMl5-BesWFFgvDkfptaUpX-bkWm78E2UlkYPiw',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNGQ3MWQyNTAtODIzYS00NjhlLThjZTEtYmFjMjE3ODNhZjZmIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTQ4MDA1OCwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.ocQpK3uaCcEbY-TDjFVjnRCH1XMycHWw8eJP8uFxCqQ',
         'Accept': 'application/json',
       },
       responseType: ResponseType.json,
@@ -136,7 +136,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
   }
 
   void setTransmissionMode(int value) {
-    print("Cubit updating transmission mode to: $value");
     selectedTransmissionModeValue = value;
     emit(TransmissionModeEdited(value));
   }
@@ -145,7 +144,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     selectedVehicleBrandValue = value;
     selectedVehicleBrandId = id;
     vehicleBrandController.text = value;
-    print('Setting vehicle brand: $value, ID: $id');
     emit(VehicleBrandEdited(value));
   }
 
@@ -159,7 +157,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     selectedVehicleTypeValue = value;
     selectedVehicleTypeId = id;
     vehicleTypeController.text = value;
-    print('Setting vehicle type: $value, ID: $id');
     emit(VehicleTypeEdited(value));
   }
 
@@ -171,7 +168,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     emit(VehicleHealthEdited(selectedVehicleHealthValue));
   }
 
-  // Value Transformation Helper Methods
   String getVehicleTransmission() {
     String transmissionMode;
     switch (selectedTransmissionModeValue) {
@@ -264,8 +260,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       if (response.data['data'] != null) {
         data = response.data['data'];
       }
-
-      print('Processing vehicle data: $data');
       try {
         final vehicle = VehicleDataModel(
           id: data['id'],
@@ -305,6 +299,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     LatLng? location,
     List<File?>? additionalImages,
     File? updatedMainImageFile,
+    List<String?>? removedImagesUrls,
   ) async {
     if (vehicleId == null) {
       emit(const EditVehicleFailure('Vehicle ID is missing'));
@@ -326,10 +321,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
 
       FormData formData = FormData();
       FormData formDataImages = FormData();
-
-      // Make sure transmission mode is properly set
       String transmissionMode = getVehicleTransmission();
-
       formData.fields.addAll([
         MapEntry("Id", vehicleId!),
         MapEntry(ApiKey.vehicleSeatsNo, vehicleSeatsNoController.text),
@@ -340,7 +332,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
         MapEntry(ApiKey.vehicleColor, vehicleColorController.text),
         MapEntry(ApiKey.vehicleProperitesOverview,
             vehicleProperitesOverviewController.text),
-        // Ensure we're sending the IDs, not the display names
         MapEntry(ApiKey.vehicleType, selectedVehicleTypeId.toString()),
         MapEntry(ApiKey.vehicleBrand, selectedVehicleBrandId.toString()),
         MapEntry(ApiKey.vehicleStatus, getVehicleStatus()),
@@ -352,12 +343,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
             ApiKey.vehicleLocationLongitude, (location?.longitude).toString()),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
       ]);
-
-      print('Form data fields:');
-      for (var field in formData.fields) {
-        print('${field.key}: ${field.value}');
-      }
-
       if (updatedMainImageFile != null) {
         formData.files.add(MapEntry(
           ApiKey.vehicleMainImage,
@@ -367,7 +352,6 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           ),
         ));
       }
-
       formDataImages.fields.add(
         MapEntry("VehicleId", vehicleId!),
       );
@@ -384,6 +368,15 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           }
         }
       }
+      if (removedImagesUrls != null && removedImagesUrls.isNotEmpty) {
+        for (int i = 0; i < removedImagesUrls.length; i++) {
+          if (removedImagesUrls[i] != null) {
+            formDataImages.fields.add(
+              MapEntry("RemovedImagesPaths", removedImagesUrls[i]!),
+            );
+          }
+        }
+      }
       final response = await _dio.put(
         "https://aggarapi.runasp.net/api/vehicle/",
         data: formData,
@@ -395,11 +388,8 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           },
         ),
       );
-
-      print('Update vehicle response: ${response.statusCode}');
-      print('Response data: ${response.data}');
-
-      if (additionalImages != null && additionalImages.isNotEmpty) {
+      if ((additionalImages != null && additionalImages.isNotEmpty) ||
+          ((removedImagesUrls != null && removedImagesUrls.isNotEmpty))) {
         final imagesResponse = await _dio.put(
           "https://aggarapi.runasp.net/api/vehicle/vehicle-images",
           data: formDataImages,
@@ -411,8 +401,14 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
             },
           ),
         );
-        print('Update images response: ${imagesResponse.statusCode}');
-        print('Images response data: ${imagesResponse.data}');
+        print("Images response: ${imagesResponse.data}");
+        if (imagesResponse.statusCode! >= 200 &&
+            imagesResponse.statusCode! < 300) {
+          emit(EditVehicleSuccess(imagesResponse.data));
+        } else {
+          emit(EditVehicleFailure(
+              "Error: ${imagesResponse.statusCode} - ${imagesResponse.data.toString()}"));
+        }
       }
 
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
@@ -462,7 +458,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
           },
         ),
       );
-      print(response.data);
+
       if (response.statusCode == 200) {
         emit(EditVehicleSuccess(response.data));
       } else {
