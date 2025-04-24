@@ -6,20 +6,29 @@ import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/ad
 class AdditionalImageCubit extends Cubit<AdditionalImageState> {
   List<File?> images = [];
   List<String?> imagesUrl = [];
-  String? removedImageUrl;
+  List<String> removedImagesUrls = [];
 
   AdditionalImageCubit() : super(AdditionalImagesInitial());
 
   void initializeImages(File? mainImage) {
     images = [];
-    if (mainImage != null) {}
+    imagesUrl = [];
+    removedImagesUrls = [];
     emit(AdditionalImagesLoaded(images));
   }
 
   void setImagesUrl(String url, int index) {
-    if (index >= 0 && index < imagesUrl.length) {
-      imagesUrl[index] = url;
+    while (imagesUrl.length <= index) {
+      imagesUrl.add(null);
     }
+    imagesUrl[index] = url;
+  }
+
+  void removeImageUrl(String url) {
+    print('Removing image URL: $url');
+    removedImagesUrls.add(url);
+    imagesUrl.remove(url);
+    emit(AdditionalImagesLoaded(images));
   }
 
   Future<void> pickImage(int index) async {
@@ -31,13 +40,10 @@ class AdditionalImageCubit extends Cubit<AdditionalImageState> {
 
       if (pickedFile != null) {
         final imageFile = File(pickedFile.path);
-
-        // Add the new image
         images.add(imageFile);
 
         emit(AdditionalImagesLoaded(images));
       } else {
-        // User canceled the picker
         emit(AdditionalImagesLoaded(images));
       }
     } catch (e) {

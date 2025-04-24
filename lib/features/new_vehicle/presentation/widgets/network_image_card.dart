@@ -4,12 +4,12 @@ import 'package:photo_view/photo_view.dart';
 
 class NetworkImageCard extends StatelessWidget {
   final String imageUrl;
-  final VoidCallback? onRemove;
+  final VoidCallback onRemove;
 
   const NetworkImageCard({
     super.key,
     required this.imageUrl,
-    this.onRemove,
+    required this.onRemove,
   });
 
   @override
@@ -18,7 +18,7 @@ class NetworkImageCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => _openPhotoView(context, fullImageUrl),
-      onLongPress: onRemove != null ? () => _showDeleteDialog(context) : null,
+      onLongPress: () => _showDeleteDialog(context),
       child: Container(
         width: 80,
         height: 80,
@@ -42,6 +42,7 @@ class NetworkImageCard extends StatelessWidget {
         subtitle: 'Are you sure you want to remove this image?',
         onPressed: () {
           Navigator.pop(context);
+          onRemove();
         },
       ),
     );
@@ -62,11 +63,11 @@ class NetworkImageCard extends StatelessWidget {
 
 class _FullScreenNetworkPhotoView extends StatelessWidget {
   final String imageUrl;
-  final VoidCallback? onRemove;
+  final VoidCallback onRemove;
 
   const _FullScreenNetworkPhotoView({
     required this.imageUrl,
-    this.onRemove,
+    required this.onRemove,
   });
 
   @override
@@ -77,22 +78,22 @@ class _FullScreenNetworkPhotoView extends StatelessWidget {
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          if (onRemove != null)
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.white),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) => CustomDialog(
-                  title: "Remove Image",
-                  actionTitle: "Remove",
-                  subtitle: 'Are you sure you want to remove this image?',
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onRemove?.call();
-                  },
-                ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline, color: Colors.white),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => CustomDialog(
+                title: "Remove Image",
+                actionTitle: "Remove",
+                subtitle: 'Are you sure you want to remove this image?',
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Close photo view
+                  onRemove();
+                },
               ),
             ),
+          ),
         ],
       ),
       body: PhotoView(

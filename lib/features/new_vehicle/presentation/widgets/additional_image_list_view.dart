@@ -70,40 +70,50 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
                   .where((url) => url != null && url.isNotEmpty)
                   .length;
               final totalItems = initialImagesCount + localImages.length + 1;
+
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: totalItems,
                 itemBuilder: (context, index) {
                   if (index < initialImagesCount) {
-                    final url = _cachedImagesUrl[index];
+                    final url = _cachedImagesUrl.elementAtOrNull(index);
                     if (url != null && url.isNotEmpty) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: NetworkImageCard(
                           imageUrl: url,
                           onRemove: () {
+                            final cubit = context.read<AdditionalImageCubit>();
+                            cubit.removeImageUrl(url);
+
                             setState(() {
-                              _cachedImagesUrl[index] = null;
+                              _cachedImagesUrl.removeAt(index);
                             });
                           },
                         ),
                       );
                     }
                   }
+
                   final localIndex = index - initialImagesCount;
                   if (localIndex >= 0 && localIndex < localImages.length) {
                     final file = localImages[localIndex];
                     if (file != null) {
-                      return AdditionalImageCard(
-                        image: file,
-                        onRemove: () {
-                          context
-                              .read<AdditionalImageCubit>()
-                              .removeImageAt(localIndex);
-                        },
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: AdditionalImageCard(
+                          image: file,
+                          onRemove: () {
+                            context
+                                .read<AdditionalImageCubit>()
+                                .removeImageAt(localIndex);
+                            setState(() {});
+                          },
+                        ),
                       );
                     }
                   }
+
                   if (index == totalItems - 1) {
                     return AddImageButton(
                       onPressed: () {
