@@ -126,8 +126,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => MainScreenCubit(
-            secureStorage: secureStorage,
+          create: (context) => MainCubit(
+            tokenRefreshCubit: context.read<TokenRefreshCubit>(),
+            vehicleBrandCubit: context.read<VehicleBrandCubit>(),
+            vehicleTypeCubit: context.read<VehicleTypeCubit>(),
           ),
         ),
       ],
@@ -154,9 +156,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   builder: DevicePreview.appBuilder,
-                  home: const EditVehicleView(
-                      vehicleId: "127") //Replace with your initial screen
-                  );
+                  home: const MainScreen());
             },
           );
         },
