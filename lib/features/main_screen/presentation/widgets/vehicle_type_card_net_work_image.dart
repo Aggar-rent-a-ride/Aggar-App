@@ -2,6 +2,7 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
 class VehicleTypeCardNetWorkImage extends StatelessWidget {
@@ -36,8 +37,8 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
                 : SizedBox(
                     height: 35,
                     width: 35,
-                    child: Image.network(
-                      "${EndPoint.baseUrl}$iconPrv",
+                    child: SvgPicture.network(
+                      "${EndPoint.baseUrl}/$iconPrv",
                     ),
                   ),
             const Gap(10),

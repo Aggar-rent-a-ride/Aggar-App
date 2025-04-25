@@ -60,6 +60,7 @@ class DioConsumer extends ApiConsumer {
         path,
         data: data,
         queryParameters: queryParameters,
+        options: options,
       );
       return response.data;
     } on DioException catch (e) {

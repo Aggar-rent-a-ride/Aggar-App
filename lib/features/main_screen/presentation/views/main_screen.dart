@@ -144,7 +144,7 @@ class MainScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                context.read<MainCubit>().checkInternetConnection();
+                //context.read<MainCubit>().checkInternetConnection();
               },
               child: const Text('Retry'),
             ),

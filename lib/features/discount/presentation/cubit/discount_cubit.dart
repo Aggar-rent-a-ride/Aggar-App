@@ -12,7 +12,7 @@ class DiscountCubit extends Cubit<DiscountState> {
     dio = Dio(BaseOptions(
       headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNDBjNzY1NWYtZDdhMC00NjY2LWFkMTQtM2NiZWQ2ZjE0ZjczIiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDQ5NzE3MiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.zaKa2AY7HOYZKf2bJq2i8ZQXdTAzRPCClAs0n2x15F4',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjVkZWExMmYzLTJhZmItNDk1MS1hOGUxLTNiZGQyYTk4ODVmZSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4MjEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VEVBG6MZq0SGQ0p6XX_mjoujjj2zlhJUuCFnKKbCVoc',
       },
       responseType: ResponseType.json,
     ));

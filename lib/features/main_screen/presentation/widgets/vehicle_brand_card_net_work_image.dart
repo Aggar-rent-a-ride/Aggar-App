@@ -3,6 +3,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicles_brand_number_of_brands.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class VehicleBrandCardNetWorkImage extends StatelessWidget {
   const VehicleBrandCardNetWorkImage(
@@ -41,8 +42,8 @@ class VehicleBrandCardNetWorkImage extends StatelessWidget {
                 : SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.network(
-                      "${EndPoint.baseUrl}$imgPrv",
+                    child: SvgPicture.network(
+                      "${EndPoint.baseUrl}/$imgPrv",
                     ),
                   ),
             Row(
