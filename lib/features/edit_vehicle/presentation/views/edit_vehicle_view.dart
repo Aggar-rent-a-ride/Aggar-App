@@ -38,9 +38,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
       context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMmVhY2ZiMWQtNTJmMC00ZjllLThhNTEtZGExMTk2NGRhNGM1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDY2NzEwMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.5KMoRM1ERq2yVOaqR4l8wuqB-CDTrLaziF_n2ukvFxs");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjVkZWExMmYzLTJhZmItNDk1MS1hOGUxLTNiZGQyYTk4ODVmZSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4MjEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VEVBG6MZq0SGQ0p6XX_mjoujjj2zlhJUuCFnKKbCVoc");
       context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiMmVhY2ZiMWQtNTJmMC00ZjllLThhNTEtZGExMTk2NGRhNGM1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDY2NzEwMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.5KMoRM1ERq2yVOaqR4l8wuqB-CDTrLaziF_n2ukvFxs");
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjVkZWExMmYzLTJhZmItNDk1MS1hOGUxLTNiZGQyYTk4ODVmZSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4MjEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VEVBG6MZq0SGQ0p6XX_mjoujjj2zlhJUuCFnKKbCVoc");
     });
   }
 
@@ -92,7 +92,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const EditVehicleView(
-                    vehicleId: "127",
+                    vehicleId: '127',
                   ),
                 ),
               );
