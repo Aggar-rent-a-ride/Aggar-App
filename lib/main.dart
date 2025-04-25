@@ -18,6 +18,7 @@ import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehi
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
+import 'package:aggar/features/messages/views/temp.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
@@ -156,7 +157,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   builder: DevicePreview.appBuilder,
-                  home: const MainScreen());
+                  home: const ChatApp());
             },
           );
         },
