@@ -163,7 +163,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   builder: DevicePreview.appBuilder,
-                  home: const ChatApp());
+                  home: const MessagesView());
             },
           );
         },
