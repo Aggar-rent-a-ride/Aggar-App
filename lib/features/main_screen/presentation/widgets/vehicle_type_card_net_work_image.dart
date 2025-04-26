@@ -38,6 +38,7 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
                     height: 35,
                     width: 35,
                     child: SvgPicture.network(
+                      color: context.theme.black50,
                       "${EndPoint.baseUrl}/$iconPrv",
                     ),
                   ),

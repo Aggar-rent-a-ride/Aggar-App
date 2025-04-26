@@ -42,8 +42,8 @@ class VehicleBrandCardNetWorkImage extends StatelessWidget {
                 : SizedBox(
                     height: 80,
                     width: 80,
-                    child: SvgPicture.network(
-                      "${EndPoint.baseUrl}/$imgPrv",
+                    child: Image.network(
+                      "${EndPoint.baseUrl}$imgPrv",
                     ),
                   ),
             Row(
