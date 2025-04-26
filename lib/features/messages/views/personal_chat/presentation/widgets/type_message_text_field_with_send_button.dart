@@ -15,7 +15,7 @@ class TypeMessageTextFieldWithSendButton extends StatelessWidget {
       child: Row(
         children: [
           MessageTextFieldWithAttachmentButton(),
-          Gap(5),
+          Gap(10),
           SendMessageButton(),
         ],
       ),

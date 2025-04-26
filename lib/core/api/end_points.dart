@@ -14,6 +14,7 @@ class EndPoint {
   static String addVehicle = "$baseUrl/api/vehicle/?id=";
   static String vehicleDiscount = "$baseUrl/api/vehicle/vehicle-discounts";
   static String getMessageBetween = "$baseUrl/api/chat/messages";
+  static String filterMessages = "$baseUrl/api/chat/filter";
 }
 
 class ApiKey {
@@ -73,4 +74,10 @@ class ApiKey {
   static String msgReceiverId = "receiverId";
   static String msgDate = "sentAt";
   static String msgStatus = "isSeen";
+  /////////////FilterMessages//////////////////////
+  static String filterMessagesSenderId = "userId";
+  static String filterMsgSearchContent = "searchQuery";
+  static String filterMsgDateTime = "date";
+  static String filterMsgPageSize = "pageSize";
+  static String filterMsgPageNo = "pageNo";
 }
