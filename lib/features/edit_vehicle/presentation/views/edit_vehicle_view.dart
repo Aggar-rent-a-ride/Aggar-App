@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
@@ -35,12 +36,21 @@ class _EditVehicleViewState extends State<EditVehicleView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<EditVehicleCubit>().fetchVehicleData(widget.vehicleId);
-      context.read<VehicleBrandCubit>().fetchVehicleBrands(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjVkZWExMmYzLTJhZmItNDk1MS1hOGUxLTNiZGQyYTk4ODVmZSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4MjEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VEVBG6MZq0SGQ0p6XX_mjoujjj2zlhJUuCFnKKbCVoc");
-      context.read<VehicleTypeCubit>().fetchVehicleTypes(
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjVkZWExMmYzLTJhZmItNDk1MS1hOGUxLTNiZGQyYTk4ODVmZSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4MjEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VEVBG6MZq0SGQ0p6XX_mjoujjj2zlhJUuCFnKKbCVoc");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+      final token = await tokenRefreshCubit.getAccessToken();
+      if (token != null) {
+        context
+            .read<EditVehicleCubit>()
+            .fetchVehicleData(widget.vehicleId, token: token);
+        context.read<VehicleBrandCubit>().fetchVehicleBrands(token);
+        context.read<VehicleTypeCubit>().fetchVehicleTypes(token);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Authentication failed. Please login again.')),
+        );
+      }
     });
   }
 
@@ -80,22 +90,34 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                   );
                   return;
                 }
-                await editVehicleCubit.updateVehicle(
-                  widget.vehicleId,
-                  mapLocationCubit.selectedLocation!,
-                  context.read<AdditionalImageCubit>().images,
-                  context.read<MainImageCubit>().image,
-                  context.read<AdditionalImageCubit>().removedImagesUrls,
-                );
+                final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+                final token = await tokenRefreshCubit.getAccessToken();
+
+                if (token != null) {
+                  await editVehicleCubit.updateVehicle(
+                    widget.vehicleId,
+                    mapLocationCubit.selectedLocation!,
+                    context.read<AdditionalImageCubit>().images,
+                    context.read<MainImageCubit>().image,
+                    context.read<AdditionalImageCubit>().removedImagesUrls,
+                    token,
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditVehicleView(
+                        vehicleId: '127',
+                      ),
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content:
+                            Text('Authentication failed. Please login again.')),
+                  );
+                }
               }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditVehicleView(
-                    vehicleId: '127',
-                  ),
-                ),
-              );
             },
           ),
           backgroundColor: context.theme.white100_1,
@@ -106,24 +128,38 @@ class _EditVehicleViewState extends State<EditVehicleView> {
             centerTitle: false,
             actions: [
               IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CustomDialog(
-                        actionTitle: "Delete",
-                        title: "Delete vehicle",
-                        subtitle:
-                            "Are you sure you want to delete this vehicle ?",
-                        onPressed: () {
-                          context.read<EditVehicleCubit>().deleteVehicle(
-                                widget.vehicleId,
-                              );
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
-                  );
+                onPressed: () async {
+                  final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+                  final token = await tokenRefreshCubit.getAccessToken();
+
+                  if (token != null) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomDialog(
+                          actionTitle: "Delete",
+                          title: "Delete vehicle",
+                          subtitle:
+                              "Are you sure you want to delete this vehicle ?",
+                          onPressed: () async {
+                            await context
+                                .read<EditVehicleCubit>()
+                                .deleteVehicle(
+                                  widget.vehicleId,
+                                  token,
+                                );
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'Authentication failed. Please login again.')),
+                    );
+                  }
                 },
                 icon: Icon(
                   Icons.more_vert_rounded,

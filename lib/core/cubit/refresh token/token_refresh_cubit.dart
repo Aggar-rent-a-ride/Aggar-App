@@ -8,11 +8,36 @@ import 'token_refresh_state.dart';
 class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   final ApiConsumer apiConsumer;
   final FlutterSecureStorage secureStorage;
+  String? _cachedAccessToken;
 
   TokenRefreshCubit({
     required this.apiConsumer,
     required this.secureStorage,
-  }) : super(TokenRefreshInitial());
+  }) : super(TokenRefreshInitial()) {
+    _loadCachedToken();
+  }
+
+  Future<void> _loadCachedToken() async {
+    _cachedAccessToken = await secureStorage.read(key: 'accessToken');
+  }
+
+  Future<String?> getAccessToken() async {
+    if (_cachedAccessToken != null && !await isTokenExpired()) {
+      return _cachedAccessToken;
+    }
+
+    if (await shouldRefreshToken()) {
+      try {
+        await refreshToken();
+        return _cachedAccessToken;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  String? get currentAccessToken => _cachedAccessToken;
 
   Future<void> refreshToken() async {
     try {
@@ -41,13 +66,14 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
         final newAccessToken = tokenData[ApiKey.accessToken];
         final newRefreshToken = tokenData[ApiKey.refreshToken];
 
+        _cachedAccessToken = newAccessToken;
+
         DateTime? expirationDate;
         if (tokenData[ApiKey.refreshTokenExpiration] != null) {
           expirationDate =
               DateTime.parse(tokenData[ApiKey.refreshTokenExpiration]);
         }
 
-        // Enhanced token storage with error handling
         await _secureStoreTokens(
             accessToken: newAccessToken, refreshToken: newRefreshToken);
 
@@ -61,14 +87,12 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
       }
     } catch (error) {
       print('Token Refresh Error: $error');
-
+      _cachedAccessToken = null;
       emit(TokenRefreshFailure(error.toString()));
-
       rethrow;
     }
   }
 
-  // Enhanced token storage method
   Future<void> _secureStoreTokens(
       {required String accessToken, required String refreshToken}) async {
     try {
@@ -115,13 +139,4 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
     }
   }
 
-  // Optional: Add a method to clear tokens on logout
-  Future<void> clearTokens() async {
-    try {
-      await secureStorage.deleteAll();
-      print('All tokens cleared');
-    } catch (e) {
-      print('Error clearing tokens: $e');
-    }
-  }
 }

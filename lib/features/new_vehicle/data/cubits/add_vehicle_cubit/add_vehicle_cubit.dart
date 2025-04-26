@@ -30,13 +30,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     selectedTransmissionModeValue = 0; // Default to Automatic
     emit(TransmissionModeUpdated(selectedTransmissionModeValue));
     emit(VehicleStatusUpdated(selectedVehicleStatusValue));
-    // Initialize Dio with base URL and default options
+
+    // Initialize Dio with base options (without token - will be added per request)
     _dio = Dio(BaseOptions(
-      headers: {
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjVkZWExMmYzLTJhZmItNDk1MS1hOGUxLTNiZGQyYTk4ODVmZSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4MjEzMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.VEVBG6MZq0SGQ0p6XX_mjoujjj2zlhJUuCFnKKbCVoc',
-        'Accept': 'application/json',
-      },
       responseType: ResponseType.json,
     ));
   }
@@ -153,6 +149,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   }
 
   Future<void> postData({
+    required String token,
     LatLng? location,
     List<File?> additionalImages = const [],
     File? mainImageFile,
@@ -218,6 +215,10 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           "https://aggarapi.runasp.net/api/vehicle/",
           data: formData,
           options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+            },
             contentType: 'multipart/form-data',
             followRedirects: false,
             validateStatus: (status) {
@@ -281,13 +282,17 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
   // ignore: prefer_typing_uninitialized_variables
   var vehicleData;
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  Future<void> getData(String id) async {
+///////////////////////////////////////////////////////////////////////////////////////////
+  Future<void> getData(String id, String token) async {
     try {
       emit(AddVehicleLoading());
       final response = await _dio.get(
         '${EndPoint.addVehicle}$id',
         options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
           validateStatus: (status) {
             return status! < 500;
           },
