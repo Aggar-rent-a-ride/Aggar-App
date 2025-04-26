@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart'
@@ -29,14 +28,17 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       this.additionalImageCubit, this.mapLocationCubit)
       : super(EditVehicleInitial()) {
     _dio = Dio(BaseOptions(
-      headers: {
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5c6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiOWQ3YzI1MzQtY2IxOS00YWFhLTgxY2EtZTUyODM1ZDJmYmU1IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTU4NzU4MiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.TaZx-Nie5XEszI04S91JnMP6USZBGbm9WjaqV5EZ6C8',
-        'Accept': 'application/json',
-      },
       responseType: ResponseType.json,
     ));
   }
+
+  void _configureAuthHeaders(String token) {
+    _dio.options.headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
+  }
+
   GlobalKey<FormState> editVehicleFormKey = GlobalKey();
   TextEditingController vehicleModelController = TextEditingController();
   TextEditingController vehicleRentalPrice = TextEditingController();
@@ -240,9 +242,14 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     }
   }
 
-  Future<void> fetchVehicleData(String id) async {
+  Future<void> fetchVehicleData(String id, {String? token}) async {
     try {
       emit(EditVehicleLoading());
+
+      if (token != null) {
+        _configureAuthHeaders(token);
+      }
+
       final response = await _dio.get(
         '${EndPoint.addVehicle}$id',
         options: Options(
@@ -300,6 +307,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     List<File?>? additionalImages,
     File? updatedMainImageFile,
     List<String?>? removedImagesUrls,
+    String token,
   ) async {
     if (vehicleId == null) {
       emit(const EditVehicleFailure('Vehicle ID is missing'));
@@ -308,6 +316,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
 
     try {
       emit(EditVehicleLoading());
+      _configureAuthHeaders(token);
 
       if (selectedVehicleBrandId == null) {
         emit(const EditVehicleFailure('Vehicle Brand ID is missing'));
@@ -447,9 +456,10 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     }
   }
 
-  Future<void> deleteVehicle(String id) async {
+  Future<void> deleteVehicle(String id, String token) async {
     try {
       emit(EditVehicleLoading());
+      _configureAuthHeaders(token);
       final response = await _dio.delete(
         "${EndPoint.baseUrl}/api/vehicle/$id",
         options: Options(

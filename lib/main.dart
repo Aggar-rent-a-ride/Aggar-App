@@ -12,9 +12,7 @@ import 'package:aggar/features/authorization/data/cubit/credentials/credentials_
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
-import 'package:aggar/features/discount/presentation/views/discount_screen.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
-import 'package:aggar/features/edit_vehicle/presentation/views/edit_vehicle_view.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';

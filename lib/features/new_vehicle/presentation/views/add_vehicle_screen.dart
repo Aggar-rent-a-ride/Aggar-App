@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
@@ -27,12 +28,40 @@ class AddVehicleScreen extends StatefulWidget {
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
+  String? _accessToken;
+  bool _isLoading = true;
+
   @override
   void initState() {
-    context.read<VehicleBrandCubit>().fetchVehicleBrands(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZmJmMmEzMzgtZDRlZS00NjNiLTk4MmItYWY5NDFkZTBjZDY4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2OTI0NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.FcT6dJxHy4UMdBc48Ah03ZqkgwOBz6zhsqhIzsfbJkk");
-    context.read<VehicleTypeCubit>().fetchVehicleTypes(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiZmJmMmEzMzgtZDRlZS00NjNiLTk4MmItYWY5NDFkZTBjZDY4IiwidXNlcm5hbWUiOiJlc3JhYXRlc3QxMiIsInVpZCI6IjEwNjMiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NDA2OTI0NSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.FcT6dJxHy4UMdBc48Ah03ZqkgwOBz6zhsqhIzsfbJkk");
+    _loadToken();
+  }
+
+  Future<void> _loadToken() async {
+    final tokenCubit = context.read<TokenRefreshCubit>();
+    final token = await tokenCubit.getAccessToken();
+
+    if (token != null) {
+      setState(() {
+        _accessToken = token;
+        _isLoading = false;
+      });
+
+      await _fetchInitialData(token);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to get authentication token'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _fetchInitialData(String token) async {
+    await Future.wait([
+      context.read<VehicleBrandCubit>().fetchVehicleBrands(token),
+      context.read<VehicleTypeCubit>().fetchVehicleTypes(token),
+    ]);
     super.initState();
   }
 
@@ -71,6 +100,17 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           bottomNavigationBar: BottomNavigationBarContent(
             title: "Add Vehicle",
             onPressed: () async {
+              if (_accessToken == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                        'Authentication token not available. Please try again.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
+
               // Get the MapLocationCubit instance
               final mapLocationCubit = context.read<MapLocationCubit>();
               print(context
@@ -94,10 +134,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   return;
                 }
                 await context.read<AddVehicleCubit>().postData(
+                      token: _accessToken!,
                       additionalImages:
                           context.read<AdditionalImageCubit>().images,
-                      location: mapLocationCubit
-                          .selectedLocation!, // Ensure location is sent
+                      location: mapLocationCubit.selectedLocation!,
                       mainImageFile: context.read<MainImageCubit>().image!,
                     );
                 if (context.read<AddVehicleCubit>().state

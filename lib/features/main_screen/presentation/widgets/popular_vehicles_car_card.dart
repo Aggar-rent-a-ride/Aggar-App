@@ -5,7 +5,7 @@ import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/views/vehicle_details_after_adding_screen.dart';
-
+import 'package:aggar/core/cubit/refresh token/token_refresh_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -34,10 +34,13 @@ class PopularVehiclesCarCard extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
-            context.read<AddVehicleCubit>().getData("147");
+            final token =
+                await context.read<TokenRefreshCubit>().getAccessToken();
+            if (token != null) {
+              context.read<AddVehicleCubit>().getData("1072", token);
+            }
             if (context.read<AddVehicleCubit>().vehicleData != null) {
-              VehicleDataModel vehicle =
-                  context.read<AddVehicleCubit>().vehicleData;
+              final vehicle = context.read<AddVehicleCubit>().vehicleData!;
               // TODO : here will change the navigator
               Navigator.push(
                 context,
