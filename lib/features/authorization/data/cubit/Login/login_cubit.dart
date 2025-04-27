@@ -10,7 +10,8 @@ class LoginCubit extends Cubit<LoginState> {
   final DioConsumer dioConsumer;
   final FlutterSecureStorage? secureStorage;
 
-  final emailController = TextEditingController();
+  // Renamed to identifierController to handle both email and username
+  final identifierController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
@@ -30,19 +31,19 @@ class LoginCubit extends Cubit<LoginState> {
   void handleLogin() {
     if (formKey.currentState!.validate()) {
       login(
-        email: emailController.text,
+        identifier: identifierController.text,
         password: passwordController.text,
       );
     }
   }
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login({required String identifier, required String password}) async {
     emit(LoginLoading());
     try {
       final response = await dioConsumer.post(
         EndPoint.login,
         data: {
-          "usernameOrEmail": email,
+          "usernameOrEmail": identifier,
           "password": password,
         },
       );
@@ -79,7 +80,7 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginSuccess(
           accessToken: accessToken,
           refreshToken: refreshToken,
-          username: _extractUsername(data, email),
+          username: _extractUsername(data, identifier),
         ));
       } else {
         final errorMessage = _extractErrorMessage(response);
@@ -120,8 +121,19 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  String _extractUsername(dynamic data, String email) {
-    return data[ApiKey.username] ?? email.split('@')[0];
+  String _extractUsername(dynamic data, String identifier) {
+    // If username is available in the response data, use it
+    if (data[ApiKey.username] != null) {
+      return data[ApiKey.username];
+    }
+    
+    // If the identifier is an email, extract the username part
+    if (identifier.contains('@')) {
+      return identifier.split('@')[0];
+    }
+    
+    // Otherwise, return the identifier as is (username)
+    return identifier;
   }
 
   String _extractErrorMessage(dynamic response) {
@@ -142,7 +154,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   @override
   Future<void> close() {
-    emailController.dispose();
+    identifierController.dispose();
     passwordController.dispose();
     return super.close();
   }
