@@ -21,8 +21,8 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   final ApiConsumer apiConsumer;
   late Dio _dio;
 
-  // Add a variable to store the response data
   Map<String, dynamic>? responseData;
+  int? vehicleId;
 
   AddVehicleCubit(this.apiConsumer, this.mainImageCubit,
       this.additionalImageCubit, this.mapLocationCubit)
@@ -31,7 +31,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     emit(TransmissionModeUpdated(selectedTransmissionModeValue));
     emit(VehicleStatusUpdated(selectedVehicleStatusValue));
 
-    // Initialize Dio with base options (without token - will be added per request)
     _dio = Dio(BaseOptions(
       responseType: ResponseType.json,
     ));
@@ -56,6 +55,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   String? selectedVehicleStatusValue;
   int? selectedVehicleBrandId;
   int? selectedVehicleTypeId;
+  String? selectedVehicleHealthValue;
 
   void setTransmissionMode(int value) {
     selectedTransmissionModeValue = value;
@@ -82,7 +82,10 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     emit(VehicleTypeUpdated(selectedVehicleTypeValue));
   }
 
-  String? selectedVehicleHealthValue;
+  void setVehicleHealth(String value) {
+    selectedVehicleHealthValue = value;
+    emit(VehicleHealthUpdated(selectedVehicleHealthValue));
+  }
 
   String getVehicleTransmission() {
     String transmissionMode;
@@ -100,11 +103,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         transmissionMode = "None";
     }
     return transmissionMode;
-  }
-
-  void setVehicleHealth(String value) {
-    selectedVehicleHealthValue = value;
-    emit(VehicleHealthUpdated(selectedVehicleHealthValue));
   }
 
   String getVehicleHealth() {
@@ -147,6 +145,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   Map<String, dynamic>? getResponseData() {
     return responseData;
   }
+  String getVehicleId() {
+    return vehicleId?.toString() ?? '';
+  }
 
   Future<void> postData({
     required String token,
@@ -154,9 +155,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     List<File?> additionalImages = const [],
     File? mainImageFile,
   }) async {
-    print("Selected vehicle type: $selectedTransmissionModeValue");
-    print("Selected vehicle type: $getVehicleTransmission()");
-    print(vehicleBrandController.text);
+    print("Selected transmission mode: $selectedTransmissionModeValue");
+    print("Transmission mode: ${getVehicleTransmission()}");
+    print("Vehicle brand: ${vehicleBrandController.text}");   
     try {
       emit(AddVehicleLoading());
       if (mainImageFile == null) {
@@ -207,7 +208,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           }
         }
       }
-      print("vehicleTypeId: $selectedVehicleTypeId");
+ print("vehicleTypeId: $selectedVehicleTypeId");
       print("vehicleBrandId: $selectedVehicleBrandId");
       print("vehicleHealth: ${getVehicleHealth()}");
       try {
@@ -235,6 +236,8 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           if (response.data != null && response.data['data'] != null) {
             try {
               vehicleData = VehicleDataModel.fromJson(response.data["data"]);
+              vehicleId = response.data["data"]["id"];
+              print("Successfully extracted vehicle ID: $vehicleId");
             } catch (parseError) {
               print('Error parsing vehicle data: $parseError');
               // Continue with success emission even if parsing fails
@@ -313,6 +316,8 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
       try {
         vehicleData = VehicleDataModel.fromJson(response.data["data"]);
+        vehicleId = response.data["data"]["id"];
+
         emit(AddVehicleSuccess(response.data));
       } catch (parseError) {
         emit(AddVehicleFailure('Failed to parse vehicle data: $parseError'));

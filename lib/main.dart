@@ -100,7 +100,9 @@ class MyApp extends StatelessWidget {
           create: (context) => PickImageCubit(),
         ),
         BlocProvider(
-          create: (context) => DiscountCubit(),
+          create: (context) => DiscountCubit(
+            tokenRefreshCubit: context.read<TokenRefreshCubit>(),
+          ),
         ),
         BlocProvider(
           create: (context) => MessageCubit(),
@@ -162,7 +164,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   builder: DevicePreview.appBuilder,
-                  home: const SignInView());
+                  home: const MainScreen());
             },
           );
         },
