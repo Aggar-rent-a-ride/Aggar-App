@@ -1,4 +1,3 @@
-import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 
 class AvatarChatView extends StatelessWidget {
@@ -12,10 +11,10 @@ class AvatarChatView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            offset: const Offset(0, 4),
-            color: context.theme.black25,
+            offset: Offset(0, 0),
+            color: Colors.black12,
             spreadRadius: 0,
             blurRadius: 4,
           )

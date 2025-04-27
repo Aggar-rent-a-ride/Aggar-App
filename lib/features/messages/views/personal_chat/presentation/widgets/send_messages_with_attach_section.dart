@@ -8,7 +8,7 @@ class SendMessagesWithAttachSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.sizeOf(context).height * 0.11,
+      height: MediaQuery.sizeOf(context).height * 0.09,
       width: double.infinity,
       color: context.theme.white100_1,
       child: const TypeMessageTextFieldWithSendButton(),

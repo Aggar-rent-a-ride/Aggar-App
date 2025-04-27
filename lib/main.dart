@@ -43,12 +43,9 @@ void main() async {
   languageCubit.changeToEnglish();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(
-        secureStorage: secureStorage,
-        initialLanguageCubit: languageCubit,
-      ),
+    MyApp(
+      secureStorage: secureStorage,
+      initialLanguageCubit: languageCubit,
     ),
   );
 }
@@ -148,11 +145,11 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                   themeMode: context.themeCubit.themeMode,
                   darkTheme: darkTheme,
-                  theme: darkTheme,
+                  theme: lightTheme,
                   debugShowCheckedModeBanner: false,
-                  locale: languageState is LanguageChanged
+                  /** locale: languageState is LanguageChanged
                       ? languageState.locale
-                      : DevicePreview.locale(context),
+                      : DevicePreview.locale(context), */
                   supportedLocales: const [
                     Locale('en', 'US'),
                     Locale('ar', 'SA'),
@@ -163,8 +160,8 @@ class MyApp extends StatelessWidget {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
-                  builder: DevicePreview.appBuilder,
-                  home: const MainScreen());
+                  //builder: DevicePreview.appBuilder,
+                  home: const MessagesView());
             },
           );
         },

@@ -21,6 +21,9 @@ Widget pickDateOfBirthTheme(BuildContext context, Widget? child) {
         yearStyle: AppStyles.regular16(context).copyWith(
           color: context.theme.black100,
         ),
+        headerHelpStyle: AppStyles.regular16(context).copyWith(
+          color: context.theme.black100,
+        ),
         weekdayStyle: AppStyles.regular16(context).copyWith(
           color: context.theme.black100,
         ),

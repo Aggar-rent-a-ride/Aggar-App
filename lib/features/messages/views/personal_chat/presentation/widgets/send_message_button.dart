@@ -11,11 +11,11 @@ class SendMessageButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: context.theme.black25,
+            color: Colors.black26,
             blurRadius: 4,
-            offset: const Offset(0, 0),
+            offset: Offset(0, 0),
           ),
         ],
       ),
