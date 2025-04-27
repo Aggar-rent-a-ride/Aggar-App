@@ -54,7 +54,11 @@ class PersonalChatView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: cubit.isSearchActive
                       ? IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            cubit.selectDate(context);
+                            print(
+                                "Selected date: ${cubit.dateController.text}");
+                          },
                           icon: Icon(
                             color: context.theme.white100_2,
                             Icons.date_range_outlined,
