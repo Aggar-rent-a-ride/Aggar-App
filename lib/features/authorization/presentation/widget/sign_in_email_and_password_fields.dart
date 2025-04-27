@@ -1,53 +1,58 @@
-// sign_in_email_and_password_fields.dart
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_state.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignInEmailAndPasswordFields extends StatelessWidget {
-  final TextEditingController emailController;
+class SignInIdentifierAndPasswordFields extends StatelessWidget {
+  final TextEditingController identifierController;
   final TextEditingController passwordController;
   final GlobalKey<FormState> formKey;
 
-  const SignInEmailAndPasswordFields({
+  const SignInIdentifierAndPasswordFields({
     super.key,
-    required this.emailController,
+    required this.identifierController,
     required this.passwordController,
     required this.formKey,
+    required bool obscurePassword,
+    required void Function() togglePasswordVisibility,
   });
 
   @override
   Widget build(BuildContext context) {
     final loginCubit = context.read<LoginCubit>();
-    
+
     return BlocBuilder<LoginCubit, LoginState>(
-      buildWhen: (previous, current) => 
-        current is LoginPasswordVisibilityChanged || 
-        previous is LoginInitial,
+      buildWhen: (previous, current) =>
+          current is LoginPasswordVisibilityChanged || previous is LoginInitial,
       builder: (context, state) {
-        final obscurePassword = state is LoginPasswordVisibilityChanged 
-            ? state.obscurePassword 
+        final obscurePassword = state is LoginPasswordVisibilityChanged
+            ? state.obscurePassword
             : loginCubit.obscurePassword;
-            
+
         return Form(
           key: formKey,
           child: Column(
             children: [
               CustomTextField(
-                labelText: 'Email',
-                hintText: "Enter Email",
-                inputType: TextInputType.emailAddress,
+                labelText: 'Email or Username',
+                hintText: "Enter Email or Username",
+                inputType: TextInputType.text,
                 obscureText: false,
-                controller: emailController,
+                controller: identifierController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Email is required';
+                    return 'Email or Username is required';
                   }
-                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                  if (!emailRegex.hasMatch(value)) {
-                    return 'Enter a valid email address';
+
+                  if (value.contains('@')) {
+                    final emailRegex =
+                        RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Enter a valid email address';
+                    }
                   }
+
                   return null;
                 },
               ),

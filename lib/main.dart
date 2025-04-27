@@ -11,6 +11,7 @@ import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
@@ -161,7 +162,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   builder: DevicePreview.appBuilder,
-                  home: const MessagesView());
+                  home: const SignInView());
             },
           );
         },

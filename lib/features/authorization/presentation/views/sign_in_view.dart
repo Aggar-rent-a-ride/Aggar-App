@@ -82,10 +82,13 @@ class _SignInContent extends StatelessWidget {
                   children: [
                     const Gap(20),
                     const SignInImageWithText(),
-                    SignInEmailAndPasswordFields(
-                      emailController: loginCubit.emailController,
+                    SignInIdentifierAndPasswordFields(
+                      identifierController: loginCubit.identifierController,
                       passwordController: loginCubit.passwordController,
                       formKey: loginCubit.formKey,
+                      obscurePassword: loginCubit.obscurePassword,
+                      togglePasswordVisibility:
+                          loginCubit.togglePasswordVisibility,
                     ),
                     const Gap(20),
                     SignInForgetPasswordButton(
