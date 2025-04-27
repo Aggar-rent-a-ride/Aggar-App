@@ -17,10 +17,8 @@ class TimeAndNumberOfMsgChatView extends StatelessWidget {
       children: [
         Text(
           time,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: context.theme.gray100_3,
+          style: AppStyles.medium14(context).copyWith(
+            color: context.theme.black25,
           ),
         ),
         const Gap(2),

@@ -6,9 +6,13 @@ final class MessageInitial extends MessageState {}
 
 final class MessageSuccess extends MessageState {
   final ListMessageModel? messages;
-
-  MessageSuccess([this.messages]);
+  final ListChatModel? chats;
+  MessageSuccess({this.messages, this.chats});
 }
+
+class ChatsLoaded extends MessageState {}
+
+final class ChatsLoading extends MessageState {}
 
 class MessageLoaded extends MessageState {
   final String messageUrl;

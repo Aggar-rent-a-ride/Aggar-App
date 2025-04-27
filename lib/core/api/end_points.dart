@@ -15,6 +15,7 @@ class EndPoint {
   static String vehicleDiscount = "$baseUrl/api/vehicle/vehicle-discounts";
   static String getMessageBetween = "$baseUrl/api/chat/messages";
   static String filterMessages = "$baseUrl/api/chat/filter";
+  static String getMyChat = "$baseUrl/api/chat/chat?pageNo=1&pageSize=30";
 }
 
 class ApiKey {
@@ -80,4 +81,16 @@ class ApiKey {
   static String filterMsgDateTime = "date";
   static String filterMsgPageSize = "pageSize";
   static String filterMsgPageNo = "pageNo";
+  ///////////////GetMyChat////////////////////////////
+  static String getMyChatUnSeenMsg = "unseenMessageIds";
+  static String getMyChatUser = "user";
+  static String getMyChatUserId = "id";
+  static String getMyChatUserName = "name";
+  static String getMyChatUserPfp = "imagePath";
+  static String getMyChatLastMsg = "lastMessage";
+  static String getMyChatLastMsgFilePath = "filePath";
+  static String getMyChatLastMsgContent = "content";
+  static String getMyChatLastMsgId = "id";
+  static String getMyChatLastMsgSentAt = "sentAt";
+  static String getMtChatLastMsgSeen = "seen";
 }
