@@ -14,15 +14,17 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: context.theme.black25,
+              color: Colors.black26,
               blurRadius: 4,
-              offset: const Offset(0, 0),
+              offset: Offset(0, 0),
             ),
           ],
         ),
         child: TextField(
+          cursorColor: context.theme.blue100_2,
+          cursorOpacityAnimates: true,
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -39,7 +41,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
             suffixIcon: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Transform.rotate(
-                angle: 45 * (3.1415927 / 180), // Convert 45 degrees to radians
+                angle: 45 * (3.1415927 / 180),
                 child: IconButton(
                   onPressed: () {},
                   icon: Icon(

@@ -1,11 +1,9 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/get_mini_type_file.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 
 class ChatBubbleForReciver extends StatefulWidget {
   const ChatBubbleForReciver(
@@ -29,9 +27,7 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
   }
 
   void loadMimeType() async {
-    final type = await context
-        .read<MessageCubit>()
-        .getFileMimeType(widget.message.message);
+    final type = await getFileMimeType(widget.message.message);
     if (mounted) {
       setState(() {
         mimeType = type;
@@ -41,73 +37,65 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        right: MediaQuery.of(context).size.width * 0.15,
-      ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.symmetric(
-            horizontal: 25,
-            vertical: 3,
+    final maxWidth = MediaQuery.of(context).size.width * 0.65;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 25),
+        decoration: BoxDecoration(
+          color: context.theme.white100_2,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 0,
+              blurRadius: 3,
+              offset: Offset(0, 0),
+            )
+          ],
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+            bottomRight: Radius.circular(12),
           ),
-          decoration: BoxDecoration(
-            color: context.theme.white100_2,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-          ),
-          child: widget.isfile == false
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      widget.message.message,
-                      style: AppStyles.medium16(context).copyWith(
-                        color: context.theme.blue100_1,
-                      ),
-                    ),
-                    const Gap(5),
-                    Text(
-                      widget.message.time,
-                      style: AppStyles.medium12(context).copyWith(
-                        color: context.theme.blue100_1,
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: mimeType == "image"
-                          ? Image.network(
-                              "${EndPoint.baseUrl}${widget.message.message}",
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            )
-                          : const Icon(
-                              Icons.file_present_outlined,
-                              size: 50,
-                            ),
-                    ),
-                    const Gap(5),
-                    Text(
-                      widget.message.time,
-                      style: AppStyles.medium12(context).copyWith(
-                        color: context.theme.blue100_1,
-                      ),
-                    ),
-                  ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (widget.isfile == false)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Text(
+                  widget.message.message,
+                  style: AppStyles.medium18(context).copyWith(
+                    color: context.theme.blue100_1,
+                  ),
                 ),
+              )
+            else
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: mimeType == "image"
+                    ? Image.network(
+                        "${EndPoint.baseUrl}${widget.message.message}",
+                        width: 240,
+                        height: 240,
+                        fit: BoxFit.cover,
+                      )
+                    : const Icon(
+                        Icons.file_present_outlined,
+                        size: 50,
+                      ),
+              ),
+            Text(
+              widget.message.time,
+              style: AppStyles.medium12(context).copyWith(
+                color: context.theme.black25,
+              ),
+            ),
+          ],
         ),
       ),
     );

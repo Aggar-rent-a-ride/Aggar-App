@@ -21,13 +21,12 @@ class AllMessagesView extends StatelessWidget {
           itemCount: 2,
           itemBuilder: (context, index) => ChatPerson(
             onTap: () {
-              print("hre");
               context.read<MessageCubit>().getMessages(
                   "11",
                   "2025-06-03T09:49:51.7950956",
                   "30",
                   "0",
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImE3ZDg5NTYyLWJmNTctNGIwNS1hMDQ4LTNkNzY2MWYwMTQ3ZCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTc0NzE1OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.-3-2mJBytmcjve30TIQcedMVJaX3pbIU1bL2WNKbwLY");
+                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImRhOTc5MTFmLWE2NjMtNDkxMC05MjViLWM3ZTJjODRiZGM0MSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTc3NzIzMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.Zs4aV0hobG97UG9vazg_sLW-Khdo92uRmcDPp9tlGVw");
               if (state is MessageSuccess && state.messages != null) {
                 Navigator.push(
                   context,
@@ -48,7 +47,7 @@ class AllMessagesView extends StatelessWidget {
                 "Hello! Excited to connect everyone!Hello! Excited to connect with everyone!",
             time: "12:00 am",
             numberMsg: 8,
-            image: AppAssets.assetsImagesAvatar,
+            image: AppAssets.assetsImagesDafaultPfp,
           ),
         );
       },

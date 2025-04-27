@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/get_file_extension.dart';
+import 'package:aggar/core/helper/get_mini_type_file.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:dio/dio.dart';
@@ -38,9 +40,7 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
   }
 
   void loadMimeType() async {
-    final type = await context
-        .read<MessageCubit>()
-        .getFileMimeType(widget.message.message);
+    final type = await getFileMimeType(widget.message.message);
     if (mounted) {
       setState(() {
         mimeType = type;
@@ -197,7 +197,7 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
 
       // Create a unique filename with proper extension
       final String extension =
-          _getFileExtension(mimeType ?? 'other', messagePath);
+          getFileExtension(mimeType ?? 'other', messagePath);
       final String fileName =
           'file_${DateTime.now().millisecondsSinceEpoch}$extension';
       final String filePath = '${directory.path}/$fileName';
@@ -216,167 +216,154 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
     }
   }
 
-  String _getFileExtension(String fileType, String originalPath) {
-    if (originalPath.contains('.')) {
-      final String originalExtension =
-          originalPath.split('.').last.toLowerCase();
-      final validExtensions = [
-        '.pdf',
-        '.doc',
-        '.docx',
-        '.xls',
-        '.xlsx',
-        '.ppt',
-        '.pptx',
-        '.txt',
-        '.jpg',
-        '.jpeg',
-        '.png',
-        '.gif'
-      ];
-
-      if (validExtensions.contains('.$originalExtension')) {
-        return '.$originalExtension';
-      }
-    }
-
-    switch (fileType) {
-      case 'pdf':
-        return '.pdf';
-      case 'word':
-        return '.docx';
-      case 'excel':
-        return '.xlsx';
-      case 'powerpoint':
-        return '.pptx';
-      case 'text':
-        return '.txt';
-      case 'image':
-        return '.jpg';
-      default:
-        return '.bin';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: MediaQuery.of(context).size.width * 0.2,
-      ),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.symmetric(
-            horizontal: 25,
-            vertical: 3,
+    final maxWidth = MediaQuery.of(context).size.width * 0.65;
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 25,
+        ),
+        decoration: BoxDecoration(
+          color: context.theme.blue100_1,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 0,
+              blurRadius: 3,
+              offset: Offset(0, 0),
+            )
+          ],
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+            bottomLeft: Radius.circular(12),
           ),
-          decoration: BoxDecoration(
-            color: context.theme.blue100_1,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
-            ),
-          ),
-          child: widget.isfile == false
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
+        ),
+        child: widget.isfile == false
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Text(
                       widget.message.message,
-                      style: AppStyles.medium16(context).copyWith(
+                      style: AppStyles.medium18(context).copyWith(
                         color: context.theme.white100_1,
                       ),
                     ),
-                    const Gap(5),
-                    Text(
-                      widget.message.time,
-                      style: AppStyles.medium12(context).copyWith(
-                        color: context.theme.white100_2,
-                      ),
+                  ),
+                  IntrinsicWidth(
+                    child: Row(
+                      spacing: 5,
+                      children: [
+                        Text(
+                          widget.message.time,
+                          style: AppStyles.medium12(context).copyWith(
+                            color: context.theme.gray100_1,
+                          ),
+                        ),
+                        Icon(
+                          size: 15,
+                          Icons.done_all_rounded,
+                          color: context.theme.green100_1,
+                        ),
+                      ],
                     ),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: _openFile,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: mimeType == "image"
-                                ? Image.network(
-                                    "${EndPoint.baseUrl}${widget.message.message}",
-                                    width: 200,
-                                    height: 200,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    width: 150,
-                                    height: 150,
-                                    color: context.theme.white100_2
-                                        .withOpacity(0.2),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          _getFileIcon(mimeType),
-                                          size: 50,
+                  )
+                ],
+              )
+            : Column(
+                spacing: 2,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: _openFile,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: mimeType == "image"
+                              ? Image.network(
+                                  "${EndPoint.baseUrl}${widget.message.message}",
+                                  width: 240,
+                                  height: 240,
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(
+                                  width: 150,
+                                  height: 150,
+                                  color:
+                                      context.theme.white100_2.withOpacity(0.2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        _getFileIcon(mimeType),
+                                        size: 50,
+                                        color: context.theme.white100_1,
+                                      ),
+                                      const Gap(8),
+                                      Text(
+                                        context
+                                            .read<MessageCubit>()
+                                            .getFileName(
+                                                widget.message.message),
+                                        style: AppStyles.medium12(context)
+                                            .copyWith(
                                           color: context.theme.white100_1,
                                         ),
-                                        const Gap(8),
-                                        Text(
-                                          context
-                                              .read<MessageCubit>()
-                                              .getFileName(
-                                                  widget.message.message),
-                                          style: AppStyles.medium12(context)
-                                              .copyWith(
-                                            color: context.theme.white100_1,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                        ),
-                                      ],
-                                    ),
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                      ),
+                                    ],
                                   ),
-                          ),
-                          if (isDownloading)
-                            Container(
-                              width: mimeType == "image" ? 200 : 150,
-                              height: mimeType == "image" ? 200 : 150,
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
                                 ),
+                        ),
+                        if (isDownloading)
+                          Container(
+                            width: mimeType == "image" ? 200 : 150,
+                            height: mimeType == "image" ? 200 : 150,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
-                    const Gap(5),
-                    Text(
-                      widget.message.time,
-                      style: AppStyles.medium12(context).copyWith(
-                        color: context.theme.white100_2,
-                      ),
+                  ),
+                  IntrinsicWidth(
+                    child: Row(
+                      spacing: 5,
+                      children: [
+                        Text(
+                          widget.message.time,
+                          style: AppStyles.medium12(context).copyWith(
+                            color: context.theme.gray100_1,
+                          ),
+                        ),
+                        Icon(
+                          size: 15,
+                          Icons.done_all_rounded,
+                          color: context.theme.green100_1,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-        ),
+                  ),
+                ],
+              ),
       ),
     );
   }

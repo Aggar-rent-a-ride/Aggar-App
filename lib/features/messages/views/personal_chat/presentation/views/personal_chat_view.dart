@@ -56,8 +56,6 @@ class PersonalChatView extends StatelessWidget {
                       ? IconButton(
                           onPressed: () {
                             cubit.selectDate(context);
-                            print(
-                                "Selected date: ${cubit.dateController.text}");
                           },
                           icon: Icon(
                             color: context.theme.white100_2,

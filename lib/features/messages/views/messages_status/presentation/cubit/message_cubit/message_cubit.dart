@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/helper/get_file_extension.dart';
+import 'package:aggar/core/helper/get_mini_type_file.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as dio;
 import 'package:path_provider/path_provider.dart';
 part 'message_state.dart';
 
@@ -89,77 +90,6 @@ class MessageCubit extends Cubit<MessageState> {
       debugPrint("Stack trace: $stackTrace");
       emit(MessageFailure(e.toString()));
       return null;
-    }
-  }
-
-  String getFileExtension(String fileType, String originalPath) {
-    if (originalPath.contains('.')) {
-      final String originalExtension =
-          originalPath.split('.').last.toLowerCase();
-      final validExtensions = [
-        '.pdf',
-        '.doc',
-        '.docx',
-        '.xls',
-        '.xlsx',
-        '.ppt',
-        '.pptx',
-        '.txt',
-      ];
-
-      if (validExtensions.contains('.$originalExtension')) {
-        return '.$originalExtension';
-      }
-    }
-    switch (fileType) {
-      case 'pdf':
-        return '.pdf';
-      case 'word':
-        return '.docx';
-      case 'excel':
-        return '.xlsx';
-      case 'powerpoint':
-        return '.pptx';
-      case 'text':
-        return '.txt';
-      default:
-        return '.bin';
-    }
-  }
-
-  Future<String> getFileMimeType(String url) async {
-    final String fullUrl = EndPoint.baseUrl + url;
-    final response = await dio.head(
-      Uri.parse(fullUrl),
-    );
-    final contentType = response.headers['content-type'] ?? '';
-    if (contentType.startsWith('image/')) {
-      return 'image';
-      /**  * ".jpg",    "image/jpeg"   
-           * ".jpeg",   "image/jpeg"
-           * ".gif",    "image/gif"*/
-    } else if (contentType == 'application/pdf') {
-      return 'pdf';
-      // * ".pdf",    "application/pdf"
-    } else if (contentType.contains('officedocument.wordprocessingml') ||
-        contentType == 'application/msword') {
-      return 'word';
-      /** * ".docx",   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          * ".doc",    "application/msword" */
-    } else if (contentType.contains('officedocument.spreadsheetml') ||
-        contentType == 'application/vnd.ms-excel') {
-      return 'excel';
-      /** * ".xlsx",   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          * ".xls",    "application/vnd.ms-excel" */
-    } else if (contentType.contains('officedocument.presentationml') ||
-        contentType == 'application/vnd.ms-powerpoint') {
-      return 'powerpoint';
-      /** * ".pptx",   "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-          * ".ppt",    "application/vnd.ms-powerpoint" */
-    } else if (contentType.startsWith('text/')) {
-      return 'text';
-    } else {
-      return 'other';
     }
   }
 

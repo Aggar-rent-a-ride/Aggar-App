@@ -12,8 +12,7 @@ class MessagesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
-        toolbarHeight: 70,
+        elevation: 1,
         shadowColor: Colors.grey[900],
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
