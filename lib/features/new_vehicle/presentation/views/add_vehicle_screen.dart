@@ -113,10 +113,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
               // Get the MapLocationCubit instance
               final mapLocationCubit = context.read<MapLocationCubit>();
-              print(context
-                  .read<AddVehicleCubit>()
-                  .selectedTransmissionModeValue);
-              print(context.read<AddVehicleCubit>().selectedVehicleHealthValue);
 
               // Validate the form
               if (context
@@ -142,11 +138,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     );
                 if (context.read<AddVehicleCubit>().state
                     is AddVehicleSuccess) {
+                  final vehicleId =
+                      context.read<AddVehicleCubit>().getVehicleId();
+
                   Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const DiscountScreenView(),
+                      builder: (context) =>
+                          DiscountScreenView(vehicleId: vehicleId.toString()),
                     ),
                   );
                 }
