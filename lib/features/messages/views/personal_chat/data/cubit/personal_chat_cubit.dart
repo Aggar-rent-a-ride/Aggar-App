@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
 import 'package:bloc/bloc.dart';
@@ -11,6 +12,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
   bool isSearchActive = false;
   final TextEditingController searchController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
+  bool dateSelected = false;
 
   void toggleSearchMode() {
     if (state is PersonalChatSearch) {
@@ -41,14 +44,18 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   Future<void> filtterMessage(String accessToken) async {
     try {
       emit(PersonalChatLoading());
+      Map<String, dynamic> data = {
+        ApiKey.filterMessagesSenderId: 11,
+        ApiKey.filterMsgPageNo: 1,
+        ApiKey.filterMsgPageSize: 30,
+      };
+      if (dateSelected && dateController.text.isNotEmpty) {
+        data[ApiKey.filterMsgDateTime] = dateController.text;
+      } else if (searchController.text.isNotEmpty) {
+        data[ApiKey.filterMsgSearchContent] = searchController.text;
+      }
       final response = await dioConsumer.get(
-        data: {
-          ApiKey.filterMessagesSenderId: 11,
-          ApiKey.filterMsgSearchContent: searchController.text,
-          //ApiKey.filterMsgSearchType : "",
-          ApiKey.filterMsgPageNo: 1,
-          ApiKey.filterMsgPageSize: 30,
-        },
+        data: data,
         EndPoint.filterMessages,
         options: Options(
           headers: {
@@ -69,9 +76,33 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
+  Future<void> selectDate(BuildContext context) async {
+    searchController.clear();
+
+    final DateTime? picked = await showDatePicker(
+      builder: (context, child) {
+        return pickDateOfBirthTheme(context, child!);
+      },
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      dateController.text =
+          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      dateSelected = true;
+      searchController.text = dateController.text;
+      emit(DateSelectedState(dateController.text));
+    }
+  }
+
   void clearSearch() {
     isSearchActive = false;
     searchController.clear();
+    dateController.clear();
+    dateSelected = false;
     emit(const PersonalChatInitial());
   }
 

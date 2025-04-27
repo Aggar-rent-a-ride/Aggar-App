@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 class SearchForMsgByContentOrDate extends StatelessWidget {
   const SearchForMsgByContentOrDate({super.key, required this.cubit});
   final PersonalChatCubit cubit;
+
   @override
   Widget build(BuildContext context) {
     return TextField(
       onSubmitted: (value) {
         cubit.filtterMessage(
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjgwNzNmZGJlLWVhMjEtNDQzNi1hYzg4LWE0MjE5OGIyMGM4OSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTY5NzE5NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6X8RMAOnWtrI8UQbPK_NQCk9bbxNJJFXT46uSM27SqQ");
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImE3ZDg5NTYyLWJmNTctNGIwNS1hMDQ4LTNkNzY2MWYwMTQ3ZCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTc0NzE1OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.-3-2mJBytmcjve30TIQcedMVJaX3pbIU1bL2WNKbwLY");
       },
       controller: cubit.searchController,
       autofocus: true,
@@ -19,13 +20,19 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
         color: context.theme.white100_2,
       ),
       decoration: InputDecoration(
-        hintText: "Search messages...",
+        hintText: cubit.dateSelected
+            ? cubit.dateController.text
+            : "Search messages...",
         hintStyle: AppStyles.medium16(context).copyWith(
           color: context.theme.white100_1.withOpacity(0.6),
         ),
         border: InputBorder.none,
       ),
       onChanged: (value) {
+        if (cubit.dateSelected) {
+          cubit.dateSelected = false;
+          cubit.dateController.clear();
+        }
         cubit.updateSearchQuery(value);
       },
     );

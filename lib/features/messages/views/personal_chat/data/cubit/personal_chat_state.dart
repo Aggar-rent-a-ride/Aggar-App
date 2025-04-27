@@ -10,7 +10,7 @@ final class PersonalChatInitial extends PersonalChatState {
   const PersonalChatInitial();
 }
 
-final class PersonalChatSearch extends PersonalChatState {}
+class PersonalChatSearch extends PersonalChatState {}
 
 final class PersonalChatLoading extends PersonalChatState {}
 
@@ -24,4 +24,10 @@ final class PersonalChatFailure extends PersonalChatState {
   final String error;
 
   const PersonalChatFailure(this.error);
+}
+
+class DateSelectedState extends PersonalChatState {
+  final String selectedDate;
+
+  const DateSelectedState(this.selectedDate);
 }
