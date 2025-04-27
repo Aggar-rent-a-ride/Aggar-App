@@ -7,49 +7,73 @@ import '../../../../../../core/utils/app_assets.dart';
 import '../../../../model/dummy.dart';
 import '../../../personal_chat/presentation/views/personal_chat_view.dart';
 
-class AllMessagesView extends StatelessWidget {
+class AllMessagesView extends StatefulWidget {
   const AllMessagesView({super.key});
+
+  @override
+  State<AllMessagesView> createState() => _AllMessagesViewState();
+}
+
+class _AllMessagesViewState extends State<AllMessagesView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<MessageCubit>().getMyChat(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImQ0YWRmMTdhLTdkYTYtNGYxNC05M2IzLWI5MmRhYTU1NzA0ZCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTc5NjIzOSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.wUQg22Y0wbSIgGD1ELjsXAAG-5MuKgNPUNfVcXpVeeU");
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MessageCubit, MessageState>(
       builder: (context, state) {
-        return ListView.builder(
-          padding: const EdgeInsets.only(
-            top: 10,
-          ),
-          itemCount: 2,
-          itemBuilder: (context, index) => ChatPerson(
-            onTap: () {
-              context.read<MessageCubit>().getMessages(
-                  "11",
-                  "2025-06-03T09:49:51.7950956",
-                  "30",
-                  "0",
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImRhOTc5MTFmLWE2NjMtNDkxMC05MjViLWM3ZTJjODRiZGM0MSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTc3NzIzMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.Zs4aV0hobG97UG9vazg_sLW-Khdo92uRmcDPp9tlGVw");
-              if (state is MessageSuccess && state.messages != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PersonalChatView(
-                      messageList: state.messages!.data,
-                    ),
-                  ),
-                );
-              } else if (state is MessageFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage)),
-                );
-              }
+        if (state is MessageSuccess) {
+          return ListView.builder(
+            padding: const EdgeInsets.only(
+              top: 10,
+            ),
+            itemCount: state.chats!.data.length,
+            itemBuilder: (context, index) {
+              DateTime messageTime =
+                  DateTime.parse(state.chats!.data[index].lastMessage.sentAt);
+              String period = messageTime.hour >= 12 ? 'PM' : 'AM';
+              int hour12 = messageTime.hour % 12;
+              if (hour12 == 0) hour12 = 12;
+              String hoursAndMinutes =
+                  "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
+              return ChatPerson(
+                onTap: () {
+                  context.read<MessageCubit>().getMessages(
+                      state.chats!.data[index].user.id.toString(),
+                      "2025-06-03T09:49:51.7950956",
+                      "30",
+                      "0",
+                      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImQ0YWRmMTdhLTdkYTYtNGYxNC05M2IzLWI5MmRhYTU1NzA0ZCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTc5NjIzOSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.wUQg22Y0wbSIgGD1ELjsXAAG-5MuKgNPUNfVcXpVeeU");
+                  if (state.messages != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PersonalChatView(
+                          messageList: state.messages!.data,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                name: state.chats!.data[index].user.name,
+                msg: state.chats!.data[index].lastMessage.content ??
+                    state.chats!.data[index].lastMessage.filePath!,
+                time: hoursAndMinutes,
+                numberMsg: state.chats!.data[index].unseenMessageIds.length,
+                image: AppAssets.assetsImagesDafaultPfp,
+                //TODO: change it later
+              );
             },
-            name: names[index],
-            msg:
-                "Hello! Excited to connect everyone!Hello! Excited to connect with everyone!",
-            time: "12:00 am",
-            numberMsg: 8,
-            image: AppAssets.assetsImagesDafaultPfp,
-          ),
-        );
+          );
+        } else if (state is MessageFailure) {
+          print(state.errorMessage);
+        }
+        return const SizedBox();
       },
     );
   }
