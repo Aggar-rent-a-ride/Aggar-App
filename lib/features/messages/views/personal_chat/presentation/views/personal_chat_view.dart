@@ -26,7 +26,7 @@ class PersonalChatView extends StatefulWidget {
 class _PersonalChatViewState extends State<PersonalChatView> {
   @override
   Widget build(BuildContext context) {
-    int currentUserId = 20;
+    int currentUserId = 20; // Replace with the actual current user ID
     return BlocProvider(
       create: (context) => PersonalChatCubit(),
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
