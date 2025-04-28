@@ -9,17 +9,24 @@ import 'package:aggar/features/messages/views/personal_chat/presentation/widgets
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PersonalChatView extends StatelessWidget {
+class PersonalChatView extends StatefulWidget {
   const PersonalChatView({
     super.key,
     required this.messageList,
+    this.onMessagesUpdated,
   });
 
   final List<MessageModel> messageList;
 
+  final VoidCallback? onMessagesUpdated;
+  @override
+  State<PersonalChatView> createState() => _PersonalChatViewState();
+}
+
+class _PersonalChatViewState extends State<PersonalChatView> {
   @override
   Widget build(BuildContext context) {
-    int currentUserId = 20; // Replace with the actual current user ID
+    int currentUserId = 20;
     return BlocProvider(
       create: (context) => PersonalChatCubit(),
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
@@ -68,7 +75,7 @@ class PersonalChatView extends StatelessWidget {
             ),
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
-              messageList: messageList,
+              messageList: widget.messageList,
               currentUserId: currentUserId,
             ),
           );

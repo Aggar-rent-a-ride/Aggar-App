@@ -12,13 +12,13 @@ class ChatPerson extends StatelessWidget {
       required this.msg,
       required this.time,
       required this.numberMsg,
-      required this.image,
+      this.image,
       this.onTap});
   final String name;
   final String msg;
   final String time;
   final int numberMsg;
-  final String image;
+  final String? image;
   final void Function()? onTap;
 
   @override

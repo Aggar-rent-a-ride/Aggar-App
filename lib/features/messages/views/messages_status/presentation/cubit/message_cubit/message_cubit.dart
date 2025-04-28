@@ -110,9 +110,9 @@ class MessageCubit extends Cubit<MessageState> {
         emit(MessageFailure("No response received from server."));
         return;
       }
-      final ListChatModel messages = ListChatModel.fromJson(response);
+      final ListChatModel chat = ListChatModel.fromJson(response);
       await Future.delayed(const Duration(seconds: 2));
-      emit(MessageSuccess(chats: messages));
+      emit(ChatSuccess(chats: chat));
     } catch (e) {
       emit(MessageFailure(e.toString()));
     }
