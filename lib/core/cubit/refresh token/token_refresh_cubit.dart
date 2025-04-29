@@ -9,11 +9,14 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   final ApiConsumer apiConsumer;
   final FlutterSecureStorage secureStorage;
   String? _cachedAccessToken;
-
+  
+  final int _refreshBufferMinutes;
   TokenRefreshCubit({
     required this.apiConsumer,
     required this.secureStorage,
-  }) : super(TokenRefreshInitial()) {
+    int refreshBufferMinutes = 5, // Default to refresh 5 minutes before expiration
+  }) : _refreshBufferMinutes = refreshBufferMinutes,
+       super(TokenRefreshInitial()) {
     _loadCachedToken();
   }
 
@@ -22,7 +25,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   }
 
   Future<String?> getAccessToken() async {
-    if (_cachedAccessToken != null && !await isTokenExpired()) {
+    if (_cachedAccessToken != null && !await isTokenExpired(checkBuffer: true)) {
       return _cachedAccessToken;
     }
 
@@ -31,6 +34,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
         await refreshToken();
         return _cachedAccessToken;
       } catch (e) {
+        print('Error refreshing token: $e');
         return null;
       }
     }
@@ -93,6 +97,27 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
     }
   }
 
+  Future<String?> ensureValidToken() async {
+    try {
+      final accessToken = await secureStorage.read(key: 'accessToken');
+      
+      if (accessToken == null) {
+        return null; 
+      }
+      
+      if (await isTokenExpired(checkBuffer: true)) {
+        await refreshToken();
+      } else {
+        _cachedAccessToken = accessToken;
+      }
+      
+      return _cachedAccessToken;
+    } catch (e) {
+      print('Error ensuring valid token: $e');
+      return null;
+    }
+  }
+
   Future<void> _secureStoreTokens(
       {required String accessToken, required String refreshToken}) async {
     try {
@@ -114,10 +139,12 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
 
     return refreshToken == null ||
         accessToken == null ||
-        await isTokenExpired();
+        await isTokenExpired(checkBuffer: true);
   }
 
-  Future<bool> isTokenExpired() async {
+  /// If [checkBuffer] is true, it will return true if the token will expire within 
+  /// the buffer time (default 5 minutes)
+  Future<bool> isTokenExpired({bool checkBuffer = false}) async {
     try {
       final accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -128,9 +155,16 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
         return true;
       }
 
-      // Optional: exact expiration time
+
       final DateTime expirationDate = JwtDecoder.getExpirationDate(accessToken);
-      print('Token expires at: $expirationDate');
+      
+      if (checkBuffer) {
+        final bufferThreshold = DateTime.now().add(Duration(minutes: _refreshBufferMinutes));
+        if (expirationDate.isBefore(bufferThreshold)) {
+          print('Token will expire soon (within $_refreshBufferMinutes minutes)');
+          return true;
+        }
+      }
 
       return false;
     } catch (e) {
@@ -139,4 +173,17 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
     }
   }
 
+  Future<Duration?> getTokenRemainingTime() async {
+    try {
+      final accessToken = await secureStorage.read(key: 'accessToken');
+      
+      if (accessToken == null) return null;
+      
+      final DateTime expirationDate = JwtDecoder.getExpirationDate(accessToken);
+      return expirationDate.difference(DateTime.now());
+    } catch (e) {
+      print('Error getting token remaining time: $e');
+      return null;
+    }
+  }
 }
