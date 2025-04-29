@@ -16,6 +16,7 @@ class EndPoint {
   static String getMessageBetween = "$baseUrl/api/chat/messages";
   static String filterMessages = "$baseUrl/api/chat/filter";
   static String getMyChat = "$baseUrl/api/chat/chat?pageNo=1&pageSize=30";
+  static String markAsSeen = "$baseUrl/api/chat/ack";
 }
 
 class ApiKey {
@@ -93,4 +94,6 @@ class ApiKey {
   static String getMyChatLastMsgId = "id";
   static String getMyChatLastMsgSentAt = "sentAt";
   static String getMtChatLastMsgSeen = "seen";
+  //////////////MarkAsSeen/////////////////////////////
+  static String markAsSeenMsgId = "messageIds";
 }

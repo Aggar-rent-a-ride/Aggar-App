@@ -176,4 +176,40 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     scrollController.dispose();
     return super.close();
   }
+
+  Future<void> markAsSeen(String accessToken, List<int> ids) async {
+    try {
+      emit(PersonalChatLoading());
+      FormData formData = FormData();
+      if (ids.isNotEmpty) {
+        for (int i = 0; i < ids.length; i++) {
+          formData.files.add(
+            MapEntry(
+              ApiKey.markAsSeenMsgId,
+              MultipartFile.fromString(
+                ids[i].toString(),
+              ),
+            ),
+          );
+        }
+      }
+      final response = await dioConsumer.put(
+        EndPoint.markAsSeen,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      print(response);
+      if (response.statusCode == 200) {
+      } else {
+        emit(const PersonalChatFailure("Failed to mark messages as seen"));
+      }
+    } catch (e) {
+      emit(PersonalChatFailure(
+          "Failed to mark messages as seen : ${e.toString()}"));
+    }
+  }
 }

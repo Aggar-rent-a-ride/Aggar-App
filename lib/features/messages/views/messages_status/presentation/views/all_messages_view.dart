@@ -1,6 +1,7 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../personal_chat/presentation/views/personal_chat_view.dart';
@@ -10,7 +11,6 @@ class AllMessagesView extends StatefulWidget {
   @override
   State<AllMessagesView> createState() => _AllMessagesViewState();
 }
-
 class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAliveClientMixin {
   String? accessToken;
   bool isLoading = false;
@@ -188,6 +188,19 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
                   "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
               
               return ChatPerson(
+/*<<<<<<< esraa
+                  onTap: () {
+                    if (!isLoading) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      context.read<PersonalChatCubit>().markAsSeen(
+                          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6Ijk1NDUxMDhiLTRjMzMtNGNlOS1hZjZkLTUxMjQ2MTIxNTQyMyIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTg3ODA5NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.k643dikDe_qL55CtKZ5XGbV-8ymEg6YLmwfZqMvUFd0",
+                          [26]);
+                    }
+                  },
+                
+=======*/
                 onTap: () => _handleChatTap(
                   chatData.user.id.toString(),
                   "2025-06-03T09:49:51.7950956",
