@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
 import 'package:flutter/material.dart';
@@ -11,22 +12,106 @@ class AllMessagesView extends StatefulWidget {
 }
 
 class _AllMessagesViewState extends State<AllMessagesView> {
-  final String accessToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImY4YTFmNzZkLTY2OWItNDQ2NS1iZTQ5LTVlYTFlNDc4MjY5YSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0NTg3MzU1OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.4xMYowj7oMWKMlPUlmwpybGXG5qaKoI6e_Ed_mXpDoc";
+  String? accessToken;
   bool isLoading = false;
+  bool isLoadingToken = true;
 
   @override
   void initState() {
     super.initState();
-    _loadChats();
+    _getValidToken();
+  }
+
+  // Get a valid token before loading chats
+  Future<void> _getValidToken() async {
+    setState(() {
+      isLoadingToken = true;
+    });
+
+    try {
+      final token = await context.read<TokenRefreshCubit>().ensureValidToken();
+      if (token != null) {
+        setState(() {
+          accessToken = token;
+          isLoadingToken = false;
+        });
+        _loadChats();
+      } else {
+        setState(() {
+          isLoadingToken = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Authentication error. Please login again."),
+          ),
+        );
+        // Navigate to login screen or handle authentication error
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingToken = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Authentication error: $e"),
+        ),
+      );
+    }
   }
 
   void _loadChats() {
-    context.read<MessageCubit>().getMyChat(accessToken);
+    if (accessToken != null) {
+      context.read<MessageCubit>().getMyChat(accessToken!);
+    } else {
+      _getValidToken();
+    }
+  }
+  
+  Future<void> _ensureValidTokenAndExecute(Function(String token) action) async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        final token = await context.read<TokenRefreshCubit>().ensureValidToken();
+        
+        if (token != null) {
+          setState(() {
+            accessToken = token;
+          });
+          action(token);
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Authentication error. Please login again."),
+            ),
+          );
+        }
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Authentication error: $e"),
+          ),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoadingToken) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return BlocConsumer<MessageCubit, MessageState>(
       listener: (context, state) {
         if (state is MessageSuccess && isLoading) {
@@ -73,18 +158,14 @@ class _AllMessagesViewState extends State<AllMessagesView> {
                   "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
               return ChatPerson(
                   onTap: () {
-                    if (!isLoading) {
-                      setState(() {
-                        isLoading = true;
-                      });
-
+                    _ensureValidTokenAndExecute((validToken) {
                       context.read<MessageCubit>().getMessages(
                           state.chats!.data[index].user.id.toString(),
                           "2025-06-03T09:49:51.7950956",
                           "30",
                           "0",
-                          accessToken);
-                    }
+                          validToken);
+                    });
                   },
                   name: state.chats!.data[index].user.name,
                   msg: state.chats!.data[index].lastMessage.content ??
