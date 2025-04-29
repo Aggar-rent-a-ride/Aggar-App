@@ -11,15 +11,18 @@ class AllMessagesView extends StatefulWidget {
   State<AllMessagesView> createState() => _AllMessagesViewState();
 }
 
-class _AllMessagesViewState extends State<AllMessagesView> {
+class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAliveClientMixin {
   String? accessToken;
   bool isLoading = false;
   bool isLoadingToken = true;
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    _getValidToken();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getValidToken();
+    });
   }
 
   // Get a valid token before loading chats
@@ -29,7 +32,9 @@ class _AllMessagesViewState extends State<AllMessagesView> {
     });
 
     try {
-      final token = await context.read<TokenRefreshCubit>().ensureValidToken();
+      final tokenCubit = context.read<TokenRefreshCubit>();
+      final token = await tokenCubit.ensureValidToken();
+      
       if (token != null) {
         setState(() {
           accessToken = token;
@@ -40,11 +45,13 @@ class _AllMessagesViewState extends State<AllMessagesView> {
         setState(() {
           isLoadingToken = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Authentication error. Please login again."),
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Authentication error. Please login again."),
+            ),
+          );
+        }
         // Navigate to login screen or handle authentication error
       }
     } catch (e) {
@@ -68,44 +75,64 @@ class _AllMessagesViewState extends State<AllMessagesView> {
   }
   
   Future<void> _ensureValidTokenAndExecute(Function(String token) action) async {
-    if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
+    if (!mounted || isLoading) return;
+    
+    setState(() {
+      isLoading = true;
+    });
 
-      try {
-        final token = await context.read<TokenRefreshCubit>().ensureValidToken();
-        
-        if (token != null) {
-          setState(() {
-            accessToken = token;
-          });
-          action(token);
-        } else {
-          setState(() {
-            isLoading = false;
-          });
+    try {
+      final tokenCubit = context.read<TokenRefreshCubit>();
+      final token = await tokenCubit.ensureValidToken();      
+      if (token != null) {
+        setState(() {
+          accessToken = token;
+        });
+        action(token);
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text("Authentication error. Please login again."),
             ),
           );
         }
-      } catch (e) {
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Authentication error: $e"),
-          ),
-        );
       }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Authentication error: $e"),
+        ),
+      );
     }
+  }
+
+  void _handleChatTap(String userId, String dateTime) {
+    if (!mounted) return;
+    
+    _ensureValidTokenAndExecute((validToken) {
+      if (!mounted) return;
+      
+      final messageCubit = context.read<MessageCubit>();
+      messageCubit.getMessages(
+        userId,
+        dateTime,
+        "30",
+        "0",
+        validToken,
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); 
     if (isLoadingToken) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -118,15 +145,18 @@ class _AllMessagesViewState extends State<AllMessagesView> {
           setState(() {
             isLoading = false;
           });
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PersonalChatView(
-                messageList: state.messages!.data,
+          final messageData = state.messages!.data;
+          Future.microtask(() {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PersonalChatView(
+                  messageList: messageData,
+                  onMessagesUpdated: () {
+                    if (mounted) _loadChats();
+                  },
+                ),
               ),
-            ),
-          ).then((_) {
-            _loadChats();
+            );
           });
         } else if (state is MessageFailure && isLoading) {
           setState(() {
@@ -135,8 +165,8 @@ class _AllMessagesViewState extends State<AllMessagesView> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content:
-                    Text("Failed to load messages: ${state.errorMessage}")),
+              content: Text("Failed to load messages: ${state.errorMessage}"),
+            ),
           );
         }
       },
@@ -149,30 +179,25 @@ class _AllMessagesViewState extends State<AllMessagesView> {
             padding: const EdgeInsets.only(top: 10),
             itemCount: state.chats!.data.length,
             itemBuilder: (context, index) {
-              DateTime messageTime =
-                  DateTime.parse(state.chats!.data[index].lastMessage.sentAt);
+              final chatData = state.chats!.data[index];
+              DateTime messageTime = DateTime.parse(chatData.lastMessage.sentAt);
               String period = messageTime.hour >= 12 ? 'PM' : 'AM';
               int hour12 = messageTime.hour % 12;
               if (hour12 == 0) hour12 = 12;
               String hoursAndMinutes =
                   "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
+              
               return ChatPerson(
-                  onTap: () {
-                    _ensureValidTokenAndExecute((validToken) {
-                      context.read<MessageCubit>().getMessages(
-                          state.chats!.data[index].user.id.toString(),
-                          "2025-06-03T09:49:51.7950956",
-                          "30",
-                          "0",
-                          validToken);
-                    });
-                  },
-                  name: state.chats!.data[index].user.name,
-                  msg: state.chats!.data[index].lastMessage.content ??
-                      state.chats!.data[index].lastMessage.filePath!,
-                  time: hoursAndMinutes,
-                  numberMsg: state.chats!.data[index].unseenMessageIds.length,
-                  image: state.chats!.data[index].user.imagePath);
+                onTap: () => _handleChatTap(
+                  chatData.user.id.toString(),
+                  "2025-06-03T09:49:51.7950956",
+                ),
+                name: chatData.user.name,
+                msg: chatData.lastMessage.content ?? chatData.lastMessage.filePath!,
+                time: hoursAndMinutes,
+                numberMsg: chatData.unseenMessageIds.length,
+                image: chatData.user.imagePath,
+              );
             },
           );
         } else if (state is ChatsLoading) {

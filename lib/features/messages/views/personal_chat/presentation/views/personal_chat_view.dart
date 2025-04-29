@@ -24,14 +24,28 @@ class PersonalChatView extends StatefulWidget {
 }
 
 class _PersonalChatViewState extends State<PersonalChatView> {
+  late final PersonalChatCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = PersonalChatCubit();
+  }
+
+  @override
+  void dispose() {
+    widget.onMessagesUpdated?.call();
+    cubit.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     int currentUserId = 20;
-    return BlocProvider(
-      create: (context) => PersonalChatCubit(),
+    return BlocProvider.value(
+      value: cubit,
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
         builder: (context, state) {
-          final cubit = context.read<PersonalChatCubit>();
           return Scaffold(
             appBar: AppBar(
               iconTheme: IconThemeData(
