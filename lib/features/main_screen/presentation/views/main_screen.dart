@@ -76,7 +76,6 @@ class MainScreen extends StatelessWidget {
   }
 
   Widget _buildMainContent(BuildContext context, MainConnected state) {
-    // TODO: here is error
     return RefreshIndicator(
       onRefresh: () async {
         context.read<MainCubit>().refreshData();

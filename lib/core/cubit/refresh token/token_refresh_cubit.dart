@@ -9,14 +9,14 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   final ApiConsumer apiConsumer;
   final FlutterSecureStorage secureStorage;
   String? _cachedAccessToken;
-  
+
   final int _refreshBufferMinutes;
   TokenRefreshCubit({
     required this.apiConsumer,
     required this.secureStorage,
-    int refreshBufferMinutes = 5, // Default to refresh 5 minutes before expiration
-  }) : _refreshBufferMinutes = refreshBufferMinutes,
-       super(TokenRefreshInitial()) {
+    int refreshBufferMinutes = 5,
+  })  : _refreshBufferMinutes = refreshBufferMinutes,
+        super(TokenRefreshInitial()) {
     _loadCachedToken();
   }
 
@@ -25,7 +25,8 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   }
 
   Future<String?> getAccessToken() async {
-    if (_cachedAccessToken != null && !await isTokenExpired(checkBuffer: true)) {
+    if (_cachedAccessToken != null &&
+        !await isTokenExpired(checkBuffer: true)) {
       return _cachedAccessToken;
     }
 
@@ -42,6 +43,48 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   }
 
   String? get currentAccessToken => _cachedAccessToken;
+
+  Future<void> storeAuthData(Map<String, dynamic> loginResponse) async {
+    try {
+      final tokenData = loginResponse['data'];
+
+      if (tokenData != null) {
+        final accessToken = tokenData[ApiKey.accessToken];
+        final refreshToken = tokenData[ApiKey.refreshToken];
+        final userId = tokenData['userId']?.toString();
+
+        _cachedAccessToken = accessToken;
+
+        await Future.wait([
+          secureStorage.write(key: 'accessToken', value: accessToken),
+          secureStorage.write(key: 'refreshToken', value: refreshToken),
+          if (userId != null) secureStorage.write(key: 'userId', value: userId),
+          secureStorage.write(
+              key: 'tokenStoredAt', value: DateTime.now().toIso8601String())
+        ]);
+
+        if (userId == null) {
+          _extractAndStoreUserIdFromToken(accessToken);
+        }
+      }
+    } catch (e) {
+      print('Error storing auth data: $e');
+      throw Exception('Failed to store authentication data');
+    }
+  }
+
+  Future<void> _extractAndStoreUserIdFromToken(String token) async {
+    try {
+      final Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      final userId = decodedToken['sub'] ?? decodedToken['uid'];
+
+      if (userId != null) {
+        await secureStorage.write(key: 'userId', value: userId.toString());
+      }
+    } catch (e) {
+      print('Error extracting userId from token: $e');
+    }
+  }
 
   Future<void> refreshToken() async {
     try {
@@ -69,6 +112,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
 
         final newAccessToken = tokenData[ApiKey.accessToken];
         final newRefreshToken = tokenData[ApiKey.refreshToken];
+        final userId = tokenData['userId']?.toString();
 
         _cachedAccessToken = newAccessToken;
 
@@ -78,8 +122,17 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
               DateTime.parse(tokenData[ApiKey.refreshTokenExpiration]);
         }
 
-        await _secureStoreTokens(
-            accessToken: newAccessToken, refreshToken: newRefreshToken);
+        await Future.wait([
+          secureStorage.write(key: 'accessToken', value: newAccessToken),
+          secureStorage.write(key: 'refreshToken', value: newRefreshToken),
+          if (userId != null) secureStorage.write(key: 'userId', value: userId),
+          secureStorage.write(
+              key: 'tokenStoredAt', value: DateTime.now().toIso8601String())
+        ]);
+
+        if (userId == null) {
+          await _extractAndStoreUserIdFromToken(newAccessToken);
+        }
 
         emit(TokenRefreshSuccess(
           accessToken: newAccessToken,
@@ -100,17 +153,17 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   Future<String?> ensureValidToken() async {
     try {
       final accessToken = await secureStorage.read(key: 'accessToken');
-      
+
       if (accessToken == null) {
-        return null; 
+        return null;
       }
-      
+
       if (await isTokenExpired(checkBuffer: true)) {
         await refreshToken();
       } else {
         _cachedAccessToken = accessToken;
       }
-      
+
       return _cachedAccessToken;
     } catch (e) {
       print('Error ensuring valid token: $e');
@@ -127,6 +180,8 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
         secureStorage.write(
             key: 'tokenStoredAt', value: DateTime.now().toIso8601String())
       ]);
+
+      await _extractAndStoreUserIdFromToken(accessToken);
     } catch (e) {
       print('Error storing tokens: $e');
       throw Exception('Failed to store tokens');
@@ -142,7 +197,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
         await isTokenExpired(checkBuffer: true);
   }
 
-  /// If [checkBuffer] is true, it will return true if the token will expire within 
+  /// If [checkBuffer] is true, it will return true if the token will expire within
   /// the buffer time (default 5 minutes)
   Future<bool> isTokenExpired({bool checkBuffer = false}) async {
     try {
@@ -155,13 +210,14 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
         return true;
       }
 
-
       final DateTime expirationDate = JwtDecoder.getExpirationDate(accessToken);
-      
+
       if (checkBuffer) {
-        final bufferThreshold = DateTime.now().add(Duration(minutes: _refreshBufferMinutes));
+        final bufferThreshold =
+            DateTime.now().add(Duration(minutes: _refreshBufferMinutes));
         if (expirationDate.isBefore(bufferThreshold)) {
-          print('Token will expire soon (within $_refreshBufferMinutes minutes)');
+          print(
+              'Token will expire soon (within $_refreshBufferMinutes minutes)');
           return true;
         }
       }
@@ -176,9 +232,9 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
   Future<Duration?> getTokenRemainingTime() async {
     try {
       final accessToken = await secureStorage.read(key: 'accessToken');
-      
+
       if (accessToken == null) return null;
-      
+
       final DateTime expirationDate = JwtDecoder.getExpirationDate(accessToken);
       return expirationDate.difference(DateTime.now());
     } catch (e) {
