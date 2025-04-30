@@ -37,7 +37,8 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<void> login({required String identifier, required String password}) async {
+  Future<void> login(
+      {required String identifier, required String password}) async {
     emit(LoginLoading());
     try {
       final response = await dioConsumer.post(
@@ -73,14 +74,18 @@ class LoginCubit extends Cubit<LoginState> {
 
         final accessToken = data[ApiKey.accessToken] ?? "";
         final refreshToken = data[ApiKey.refreshToken] ?? "";
+        final userId = _extractUserId(data, accessToken);
 
         await _storeTokens(
-            accessToken: accessToken, refreshToken: refreshToken);
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            userId: userId);
 
         emit(LoginSuccess(
           accessToken: accessToken,
           refreshToken: refreshToken,
           username: _extractUsername(data, identifier),
+          userId: userId,
         ));
       } else {
         final errorMessage = _extractErrorMessage(response);
@@ -93,8 +98,18 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<void> _storeTokens(
-      {required String accessToken, required String refreshToken}) async {
+  String? _extractUserId(dynamic data, String accessToken) {
+    if (data['userId'] != null) {
+      return data['userId'].toString();
+    }
+    return null;
+  }
+
+  Future<void> _storeTokens({
+    required String accessToken,
+    required String refreshToken,
+    String? userId,
+  }) async {
     try {
       if (secureStorage == null) {
         print('Secure storage is not initialized.');
@@ -104,14 +119,16 @@ class LoginCubit extends Cubit<LoginState> {
         print('Cannot store empty tokens.');
         return;
       }
+
       await Future.wait([
         secureStorage!.write(key: 'accessToken', value: accessToken),
         secureStorage!.write(key: 'refreshToken', value: refreshToken),
         secureStorage!.write(
-            key: 'tokenCreatedAt', value: DateTime.now().toIso8601String())
+            key: 'tokenCreatedAt', value: DateTime.now().toIso8601String()),
+        if (userId != null) secureStorage!.write(key: 'userId', value: userId),
       ]);
 
-      print('Tokens stored successfully');
+      print('Tokens and userId stored successfully');
     } catch (e) {
       print('Detailed token storage error: $e');
 
@@ -121,17 +138,26 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
+  Future<String?> getUserId() async {
+    try {
+      return await secureStorage?.read(key: 'userId');
+    } catch (e) {
+      print('Error retrieving userId: $e');
+      return null;
+    }
+  }
+
   String _extractUsername(dynamic data, String identifier) {
     // If username is available in the response data, use it
     if (data[ApiKey.username] != null) {
       return data[ApiKey.username];
     }
-    
+
     // If the identifier is an email, extract the username part
     if (identifier.contains('@')) {
       return identifier.split('@')[0];
     }
-    
+
     // Otherwise, return the identifier as is (username)
     return identifier;
   }

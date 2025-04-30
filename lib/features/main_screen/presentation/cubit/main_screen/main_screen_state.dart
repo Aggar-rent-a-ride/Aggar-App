@@ -9,11 +9,13 @@ class MainConnected extends MainState {
   final String accessToken;
   final bool isVehicleBrandsLoaded;
   final bool isVehicleTypesLoaded;
+  final bool isSignalRConnected; // Added SignalR connection status
 
   MainConnected({
     required this.accessToken,
-    this.isVehicleBrandsLoaded = false,
-    this.isVehicleTypesLoaded = false,
+    required this.isVehicleBrandsLoaded,
+    required this.isVehicleTypesLoaded,
+    this.isSignalRConnected = false,
   });
 }
 
