@@ -53,7 +53,7 @@ class _MapScreenState extends State<ImageOfCurrentVehicleLocation> {
       children: [
         TileLayer(
           //TODO : templete would be change
-          urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          urlTemplate: "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
           subdomains: const ['a', 'b', 'c'],
         ),
         MarkerLayer(

@@ -12,24 +12,24 @@ class LoadingVehicleAdditinalImagesSection extends StatelessWidget {
       spacing: 15,
       children: [
         Container(
-          height: 60,
-          width: 60,
+          height: MediaQuery.sizeOf(context).height * 0.03 + 50,
+          width: MediaQuery.sizeOf(context).height * 0.03 + 50,
           decoration: BoxDecoration(
             color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
         Container(
-          height: 60,
-          width: 60,
+          height: MediaQuery.sizeOf(context).height * 0.03 + 50,
+          width: MediaQuery.sizeOf(context).height * 0.03 + 50,
           decoration: BoxDecoration(
             color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
         Container(
-          height: 60,
-          width: 60,
+          height: MediaQuery.sizeOf(context).height * 0.03 + 50,
+          width: MediaQuery.sizeOf(context).height * 0.03 + 50,
           decoration: BoxDecoration(
             color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(4),

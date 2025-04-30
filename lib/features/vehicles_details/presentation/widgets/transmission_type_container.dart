@@ -17,10 +17,10 @@ class TransmissionTypeContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: context.theme.black100.withOpacity(0.2),
-            offset: const Offset(0, 0),
+            color: Colors.black12,
+            offset: Offset(0, 0),
             blurRadius: 4,
           ),
         ],

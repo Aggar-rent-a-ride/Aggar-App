@@ -7,6 +7,7 @@ import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/themes/light_theme.dart';
 import 'package:aggar/core/translations/l10n.dart';
+import 'package:aggar/features/Splash/presentation/views/splash_view.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
@@ -27,6 +28,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/ad
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -106,6 +108,9 @@ class MyApp extends StatelessWidget {
           create: (context) => MessageCubit(),
         ),
         BlocProvider(
+          create: (context) => ReviewCubit(),
+        ),
+        BlocProvider(
           create: (context) => SignUpCubit(),
         ),
         BlocProvider(
@@ -149,7 +154,7 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                   themeMode: context.themeCubit.themeMode,
                   darkTheme: darkTheme,
-                  theme: lightTheme,
+                  theme: darkTheme,
                   debugShowCheckedModeBanner: false,
                   /** locale: languageState is LanguageChanged
                       ? languageState.locale
@@ -165,7 +170,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   //builder: DevicePreview.appBuilder,
-                  home: const MainScreen());
+                  home: const SplashView());
             },
           );
         },

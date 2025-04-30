@@ -62,6 +62,37 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     required this.green100_1,
     required this.green10_1,
   });
+  static CustomThemeExtension fallback() {
+    return CustomThemeExtension(
+      black10: const Color(0x1A000000),
+      black25: const Color(0x40000000),
+      black50: const Color(0x80000000),
+      black100: const Color(0xFF000000),
+      gray100_1: const Color(0xFF888888),
+      gray100_2: const Color(0xFF999999),
+      gray100_3: const Color(0xFFCCCCCC),
+      white100_1: const Color(0xFFFFFFFF),
+      white50_1: const Color(0x80FFFFFF),
+      white100_2: const Color(0xFFF9F9F9),
+      white100_4: const Color(0xFFF0F0F0),
+      blue100_1: const Color(0xFF2196F3),
+      blue100_5: const Color(0xFF0D47A1),
+      blue100_2: const Color(0xFF1976D2),
+      blue50_2: const Color(0x801976D2),
+      blue10_2: const Color(0x1A1976D2),
+      blue100_3: const Color(0xFF0D47A1),
+      blue100_4: const Color(0xFF3F51B5),
+      blue100_6: const Color(0xFF3949AB),
+      blue100_7: const Color(0xFF1A237E),
+      blue100_8: const Color(0xFF283593),
+      yellow100_1: const Color(0xFFFFEB3B),
+      yellow10_1: const Color(0x1AFFEB3B),
+      red100_1: const Color(0xFFF44336),
+      red10_1: const Color(0x1AF44336),
+      green100_1: const Color(0xFF4CAF50),
+      green10_1: const Color(0x1A4CAF50),
+    );
+  }
 
   @override
   ThemeExtension<CustomThemeExtension> copyWith({

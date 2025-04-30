@@ -34,7 +34,7 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
+          /*Expanded(
             flex: 1,
             child: Text(
               "1.4km",
@@ -42,7 +42,7 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
                 color: context.theme.black50,
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );
