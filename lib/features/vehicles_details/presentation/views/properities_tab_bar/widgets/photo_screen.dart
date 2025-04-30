@@ -15,9 +15,15 @@ class PhotoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.black100,
+      // backgroundColor: context.theme.white100_1,
       appBar: AppBar(
         backgroundColor: context.theme.black100,
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+          ),
+        ),
         iconTheme: IconThemeData(color: context.theme.white100_1),
       ),
       body: PhotoViewGallery.builder(
@@ -40,7 +46,7 @@ class PhotoScreen extends StatelessWidget {
             color: context.theme.blue100_2,
           ),
         ),
-        backgroundDecoration: BoxDecoration(color: context.theme.black100),
+        backgroundDecoration: BoxDecoration(color: context.theme.white100_1),
       ),
     );
   }

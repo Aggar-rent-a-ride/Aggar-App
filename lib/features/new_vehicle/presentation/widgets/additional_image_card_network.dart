@@ -29,6 +29,24 @@ class AdditionalImageCardNetwork extends StatelessWidget {
           fit: BoxFit.cover,
           height: MediaQuery.sizeOf(context).height * 0.03 + 50,
           width: MediaQuery.sizeOf(context).height * 0.03 + 50,
+          errorBuilder: (context, error, stackTrace) {
+            return Row(
+              spacing: 15,
+              children: List.generate(
+                1,
+                (index) {
+                  return Container(
+                    height: MediaQuery.sizeOf(context).height * 0.03 + 50,
+                    width: MediaQuery.sizeOf(context).height * 0.03 + 50,
+                    decoration: BoxDecoration(
+                      color: context.theme.white100_1,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         ),
       ),
     );

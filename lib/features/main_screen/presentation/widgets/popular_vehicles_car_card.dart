@@ -3,7 +3,7 @@ import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
-import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/views/vehicle_details_after_adding_screen.dart';
 import 'package:aggar/core/cubit/refresh token/token_refresh_cubit.dart';
 import 'package:flutter/material.dart';
@@ -34,10 +34,12 @@ class PopularVehiclesCarCard extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
+            print("heeeeeeer");
             final token =
                 await context.read<TokenRefreshCubit>().getAccessToken();
             if (token != null) {
-              context.read<AddVehicleCubit>().getData("1072", token);
+              context.read<AddVehicleCubit>().getData("15", token);
+              context.read<ReviewCubit>().getVehicleReviews("15", token);
             }
             if (context.read<AddVehicleCubit>().vehicleData != null) {
               final vehicle = context.read<AddVehicleCubit>().vehicleData!;

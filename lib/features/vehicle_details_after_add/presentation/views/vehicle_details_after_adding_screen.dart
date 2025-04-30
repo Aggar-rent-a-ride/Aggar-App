@@ -1,7 +1,10 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/location_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_and_reviews_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
@@ -54,43 +57,36 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: context.theme.white100_1,
         appBar: AppBar(
-          backgroundColor: AppLightColors.myWhite100_1,
+          elevation: 2,
+          shadowColor: Colors.grey[900],
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+          backgroundColor: context.theme.white100_1,
           actions: [
             IconButton(
-              style: ButtonStyle(
-                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                  const EdgeInsets.symmetric(horizontal: 25),
-                ),
-              ),
-              icon: Icon(
-                Icons.favorite_border,
-                color: AppLightColors.myBlack100,
-              ),
               onPressed: () {},
+              icon: const Icon(
+                Icons.favorite_border,
+              ),
             ),
           ],
-          centerTitle: true,
-          title: Text(
-            "Vehicles Details",
-            style: AppStyles.semiBold24(context).copyWith(
-              color: AppLightColors.myBlack100,
-            ),
-          ),
           leading: IconButton(
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                const EdgeInsets.symmetric(horizontal: 25),
-              ),
-            ),
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: AppLightColors.myBlack100,
+              color: context.theme.black100,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            'Vehicle Details',
+            style: AppStyles.semiBold24(context)
+                .copyWith(color: context.theme.black100),
           ),
         ),
-        backgroundColor: AppLightColors.myWhite100_1,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
           child: SingleChildScrollView(
@@ -122,6 +118,19 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
                   overviewText: vehicleOverView,
                   carHealth: vehicleHealth,
                   carStatus: vehicleStatus,
+                ),
+                LocationSection(
+                  vehicleAddress: vehicleAddress,
+                  vehicleLongitude: vehicleLongitude,
+                  vehicleLatitude: vehicleLatitude,
+                  style: AppStyles.bold18(context).copyWith(
+                    color: AppLightColors.myBlue100_2,
+                  ),
+                ),
+                RatingAndReviewsSection(
+                  style: AppStyles.bold18(context).copyWith(
+                    color: AppLightColors.myBlue100_2,
+                  ),
                 ),
               ],
             ),

@@ -8,26 +8,32 @@ class EndPoint {
   static String activate = "/api/auth/activate";
   static String refreshToken = "/api/auth/refresh";
   static String logout = "/api/auth/logout";
-  
+
   // Vehicle endpoints
   static String vehicle = "/api/vehicle/";
   static String vehicleType = "$baseUrl/api/vehicletype/";
   static String vehicleBrand = "$baseUrl/api/vehiclebrand/";
   static String addVehicle = "$baseUrl/api/vehicle/?id=";
   static String vehicleDiscount = "$baseUrl/api/vehicle/vehicle-discounts";
-  
+
   // Chat endpoints
   static String chatHub = "/Chat";
   static String getMessageBetween = "$baseUrl/api/chat/messages";
   static String filterMessages = "$baseUrl/api/chat/filter";
   static String getMyChat = "$baseUrl/api/chat/chat?pageNo=1&pageSize=30";
   static String markAsSeen = "$baseUrl/api/chat/ack";
-  
+
   // Chat SignalR methods
   static String sendMessageMethod = "SendMessageAsync";
   static String initiateUploadMethod = "InitiateUploadingAsync";
   static String uploadMethod = "UploadAsync";
   static String finishUploadMethod = "FinishUploadingAsync";
+
+  // Review endpoints
+  static String createReview = "$baseUrl/api/review/";
+  static String getUserReviews = "$baseUrl/api/review/user-reviews";
+  static String getVehicleReviews = "$baseUrl/api/review/vehicle-reviews";
+  static String getReview = "$baseUrl/api/review";
 }
 
 class ApiKey {
@@ -43,7 +49,7 @@ class ApiKey {
   static String accessToken = "accessToken";
   static String refreshToken = "refreshToken";
   static String refreshTokenExpiration = "refreshTokenExpiration";
-  
+
   //////////////////////vehicle///////////////////////////////
   static String vehicleSeatsNo = "NumOfPassengers";
   static String vehicleYearOfManufacture = "Year";
@@ -66,24 +72,24 @@ class ApiKey {
   static String vehicleAddressState = "State";
   static String vehicleAddressCity = "City";
   static String vehicleAddressStreet = "Street";
-  
+
   ////////////////vehicletype//////////////////////
   static String vehicleTypeId = "id";
   static String vehicleTypeName = "name";
   static String vehicleTypeSlogen = "slogenPath";
-  
+
   ////////////////vehiclebrand///////////////////////
   static String vehicleBrandId = "id";
   static String vehicleBrandName = "name";
   static String vehicleBrandCountry = "country";
   static String vehicleBrandLogo = "logoPath";
-  
+
   ///////////////vehicleDiscount//////////////////////
   static String vehicleDiscountDaysRequired = "daysRequired";
   static String vehicleDiscountPercentage = "discountPercentage";
   static String vehicleDiscountVehicleId = "vehicleId";
   static String vehicleDiscountDiscounts = "discounts";
-  
+
   //////////////GetMessageBetween/////////////////
   static String msgContent = "content";
   static String msgFilePath = "filePath";
@@ -92,14 +98,14 @@ class ApiKey {
   static String msgReceiverId = "receiverId";
   static String msgDate = "sentAt";
   static String msgStatus = "isSeen";
-  
+
   /////////////FilterMessages//////////////////////
   static String filterMessagesSenderId = "userId";
   static String filterMsgSearchContent = "searchQuery";
   static String filterMsgDateTime = "date";
   static String filterMsgPageSize = "pageSize";
   static String filterMsgPageNo = "pageNo";
-  
+
   ///////////////GetMyChat////////////////////////////
   static String getMyChatUnSeenMsg = "unseenMessageIds";
   static String getMyChatUser = "user";
@@ -112,10 +118,10 @@ class ApiKey {
   static String getMyChatLastMsgId = "id";
   static String getMyChatLastMsgSentAt = "sentAt";
   static String getMtChatLastMsgSeen = "seen";
-  
+
   //////////////MarkAsSeen/////////////////////////////
   static String markAsSeenMsgId = "messageIds";
-  
+
   //////////////SignalR Chat Keys//////////////////////
   static String clientMessageId = "clientMessageId";
   static String receiverId = "receiverId";
@@ -126,4 +132,19 @@ class ApiKey {
   static String bytesBase64 = "BytesBase64";
   static String checksum = "checksum";
   static String progress = "Progress";
+
+  //////////////Reviews//////////////////////////////
+  static String rentalId = "rentalId";
+  static String behaviorOfThePerson = "behavior";
+  static String punctualityOfThePerson = "punctuality";
+  static String comments = "comments";
+  static String care = "care";
+  static String truthfulness = "truthfulness";
+
+  /////////////GetVehicleReviews///////////////////////
+  static String getVehicleReviewId = "reviewId";
+  static String getVehicleReviewer = "reviewer";
+  static String getVehicleCreatedAt = "createdAt";
+  static String getVehicleRate = "rate";
+  static String getVehicleComments = "comments";
 }

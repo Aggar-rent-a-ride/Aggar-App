@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/name_and_rate_section.dart';
@@ -23,11 +24,11 @@ class CommentSection extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: AppLightColors.myBlue100_7,
-          boxShadow: [
+          color: context.theme.blue100_7,
+          boxShadow: const [
             BoxShadow(
-              offset: const Offset(0, 0),
-              color: AppLightColors.myBlack25,
+              offset: Offset(0, 0),
+              color: Colors.black12,
               spreadRadius: 0,
               blurRadius: 4,
             )

@@ -29,6 +29,7 @@ class _MapScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //  final theme = Theme.of(context);
     return Scaffold(
       body: BlocConsumer<MapLocationCubit, MapLocationState>(
         listener: (context, state) {

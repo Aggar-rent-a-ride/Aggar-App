@@ -47,7 +47,7 @@ class OverViewSection extends StatelessWidget {
           ],
         ),
         Text(
-          "Experience our $vehicleType with $color color and its modern design. seating for up to $seatsno persons. With $carHealth physical status and currently it is $carStatus .",
+          "Experience our $vehicleType with $color color and its modern design. seating for $seatsno persons. With $carHealth physical status and currently it is $carStatus .",
           style: AppStyles.medium15(context).copyWith(
             color: context.theme.black50,
           ),
