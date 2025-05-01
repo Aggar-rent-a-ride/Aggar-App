@@ -29,7 +29,7 @@ class TextWithArrowBackButton extends StatelessWidget {
             AppLightColors.myBlue10_2,
           ),
         ),
-        onPressed: () {},
+        onPressed: onPressed,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

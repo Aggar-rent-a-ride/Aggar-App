@@ -52,39 +52,32 @@ class VehiclesDetailsView extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          elevation: 1,
+          shadowColor: Colors.grey[900],
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
           backgroundColor: context.theme.white100_1,
           actions: [
             IconButton(
-              style: ButtonStyle(
-                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                  const EdgeInsets.symmetric(horizontal: 25),
-                ),
-              ),
-              icon: Icon(
-                Icons.favorite_border,
-                color: context.theme.black100,
-              ),
               onPressed: () {},
+              icon: const Icon(
+                Icons.favorite_border,
+              ),
             ),
           ],
-          centerTitle: true,
-          title: Text(
-            "Vehicles Details",
-            style: AppStyles.semiBold24(context).copyWith(
-              color: context.theme.black100,
-            ),
-          ),
           leading: IconButton(
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                const EdgeInsets.symmetric(horizontal: 25),
-              ),
-            ),
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
               color: context.theme.black100,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            'Vehicle Details',
+            style: AppStyles.semiBold24(context)
+                .copyWith(color: context.theme.black100),
           ),
         ),
         backgroundColor: context.theme.white100_1,

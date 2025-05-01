@@ -57,7 +57,8 @@ class GallarySection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               controller: _scrollController,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 15),
+                padding: const EdgeInsets.only(
+                    bottom: 15, top: 2, left: 2, right: 2),
                 child: Row(
                   children: [
                     GestureDetector(
