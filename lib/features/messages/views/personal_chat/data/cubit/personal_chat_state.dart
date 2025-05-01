@@ -31,3 +31,27 @@ class DateSelectedState extends PersonalChatState {
 
   const DateSelectedState(this.selectedDate);
 }
+
+// New states for file upload functionality
+class FileUploadInProgress extends PersonalChatState {
+  final String clientMessageId;
+  final String fileName;
+  final double progress; 
+  
+  const FileUploadInProgress(this.clientMessageId, this.fileName, this.progress);
+}
+
+class FileUploadComplete extends PersonalChatState {
+  final String clientMessageId;
+  final String fileName;
+  
+  const FileUploadComplete(this.clientMessageId, this.fileName);
+}
+
+class FileUploadFailed extends PersonalChatState {
+  final String clientMessageId;
+  final String fileName;
+  final String error;
+  
+  const FileUploadFailed(this.clientMessageId, this.fileName, this.error);
+}

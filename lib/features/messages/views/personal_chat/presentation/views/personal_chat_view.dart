@@ -30,6 +30,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
   void initState() {
     super.initState();
     cubit = PersonalChatCubit();
+    cubit.setMessages(widget.messageList);
   }
 
   @override
@@ -49,7 +50,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     int currentUserId = 20;
     return BlocProvider.value(
       value: cubit,
-//>>>>>>> main
+ //>>>>>>> main     
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
         builder: (context, state) {
           return Scaffold(
@@ -95,7 +96,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
             ),
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
-              messageList: widget.messageList,
+              messageList: cubit.messages,
               currentUserId: currentUserId,
             ),
           );

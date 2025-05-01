@@ -1,7 +1,8 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MessageTextFieldWithAttachmentButton extends StatelessWidget {
   const MessageTextFieldWithAttachmentButton({
@@ -10,6 +11,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<PersonalChatCubit>();
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
@@ -23,8 +25,10 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
           ],
         ),
         child: TextField(
+          controller: cubit.messageController,
           cursorColor: context.theme.blue100_2,
           cursorOpacityAnimates: true,
+          textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -43,7 +47,9 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
               child: Transform.rotate(
                 angle: 45 * (3.1415927 / 180),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _pickAndSendFile(context);
+                  },
                   icon: Icon(
                     Icons.attach_file_rounded,
                     color: context.theme.black50,
@@ -55,5 +61,20 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _pickAndSendFile(BuildContext context) async {
+    final cubit = context.read<PersonalChatCubit>();
+    try {
+      final receiverId = cubit.receiverId;
+      await cubit.pickAndSendFile(receiverId);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick file: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:aggar/features/Splash/data/splash_state.dart';
-import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
+import 'package:aggar/features/main_screen/presentation/views/bottom_navigation_bar_views.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -66,7 +66,7 @@ class SplashCubit extends Cubit<SplashState> {
 
       Widget destination;
       if (isAuthenticated) {
-        destination = const MainScreen();
+        destination = const BottomNavigationBarViews();
       } else if (seenOnboarding) {
         destination = const SignInView();
       } else {
