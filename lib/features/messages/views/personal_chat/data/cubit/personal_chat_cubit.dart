@@ -1,23 +1,36 @@
+import 'dart:convert';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
+import 'package:aggar/core/services/signalr_service.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:uuid/uuid.dart';
 
 class PersonalChatCubit extends Cubit<PersonalChatState> {
   PersonalChatCubit() : super(const PersonalChatInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
+  final SignalRService _signalRService = SignalRService();
   bool isSearchActive = false;
   final TextEditingController searchController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   bool dateSelected = false;
   List<String> highlightedMessageIds = [];
   ScrollController scrollController = ScrollController();
   Map<String, GlobalKey> messageKeys = {};
+  bool _isSendingMessage = false;
+  // NEED TO FIX
+  int receiverId = 11;
+
+  void setReceiverId(int id) {
+    receiverId = id;
+  }
+
   void clearHighlights() {
     highlightedMessageIds = [];
     emit(state);
@@ -172,6 +185,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   @override
   Future<void> close() {
     searchController.dispose();
+    messageController.dispose();
     dateController.dispose();
     scrollController.dispose();
     return super.close();
@@ -210,6 +224,100 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     } catch (e) {
       emit(PersonalChatFailure(
           "Failed to mark messages as seen : ${e.toString()}"));
+    }
+  }
+
+  Future<void> sendMessage(int receiverId, String accessToken) async {
+    if (messageController.text.trim().isEmpty || _isSendingMessage) {
+      return;
+    }
+
+    _isSendingMessage = true;
+    final messageContent = messageController.text.trim();
+    messageController.clear();
+
+    try {
+      final clientMessageId = const Uuid().v4();
+
+      if (!_signalRService.isConnected) {
+        await _signalRService.initialize();
+        if (!_signalRService.isConnected) {
+          emit(const PersonalChatFailure(
+              "Failed to connect to chat server. Please try again."));
+          _isSendingMessage = false;
+          return;
+        }
+      }
+
+      await _signalRService.sendMessage(
+        clientMessageId: clientMessageId,
+        receiverId: receiverId,
+        content: messageContent,
+      );
+    } catch (e) {
+      emit(PersonalChatFailure("Failed to send message: ${e.toString()}"));
+    } finally {
+      _isSendingMessage = false;
+    }
+  }
+
+  Future<void> sendFile(int receiverId, String filePath, List<int> fileBytes,
+      String fileName, String fileExtension) async {
+    if (_isSendingMessage) {
+      return;
+    }
+
+    _isSendingMessage = true;
+
+    try {
+      final clientMessageId = const Uuid().v4();
+
+      if (!_signalRService.isConnected) {
+        await _signalRService.initialize();
+        if (!_signalRService.isConnected) {
+          emit(const PersonalChatFailure(
+              "Failed to connect to chat server. Please try again."));
+          _isSendingMessage = false;
+          return;
+        }
+      }
+
+      // 1. Initiate upload
+      final response = await _signalRService.initiateFileUpload(
+        clientMessageId: clientMessageId,
+        fileName: fileName,
+        fileExtension: fileExtension,
+      );
+
+      // 2. Upload file in chunks
+      const int chunkSize = 4096;
+      for (int i = 0; i < fileBytes.length; i += chunkSize) {
+        final end = (i + chunkSize < fileBytes.length)
+            ? i + chunkSize
+            : fileBytes.length;
+        final chunk = fileBytes.sublist(i, end);
+        final bytesBase64 = base64.encode(chunk);
+
+        await _signalRService.uploadFileChunk(
+          clientMessageId: clientMessageId,
+          receiverId: receiverId,
+          filePath: response.filePath,
+          bytesBase64: bytesBase64,
+          totalBytes: fileBytes.length,
+        );
+      }
+
+      // 3. Finish upload
+      await _signalRService.finishFileUpload(
+        clientMessageId: clientMessageId,
+        receiverId: receiverId,
+        filePath: response.filePath,
+        fileBytes: fileBytes,
+      );
+    } catch (e) {
+      emit(PersonalChatFailure("Failed to send file: ${e.toString()}"));
+    } finally {
+      _isSendingMessage = false;
     }
   }
 }
