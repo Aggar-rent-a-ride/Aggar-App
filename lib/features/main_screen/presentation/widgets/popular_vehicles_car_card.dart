@@ -34,11 +34,10 @@ class PopularVehiclesCarCard extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
-            print("heeeeeeer");
             final token =
                 await context.read<TokenRefreshCubit>().getAccessToken();
             if (token != null) {
-              context.read<AddVehicleCubit>().getData("15", token);
+              context.read<AddVehicleCubit>().getData("155", token);
               context.read<ReviewCubit>().getVehicleReviews("15", token);
             }
             if (context.read<AddVehicleCubit>().vehicleData != null) {
@@ -48,6 +47,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => VehicleDetailsAfterAddingScreen(
+                    vehicleId: "155",
                     renterName: vehicle.renter!.name,
                     yearOfManufaction: vehicle.year,
                     vehicleModel: vehicle.model,

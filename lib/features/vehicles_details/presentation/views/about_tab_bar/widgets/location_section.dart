@@ -1,8 +1,11 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/widgets/map_location_only_show.dart';
+import 'package:aggar/core/widgets/text_with_arrow_back_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/current_location_with_distance_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/image_of_current_vehicle_location.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:latlong2/latlong.dart';
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class LocationSection extends StatelessWidget {
@@ -58,9 +61,24 @@ class LocationSection extends StatelessWidget {
           ),
         ),
         const Gap(5),
-        /*const TextWithArrowBackButton(
+        TextWithArrowBackButton(
           text: "see in google map",
-        ),*/
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  print(vehicleLatitude);
+                  print(vehicleLongitude);
+                  return MapLocationOnlyShow(
+                    location: LatLng(vehicleLatitude, vehicleLongitude),
+                    address: vehicleAddress,
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }
