@@ -1,14 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
 import 'package:aggar/core/services/signalr_service.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
+import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
 import 'package:bloc/bloc.dart';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 
 class PersonalChatCubit extends Cubit<PersonalChatState> {
@@ -24,8 +29,26 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   ScrollController scrollController = ScrollController();
   Map<String, GlobalKey> messageKeys = {};
   bool _isSendingMessage = false;
+  // from here
+  bool _isUploadingFile = false;
+  final Map<String, double> _fileUploadProgress = {};
+  final Map<String, String> _pendingUploads = {};
+
+  List<MessageModel> _messages = [];
+
   // NEED TO FIX
   int receiverId = 11;
+
+  bool get isUploadingFile => _isUploadingFile;
+  Map<String, double> get fileUploadProgress => _fileUploadProgress;
+  Map<String, String> get pendingUploads => _pendingUploads;
+
+  List<MessageModel> get messages => _messages;
+
+  void setMessages(List<MessageModel> messageList) {
+    _messages = messageList;
+  }
+  // to here
 
   void setReceiverId(int id) {
     receiverId = id;
@@ -254,6 +277,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         receiverId: receiverId,
         content: messageContent,
       );
+      _addLocalMessage(clientMessageId, messageContent);
     } catch (e) {
       emit(PersonalChatFailure("Failed to send message: ${e.toString()}"));
     } finally {
@@ -261,63 +285,198 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
+  void _addLocalMessage(String clientMessageId, String content) {
+    final now = DateTime.now().toIso8601String();
+    final newMessage = MessageModel(
+      id: int.parse(
+          DateTime.now().millisecondsSinceEpoch.toString().substring(0, 9)),
+      senderId: 20, // Current user ID
+      receiverId: receiverId,
+      sentAt: now,
+      isSeen: false,
+      content: content,
+      filePath: null,
+    );
+    _messages.insert(0, newMessage);
+    emit(const PersonalChatInitial());
+  }
+
+  Future<void> pickAndSendFile(int receiverId) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: [
+          'pdf',
+          'doc',
+          'docx',
+          'xls',
+          'xlsx',
+          'ppt',
+          'pptx',
+          'txt'
+        ],
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+
+        if (file.path != null) {
+          final File fileObj = File(file.path!);
+          final bytes = await fileObj.readAsBytes();
+
+          final fileName = path.basename(file.path!);
+          final fileExtension =
+              path.extension(file.path!).replaceFirst('.', '');
+
+          await sendFile(
+            receiverId,
+            fileName,
+            bytes,
+            fileName,
+            fileExtension,
+          );
+        } else if (file.bytes != null) {
+          final bytes = file.bytes!;
+          final fileName = file.name;
+          final fileExtension = path.extension(fileName).replaceFirst('.', '');
+
+          await sendFile(
+            receiverId,
+            fileName,
+            bytes,
+            fileName,
+            fileExtension,
+          );
+        }
+      }
+    } catch (e) {
+      emit(PersonalChatFailure("Failed to pick file: ${e.toString()}"));
+    }
+  }
+
   Future<void> sendFile(int receiverId, String filePath, List<int> fileBytes,
       String fileName, String fileExtension) async {
-    if (_isSendingMessage) {
+    if (_isUploadingFile) {
+      emit(const PersonalChatFailure("A file upload is already in progress"));
       return;
     }
 
-    _isSendingMessage = true;
+    _isUploadingFile = true;
+    final clientMessageId = const Uuid().v4();
 
+    _pendingUploads[clientMessageId] = fileName;
+    _fileUploadProgress[clientMessageId] = 0.0;
+    emit(FileUploadInProgress(clientMessageId, fileName, 0.0));
     try {
-      final clientMessageId = const Uuid().v4();
-
       if (!_signalRService.isConnected) {
         await _signalRService.initialize();
         if (!_signalRService.isConnected) {
           emit(const PersonalChatFailure(
               "Failed to connect to chat server. Please try again."));
-          _isSendingMessage = false;
+          _isUploadingFile = false;
+          _cleanupUpload(clientMessageId);
           return;
         }
       }
 
       // 1. Initiate upload
-      final response = await _signalRService.initiateFileUpload(
-        clientMessageId: clientMessageId,
-        fileName: fileName,
-        fileExtension: fileExtension,
-      );
+      try {
+        final response = await _signalRService.initiateFileUpload(
+          clientMessageId: clientMessageId,
+          fileName: fileName,
+          fileExtension: fileExtension,
+        );
 
-      // 2. Upload file in chunks
-      const int chunkSize = 4096;
-      for (int i = 0; i < fileBytes.length; i += chunkSize) {
-        final end = (i + chunkSize < fileBytes.length)
-            ? i + chunkSize
-            : fileBytes.length;
-        final chunk = fileBytes.sublist(i, end);
-        final bytesBase64 = base64.encode(chunk);
+        final serverFilePath = response.filePath;
 
-        await _signalRService.uploadFileChunk(
+        final uploadProgressSubscription =
+            _signalRService.onUploadProgress.listen((progress) {
+          if (progress.clientMessageId == clientMessageId) {
+            final progressPercent = progress.progressPercentage;
+            _fileUploadProgress[clientMessageId] = progressPercent;
+            emit(FileUploadInProgress(
+                clientMessageId, fileName, progressPercent));
+          }
+        });
+
+        // 2. Upload file in chunks
+        const int chunkSize = 4096;
+        for (int i = 0; i < fileBytes.length; i += chunkSize) {
+          final end = (i + chunkSize < fileBytes.length)
+              ? i + chunkSize
+              : fileBytes.length;
+          final chunk = fileBytes.sublist(i, end);
+          final bytesBase64 = base64.encode(chunk);
+
+          await _signalRService.uploadFileChunk(
+            clientMessageId: clientMessageId,
+            receiverId: receiverId,
+            filePath: serverFilePath,
+            bytesBase64: bytesBase64,
+            totalBytes: fileBytes.length,
+          );
+        }
+
+        // 3. Calculate checksum (SHA-256) and finish upload
+        final checksum = sha256.convert(fileBytes).toString();
+        final checksumBase64 = base64.encode(utf8.encode(checksum));
+
+        await _signalRService.finishFileUpload(
           clientMessageId: clientMessageId,
           receiverId: receiverId,
-          filePath: response.filePath,
-          bytesBase64: bytesBase64,
-          totalBytes: fileBytes.length,
+          filePath: serverFilePath,
+          fileBytes: fileBytes,
         );
-      }
 
-      // 3. Finish upload
-      await _signalRService.finishFileUpload(
-        clientMessageId: clientMessageId,
-        receiverId: receiverId,
-        filePath: response.filePath,
-        fileBytes: fileBytes,
-      );
+        uploadProgressSubscription.cancel();
+        _fileUploadProgress[clientMessageId] = 100.0;
+        emit(FileUploadComplete(clientMessageId, fileName));
+        _addLocalFileMessage(clientMessageId, serverFilePath, fileName);
+        Future.delayed(const Duration(seconds: 2), () {
+          _cleanupUpload(clientMessageId);
+          emit(const PersonalChatInitial()); // Force UI refresh
+        });
+      } catch (e) {
+        print("Error handling upload initiation: $e");
+        if (e.toString().contains("FormatException")) {
+          emit(const PersonalChatFailure(
+              "Invalid response from server. Please try again."));
+        } else {
+          emit(PersonalChatFailure(
+              "Failed to initiate file upload: ${e.toString()}"));
+        }
+        _cleanupUpload(clientMessageId);
+      }
     } catch (e) {
-      emit(PersonalChatFailure("Failed to send file: ${e.toString()}"));
+      _cleanupUpload(clientMessageId);
+      emit(PersonalChatFailure("Failed to upload file: ${e.toString()}"));
     } finally {
-      _isSendingMessage = false;
+      _isUploadingFile = false;
     }
+  }
+  void _addLocalFileMessage(
+      String clientMessageId, String filePath, String fileName) {
+    final now = DateTime.now().toIso8601String();
+    final newMessage = MessageModel(
+      id: int.parse(
+          DateTime.now().millisecondsSinceEpoch.toString().substring(0, 9)),
+      senderId: 20, // Current user ID
+      receiverId: receiverId,
+      sentAt: now,
+      isSeen: false,
+      content: null,
+      filePath: filePath,
+    );
+    _messages.insert(0, newMessage);
+  }
+
+  void _cleanupUpload(String clientMessageId) {
+    _pendingUploads.remove(clientMessageId);
+    _fileUploadProgress.remove(clientMessageId);
+  }
+
+  Future<void> cancelUpload(String clientMessageId) async {
+    _cleanupUpload(clientMessageId);
+    emit(const PersonalChatInitial());
   }
 }

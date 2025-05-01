@@ -3,14 +3,12 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
 
 class MessageTextFieldWithAttachmentButton extends StatelessWidget {
   const MessageTextFieldWithAttachmentButton({
     super.key,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PersonalChatCubit>();
@@ -49,8 +47,8 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
               child: Transform.rotate(
                 angle: 45 * (3.1415927 / 180),
                 child: IconButton(
-                  onPressed: () async {
-                    // await _pickAndSendFile(context);
+                  onPressed: () {
+                    _pickAndSendFile(context);
                   },
                   icon: Icon(
                     Icons.attach_file_rounded,
@@ -64,47 +62,19 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
       ),
     );
   }
-  
-  // Future<void> _pickAndSendFile(BuildContext context) async {
-  //   final cubit = context.read<PersonalChatCubit>();
-    
-  //   try {
-  //     final result = await FilePicker.platform.pickFiles(
-  //       type: FileType.any,
-  //       allowMultiple: false,
-  //     );
-      
-  //     if (result == null || result.files.isEmpty) {
-  //       return;
-  //     }
-      
-  //     final file = File(result.files.first.path!);
-  //     final fileName = result.files.first.name;
-  //     final fileExtension = fileName.split('.').last;
-  //     final bytes = await file.readAsBytes();
-      
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         content: Text('Sending file...'),
-  //         duration: Duration(seconds: 2),
-  //       ),
-  //     );
-  //     final int receiverId = 11;
-      
-  //     await cubit.sendFile(
-  //       receiverId,
-  //       file.path,
-  //       bytes,
-  //       fileName,
-  //       fileExtension,
-  //     );
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Failed to send file: $e'),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
+
+  Future<void> _pickAndSendFile(BuildContext context) async {
+    final cubit = context.read<PersonalChatCubit>();
+    try {
+      final receiverId = cubit.receiverId;
+      await cubit.pickAndSendFile(receiverId);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick file: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 }
