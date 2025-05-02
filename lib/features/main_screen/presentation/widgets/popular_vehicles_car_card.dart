@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
@@ -38,6 +40,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
                 await context.read<TokenRefreshCubit>().getAccessToken();
             if (token != null) {
               context.read<AddVehicleCubit>().getData("155", token);
+
               context.read<ReviewCubit>().getVehicleReviews("15", token);
             }
             if (context.read<AddVehicleCubit>().vehicleData != null) {
@@ -114,9 +117,9 @@ class PopularVehiclesCarCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Gap(20),
+                const Gap(5),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
                     assetImagePath,
                     height: 100,

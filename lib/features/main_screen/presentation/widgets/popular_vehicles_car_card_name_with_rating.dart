@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
   const PopularVehiclesCarCardNameWithRating({
@@ -16,18 +17,17 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.32,
+        Expanded(
           child: Text(
             carName,
             style: AppStyles.semiBold24(context).copyWith(
               color: context.theme.black100,
             ),
-            maxLines: 3,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Spacer(),
+        const Gap(5),
         Icon(
           Icons.star,
           size: 12,
