@@ -154,7 +154,7 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                   themeMode: context.themeCubit.themeMode,
                   darkTheme: darkTheme,
-                  theme: darkTheme,
+                  theme: lightTheme,
                   debugShowCheckedModeBanner: false,
                   /** locale: languageState is LanguageChanged
                       ? languageState.locale

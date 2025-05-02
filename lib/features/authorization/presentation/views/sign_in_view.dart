@@ -75,12 +75,12 @@ class _SignInContent extends StatelessWidget {
           return SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(20),
                     const SignInImageWithText(),
                     SignInIdentifierAndPasswordFields(
                       identifierController: loginCubit.identifierController,
@@ -90,7 +90,7 @@ class _SignInContent extends StatelessWidget {
                       togglePasswordVisibility:
                           loginCubit.togglePasswordVisibility,
                     ),
-                    const Gap(20),
+                    const Gap(5),
                     SignInForgetPasswordButton(
                       onPressed: () {
                         Navigator.push(
@@ -101,7 +101,7 @@ class _SignInContent extends StatelessWidget {
                         );
                       },
                     ),
-                    const Gap(10),
+                    const Gap(20),
                     CustomElevatedButton(
                       onPressed: isLoading ? null : loginCubit.handleLogin,
                       text: 'Login',

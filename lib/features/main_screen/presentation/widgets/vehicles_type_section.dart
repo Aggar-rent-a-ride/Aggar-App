@@ -27,10 +27,11 @@ class VehiclesTypeSection extends StatelessWidget {
         LayoutBuilder(
           builder: (context, constraints) {
             return RawScrollbar(
-              // TODO : make them dynamic numbers
-              padding: const EdgeInsets.symmetric(horizontal: 160),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.sizeOf(context).width * 0.36,
+              ),
               thumbVisibility: true,
-              minThumbLength: 65,
+              minThumbLength: MediaQuery.sizeOf(context).width * 0.1,
               trackVisibility: true,
               trackRadius: const Radius.circular(50),
               trackColor: context.theme.gray100_1,

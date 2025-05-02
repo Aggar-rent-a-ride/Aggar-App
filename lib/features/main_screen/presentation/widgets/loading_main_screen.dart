@@ -8,10 +8,13 @@ class LoadingMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: context.theme.gray100_1,
-      highlightColor: context.theme.white100_1,
-      child: const LoadingMainScreenBody(),
+    return Scaffold(
+      backgroundColor: context.theme.white100_1,
+      body: Shimmer.fromColors(
+        baseColor: context.theme.gray100_1,
+        highlightColor: context.theme.white100_1,
+        child: const LoadingMainScreenBody(),
+      ),
     );
   }
 }
