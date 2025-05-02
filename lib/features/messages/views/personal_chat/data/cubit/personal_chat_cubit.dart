@@ -378,9 +378,10 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           return;
         }
       }
+      print("Starting file upload process for $fileName ($fileExtension)");
 
-      // 1. Initiate upload
       try {
+        print("Initiating file upload with clientMessageId: $clientMessageId");
         final response = await _signalRService.initiateFileUpload(
           clientMessageId: clientMessageId,
           fileName: fileName,
@@ -388,6 +389,11 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         );
 
         final serverFilePath = response.filePath;
+        print("Server file path received: $serverFilePath");
+
+        if (serverFilePath.isEmpty) {
+          throw Exception("Server returned empty file path");
+        }
 
         final uploadProgressSubscription =
             _signalRService.onUploadProgress.listen((progress) {
@@ -398,8 +404,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
                 clientMessageId, fileName, progressPercent));
           }
         });
-
-        // 2. Upload file in chunks
         const int chunkSize = 4096;
         for (int i = 0; i < fileBytes.length; i += chunkSize) {
           final end = (i + chunkSize < fileBytes.length)
@@ -408,6 +412,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           final chunk = fileBytes.sublist(i, end);
           final bytesBase64 = base64.encode(chunk);
 
+          print(
+              "Uploading chunk ${i ~/ chunkSize + 1}/${(fileBytes.length / chunkSize).ceil()}");
           await _signalRService.uploadFileChunk(
             clientMessageId: clientMessageId,
             receiverId: receiverId,
@@ -417,9 +423,9 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           );
         }
 
-        // 3. Calculate checksum (SHA-256) and finish upload
+        print("Calculating checksum and finishing upload");
         final checksum = sha256.convert(fileBytes).toString();
-        final checksumBase64 = base64.encode(utf8.encode(checksum));
+        print("Checksum generated: $checksum");
 
         await _signalRService.finishFileUpload(
           clientMessageId: clientMessageId,
@@ -437,13 +443,17 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           emit(const PersonalChatInitial()); // Force UI refresh
         });
       } catch (e) {
-        print("Error handling upload initiation: $e");
-        if (e.toString().contains("FormatException")) {
+        print("Error during file upload: $e");
+        if (e.toString().contains("Server error:")) {
+          final errorMessage =
+              e.toString().replaceAll("Exception: Server error: ", "");
+          emit(PersonalChatFailure("Server error: $errorMessage"));
+        } else if (e.toString().contains("FormatException")) {
           emit(const PersonalChatFailure(
               "Invalid response from server. Please try again."));
         } else {
           emit(PersonalChatFailure(
-              "Failed to initiate file upload: ${e.toString()}"));
+              "Failed during file upload: ${e.toString()}"));
         }
         _cleanupUpload(clientMessageId);
       }
