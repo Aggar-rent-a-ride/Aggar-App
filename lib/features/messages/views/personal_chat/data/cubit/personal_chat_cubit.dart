@@ -25,7 +25,9 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   final TextEditingController messageController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   bool dateSelected = false;
-  List<String> highlightedMessageIds = [];
+  String? highlightedMessageId;
+  List<String> searchResultMessageIds = [];
+  int currentHighlightIndex = -1;
   ScrollController scrollController = ScrollController();
   Map<String, GlobalKey> messageKeys = {};
   bool _isSendingMessage = false;
@@ -55,8 +57,36 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   }
 
   void clearHighlights() {
-    highlightedMessageIds = [];
+    highlightedMessageId = null;
     emit(state);
+  }
+
+  void highlightMessage(String messageId) {
+    highlightedMessageId = messageId;
+    emit(MessageHighlightedState(messageId));
+  }
+
+  void goToNextSearchResult() {
+    if (searchResultMessageIds.isEmpty) return;
+
+    currentHighlightIndex =
+        (currentHighlightIndex + 1) % searchResultMessageIds.length;
+    final nextMessageId = searchResultMessageIds[currentHighlightIndex];
+    highlightedMessageId = nextMessageId;
+    scrollToMessage(nextMessageId);
+    emit(MessageHighlightedState(nextMessageId));
+  }
+
+  void goToPreviousSearchResult() {
+    if (searchResultMessageIds.isEmpty) return;
+
+    currentHighlightIndex =
+        (currentHighlightIndex - 1 + searchResultMessageIds.length) %
+            searchResultMessageIds.length;
+    final prevMessageId = searchResultMessageIds[currentHighlightIndex];
+    highlightedMessageId = prevMessageId;
+    scrollToMessage(prevMessageId);
+    emit(MessageHighlightedState(prevMessageId));
   }
 
   void toggleSearchMode() {
@@ -64,6 +94,9 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       isSearchActive = !isSearchActive;
       if (!isSearchActive) {
         searchController.clear();
+        clearHighlights();
+        searchResultMessageIds = [];
+        currentHighlightIndex = -1;
         emit(const PersonalChatInitial());
       } else {
         emit(PersonalChatSearch());
@@ -113,14 +146,22 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         return;
       }
       final ListMessageModel messages = ListMessageModel.fromJson(response);
-      highlightedMessageIds =
+      searchResultMessageIds =
           messages.data.map((message) => message.id.toString()).toList();
-      //  print("Highlighted Message IDs: $highlightedMessageIds");
+      currentHighlightIndex = searchResultMessageIds.isEmpty ? -1 : 0;
+
+      if (searchResultMessageIds.isNotEmpty) {
+        highlightedMessageId = searchResultMessageIds[0];
+      } else {
+        highlightedMessageId = null;
+      }
+
       await Future.delayed(const Duration(milliseconds: 500));
       emit(PersonalChatSuccess(messages));
-      if (highlightedMessageIds.isNotEmpty) {
+
+      if (highlightedMessageId != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          scrollToMessage(highlightedMessageIds[0]);
+          scrollToMessage(highlightedMessageId!);
         });
       }
     } catch (e) {
@@ -146,9 +187,11 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
           );
-          Future.delayed(const Duration(seconds: 2), () {
-            clearHighlights();
-          });
+          if (searchResultMessageIds.length <= 1) {
+            Future.delayed(const Duration(seconds: 2), () {
+              clearHighlights();
+            });
+          }
         } catch (e) {
           if (retryCount < maxRetries) {
             Future.delayed(retryDelay, () {
@@ -202,6 +245,9 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     searchController.clear();
     dateController.clear();
     dateSelected = false;
+    clearHighlights();
+    searchResultMessageIds = [];
+    currentHighlightIndex = -1;
     emit(const PersonalChatInitial());
   }
 
@@ -464,6 +510,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       _isUploadingFile = false;
     }
   }
+
   void _addLocalFileMessage(
       String clientMessageId, String filePath, String fileName) {
     final now = DateTime.now().toIso8601String();
