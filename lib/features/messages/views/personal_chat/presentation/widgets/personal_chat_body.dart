@@ -82,7 +82,7 @@ class PersonalChatBody extends StatelessWidget {
                           cubit.messageKeys[messageId] = GlobalKey();
                         }
                         final isHighlighted =
-                            cubit.highlightedMessageIds.contains(messageId);
+                            cubit.highlightedMessageId == messageId;
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 500),
                           key: cubit.messageKeys[messageId],

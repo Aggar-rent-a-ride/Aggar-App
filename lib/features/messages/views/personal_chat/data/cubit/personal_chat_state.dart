@@ -26,6 +26,12 @@ final class PersonalChatFailure extends PersonalChatState {
   const PersonalChatFailure(this.error);
 }
 
+class MessageHighlightedState extends PersonalChatState {
+  final String messageId;
+
+  const MessageHighlightedState(this.messageId);
+}
+
 class DateSelectedState extends PersonalChatState {
   final String selectedDate;
 
@@ -36,15 +42,16 @@ class DateSelectedState extends PersonalChatState {
 class FileUploadInProgress extends PersonalChatState {
   final String clientMessageId;
   final String fileName;
-  final double progress; 
-  
-  const FileUploadInProgress(this.clientMessageId, this.fileName, this.progress);
+  final double progress;
+
+  const FileUploadInProgress(
+      this.clientMessageId, this.fileName, this.progress);
 }
 
 class FileUploadComplete extends PersonalChatState {
   final String clientMessageId;
   final String fileName;
-  
+
   const FileUploadComplete(this.clientMessageId, this.fileName);
 }
 
@@ -52,6 +59,6 @@ class FileUploadFailed extends PersonalChatState {
   final String clientMessageId;
   final String fileName;
   final String error;
-  
+
   const FileUploadFailed(this.clientMessageId, this.fileName, this.error);
 }
