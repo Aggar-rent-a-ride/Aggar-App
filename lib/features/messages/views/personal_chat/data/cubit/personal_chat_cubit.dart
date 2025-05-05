@@ -48,7 +48,20 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   List<MessageModel> get messages => _messages;
 
   void setMessages(List<MessageModel> messageList) {
-    _messages = messageList;
+    _messages = List<MessageModel>.from(messageList);
+    Future.delayed(const Duration(milliseconds: 100), () {
+      scrollToBottom();
+    });
+  }
+
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
   // to here
 
@@ -64,6 +77,18 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   void highlightMessage(String messageId) {
     highlightedMessageId = messageId;
     emit(MessageHighlightedState(messageId));
+    if (messageKeys.containsKey(messageId) &&
+        messageKeys[messageId]!.currentContext != null) {
+      Scrollable.ensureVisible(
+        messageKeys[messageId]!.currentContext!,
+        alignment: 0.5,
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+
+    Future.delayed(const Duration(seconds: 2), () {
+      highlightedMessageId = null;
+    });
   }
 
   void goToNextSearchResult() {

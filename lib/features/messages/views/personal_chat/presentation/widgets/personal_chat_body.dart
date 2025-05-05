@@ -10,7 +10,7 @@ import 'package:aggar/features/messages/views/personal_chat/presentation/widgets
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PersonalChatBody extends StatelessWidget {
+class PersonalChatBody extends StatefulWidget {
   const PersonalChatBody({
     super.key,
     required this.messageList,
@@ -20,10 +20,34 @@ class PersonalChatBody extends StatelessWidget {
   final int currentUserId;
 
   @override
+  State<PersonalChatBody> createState() => _PersonalChatBodyState();
+}
+
+class _PersonalChatBodyState extends State<PersonalChatBody> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
+  }
+
+  void _scrollToBottom() {
+    final cubit = context.read<PersonalChatCubit>();
+    if (cubit.scrollController.hasClients) {
+      cubit.scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cubit = context.read<PersonalChatCubit>();
     Map<String, List<MessageModel>> groupedMessages = {};
-    for (var message in messageList) {
+    for (var message in widget.messageList) {
       DateTime dateTime = DateTime.parse(message.sentAt);
       String dateOnly =
           "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
@@ -33,21 +57,27 @@ class PersonalChatBody extends StatelessWidget {
       }
       groupedMessages[dateOnly]!.add(message);
     }
-    List<String> sortedDates = groupedMessages.keys.toList();
+
+    List<String> sortedDates = groupedMessages.keys.toList()
+      ..sort((a, b) => DateTime.parse(b).compareTo(DateTime.parse(a)));
+
     return Expanded(
       child: Column(
         children: [
           Expanded(
             child: ListView.builder(
               controller: cubit.scrollController,
-              reverse: true,
+              reverse: true, // Display newest messages at the bottom
               cacheExtent: 2000.0,
               itemCount: sortedDates.length,
               itemBuilder: (context, groupIndex) {
                 String date = sortedDates[groupIndex];
                 List<MessageModel> messagesForDate = groupedMessages[date]!;
+                messagesForDate.sort((a, b) => DateTime.parse(a.sentAt)
+                    .compareTo(DateTime.parse(b.sentAt)));
                 DateTime dateTime = DateTime.parse(date);
                 String formattedDate = getFormattedDate(dateTime);
+
                 return Column(
                   children: [
                     Container(
@@ -93,7 +123,7 @@ class PersonalChatBody extends StatelessWidget {
                                 ? context.theme.blue100_2.withOpacity(0.1)
                                 : Colors.transparent,
                           ),
-                          child: message.senderId == currentUserId
+                          child: message.senderId == widget.currentUserId
                               ? ChatBubbleForSender(
                                   isfile: message.filePath != null,
                                   message: Message(
