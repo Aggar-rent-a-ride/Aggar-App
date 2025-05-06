@@ -6,6 +6,7 @@ import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
 import 'package:aggar/core/services/signalr_service.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:crypto/crypto.dart';
@@ -13,6 +14,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 
@@ -20,6 +22,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   PersonalChatCubit() : super(const PersonalChatInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
   final SignalRService _signalRService = SignalRService();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
   bool isSearchActive = false;
   final TextEditingController searchController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
@@ -31,21 +35,48 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   ScrollController scrollController = ScrollController();
   Map<String, GlobalKey> messageKeys = {};
   bool _isSendingMessage = false;
-  // from here
   bool _isUploadingFile = false;
   final Map<String, double> _fileUploadProgress = {};
   final Map<String, String> _pendingUploads = {};
 
   List<MessageModel> _messages = [];
 
-  // NEED TO FIX
-  int receiverId = 11;
+  int? _receiverId = 0;
+  int _senderId = 0;
 
   bool get isUploadingFile => _isUploadingFile;
   Map<String, double> get fileUploadProgress => _fileUploadProgress;
   Map<String, String> get pendingUploads => _pendingUploads;
-
   List<MessageModel> get messages => _messages;
+  int get senderId => _senderId;
+  int? get receiverId => _receiverId;
+
+  void initializeFromMessageState(MessageState state) {
+    if (state is MessageSuccess && state.userId != null) {
+      _receiverId = state.userId;
+      print('Receiver ID initialized from MessageState: $_receiverId');
+
+      if (state.messages != null && state.messages!.data.isNotEmpty) {
+        setMessages(state.messages!.data);
+      }
+    }
+  }
+
+  Future<void> initializeSenderId() async {
+    try {
+      final userIdStr = await _secureStorage.read(key: 'userId');
+      if (userIdStr != null && userIdStr.isNotEmpty) {
+        _senderId = int.parse(userIdStr);
+        print('Sender ID initialized: $_senderId');
+      } else {
+        print('Warning: User ID not found in secure storage');
+        _senderId = 0;
+      }
+    } catch (e) {
+      print('Error retrieving sender ID: $e');
+      _senderId = 0;
+    }
+  }
 
   void setMessages(List<MessageModel> messageList) {
     _messages = List<MessageModel>.from(messageList);
@@ -63,10 +94,10 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       );
     }
   }
-  // to here
 
   void setReceiverId(int id) {
-    receiverId = id;
+    _receiverId = id;
+    print('Receiver ID set to: $_receiverId');
   }
 
   void clearHighlights() {
@@ -144,10 +175,14 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   }
 
   Future<void> filtterMessage(String accessToken) async {
+    if (_receiverId == null) {
+      emit(const PersonalChatFailure("Receiver ID is not set"));
+      return;
+    }
     try {
       emit(PersonalChatLoading());
       Map<String, dynamic> data = {
-        ApiKey.filterMessagesSenderId: 11,
+        ApiKey.filterMessagesSenderId: _receiverId,
         ApiKey.filterMsgPageNo: 1,
         ApiKey.filterMsgPageSize: 30,
       };
@@ -321,7 +356,12 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
-  Future<void> sendMessage(int receiverId, String accessToken) async {
+  Future<void> sendMessage(String accessToken) async {
+    if (_receiverId == null) {
+      emit(const PersonalChatFailure("Receiver ID is not set"));
+      return;
+    }
+
     if (messageController.text.trim().isEmpty || _isSendingMessage) {
       return;
     }
@@ -345,7 +385,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
       await _signalRService.sendMessage(
         clientMessageId: clientMessageId,
-        receiverId: receiverId,
+        receiverId: _receiverId!,
         content: messageContent,
       );
       _addLocalMessage(clientMessageId, messageContent);
@@ -361,8 +401,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     final newMessage = MessageModel(
       id: int.parse(
           DateTime.now().millisecondsSinceEpoch.toString().substring(0, 9)),
-      senderId: 20, // Current user ID
-      receiverId: receiverId,
+      senderId: _senderId,
+      receiverId: _receiverId!,
       sentAt: now,
       isSeen: false,
       content: content,
@@ -372,7 +412,12 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     emit(const PersonalChatInitial());
   }
 
-  Future<void> pickAndSendFile(int receiverId) async {
+  Future<void> pickAndSendFile() async {
+    if (_receiverId == null) {
+      emit(const PersonalChatFailure("Receiver ID is not set"));
+      return;
+    }
+
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -400,7 +445,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
               path.extension(file.path!).replaceFirst('.', '');
 
           await sendFile(
-            receiverId,
             fileName,
             bytes,
             fileName,
@@ -412,7 +456,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           final fileExtension = path.extension(fileName).replaceFirst('.', '');
 
           await sendFile(
-            receiverId,
             fileName,
             bytes,
             fileName,
@@ -425,8 +468,13 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
-  Future<void> sendFile(int receiverId, String filePath, List<int> fileBytes,
-      String fileName, String fileExtension) async {
+  Future<void> sendFile(String filePath, List<int> fileBytes, String fileName,
+      String fileExtension) async {
+    if (_receiverId == null) {
+      emit(const PersonalChatFailure("Receiver ID is not set"));
+      return;
+    }
+
     if (_isUploadingFile) {
       emit(const PersonalChatFailure("A file upload is already in progress"));
       return;
@@ -487,7 +535,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
               "Uploading chunk ${i ~/ chunkSize + 1}/${(fileBytes.length / chunkSize).ceil()}");
           await _signalRService.uploadFileChunk(
             clientMessageId: clientMessageId,
-            receiverId: receiverId,
+            receiverId: _receiverId!,
             filePath: serverFilePath,
             bytesBase64: bytesBase64,
             totalBytes: fileBytes.length,
@@ -500,7 +548,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
         await _signalRService.finishFileUpload(
           clientMessageId: clientMessageId,
-          receiverId: receiverId,
+          receiverId: _receiverId!,
           filePath: serverFilePath,
           fileBytes: fileBytes,
         );
@@ -538,12 +586,13 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
   void _addLocalFileMessage(
       String clientMessageId, String filePath, String fileName) {
+    if (_receiverId == null) return;
     final now = DateTime.now().toIso8601String();
     final newMessage = MessageModel(
       id: int.parse(
           DateTime.now().millisecondsSinceEpoch.toString().substring(0, 9)),
-      senderId: 20, // Current user ID
-      receiverId: receiverId,
+      senderId: _senderId,
+      receiverId: _receiverId!,
       sentAt: now,
       isSeen: false,
       content: null,

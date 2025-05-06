@@ -10,7 +10,7 @@ import 'package:aggar/features/authorization/presentation/widget/sign_in_email_a
 import 'package:aggar/features/authorization/presentation/widget/sign_in_face_book_and_google_buttons.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_forget_password_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_image_with_text.dart';
-import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
+import 'package:aggar/features/main_screen/presentation/views/bottom_navigation_bar_views.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
@@ -51,7 +51,7 @@ class _SignInContent extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginSuccess) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MainScreen()));
+                MaterialPageRoute(builder: (context) => const BottomNavigationBarViews()));
           } else if (state is LoginInactiveAccount) {
             Navigator.push(
               context,

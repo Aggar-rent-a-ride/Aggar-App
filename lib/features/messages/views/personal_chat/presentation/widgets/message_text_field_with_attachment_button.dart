@@ -66,8 +66,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
   Future<void> _pickAndSendFile(BuildContext context) async {
     final cubit = context.read<PersonalChatCubit>();
     try {
-      final receiverId = cubit.receiverId;
-      await cubit.pickAndSendFile(receiverId);
+      await cubit.pickAndSendFile();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
