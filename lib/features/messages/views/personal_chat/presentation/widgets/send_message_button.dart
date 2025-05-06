@@ -12,12 +12,10 @@ class SendMessageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PersonalChatCubit>();
-
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: cubit.messageController,
       builder: (context, value, child) {
         final bool hasText = value.text.trim().isNotEmpty;
-
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
@@ -56,11 +54,9 @@ class SendMessageButton extends StatelessWidget {
 
   Future<void> _sendMessage(BuildContext context) async {
     final cubit = context.read<PersonalChatCubit>();
-
     try {
       const storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: 'accessToken');
-
       if (accessToken == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -70,10 +66,7 @@ class SendMessageButton extends StatelessWidget {
         );
         return;
       }
-
-      final receiverId = cubit.receiverId;
-
-      await cubit.sendMessage(receiverId, accessToken);
+      await cubit.sendMessage(accessToken);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

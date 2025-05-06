@@ -1,7 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../personal_chat/presentation/views/personal_chat_view.dart';
@@ -11,10 +10,13 @@ class AllMessagesView extends StatefulWidget {
   @override
   State<AllMessagesView> createState() => _AllMessagesViewState();
 }
-class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAliveClientMixin {
+
+class _AllMessagesViewState extends State<AllMessagesView>
+    with AutomaticKeepAliveClientMixin {
   String? accessToken;
   bool isLoading = false;
   bool isLoadingToken = true;
+  @override
   bool get wantKeepAlive => true;
 
   @override
@@ -34,7 +36,7 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
     try {
       final tokenCubit = context.read<TokenRefreshCubit>();
       final token = await tokenCubit.ensureValidToken();
-      
+
       if (token != null) {
         setState(() {
           accessToken = token;
@@ -73,17 +75,18 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
       _getValidToken();
     }
   }
-  
-  Future<void> _ensureValidTokenAndExecute(Function(String token) action) async {
+
+  Future<void> _ensureValidTokenAndExecute(
+      Function(String token) action) async {
     if (!mounted || isLoading) return;
-    
+
     setState(() {
       isLoading = true;
     });
 
     try {
       final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.ensureValidToken();      
+      final token = await tokenCubit.ensureValidToken();
       if (token != null) {
         setState(() {
           accessToken = token;
@@ -115,10 +118,10 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
 
   void _handleChatTap(String userId, String dateTime) {
     if (!mounted) return;
-    
+
     _ensureValidTokenAndExecute((validToken) {
       if (!mounted) return;
-      
+
       final messageCubit = context.read<MessageCubit>();
       messageCubit.getMessages(
         userId,
@@ -132,7 +135,7 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); 
+    super.build(context);
     if (isLoadingToken) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -146,11 +149,14 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
             isLoading = false;
           });
           final messageData = state.messages!.data;
+          final int receiverId = state.userId ?? 0;
+          print('Opening PersonalChatView with receiverId: $receiverId');
           Future.microtask(() {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => PersonalChatView(
                   messageList: messageData,
+                  receiverId: receiverId,
                   onMessagesUpdated: () {
                     if (mounted) _loadChats();
                   },
@@ -180,15 +186,16 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
             itemCount: state.chats!.data.length,
             itemBuilder: (context, index) {
               final chatData = state.chats!.data[index];
-              DateTime messageTime = DateTime.parse(chatData.lastMessage.sentAt);
+              DateTime messageTime =
+                  DateTime.parse(chatData.lastMessage.sentAt);
               String period = messageTime.hour >= 12 ? 'PM' : 'AM';
               int hour12 = messageTime.hour % 12;
               if (hour12 == 0) hour12 = 12;
               String hoursAndMinutes =
                   "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
-              
+
               return ChatPerson(
-/*<<<<<<< esraa
+                /*<<<<<<< esraa
                   onTap: () {
                     if (!isLoading) {
                       setState(() {
@@ -206,7 +213,8 @@ class _AllMessagesViewState extends State<AllMessagesView> with AutomaticKeepAli
                   "2025-06-03T09:49:51.7950956",
                 ),
                 name: chatData.user.name,
-                msg: chatData.lastMessage.content ?? chatData.lastMessage.filePath!,
+                msg: chatData.lastMessage.content ??
+                    chatData.lastMessage.filePath!,
                 time: hoursAndMinutes,
                 numberMsg: chatData.unseenMessageIds.length,
                 image: chatData.user.imagePath,

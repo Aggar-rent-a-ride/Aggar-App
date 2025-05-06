@@ -6,7 +6,8 @@ final class MessageInitial extends MessageState {}
 
 final class MessageSuccess extends MessageState {
   final ListMessageModel? messages;
-  MessageSuccess({this.messages});
+  final int? userId;
+  MessageSuccess({this.messages, this.userId});
 }
 
 final class ChatSuccess extends MessageState {

@@ -8,16 +8,18 @@ import 'package:aggar/features/messages/views/personal_chat/presentation/widgets
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/search_for_msg_by_content_or_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class PersonalChatView extends StatefulWidget {
   const PersonalChatView({
     super.key,
     required this.messageList,
     this.onMessagesUpdated,
+    required this.receiverId,
   });
 
   final List<MessageModel> messageList;
-
+  final int receiverId;
   final VoidCallback? onMessagesUpdated;
   @override
   State<PersonalChatView> createState() => _PersonalChatViewState();
@@ -25,12 +27,32 @@ class PersonalChatView extends StatefulWidget {
 
 class _PersonalChatViewState extends State<PersonalChatView> {
   late final PersonalChatCubit cubit;
+  int currentUserId = 0;
+  String? receiverName;
 
   @override
   void initState() {
     super.initState();
     cubit = PersonalChatCubit();
+    print('PersonalChatView initialized with receiverId: ${widget.receiverId}');
     cubit.setMessages(widget.messageList);
+    cubit.setReceiverId(widget.receiverId);
+    _initializeUser();
+    _fetchReceiverName();
+  }
+
+  Future<void> _initializeUser() async {
+    await cubit.initializeSenderId();
+    setState(() {
+      currentUserId = cubit.senderId;
+    });
+  }
+
+  Future<void> _fetchReceiverName() async {
+
+    setState(() {
+      receiverName = "User #${widget.receiverId}";
+    });
   }
 
   @override
@@ -42,15 +64,14 @@ class _PersonalChatViewState extends State<PersonalChatView> {
 
   @override
   Widget build(BuildContext context) {
-/*<<<<<<< esraa
+    /*<<<<<<< esraa
     int currentUserId = 20; // Replace with the actual current user ID
     return BlocProvider(
       create: (context) => PersonalChatCubit(),
 =======*/
-    int currentUserId = 20;
+
     return BlocProvider.value(
       value: cubit,
- //>>>>>>> main     
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
         builder: (context, state) {
           return Scaffold(
@@ -65,7 +86,10 @@ class _PersonalChatViewState extends State<PersonalChatView> {
               backgroundColor: context.theme.blue100_1,
               title: cubit.isSearchActive
                   ? SearchForMsgByContentOrDate(cubit: cubit)
-                  : const ImageAndNamePersonMessage(name: "test"),
+                  : ImageAndNamePersonMessage(
+                      name:
+                          receiverName ?? "Chat",
+                    ),
               leading: cubit.isSearchActive
                   ? IconButton(
                       icon: Icon(
@@ -97,7 +121,8 @@ class _PersonalChatViewState extends State<PersonalChatView> {
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
               messageList: cubit.messages,
-              currentUserId: currentUserId,
+              currentUserId:
+                  cubit.senderId > 0 ? cubit.senderId : currentUserId,
             ),
           );
         },

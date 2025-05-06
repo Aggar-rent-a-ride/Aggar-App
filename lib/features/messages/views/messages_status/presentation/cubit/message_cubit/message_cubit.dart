@@ -136,7 +136,8 @@ class MessageCubit extends Cubit<MessageState> {
       }
       final ListMessageModel messages = ListMessageModel.fromJson(response);
       await Future.delayed(const Duration(seconds: 2));
-      emit(MessageSuccess(messages: messages));
+      // Store the userId for later use
+      emit(MessageSuccess(messages: messages, userId: int.parse(userId)));
     } catch (e) {
       emit(MessageFailure(e.toString()));
     }
