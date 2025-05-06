@@ -33,6 +33,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   @override
   void initState() {
+    super.initState();
     _loadToken();
   }
 
@@ -62,7 +63,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       context.read<VehicleBrandCubit>().fetchVehicleBrands(token),
       context.read<VehicleTypeCubit>().fetchVehicleTypes(token),
     ]);
-    super.initState();
   }
 
   @override
