@@ -18,6 +18,7 @@ import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubi
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/views/main_screen.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
@@ -85,6 +86,9 @@ class MyApp extends StatelessWidget {
           create: (context) => AdditionalImageCubit(),
         ),
         BlocProvider(
+          create: (context) => VehicleCubit(),
+        ),
+        BlocProvider(
           create: (context) => MainImageCubit(),
         ),
         BlocProvider(
@@ -143,6 +147,7 @@ class MyApp extends StatelessWidget {
             tokenRefreshCubit: context.read<TokenRefreshCubit>(),
             vehicleBrandCubit: context.read<VehicleBrandCubit>(),
             vehicleTypeCubit: context.read<VehicleTypeCubit>(),
+            vehicleCubit: context.read<VehicleCubit>(),
           ),
         ),
       ],

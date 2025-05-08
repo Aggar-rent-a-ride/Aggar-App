@@ -4,6 +4,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_state.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/adding_vehicle_floating_action_button.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/loading_main_screen.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/loading_vehicle_brand_section.dart';
