@@ -1,5 +1,7 @@
 // main_screen_cubit.dart
 import 'package:aggar/core/services/signalr_service.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -16,20 +18,24 @@ class MainCubit extends Cubit<MainState> {
   final TokenRefreshCubit _tokenRefreshCubit;
   final VehicleBrandCubit _vehicleBrandCubit;
   final VehicleTypeCubit _vehicleTypeCubit;
+  final VehicleCubit _vehicleCubit;
   final SignalRService _signalRService = SignalRService();
 
   bool _isBrandsLoaded = false;
   bool _isTypesLoaded = false;
+  bool _isVehicleLoaded = false;
   bool _isSignalRConnected = false;
-  bool _isInitializing = false; 
+  bool _isInitializing = false;
 
   MainCubit({
     required TokenRefreshCubit tokenRefreshCubit,
     required VehicleBrandCubit vehicleBrandCubit,
     required VehicleTypeCubit vehicleTypeCubit,
+    required VehicleCubit vehicleCubit,
   })  : _tokenRefreshCubit = tokenRefreshCubit,
         _vehicleBrandCubit = vehicleBrandCubit,
         _vehicleTypeCubit = vehicleTypeCubit,
+        _vehicleCubit = vehicleCubit,
         super(MainInitial()) {
     _setupInternetChecker();
     _observeVehicleDataStates();
@@ -47,7 +53,7 @@ class MainCubit extends Cubit<MainState> {
     _signalRService.onConnectionChange.listen((isConnected) {
       _isSignalRConnected = isConnected;
       print('SignalR connection status changed: $_isSignalRConnected');
-      
+
       if (state is MainConnected) {
         _updateConnectedState();
       }
@@ -80,6 +86,17 @@ class MainCubit extends Cubit<MainState> {
         }
       }
     });
+    _vehicleCubit.stream.listen((vehicleState) {
+      if (state is MainConnected) {
+        if (vehicleState is VehicleLoaded) {
+          _isVehicleLoaded = true;
+          _updateConnectedState();
+        } else if (vehicleState is VehicleLoading) {
+          _isVehicleLoaded = false;
+          _updateConnectedState();
+        }
+      }
+    });
   }
 
   void _updateConnectedState() {
@@ -89,6 +106,7 @@ class MainCubit extends Cubit<MainState> {
         accessToken: currentState.accessToken,
         isVehicleBrandsLoaded: _isBrandsLoaded,
         isVehicleTypesLoaded: _isTypesLoaded,
+        isVehicleLoaded: _isVehicleLoaded,
         isSignalRConnected: _isSignalRConnected,
       ));
     }
@@ -98,7 +116,7 @@ class MainCubit extends Cubit<MainState> {
     if (_isInitializing) return; // Prevent duplicate initialization
     _isInitializing = true;
     emit(MainLoading());
-    
+
     try {
       await _checkAndRefreshToken();
     } finally {
@@ -145,7 +163,7 @@ class MainCubit extends Cubit<MainState> {
   Future<void> _loadAccessToken() async {
     if (_isInitializing) return;
     _isInitializing = true;
-    
+
     try {
       final token = await _secureStorage.read(key: 'accessToken');
       final userIdStr = await _secureStorage.read(key: 'userId');
@@ -155,6 +173,7 @@ class MainCubit extends Cubit<MainState> {
         // Reset loading flags
         _isBrandsLoaded = false;
         _isTypesLoaded = false;
+        _isVehicleLoaded = false;
         _isSignalRConnected = false;
 
         emit(MainConnected(
@@ -162,10 +181,11 @@ class MainCubit extends Cubit<MainState> {
           isVehicleBrandsLoaded: false,
           isVehicleTypesLoaded: false,
           isSignalRConnected: false,
+          isVehicleLoaded: false,
         ));
 
         _fetchData(token);
-                if (userId != null) {
+        if (userId != null) {
           _connectToSignalR(userId);
         } else {
           print('Warning: No userId found in secure storage');
@@ -179,6 +199,7 @@ class MainCubit extends Cubit<MainState> {
       _isInitializing = false;
     }
   }
+
   Future<void> _connectToSignalR(int userId) async {
     try {
       if (!_signalRService.isConnected) {
@@ -207,10 +228,10 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void _fetchData(String accessToken) {
-
     print("Fetching data with token: ${accessToken.substring(0, 10)}...");
     _vehicleBrandCubit.fetchVehicleBrands(accessToken);
     _vehicleTypeCubit.fetchVehicleTypes(accessToken);
+    _vehicleCubit.fetchVehicle(accessToken);
   }
 
   void handleTokenRefreshSuccess(String accessToken) {
@@ -218,6 +239,7 @@ class MainCubit extends Cubit<MainState> {
       accessToken: accessToken,
       isVehicleBrandsLoaded: false,
       isVehicleTypesLoaded: false,
+      isVehicleLoaded: false,
       isSignalRConnected: _isSignalRConnected,
     ));
     _fetchData(accessToken);
@@ -233,7 +255,7 @@ class MainCubit extends Cubit<MainState> {
   }
 
   void handleTokenRefreshFailure(String errorMessage) {
-    _disconnectSignalR(); 
+    _disconnectSignalR();
     _handleAuthError('Authentication error: $errorMessage');
   }
 
@@ -242,7 +264,7 @@ class MainCubit extends Cubit<MainState> {
     if (state is MainConnected) {
       final accessToken = (state as MainConnected).accessToken;
       _fetchData(accessToken);
-      
+
       if (!_signalRService.isConnected) {
         _secureStorage.read(key: 'userId').then((userIdStr) {
           final userId = userIdStr != null ? int.tryParse(userIdStr) : null;

@@ -1,7 +1,10 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/utils/app_styles.dart';
 import 'popular_vehicles_car_card.dart';
 
@@ -45,28 +48,55 @@ class PopularVehiclesSection extends StatelessWidget {
           ],
         ),
         const Gap(5),
-        const PopularVehiclesCarCard(
-          carName: 'Tesla Model S',
-          carType: 'SUV-automatic',
-          pricePerHour: '120',
-          rating: 4.8,
-          assetImagePath: AppAssets.assetsImagesCar,
-        ),
-        const PopularVehiclesCarCard(
-          carName: 'Tesla Model S',
-          carType: 'SUV-automatic',
-          pricePerHour: '120',
-          rating: 4.8,
-          assetImagePath: AppAssets.assetsImagesCar,
-        ),
-        const PopularVehiclesCarCard(
-          carName: 'Tesla Model S',
-          carType: 'SUV-automatic',
-          pricePerHour: '120',
-          rating: 4.8,
-          assetImagePath: AppAssets.assetsImagesCar,
-        ),
+        const VehicleList()
       ],
+    );
+  }
+}
+
+class VehicleList extends StatelessWidget {
+  const VehicleList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<VehicleCubit, VehicleState>(
+      builder: (context, state) {
+        if (state is VehicleLoaded) {
+          return Column(
+            children: List.generate(
+              state.vehicles.data.length,
+              (index) => PopularVehiclesCarCard(
+                carName: state.vehicles.data[index].brand,
+                carType: state.vehicles.data[index].type,
+                pricePerHour: state.vehicles.data[index].pricePerDay,
+                rating: 4.8,
+                assetImagePath: state.vehicles.data[index].mainImagePath,
+              ),
+            ),
+          );
+        } else {
+          return Shimmer.fromColors(
+            baseColor: context.theme.gray100_1,
+            highlightColor: context.theme.white100_1,
+            child: Column(
+              spacing: 15,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: context.theme.white100_1,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

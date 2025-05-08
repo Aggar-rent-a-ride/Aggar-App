@@ -15,6 +15,8 @@ class EndPoint {
   static String vehicleBrand = "$baseUrl/api/vehiclebrand/";
   static String addVehicle = "$baseUrl/api/vehicle/?id=";
   static String vehicleDiscount = "$baseUrl/api/vehicle/vehicle-discounts";
+  static String getVehicles =
+      "$baseUrl/api/vehicle/get-vehicles?pageNo=1&pageSize=8&byNearest=true";
 
   // Chat endpoints
   static String chatHub = "/Chat";
@@ -147,4 +149,15 @@ class ApiKey {
   static String getVehicleCreatedAt = "createdAt";
   static String getVehicleRate = "rate";
   static String getVehicleComments = "comments";
+
+  //////////////GetVehicle///////////////////////////
+  static String getVehicleId = "id";
+  static String getVehicleDistance = "distance";
+  static String getVehicleBrand = "brand";
+  static String getVehicleType = "type";
+  static String getVehicleModel = "model";
+  static String getVehicleYear = "year";
+  static String getVehiclePricePerDay = "pricePerDay";
+  static String getVehicleIsFavourite = "isFavourite";
+  static String getVehicleMainImagePath = "mainImagePath";
 }

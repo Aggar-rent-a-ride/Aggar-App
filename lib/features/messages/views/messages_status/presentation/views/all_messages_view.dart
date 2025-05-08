@@ -126,7 +126,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
       messageCubit.getMessages(
         userId,
         dateTime,
-        "30",
+        "20",
         "0",
         validToken,
       );
@@ -187,7 +187,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
             itemBuilder: (context, index) {
               final chatData = state.chats!.data[index];
               DateTime messageTime =
-                  DateTime.parse(chatData.lastMessage.sentAt);
+                  DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
               String period = messageTime.hour >= 12 ? 'PM' : 'AM';
               int hour12 = messageTime.hour % 12;
               if (hour12 == 0) hour12 = 12;

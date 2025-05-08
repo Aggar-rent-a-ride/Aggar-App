@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
@@ -17,7 +19,7 @@ import '../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dar
 class PopularVehiclesCarCard extends StatelessWidget {
   final String carName;
   final String carType;
-  final String pricePerHour;
+  final double pricePerHour;
   final double rating;
   final String assetImagePath;
 
@@ -112,19 +114,28 @@ class PopularVehiclesCarCard extends StatelessWidget {
                             carName: carName, rating: rating),
                         PopularVehiclesCarCardCarType(carType: carType),
                         const Gap(10),
-                        PopularVehicleCarCardPrice(pricePerHour: pricePerHour),
+                        PopularVehicleCarCardPrice(
+                            pricePerHour: pricePerHour.toString()),
                       ],
                     ),
                   ),
                 ),
                 const Gap(5),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    assetImagePath,
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    "${EndPoint.baseUrl}$assetImagePath",
                     height: 100,
                     width: 150,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        AppAssets.assetsImagesCar,
+                        height: 100,
+                        width: 150,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ],

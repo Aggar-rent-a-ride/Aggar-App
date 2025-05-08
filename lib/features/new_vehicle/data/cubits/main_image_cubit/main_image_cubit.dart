@@ -31,7 +31,7 @@ class MainImageCubit extends Cubit<MainImageState> {
       onImagePicked(image!);
       emit(MainImageLoaded(imageFile: image!));
     } else {
-      emit(const MainImageFaliure('Failed to pick image'));
+      emit(const MainImageFaliure('Failed to pick imaggggggggge'));
     }
   }
 }
