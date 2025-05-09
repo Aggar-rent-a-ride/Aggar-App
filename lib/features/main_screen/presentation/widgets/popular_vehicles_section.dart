@@ -68,7 +68,8 @@ class VehicleList extends StatelessWidget {
             children: List.generate(
               state.vehicles.data.length,
               (index) => PopularVehiclesCarCard(
-                carName: state.vehicles.data[index].brand,
+                carName:
+                    "${state.vehicles.data[index].brand} ${state.vehicles.data[index].model}",
                 carType: state.vehicles.data[index].type,
                 pricePerHour: state.vehicles.data[index].pricePerDay,
                 rating: 4.8,

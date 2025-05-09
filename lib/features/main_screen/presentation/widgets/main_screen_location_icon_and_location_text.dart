@@ -1,9 +1,10 @@
-import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../core/utils/app_constants.dart';
 
 class MainScreenLocationIconAndLocationText extends StatelessWidget {
   const MainScreenLocationIconAndLocationText({
@@ -24,7 +25,7 @@ class MainScreenLocationIconAndLocationText extends StatelessWidget {
         Text(
           "Minya al-Qamh, Sharkia, Egypt",
           style: AppStyles.medium18(context).copyWith(
-            color: context.theme.black100,
+            color: AppConstants.myWhite100_1.withOpacity(0.9),
           ),
         ),
       ],
