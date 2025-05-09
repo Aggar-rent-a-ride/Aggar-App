@@ -413,6 +413,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   }
 
   Future<void> pickAndSendFile() async {
+    print("pickAndSendFile called");
     if (_receiverId == null) {
       emit(const PersonalChatFailure("Receiver ID is not set"));
       return;
@@ -470,6 +471,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
   Future<void> sendFile(String filePath, List<int> fileBytes, String fileName,
       String fileExtension) async {
+    print(
+        "sendFile called with fileName: $fileName, fileExtension: $fileExtension, fileBytes length: ${fileBytes.length}");
     if (_receiverId == null) {
       emit(const PersonalChatFailure("Receiver ID is not set"));
       return;
@@ -486,6 +489,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     _pendingUploads[clientMessageId] = fileName;
     _fileUploadProgress[clientMessageId] = 0.0;
     emit(FileUploadInProgress(clientMessageId, fileName, 0.0));
+
     try {
       if (!_signalRService.isConnected) {
         await _signalRService.initialize();
@@ -497,6 +501,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           return;
         }
       }
+
       print("Starting file upload process for $fileName ($fileExtension)");
 
       try {
@@ -516,6 +521,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
         final uploadProgressSubscription =
             _signalRService.onUploadProgress.listen((progress) {
+          print(
+              "Progress event received in Bloc: ${progress.progressPercentage}");
           if (progress.clientMessageId == clientMessageId) {
             final progressPercent = progress.progressPercentage;
             _fileUploadProgress[clientMessageId] = progressPercent;
@@ -523,6 +530,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
                 clientMessageId, fileName, progressPercent));
           }
         });
+
         const int chunkSize = 4096;
         for (int i = 0; i < fileBytes.length; i += chunkSize) {
           final end = (i + chunkSize < fileBytes.length)
@@ -533,6 +541,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
           print(
               "Uploading chunk ${i ~/ chunkSize + 1}/${(fileBytes.length / chunkSize).ceil()}");
+          print(
+              "Chunk size: ${chunk.length}, Base64 size: ${bytesBase64.length}");
           await _signalRService.uploadFileChunk(
             clientMessageId: clientMessageId,
             receiverId: _receiverId!,
@@ -540,6 +550,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
             bytesBase64: bytesBase64,
             totalBytes: fileBytes.length,
           );
+          print("Chunk uploaded!");
         }
 
         print("Calculating checksum and finishing upload");
@@ -577,11 +588,12 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         _cleanupUpload(clientMessageId);
       }
     } catch (e) {
+      print("Error in upload process: $e");
       _cleanupUpload(clientMessageId);
       emit(PersonalChatFailure("Failed to upload file: ${e.toString()}"));
-    } finally {
-      _isUploadingFile = false;
     }
+
+    _isUploadingFile = false;
   }
 
   void _addLocalFileMessage(
