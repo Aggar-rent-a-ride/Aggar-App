@@ -130,6 +130,9 @@ class SignalRService {
   factory SignalRService() => _instance;
   SignalRService._internal();
 
+  static const int _maxChunkSize = 1024 * 1024; // 1MB max chunk size
+  static const Duration _uploadTimeout = Duration(seconds: 30);
+
   HubConnection? _hubConnection;
   bool _isConnected = false;
   int _currentUserId = 0;
@@ -415,7 +418,13 @@ class SignalRService {
     print('ClientMessageId: $clientMessageId');
     print('ReceiverId: $receiverId');
     print('FilePath: $filePath');
-    print('BytesBase64 length: [33m${bytesBase64.length}[0m');
+    print('BytesBase64 length: ${bytesBase64.length}');
+
+    if (bytesBase64.length > _maxChunkSize) {
+      throw Exception(
+          'Chunk size (${bytesBase64.length} bytes) exceeds maximum allowed size of $_maxChunkSize bytes');
+    }
+
     try {
       final result = await _invokeMethod(
         'UploadAsync',
@@ -425,6 +434,10 @@ class SignalRService {
           'FilePath': filePath,
           'BytesBase64': bytesBase64,
         },
+      ).timeout(
+        _uploadTimeout,
+        onTimeout: () => throw Exception(
+            'Chunk upload timed out after ${_uploadTimeout.inSeconds} seconds'),
       );
       print('Chunk upload result: $result');
     } catch (e) {
@@ -434,19 +447,42 @@ class SignalRService {
   }
 
   /// Complete file upload process
-  Future<void> finishFileUpload({
+  Future<ChatMessage> finishFileUpload({
     required String clientMessageId,
     required int receiverId,
     required String filePath,
     required List<int> fileBytes,
   }) async {
     try {
-      final checksum = sha256.convert(fileBytes).toString();
-      final checksumBase64 = base64.encode(utf8.encode(checksum));
-      print('Calculated checksum (hex): $checksum');
+      final hash = sha256.convert(fileBytes);
+      final checksumBase64 = base64.encode(hash.bytes);
       print('Calculated checksum (base64): $checksumBase64');
 
-      await _invokeMethod(
+      final completer = Completer<ChatMessage>();
+
+      StreamSubscription? subscription;
+      subscription = _messageController.stream.listen(
+        (message) {
+          if (message.clientMessageId == clientMessageId) {
+            subscription?.cancel();
+            completer.complete(message);
+          }
+        },
+        onError: (error) {
+          subscription?.cancel();
+          completer.completeError(error);
+        },
+      );
+
+      Timer(const Duration(seconds: 30), () {
+        if (!completer.isCompleted) {
+          subscription?.cancel();
+          completer.completeError(
+              Exception('Finish upload timed out after 30 seconds'));
+        }
+      });
+
+      final result = await _invokeMethod<Map<String, dynamic>>(
         'FinishUploadingAsync',
         {
           'ClientMessageId': clientMessageId,
@@ -454,7 +490,36 @@ class SignalRService {
           'FilePath': filePath,
           'checksum': checksumBase64,
         },
+        resultConverter: (dynamic response) {
+          if (response is String) {
+            return jsonDecode(response) as Map<String, dynamic>;
+          }
+          return response as Map<String, dynamic>;
+        },
+      ).timeout(
+        _uploadTimeout,
+        onTimeout: () => throw Exception(
+            'Finish upload timed out after ${_uploadTimeout.inSeconds} seconds'),
       );
+
+      // Check for error response
+      if (result != null) {
+        final statusCode = result['statusCode'];
+        if (statusCode != null && statusCode != 200) {
+          final errorMessage = result['message'] ?? 'Server error occurred';
+          throw Exception(errorMessage);
+        }
+
+        if (result['data'] != null) {
+          final message = ChatMessage.fromJson(
+            result['data'],
+            currentUserId: _currentUserId,
+          );
+          return message;
+        }
+      }
+
+      return await completer.future;
     } catch (e) {
       print('Error finishing file upload: $e');
       rethrow;
@@ -481,18 +546,31 @@ class SignalRService {
       final Map<String, dynamic> responseData = jsonDecode(responseStr);
       print('Parsed message data: $responseData');
 
-      if (responseData.containsKey('data')) {
-        final data = responseData['data'];
-        if (data != null) {
-          final message = ChatMessage.fromJson(
-            data,
-            currentUserId: _currentUserId,
-          );
-          _messageController.add(message);
-        }
+      if (responseData['statusCode'] != null &&
+          responseData['statusCode'] != 200) {
+        final errorMessage =
+            responseData['message'] ?? 'Unknown error occurred';
+        print('Error response received: $errorMessage');
+        _messageController.addError(errorMessage);
+        return;
+      }
+      if (responseData['data'] == null) {
+        print('Received message with null data');
+        return;
+      }
+      final data = responseData['data'];
+      if (data is Map<String, dynamic>) {
+        final message = ChatMessage.fromJson(
+          data,
+          currentUserId: _currentUserId,
+        );
+        _messageController.add(message);
+      } else {
+        print('Invalid data format in message: $data');
       }
     } catch (e) {
       print('Error handling received message: $e');
+      _messageController.addError('Failed to process message: $e');
     }
   }
 
@@ -641,17 +719,22 @@ class SignalRService {
             progressInt = 0;
           }
 
+          final totalBytes = data['totalBytes'] as int? ?? 0;
+
           final uploadProgress = UploadProgress(
             clientMessageId:
                 data['clientMessageId'] ?? data['ClientMessageId'] ?? '',
             bytesUploaded: progressInt,
-            progressPercentage: 0,
+            progressPercentage:
+                totalBytes > 0 ? (progressInt / totalBytes) * 100 : 0,
           );
           _uploadProgressController.add(uploadProgress);
         }
       }
     } catch (e) {
       print('Error handling upload progress: $e');
+      _uploadProgressController
+          .addError('Failed to process upload progress: $e');
     }
   }
 
