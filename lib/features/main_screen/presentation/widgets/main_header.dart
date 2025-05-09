@@ -1,4 +1,4 @@
-import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/main_screen_location_icon_and_location_text.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/main_screen_search_field_with_filter_icon.dart';
@@ -22,7 +22,7 @@ class MainHeader extends StatelessWidget {
                 Text(
                   "Location",
                   style: AppStyles.regular14(context).copyWith(
-                      color: context.theme.black100.withOpacity(0.50)),
+                      color: AppConstants.myWhite100_1.withOpacity(0.50)),
                 ),
                 const Gap(5),
                 const MainScreenLocationIconAndLocationText(),

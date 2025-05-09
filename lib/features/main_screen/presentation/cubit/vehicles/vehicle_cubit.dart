@@ -3,7 +3,6 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/main_screen/data/model/list_vehicle_model.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VehicleCubit extends Cubit<VehicleState> {
@@ -14,6 +13,7 @@ class VehicleCubit extends Cubit<VehicleState> {
       emit(VehicleLoading());
       final response = await dioConsumer.get(
         EndPoint.getVehicles,
+        queryParameters: {"pageNo": 1, "pageSize": 10},
         options: Options(headers: {
           'Authorization': 'Bearer $accessToken',
         }),
@@ -38,7 +38,6 @@ class VehicleCubit extends Cubit<VehicleState> {
                   'Server error: ${error.response?.statusCode ?? 'Unknown'}'));
         }
       } else {
-        debugPrint('Unexpected Error: $error');
         emit(VehicleError(message: 'An unexpected error occurred: $error'));
       }
     }

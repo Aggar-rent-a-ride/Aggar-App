@@ -64,7 +64,7 @@ class MainCubit extends Cubit<MainState> {
     // Listen to vehicle brand state changes
     _vehicleBrandCubit.stream.listen((brandState) {
       if (state is MainConnected) {
-        if (brandState is VehicleBrandLoaded) {
+        if (brandState is VehicleLoadedBrand) {
           _isBrandsLoaded = true;
           _updateConnectedState();
         } else if (brandState is VehicleBrandLoading) {
@@ -77,7 +77,7 @@ class MainCubit extends Cubit<MainState> {
     // Listen to vehicle type state changes
     _vehicleTypeCubit.stream.listen((typeState) {
       if (state is MainConnected) {
-        if (typeState is VehicleTypeLoaded) {
+        if (typeState is VehicleLoadedType) {
           _isTypesLoaded = true;
           _updateConnectedState();
         } else if (typeState is VehicleTypeLoading) {

@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/main_screen/presentation/views/vehicle_type_screen.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_type_card_net_work_image.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,6 @@ import '../../../../core/utils/app_styles.dart';
 
 class VehiclesTypeSection extends StatelessWidget {
   const VehiclesTypeSection({super.key});
-
-  @override
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
@@ -48,6 +47,25 @@ class VehiclesTypeSection extends StatelessWidget {
                     children: List.generate(
                       context.read<VehicleTypeCubit>().vehicleTypes.length,
                       (index) => VehicleTypeCardNetWorkImage(
+                        onTap: () {
+                          context.read<VehicleTypeCubit>().fetchVehicleType(
+                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiY2JkMWIwZDUtMWEyZS00YzExLWE1ZGUtY2MwZWU3YjMxYzgwIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDY3NjU2MjIsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.XLXD6AOSx_X-cspjhfNZxiG2kLYlowRO0LUzwz0A1FQ",
+                                context
+                                    .read<VehicleTypeCubit>()
+                                    .vehicleTypeIds[index]
+                                    .toString(),
+                              );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VehicleTypeScreen(
+                                selectedType: context
+                                    .read<VehicleTypeCubit>()
+                                    .vehicleTypes[index],
+                              ),
+                            ),
+                          );
+                        },
                         iconPrv: context
                             .read<VehicleTypeCubit>()
                             .vehicleTypeSlogenPaths[index],
