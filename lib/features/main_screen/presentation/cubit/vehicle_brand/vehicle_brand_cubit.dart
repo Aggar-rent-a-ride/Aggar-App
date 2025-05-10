@@ -38,8 +38,6 @@ class VehicleBrandCubit extends Cubit<VehicleBrandState> {
           }
         }
         emit(VehicleLoadedBrand());
-      } else {
-        emit(VehicleBrandError(message: decodedJson['message']));
       }
     } catch (error) {
       emit(VehicleBrandError(message: error.toString()));
