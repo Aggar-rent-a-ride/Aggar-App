@@ -130,6 +130,9 @@ class SignalRService {
   factory SignalRService() => _instance;
   SignalRService._internal();
 
+  static const int _maxChunkSize = 1024 * 1024; // 1MB max chunk size
+  static const Duration _uploadTimeout = Duration(seconds: 30);
+
   HubConnection? _hubConnection;
   bool _isConnected = false;
   int _currentUserId = 0;
@@ -162,8 +165,9 @@ class SignalRService {
 
   /// Initialize SignalR connection
   Future<void> initialize({int? userId}) async {
-    if (_isConnected) {
-      print('SignalR connection already established');
+    if (_isConnected && _hubConnection?.connectionId != null) {
+      print(
+          'SignalR connection already established with ID: ${_hubConnection?.connectionId}');
       return;
     }
 
@@ -176,6 +180,11 @@ class SignalRService {
       final accessToken = await _secureStorage.read(key: 'accessToken');
       if (accessToken == null || accessToken.isEmpty) {
         throw Exception('Access token not found. Please login first.');
+      }
+
+      if (_hubConnection != null) {
+        await _hubConnection!.stop();
+        _hubConnection = null;
       }
 
       _hubConnection = HubConnectionBuilder()
@@ -194,10 +203,16 @@ class SignalRService {
       _registerEventHandlers();
 
       await _hubConnection!.start();
+
+      if (_hubConnection?.connectionId == null) {
+        throw Exception('Failed to obtain SignalR connection ID');
+      }
+
       _isConnected = true;
       _connectionStatusController.add(true);
 
-      print('SignalR connection established successfully');
+      print(
+          'SignalR connection established successfully with ID: ${_hubConnection?.connectionId}');
     } catch (e) {
       _isConnected = false;
       _connectionStatusController.add(false);
@@ -281,31 +296,114 @@ class SignalRService {
     print('Message sent successfully');
   }
 
-  /// Initiate file upload process
   Future<UploadInitiationResponse> initiateFileUpload({
     required String clientMessageId,
     required String fileName,
     required String fileExtension,
   }) async {
-    final response = await _invokeMethod<UploadInitiationResponse>(
-        'InitiateUploadingAsync', {
-      'ClientMessageId': clientMessageId,
-      'Name': fileName,
-      'Extension': fileExtension,
-    }, resultConverter: (result) {
-      final Map<String, dynamic> jsonData = jsonDecode(result.toString());
-      final apiResponse = ApiResponse.fromJson(
-        jsonData,
-        (data) => UploadInitiationResponse.fromJson(data),
+    try {
+      if (clientMessageId.isEmpty) {
+        throw Exception('Client message ID cannot be empty');
+      }
+      if (fileName.isEmpty) {
+        throw Exception('File name cannot be empty');
+      }
+      if (fileExtension.isEmpty) {
+        throw Exception('File extension cannot be empty');
+      }
+
+      final normalizedExtension = fileExtension.toLowerCase();
+
+      final extensionWithDot = normalizedExtension.startsWith('.')
+          ? normalizedExtension
+          : '.$normalizedExtension';
+
+      String cleanFileName = fileName;
+      if (fileName.toLowerCase().endsWith(extensionWithDot)) {
+        cleanFileName =
+            fileName.substring(0, fileName.length - extensionWithDot.length);
+      }
+
+      if (cleanFileName.isEmpty) {
+        throw Exception('File name cannot be empty after removing extension');
+      }
+
+      print('Initiating file upload with parameters:');
+      print('ClientMessageId: $clientMessageId');
+      print('FileName: $cleanFileName');
+      print('FileExtension: $extensionWithDot');
+
+      if (!_isConnected || _hubConnection == null) {
+        await initialize(userId: _currentUserId);
+        if (!_isConnected) {
+          throw Exception('SignalR is not connected');
+        }
+      }
+
+      print('Using SignalR connection ID: ${_hubConnection!.connectionId}');
+
+      final args = {
+        'clientMessageId': clientMessageId,
+        'name': cleanFileName,
+        'extension': extensionWithDot,
+      };
+
+      print('Invoking InitiateUploadingAsync with args: $args');
+
+      // Create a completer to handle the async response
+      final completer = Completer<UploadInitiationResponse>();
+
+      StreamSubscription? subscription;
+      subscription = _uploadInitiationController.stream.listen((response) {
+        if (response.clientMessageId == clientMessageId) {
+          subscription?.cancel();
+          completer.complete(response);
+        }
+      }, onError: (error) {
+        subscription?.cancel();
+        completer.completeError(error);
+      });
+
+      Timer(const Duration(seconds: 10), () {
+        if (!completer.isCompleted) {
+          subscription?.cancel();
+          completer.completeError(Exception('Upload initiation timed out'));
+        }
+      });
+
+      final result = await _hubConnection!.invoke(
+        'InitiateUploadingAsync',
+        args: [args],
       );
-      return apiResponse.data!;
-    });
 
-    if (response == null) {
-      throw Exception('Failed to initiate file upload');
+      print('Hub method invocation result: $result');
+
+      if (result != null) {
+        try {
+          final Map<String, dynamic> responseData = result is String
+              ? jsonDecode(result)
+              : (result is Map ? result.cast<String, dynamic>() : {});
+
+          if (responseData.containsKey('statusCode') &&
+              responseData['statusCode'] == 500) {
+            throw Exception(responseData['message'] ?? 'Server error occurred');
+          }
+        } catch (e) {
+          print('Error parsing immediate response: $e');
+        }
+      }
+
+      final response = await completer.future;
+
+      if (response.filePath.isEmpty) {
+        throw Exception('Server returned empty file path');
+      }
+
+      return response;
+    } catch (e) {
+      print('Error initiating file upload: $e');
+      rethrow;
     }
-
-    return response;
   }
 
   /// Upload file chunks
@@ -316,37 +414,116 @@ class SignalRService {
     required String bytesBase64,
     required int totalBytes,
   }) async {
-    await _invokeMethod(
-      'UploadAsync',
-      {
-        'ClientMessageId': clientMessageId,
-        'ReceiverId': receiverId,
-        'FilePath': filePath,
-        'BytesBase64': bytesBase64,
-      },
-    );
+    print('Uploading chunk:');
+    print('ClientMessageId: $clientMessageId');
+    print('ReceiverId: $receiverId');
+    print('FilePath: $filePath');
+    print('BytesBase64 length: ${bytesBase64.length}');
+
+    if (bytesBase64.length > _maxChunkSize) {
+      throw Exception(
+          'Chunk size (${bytesBase64.length} bytes) exceeds maximum allowed size of $_maxChunkSize bytes');
+    }
+
+    try {
+      final result = await _invokeMethod(
+        'UploadAsync',
+        {
+          'ClientMessageId': clientMessageId,
+          'ReceiverId': receiverId,
+          'FilePath': filePath,
+          'BytesBase64': bytesBase64,
+        },
+      ).timeout(
+        _uploadTimeout,
+        onTimeout: () => throw Exception(
+            'Chunk upload timed out after ${_uploadTimeout.inSeconds} seconds'),
+      );
+      print('Chunk upload result: $result');
+    } catch (e) {
+      print('Error uploading chunk: $e');
+      rethrow;
+    }
   }
 
   /// Complete file upload process
-  Future<void> finishFileUpload({
+  Future<ChatMessage> finishFileUpload({
     required String clientMessageId,
     required int receiverId,
     required String filePath,
     required List<int> fileBytes,
   }) async {
-    // Calculate SHA-256 checksum
-    final checksum = sha256.convert(fileBytes).toString();
-    final checksumBase64 = base64.encode(utf8.encode(checksum));
+    try {
+      final hash = sha256.convert(fileBytes);
+      final checksumBase64 = base64.encode(hash.bytes);
+      print('Calculated checksum (base64): $checksumBase64');
 
-    await _invokeMethod(
-      'FinishUploadingAsync',
-      {
-        'ClientMessageId': clientMessageId,
-        'ReceiverId': receiverId,
-        'FilePath': filePath,
-        'checksum': checksumBase64,
-      },
-    );
+      final completer = Completer<ChatMessage>();
+
+      StreamSubscription? subscription;
+      subscription = _messageController.stream.listen(
+        (message) {
+          if (message.clientMessageId == clientMessageId) {
+            subscription?.cancel();
+            completer.complete(message);
+          }
+        },
+        onError: (error) {
+          subscription?.cancel();
+          completer.completeError(error);
+        },
+      );
+
+      Timer(const Duration(seconds: 30), () {
+        if (!completer.isCompleted) {
+          subscription?.cancel();
+          completer.completeError(
+              Exception('Finish upload timed out after 30 seconds'));
+        }
+      });
+
+      final result = await _invokeMethod<Map<String, dynamic>>(
+        'FinishUploadingAsync',
+        {
+          'ClientMessageId': clientMessageId,
+          'ReceiverId': receiverId,
+          'FilePath': filePath,
+          'checksum': checksumBase64,
+        },
+        resultConverter: (dynamic response) {
+          if (response is String) {
+            return jsonDecode(response) as Map<String, dynamic>;
+          }
+          return response as Map<String, dynamic>;
+        },
+      ).timeout(
+        _uploadTimeout,
+        onTimeout: () => throw Exception(
+            'Finish upload timed out after ${_uploadTimeout.inSeconds} seconds'),
+      );
+
+      // Check for error response
+      if (result != null) {
+        final statusCode = result['statusCode'];
+        if (statusCode != null && statusCode != 200) {
+          final errorMessage = result['message'] ?? 'Server error occurred';
+          throw Exception(errorMessage);
+        }
+
+        if (result['data'] != null) {
+          final message = ChatMessage.fromJson(
+            result['data'],
+            currentUserId: _currentUserId,
+          );
+          return message;
+        }
+      }
+
+      return await completer.future;
+    } catch (e) {
+      print('Error finishing file upload: $e');
+      rethrow;
+    }
   }
 
   /// Handle received messages
@@ -354,26 +531,46 @@ class SignalRService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      final jsonStr = parameters[0].toString();
-      final Map<String, dynamic> responseData = jsonDecode(jsonStr);
+      String responseStr = parameters[0].toString();
+      print('Received message: $responseStr');
 
-      // Extract message data from the API response
-      final apiResponse = ApiResponse.fromJson(
-        responseData,
-        (data) => data,
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r'(\w+):'),
+        (match) => '"${match.group(1)}":',
+      );
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
+        (match) => ': "${match.group(1)}"',
       );
 
-      if (apiResponse.data != null) {
-        final messageData = apiResponse.data!;
+      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      print('Parsed message data: $responseData');
+
+      if (responseData['statusCode'] != null &&
+          responseData['statusCode'] != 200) {
+        final errorMessage =
+            responseData['message'] ?? 'Unknown error occurred';
+        print('Error response received: $errorMessage');
+        _messageController.addError(errorMessage);
+        return;
+      }
+      if (responseData['data'] == null) {
+        print('Received message with null data');
+        return;
+      }
+      final data = responseData['data'];
+      if (data is Map<String, dynamic>) {
         final message = ChatMessage.fromJson(
-          messageData,
+          data,
           currentUserId: _currentUserId,
         );
-
         _messageController.add(message);
+      } else {
+        print('Invalid data format in message: $data');
       }
     } catch (e) {
       print('Error handling received message: $e');
+      _messageController.addError('Failed to process message: $e');
     }
   }
 
@@ -414,19 +611,78 @@ class SignalRService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      final Map<String, dynamic> responseData =
-          jsonDecode(parameters[0].toString());
+      print('Received upload initiation response: $parameters');
 
-      final apiResponse = ApiResponse.fromJson(
-        responseData,
-        (data) => UploadInitiationResponse.fromJson(data),
+      String responseStr = parameters[0].toString();
+      print('Raw response string: $responseStr');
+
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r'(\w+):'),
+        (match) => '"${match.group(1)}":',
+      );
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
+        (match) => ': "${match.group(1)}"',
       );
 
-      if (apiResponse.data != null) {
-        _uploadInitiationController.add(apiResponse.data!);
+      print('Formatted response string: $responseStr');
+
+      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      print('Parsed response data: $responseData');
+
+      if (responseData.containsKey('statusCode') &&
+          responseData['statusCode'] == 500) {
+        final errorMessage = responseData['message'] ?? 'Server error occurred';
+        print('Server error: $errorMessage');
+        _uploadInitiationController.addError(errorMessage);
+        return;
+      }
+
+      if (responseData.containsKey('data')) {
+        final data = responseData['data'];
+        if (data is Map<String, dynamic>) {
+          final response = UploadInitiationResponse(
+            filePath: data['filePath'] ?? data['FilePath'] ?? '',
+            clientMessageId:
+                data['clientMessageId'] ?? data['ClientMessageId'] ?? '',
+          );
+
+          if (response.filePath.isEmpty) {
+            print('Error: Server returned empty file path in API response');
+            _uploadInitiationController
+                .addError('Server returned empty file path');
+            return;
+          }
+
+          print('Emitting API response data: $response');
+          _uploadInitiationController.add(response);
+        } else {
+          print('Error: Invalid data format in API response');
+          _uploadInitiationController
+              .addError('Invalid data format in response');
+        }
+      } else {
+        final response = UploadInitiationResponse(
+          filePath: responseData['filePath'] ?? responseData['FilePath'] ?? '',
+          clientMessageId: responseData['clientMessageId'] ??
+              responseData['ClientMessageId'] ??
+              '',
+        );
+
+        if (response.filePath.isEmpty) {
+          print('Error: Server returned empty file path in direct response');
+          _uploadInitiationController
+              .addError('Server returned empty file path');
+          return;
+        }
+
+        print('Emitting direct response data: $response');
+        _uploadInitiationController.add(response);
       }
     } catch (e) {
       print('Error handling upload initiation: $e');
+      _uploadInitiationController
+          .addError('Failed to parse server response: $e');
     }
   }
 
@@ -435,22 +691,50 @@ class SignalRService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      final Map<String, dynamic> responseData =
-          jsonDecode(parameters[0].toString());
+      String responseStr = parameters[0].toString();
+      print('Received upload progress: $responseStr');
 
-      final apiResponse = ApiResponse.fromJson(
-        responseData,
-        (data) => data,
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r'(\w+):'),
+        (match) => '"${match.group(1)}":',
+      );
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
+        (match) => ': "${match.group(1)}"',
       );
 
-      if (apiResponse.data != null) {
-        // We need the total bytes to calculate percentage
-        // This would need to be stored separately when initiating an upload
-        final uploadProgress = UploadProgress.fromJson(apiResponse.data!);
-        _uploadProgressController.add(uploadProgress);
+      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      print('Parsed progress data: $responseData');
+
+      if (responseData.containsKey('data')) {
+        final data = responseData['data'];
+        if (data is Map<String, dynamic>) {
+          final progress = data['progress'];
+          int progressInt;
+          if (progress is String) {
+            progressInt = int.tryParse(progress) ?? 0;
+          } else if (progress is int) {
+            progressInt = progress;
+          } else {
+            progressInt = 0;
+          }
+
+          final totalBytes = data['totalBytes'] as int? ?? 0;
+
+          final uploadProgress = UploadProgress(
+            clientMessageId:
+                data['clientMessageId'] ?? data['ClientMessageId'] ?? '',
+            bytesUploaded: progressInt,
+            progressPercentage:
+                totalBytes > 0 ? (progressInt / totalBytes) * 100 : 0,
+          );
+          _uploadProgressController.add(uploadProgress);
+        }
       }
     } catch (e) {
       print('Error handling upload progress: $e');
+      _uploadProgressController
+          .addError('Failed to process upload progress: $e');
     }
   }
 
