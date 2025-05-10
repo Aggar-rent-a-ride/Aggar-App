@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_state.dart';
 import 'package:aggar/features/main_screen/presentation/views/vehicle_brand_screen.dart';
-import 'package:aggar/features/main_screen/presentation/views/vehicle_type_screen.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_brand_card_net_work_image.dart';
 
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
@@ -52,23 +53,31 @@ class BrandsSection extends StatelessWidget {
                         context.read<VehicleBrandCubit>().vehicleBrands.length,
                         (index) => VehicleBrandCardNetWorkImage(
                           onTap: () {
-                            context.read<VehicleBrandCubit>().fetchVehicleBrand(
-                                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiY2JkMWIwZDUtMWEyZS00YzExLWE1ZGUtY2MwZWU3YjMxYzgwIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDY3NjU2MjIsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.XLXD6AOSx_X-cspjhfNZxiG2kLYlowRO0LUzwz0A1FQ",
-                                  context
-                                      .read<VehicleBrandCubit>()
-                                      .vehicleBrandIds[index]
-                                      .toString(),
+                            final vehicleBrandsList =
+                                context.read<VehicleBrandCubit>().vehicleBrands;
+                            final mainState = context.read<MainCubit>().state;
+                            if (mainState is MainConnected) {
+                              final accessToken = mainState.accessToken;
+                              final typeIds = context
+                                  .read<VehicleBrandCubit>()
+                                  .vehicleBrandIds;
+                              if (index < typeIds.length) {
+                                context
+                                    .read<VehicleBrandCubit>()
+                                    .fetchVehicleBrand(
+                                      accessToken,
+                                      typeIds[index].toString(),
+                                    );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VehicleBrandScreen(
+                                      selectedBrand: vehicleBrandsList[index],
+                                    ),
+                                  ),
                                 );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VehicleBrandScreen(
-                                  selectedBrand: context
-                                      .read<VehicleBrandCubit>()
-                                      .vehicleBrands[index],
-                                ),
-                              ),
-                            );
+                              }
+                            }
                           },
                           numOfBrands: 30,
                           imgPrv: context

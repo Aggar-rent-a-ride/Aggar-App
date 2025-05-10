@@ -11,10 +11,11 @@ class MainScreenSearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.theme.gray100_1,
+        color: context.theme.white100_2,
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
+        onTap: () {},
         decoration: InputDecoration(
           hintText: 'Search',
           hintStyle: AppStyles.regular18(context).copyWith(

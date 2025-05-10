@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/features/main_screen/data/model/list_vehicle_model.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as dio;
 import '../../../../../core/api/end_points.dart';
 import 'vehicle_type_state.dart';
 
@@ -16,13 +16,11 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
   Future<void> fetchVehicleTypes(String accessToken) async {
     try {
       emit(VehicleTypeLoading());
-      final response = await dioConsumer.get(
-        EndPoint.vehicleType,
-        options: Options(
-          headers: {
-            'Authorization': "Bearer $accessToken",
-          },
-        ),
+      final response = await dio.get(
+        Uri.parse(EndPoint.vehicleType),
+        headers: {
+          'Authorization': "Bearer $accessToken",
+        },
       );
       final Map<String, dynamic> decodedJson = jsonDecode(response.body);
       if (decodedJson['statusCode'] == 200) {
@@ -38,9 +36,6 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
             vehicleTypeSlogenPaths.add("null");
           }
         }
-        emit(VehicleLoadedType());
-      } else {
-        emit(VehicleTypeError(message: decodedJson['message']));
       }
       emit(VehicleLoadedType());
     } catch (error) {
@@ -84,7 +79,6 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
                   'Server error: ${error.response?.statusCode ?? 'Unknown'}'));
         }
       } else {
-        debugPrint('Unexpected Error: $error');
         emit(VehicleTypeError(message: 'An unexpected error occurred: $error'));
       }
     }

@@ -1,4 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
+import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_state.dart';
 import 'package:aggar/features/main_screen/presentation/views/vehicle_type_screen.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/vehicle_type_card_net_work_image.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
@@ -48,23 +50,28 @@ class VehiclesTypeSection extends StatelessWidget {
                       context.read<VehicleTypeCubit>().vehicleTypes.length,
                       (index) => VehicleTypeCardNetWorkImage(
                         onTap: () {
-                          context.read<VehicleTypeCubit>().fetchVehicleType(
-                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiY2JkMWIwZDUtMWEyZS00YzExLWE1ZGUtY2MwZWU3YjMxYzgwIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDY3NjU2MjIsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.XLXD6AOSx_X-cspjhfNZxiG2kLYlowRO0LUzwz0A1FQ",
-                                context
-                                    .read<VehicleTypeCubit>()
-                                    .vehicleTypeIds[index]
-                                    .toString(),
+                          final vehicleTypesList =
+                              context.read<VehicleTypeCubit>().vehicleTypes;
+                          final mainState = context.read<MainCubit>().state;
+                          if (mainState is MainConnected) {
+                            final accessToken = mainState.accessToken;
+                            final typeIds =
+                                context.read<VehicleTypeCubit>().vehicleTypeIds;
+                            if (index < typeIds.length) {
+                              context.read<VehicleTypeCubit>().fetchVehicleType(
+                                    accessToken,
+                                    typeIds[index].toString(),
+                                  );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VehicleTypeScreen(
+                                    selectedType: vehicleTypesList[index],
+                                  ),
+                                ),
                               );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VehicleTypeScreen(
-                                selectedType: context
-                                    .read<VehicleTypeCubit>()
-                                    .vehicleTypes[index],
-                              ),
-                            ),
-                          );
+                            }
+                          }
                         },
                         iconPrv: context
                             .read<VehicleTypeCubit>()
