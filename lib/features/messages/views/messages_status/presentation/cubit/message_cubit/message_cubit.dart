@@ -13,9 +13,19 @@ import 'package:path_provider/path_provider.dart';
 part 'message_state.dart';
 
 class MessageCubit extends Cubit<MessageState> {
-  final DioConsumer dioConsumer = DioConsumer(dio: Dio());
+  final DioConsumer dioConsumer;
+  ListChatModel? _cachedChats;
+  DateTime? _lastFetchTime;
+  static const Duration _cacheDuration = Duration(minutes: 5);
 
-  MessageCubit() : super(MessageInitial());
+  MessageCubit({required this.dioConsumer}) : super(MessageInitial());
+
+  bool get hasValidCache {
+    return _cachedChats != null &&
+        _lastFetchTime != null &&
+        DateTime.now().difference(_lastFetchTime!) < _cacheDuration;
+  }
+
   Future<void> fetchMimeType(String url) async {
     final mimeType = await getFileMimeType(url);
     emit(MessageLoaded(messageUrl: url, mimeType: mimeType));
@@ -95,6 +105,10 @@ class MessageCubit extends Cubit<MessageState> {
   }
 
   Future<void> getMyChat(String accessToken) async {
+    if (hasValidCache) {
+      emit(ChatSuccess(chats: _cachedChats));
+      return;
+    }
     try {
       emit(ChatsLoading());
       final response = await dioConsumer.get(
@@ -105,17 +119,21 @@ class MessageCubit extends Cubit<MessageState> {
           },
         ),
       );
-
       if (response == null) {
         emit(MessageFailure("No response received from server."));
         return;
       }
-      final ListChatModel chat = ListChatModel.fromJson(response);
-      await Future.delayed(const Duration(seconds: 2));
-      emit(ChatSuccess(chats: chat));
+      _cachedChats = ListChatModel.fromJson(response);
+      _lastFetchTime = DateTime.now();
+      emit(ChatSuccess(chats: _cachedChats));
     } catch (e) {
       emit(MessageFailure(e.toString()));
     }
+  }
+
+  void invalidateCache() {
+    _cachedChats = null;
+    _lastFetchTime = null;
   }
 
   Future<void> getMessages(String userId, String dateTime, String pageSize,
