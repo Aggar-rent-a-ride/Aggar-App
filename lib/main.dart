@@ -109,7 +109,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => MessageCubit(),
+          create: (context) => MessageCubit(
+            dioConsumer: DioConsumer(dio: Dio()),
+          ),
         ),
         BlocProvider(
           create: (context) => ReviewCubit(),

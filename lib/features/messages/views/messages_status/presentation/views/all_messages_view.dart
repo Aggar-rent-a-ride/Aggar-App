@@ -16,6 +16,8 @@ class _AllMessagesViewState extends State<AllMessagesView>
   String? accessToken;
   bool isLoading = false;
   bool isLoadingToken = true;
+  bool _hasInitialLoad = false;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -29,6 +31,8 @@ class _AllMessagesViewState extends State<AllMessagesView>
 
   // Get a valid token before loading chats
   Future<void> _getValidToken() async {
+    if (_hasInitialLoad) return; 
+
     setState(() {
       isLoadingToken = true;
     });
@@ -41,6 +45,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
         setState(() {
           accessToken = token;
           isLoadingToken = false;
+          _hasInitialLoad = true;
         });
         _loadChats();
       } else {
@@ -54,17 +59,18 @@ class _AllMessagesViewState extends State<AllMessagesView>
             ),
           );
         }
-        // Navigate to login screen or handle authentication error
       }
     } catch (e) {
       setState(() {
         isLoadingToken = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Authentication error: $e"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Authentication error: $e"),
+          ),
+        );
+      }
     }
   }
 
@@ -74,6 +80,10 @@ class _AllMessagesViewState extends State<AllMessagesView>
     } else {
       _getValidToken();
     }
+  }
+  void _refreshChats() {
+    context.read<MessageCubit>().invalidateCache();
+    _loadChats();
   }
 
   Future<void> _ensureValidTokenAndExecute(
@@ -158,7 +168,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                   messageList: messageData,
                   receiverId: receiverId,
                   onMessagesUpdated: () {
-                    if (mounted) _loadChats();
+                    if (mounted) _refreshChats();
                   },
                 ),
               ),
@@ -181,21 +191,25 @@ class _AllMessagesViewState extends State<AllMessagesView>
           return const Center(child: CircularProgressIndicator());
         }
         if (state is ChatSuccess) {
-          return ListView.builder(
-            padding: const EdgeInsets.only(top: 10),
-            itemCount: state.chats!.data.length,
-            itemBuilder: (context, index) {
-              final chatData = state.chats!.data[index];
-              DateTime messageTime =
-                  DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
-              String period = messageTime.hour >= 12 ? 'PM' : 'AM';
-              int hour12 = messageTime.hour % 12;
-              if (hour12 == 0) hour12 = 12;
-              String hoursAndMinutes =
-                  "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
+          return RefreshIndicator(
+            onRefresh: () async {
+              _refreshChats();
+            },
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 10),
+              itemCount: state.chats!.data.length,
+              itemBuilder: (context, index) {
+                final chatData = state.chats!.data[index];
+                DateTime messageTime =
+                    DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
+                String period = messageTime.hour >= 12 ? 'PM' : 'AM';
+                int hour12 = messageTime.hour % 12;
+                if (hour12 == 0) hour12 = 12;
+                String hoursAndMinutes =
+                    "${hour12.toString()}:${messageTime.minute.toString().padLeft(2, '0')} $period";
 
-              return ChatPerson(
-                /*<<<<<<< esraa
+                return ChatPerson(
+                                  /*<<<<<<< esraa
                   onTap: () {
                     if (!isLoading) {
                       setState(() {
@@ -208,18 +222,19 @@ class _AllMessagesViewState extends State<AllMessagesView>
                   },
                 
 =======*/
-                onTap: () => _handleChatTap(
-                  chatData.user.id.toString(),
-                  "2025-06-03T09:49:51.7950956",
-                ),
-                name: chatData.user.name,
-                msg: chatData.lastMessage.content ??
-                    chatData.lastMessage.filePath!,
-                time: hoursAndMinutes,
-                numberMsg: chatData.unseenMessageIds.length,
-                image: chatData.user.imagePath,
-              );
-            },
+                  onTap: () => _handleChatTap(
+                    chatData.user.id.toString(),
+                    "2025-06-03T09:49:51.7950956",
+                  ),
+                  name: chatData.user.name,
+                  msg: chatData.lastMessage.content ??
+                      chatData.lastMessage.filePath!,
+                  time: hoursAndMinutes,
+                  numberMsg: chatData.unseenMessageIds.length,
+                  image: chatData.user.imagePath,
+                );
+              },
+            ),
           );
         } else if (state is ChatsLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -231,7 +246,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 Text("Error: ${state.errorMessage}"),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: _loadChats,
+                  onPressed: _refreshChats,
                   child: const Text("Retry"),
                 ),
               ],

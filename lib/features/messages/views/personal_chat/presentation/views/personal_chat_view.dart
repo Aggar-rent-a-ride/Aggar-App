@@ -117,9 +117,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
             ),
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
-              messageList: cubit.messages,
-              currentUserId:
-                  cubit.senderId > 0 ? cubit.senderId : currentUserId,
+              currentUserId: currentUserId,
             ),
           );
         },

@@ -8,6 +8,7 @@ class MessageModel {
   final bool isSeen;
   final String? content;
   final String? filePath;
+  final bool isOptimistic;
 
   MessageModel({
     required this.id,
@@ -17,6 +18,7 @@ class MessageModel {
     required this.isSeen,
     this.content,
     this.filePath,
+    this.isOptimistic = false,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class MessageModel {
       isSeen: json[ApiKey.msgStatus],
       content: json[ApiKey.msgContent],
       filePath: json[ApiKey.msgFilePath],
+      isOptimistic: false,
     );
   }
 
