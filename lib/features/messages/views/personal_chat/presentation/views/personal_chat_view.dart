@@ -49,7 +49,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
   }
 
   Future<void> _fetchReceiverName() async {
-
+    
     setState(() {
       receiverName = "User #${widget.receiverId}";
     });
@@ -87,8 +87,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
               title: cubit.isSearchActive
                   ? SearchForMsgByContentOrDate(cubit: cubit)
                   : ImageAndNamePersonMessage(
-                      name:
-                          receiverName ?? "Chat",
+                      name: receiverName ?? "Chat",
                     ),
               leading: cubit.isSearchActive
                   ? IconButton(
@@ -120,9 +119,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
             ),
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
-              messageList: cubit.messages,
-              currentUserId:
-                  cubit.senderId > 0 ? cubit.senderId : currentUserId,
+              currentUserId: currentUserId,
             ),
           );
         },

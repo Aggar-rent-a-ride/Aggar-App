@@ -15,6 +15,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 
@@ -65,16 +66,52 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   Future<void> initializeSenderId() async {
     try {
       final userIdStr = await _secureStorage.read(key: 'userId');
+      print('Retrieved userId from secure storage: $userIdStr');
+
+      int parsedId = 0;
+
       if (userIdStr != null && userIdStr.isNotEmpty) {
-        _senderId = int.parse(userIdStr);
-        print('Sender ID initialized: $_senderId');
-      } else {
-        print('Warning: User ID not found in secure storage');
-        _senderId = 0;
+        try {
+          parsedId = int.parse(userIdStr);
+        } catch (parseError) {
+          print('Error parsing user ID: $parseError');
+        }
       }
+      if (parsedId == 0) {
+        try {
+          final accessToken = await _secureStorage.read(key: 'accessToken');
+          if (accessToken != null && accessToken.isNotEmpty) {
+            final Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(accessToken);
+            final userId = decodedToken['sub'] ??
+                decodedToken['uid'] ??
+                decodedToken['userId'];
+
+            if (userId != null) {
+              if (userId is int) {
+                parsedId = userId;
+              } else if (userId is String) {
+                parsedId = int.tryParse(userId) ?? 0;
+              }
+              if (parsedId > 0) {
+                await _secureStorage.write(
+                    key: 'userId', value: parsedId.toString());
+                print('Updated userId in secure storage: $parsedId');
+              }
+            }
+          }
+        } catch (tokenError) {
+          print('Error extracting user ID from token: $tokenError');
+        }
+      }
+      _senderId = parsedId;
+      print('Sender ID initialized: $_senderId');
+      emit(SenderIdInitialized(_senderId));
     } catch (e) {
       print('Error retrieving sender ID: $e');
       _senderId = 0;
+      print('Using fallback sender ID after error: $_senderId');
+      emit(SenderIdInitialized(_senderId));
     }
   }
 
@@ -347,6 +384,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       );
       print(response);
       if (response.statusCode == 200) {
+        emit(const PersonalChatInitial());
       } else {
         emit(const PersonalChatFailure("Failed to mark messages as seen"));
       }
@@ -370,12 +408,16 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     final messageContent = messageController.text.trim();
     messageController.clear();
 
+    final tempId = DateTime.now().millisecondsSinceEpoch.toString();
+    final clientMessageId = const Uuid().v4();
+
     try {
-      final clientMessageId = const Uuid().v4();
+      _addLocalMessage(tempId, messageContent, isOptimistic: true);
 
       if (!_signalRService.isConnected) {
         await _signalRService.initialize();
         if (!_signalRService.isConnected) {
+          _removeMessage(tempId);
           emit(const PersonalChatFailure(
               "Failed to connect to chat server. Please try again."));
           _isSendingMessage = false;
@@ -388,28 +430,86 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         receiverId: _receiverId!,
         content: messageContent,
       );
-      _addLocalMessage(clientMessageId, messageContent);
+      _updateMessageId(tempId, clientMessageId);
+      emit(MessageSentSuccessfully(clientMessageId));
+      Future.delayed(const Duration(milliseconds: 100), () {
+        emit(const PersonalChatInitial());
+      });
     } catch (e) {
+      print("Error sending message: $e");
+      _removeMessage(tempId);
       emit(PersonalChatFailure("Failed to send message: ${e.toString()}"));
+      Future.delayed(const Duration(milliseconds: 500), () {
+        emit(const PersonalChatInitial());
+      });
     } finally {
       _isSendingMessage = false;
     }
   }
 
-  void _addLocalMessage(String clientMessageId, String content) {
+  void _addLocalMessage(String messageId, String content,
+      {bool isOptimistic = false}) {
     final now = DateTime.now().toIso8601String();
+
+    int numericId;
+    try {
+      numericId = int.parse(
+          messageId.replaceAll(RegExp(r'[^0-9]'), '').substring(0, 9));
+    } catch (e) {
+      numericId = DateTime.now().millisecondsSinceEpoch % 1000000000;
+    }
+
     final newMessage = MessageModel(
-      id: int.parse(
-          DateTime.now().millisecondsSinceEpoch.toString().substring(0, 9)),
+      id: numericId,
       senderId: _senderId,
       receiverId: _receiverId!,
       sentAt: now,
       isSeen: false,
       content: content,
       filePath: null,
+      isOptimistic: isOptimistic,
     );
     _messages.insert(0, newMessage);
+    emit(MessageAddedState(newMessage));
+    Future.delayed(const Duration(milliseconds: 100), () {
+      emit(const PersonalChatInitial());
+    });
+  }
+
+  void _removeMessage(String tempId) {
+    _messages.removeWhere((msg) => msg.id.toString() == tempId);
     emit(const PersonalChatInitial());
+  }
+
+  void _updateMessageId(String tempId, String newId) {
+    final index = _messages.indexWhere((msg) => msg.id.toString() == tempId);
+    if (index != -1) {
+      final message = _messages[index];
+
+      int newNumericId;
+      try {
+        newNumericId =
+            int.parse(newId.replaceAll(RegExp(r'[^0-9]'), '').substring(0, 9));
+      } catch (e) {
+        newNumericId = DateTime.now().millisecondsSinceEpoch % 1000000000;
+      }
+
+      _messages[index] = MessageModel(
+        id: newNumericId,
+        senderId: message.senderId,
+        receiverId: message.receiverId,
+        sentAt: message.sentAt,
+        isSeen: message.isSeen,
+        content: message.content,
+        filePath: message.filePath,
+        isOptimistic: false,
+      );
+
+      emit(MessageUpdatedState(_messages[index]));
+      Future.delayed(const Duration(milliseconds: 100), () {
+        emit(const PersonalChatInitial());
+      });
+    }
   }
 
   Future<void> pickAndSendFile() async {
@@ -471,7 +571,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
   Future<void> sendFile(String filePath, List<int> fileBytes, String fileName,
       String fileExtension) async {
-    print(
+        print(
         "sendFile called with fileName: $fileName, fileExtension: $fileExtension, fileBytes length: ${fileBytes.length}");
     if (_receiverId == null) {
       emit(const PersonalChatFailure("Receiver ID is not set"));
@@ -485,6 +585,9 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
     _isUploadingFile = true;
     final clientMessageId = const Uuid().v4();
+    final tempId = DateTime.now().millisecondsSinceEpoch.toString();
+    _addLocalFileMessage(clientMessageId, "uploading://$fileName", fileName,
+        isOptimistic: true);
 
     _pendingUploads[clientMessageId] = fileName;
     _fileUploadProgress[clientMessageId] = 0.0;
@@ -494,6 +597,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       if (!_signalRService.isConnected) {
         await _signalRService.initialize();
         if (!_signalRService.isConnected) {
+          _removeMessage(tempId);
           emit(const PersonalChatFailure(
               "Failed to connect to chat server. Please try again."));
           _isUploadingFile = false;
@@ -502,93 +606,62 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         }
       }
 
-      print("Starting file upload process for $fileName ($fileExtension)");
+      final response = await _signalRService.initiateFileUpload(
+        clientMessageId: clientMessageId,
+        fileName: fileName,
+        fileExtension: fileExtension,
+      );
 
-      try {
-        print("Initiating file upload with clientMessageId: $clientMessageId");
-        final response = await _signalRService.initiateFileUpload(
-          clientMessageId: clientMessageId,
-          fileName: fileName,
-          fileExtension: fileExtension,
-        );
+      final serverFilePath = response.filePath;
+      if (serverFilePath.isEmpty) {
+        throw Exception("Server returned empty file path");
+      }
 
-        final serverFilePath = response.filePath;
-        print("Server file path received: $serverFilePath");
-
-        if (serverFilePath.isEmpty) {
-          throw Exception("Server returned empty file path");
+      final uploadProgressSubscription =
+          _signalRService.onUploadProgress.listen((progress) {
+        if (progress.clientMessageId == clientMessageId) {
+          final progressPercent = progress.progressPercentage;
+          _fileUploadProgress[clientMessageId] = progressPercent;
+          emit(
+              FileUploadInProgress(clientMessageId, fileName, progressPercent));
         }
+      });
 
-        final uploadProgressSubscription =
-            _signalRService.onUploadProgress.listen((progress) {
-          print(
-              "Progress event received in Bloc: ${progress.progressPercentage}");
-          if (progress.clientMessageId == clientMessageId) {
-            final progressPercent = progress.progressPercentage;
-            _fileUploadProgress[clientMessageId] = progressPercent;
-            emit(FileUploadInProgress(
-                clientMessageId, fileName, progressPercent));
-          }
-        });
+      const int chunkSize = 4096;
+      for (int i = 0; i < fileBytes.length; i += chunkSize) {
+        final end = (i + chunkSize < fileBytes.length)
+            ? i + chunkSize
+            : fileBytes.length;
+        final chunk = fileBytes.sublist(i, end);
+        final bytesBase64 = base64.encode(chunk);
 
-        const int chunkSize = 4096;
-        for (int i = 0; i < fileBytes.length; i += chunkSize) {
-          final end = (i + chunkSize < fileBytes.length)
-              ? i + chunkSize
-              : fileBytes.length;
-          final chunk = fileBytes.sublist(i, end);
-          final bytesBase64 = base64.encode(chunk);
-
-          print(
-              "Uploading chunk ${i ~/ chunkSize + 1}/${(fileBytes.length / chunkSize).ceil()}");
-          print(
-              "Chunk size: ${chunk.length}, Base64 size: ${bytesBase64.length}");
-          await _signalRService.uploadFileChunk(
-            clientMessageId: clientMessageId,
-            receiverId: _receiverId!,
-            filePath: serverFilePath,
-            bytesBase64: bytesBase64,
-            totalBytes: fileBytes.length,
-          );
-          print("Chunk uploaded!");
-        }
-
-        print("Calculating checksum and finishing upload");
-        final checksum = sha256.convert(fileBytes).toString();
-        print("Checksum generated: $checksum");
-
-        await _signalRService.finishFileUpload(
+        await _signalRService.uploadFileChunk(
           clientMessageId: clientMessageId,
           receiverId: _receiverId!,
           filePath: serverFilePath,
-          fileBytes: fileBytes,
+          bytesBase64: bytesBase64,
+          totalBytes: fileBytes.length,
         );
-
-        uploadProgressSubscription.cancel();
-        _fileUploadProgress[clientMessageId] = 100.0;
-        emit(FileUploadComplete(clientMessageId, fileName));
-        _addLocalFileMessage(clientMessageId, serverFilePath, fileName);
-        Future.delayed(const Duration(seconds: 2), () {
-          _cleanupUpload(clientMessageId);
-          emit(const PersonalChatInitial()); // Force UI refresh
-        });
-      } catch (e) {
-        print("Error during file upload: $e");
-        if (e.toString().contains("Server error:")) {
-          final errorMessage =
-              e.toString().replaceAll("Exception: Server error: ", "");
-          emit(PersonalChatFailure("Server error: $errorMessage"));
-        } else if (e.toString().contains("FormatException")) {
-          emit(const PersonalChatFailure(
-              "Invalid response from server. Please try again."));
-        } else {
-          emit(PersonalChatFailure(
-              "Failed during file upload: ${e.toString()}"));
-        }
-        _cleanupUpload(clientMessageId);
       }
+
+      final checksum = sha256.convert(fileBytes).toString();
+      await _signalRService.finishFileUpload(
+        clientMessageId: clientMessageId,
+        receiverId: _receiverId!,
+        filePath: serverFilePath,
+        fileBytes: fileBytes,
+      );
+
+      uploadProgressSubscription.cancel();
+      _fileUploadProgress[clientMessageId] = 100.0;
+      emit(FileUploadComplete(clientMessageId, fileName));
+      _updateFileMessage(tempId, clientMessageId, serverFilePath);
+      Future.delayed(const Duration(seconds: 2), () {
+        _cleanupUpload(clientMessageId);
+        emit(const PersonalChatInitial());
+      });
     } catch (e) {
-      print("Error in upload process: $e");
+      _removeMessage(tempId);
       _cleanupUpload(clientMessageId);
       emit(PersonalChatFailure("Failed to upload file: ${e.toString()}"));
     }
@@ -597,20 +670,65 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   }
 
   void _addLocalFileMessage(
-      String clientMessageId, String filePath, String fileName) {
+      String clientMessageId, String filePath, String fileName,
+      {bool isOptimistic = false}) {
     if (_receiverId == null) return;
+
     final now = DateTime.now().toIso8601String();
+    int numericId;
+    try {
+      numericId = int.parse(
+          clientMessageId.replaceAll(RegExp(r'[^0-9]'), '').substring(0, 9));
+    } catch (e) {
+      numericId = DateTime.now().millisecondsSinceEpoch % 1000000000;
+    }
+
     final newMessage = MessageModel(
-      id: int.parse(
-          DateTime.now().millisecondsSinceEpoch.toString().substring(0, 9)),
+      id: numericId,
       senderId: _senderId,
       receiverId: _receiverId!,
       sentAt: now,
       isSeen: false,
       content: null,
       filePath: filePath,
+      isOptimistic: isOptimistic,
     );
     _messages.insert(0, newMessage);
+    emit(MessageAddedState(newMessage));
+    Future.delayed(const Duration(milliseconds: 100), () {
+      emit(const PersonalChatInitial());
+    });
+  }
+
+  void _updateFileMessage(String tempId, String newId, String serverFilePath) {
+    final index = _messages.indexWhere((msg) => msg.id.toString() == tempId);
+    if (index != -1) {
+      final message = _messages[index];
+
+      int newNumericId;
+      try {
+        newNumericId =
+            int.parse(newId.replaceAll(RegExp(r'[^0-9]'), '').substring(0, 9));
+      } catch (e) {
+        newNumericId = DateTime.now().millisecondsSinceEpoch % 1000000000;
+      }
+
+      _messages[index] = MessageModel(
+        id: newNumericId,
+        senderId: message.senderId,
+        receiverId: message.receiverId,
+        sentAt: message.sentAt,
+        isSeen: message.isSeen,
+        content: message.content,
+        filePath: serverFilePath,
+        isOptimistic: false,
+      );
+
+      emit(MessageUpdatedState(_messages[index]));
+      Future.delayed(const Duration(milliseconds: 100), () {
+        emit(const PersonalChatInitial());
+      });
+    }
   }
 
   void _cleanupUpload(String clientMessageId) {
