@@ -1,6 +1,8 @@
+// search_result_section.dart
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/search_field/search_state.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -10,7 +12,6 @@ class SearchResultSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<SearchCubit>();
     return BlocBuilder<SearchCubit, SearchCubitState>(
       builder: (context, state) {
         if (state is SearchCubitLoading) {
@@ -18,39 +19,85 @@ class SearchResultSection extends StatelessWidget {
         }
 
         if (state is SearchCubitError) {
-          return Center(child: Text('Error: ${state.message}'));
-        }
-
-        if (state is SearchCubitEmpty || cubit.searchResults.isEmpty) {
-          return const Center(child: Text('No results found'));
-        }
-
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Search Results',
-                style: AppStyles.medium18(context),
-              ),
-              const Gap(16),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: cubit.searchResults.length,
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final result = cubit.searchResults[index];
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.search),
-                      title: Text(result),
-                      onTap: () {
-                        cubit.saveRecentSearch(cubit.query);
-                      },
-                    );
-                  },
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 100, color: Colors.red),
+                const Gap(16),
+                Text(
+                  state.message,
+                  style:
+                      AppStyles.medium16(context).copyWith(color: Colors.red),
+                  textAlign: TextAlign.center,
                 ),
+              ],
+            ),
+          );
+        }
+
+        if (state is SearchCubitLoaded) {
+          final vehicles = state.vehicles.data;
+
+          if (vehicles.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.search_off, size: 100, color: Colors.grey),
+                  const Gap(16),
+                  Text(
+                    'No vehicles found',
+                    style: AppStyles.medium16(context)
+                        .copyWith(color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Search Results (${vehicles.length} vehicles)',
+                  style: AppStyles.medium18(context),
+                ),
+                const Gap(16),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: vehicles.length,
+                    itemBuilder: (context, index) {
+                      final vehicle = vehicles[index];
+                      return PopularVehiclesCarCard(
+                        carName: "${vehicle.brand} ${vehicle.model}",
+                        carType: vehicle.type,
+                        pricePerHour: vehicle.pricePerDay,
+                        rating:
+                            4.8, // Consider moving this to the vehicle model
+                        assetImagePath: vehicle.mainImagePath,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Initial or Empty state
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.directions_car_outlined,
+                  size: 100, color: Colors.grey),
+              const Gap(16),
+              Text(
+                'Search for vehicles',
+                style: AppStyles.medium16(context).copyWith(color: Colors.grey),
               ),
             ],
           ),

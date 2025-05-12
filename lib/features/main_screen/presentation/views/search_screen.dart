@@ -6,28 +6,17 @@ import 'package:aggar/features/main_screen/presentation/widgets/filter_icon.dart
 import 'package:aggar/features/main_screen/presentation/widgets/nearest_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/pricing_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/rating_filter_chip.dart';
-import 'package:aggar/features/main_screen/presentation/widgets/rescent_search.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/search_field_navigation.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/search_result_section.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/transmission_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/type_filter_chip.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/year_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  bool isNearestSelected = false;
-  bool isTypeSelected = false;
-  bool isBrandSelected = false;
-  bool isPriceSelected = false;
-  bool isTransmissionSelected = false;
-
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SearchCubit>();
@@ -76,16 +65,15 @@ class _SearchScreenState extends State<SearchScreen> {
                             TransmissionFilterChip(),
                             RatingFilterChip(),
                             PricingFilterChip(),
+                            YearFilterChip()
                           ],
                         ),
                       )
                   ],
                 ),
               ),
-              Expanded(
-                child: cubit.query.isEmpty
-                    ? const RescentSearch()
-                    : const SearchResultSection(),
+              const Expanded(
+                child: SearchResultSection(),
               ),
             ],
           ),
