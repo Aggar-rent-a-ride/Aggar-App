@@ -8,7 +8,6 @@ import 'package:aggar/features/messages/views/personal_chat/presentation/widgets
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/search_for_msg_by_content_or_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class PersonalChatView extends StatefulWidget {
   const PersonalChatView({

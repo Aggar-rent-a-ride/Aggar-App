@@ -571,7 +571,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
   Future<void> sendFile(String filePath, List<int> fileBytes, String fileName,
       String fileExtension) async {
-        print(
+    print(
         "sendFile called with fileName: $fileName, fileExtension: $fileExtension, fileBytes length: ${fileBytes.length}");
     if (_receiverId == null) {
       emit(const PersonalChatFailure("Receiver ID is not set"));
@@ -616,18 +616,20 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       if (serverFilePath.isEmpty) {
         throw Exception("Server returned empty file path");
       }
+      const int chunkSize = 4096;
+      int totalBytesSent = 0;
 
       final uploadProgressSubscription =
           _signalRService.onUploadProgress.listen((progress) {
         if (progress.clientMessageId == clientMessageId) {
-          final progressPercent = progress.progressPercentage;
+          final progressPercent =
+              (progress.progressPercentage).clamp(0.0, 100.0);
           _fileUploadProgress[clientMessageId] = progressPercent;
           emit(
               FileUploadInProgress(clientMessageId, fileName, progressPercent));
         }
       });
 
-      const int chunkSize = 4096;
       for (int i = 0; i < fileBytes.length; i += chunkSize) {
         final end = (i + chunkSize < fileBytes.length)
             ? i + chunkSize
@@ -642,6 +644,12 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           bytesBase64: bytesBase64,
           totalBytes: fileBytes.length,
         );
+        totalBytesSent += chunk.length;
+        final localProgressPercent =
+            (totalBytesSent / fileBytes.length * 100).clamp(0.0, 100.0);
+        _fileUploadProgress[clientMessageId] = localProgressPercent;
+        emit(FileUploadInProgress(
+            clientMessageId, fileName, localProgressPercent));
       }
 
       final checksum = sha256.convert(fileBytes).toString();
