@@ -8,15 +8,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SendMessagesWithAttachSection extends StatelessWidget {
   const SendMessagesWithAttachSection({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PersonalChatCubit, PersonalChatState>(
-      buildWhen: (previous, current) => 
-        current is FileUploadInProgress || 
-        current is FileUploadComplete || 
-        current is FileUploadFailed ||
-        current is PersonalChatInitial,
+      buildWhen: (previous, current) =>
+          current is FileUploadInProgress ||
+          current is FileUploadComplete ||
+          current is FileUploadFailed ||
+          current is PersonalChatInitial,
       builder: (context, state) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -25,9 +25,7 @@ class SendMessagesWithAttachSection extends StatelessWidget {
               FileUploadProgressIndicator(
                 clientMessageId: state.clientMessageId,
                 fileName: state.fileName,
-                progress: state.progress,
               ),
-            
             Container(
               height: MediaQuery.sizeOf(context).height * 0.09,
               width: double.infinity,
