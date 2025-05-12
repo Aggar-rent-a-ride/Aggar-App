@@ -41,20 +41,41 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
       );
     }
   }
+  bool _shouldDisplayMessage(MessageModel message, PersonalChatCubit cubit) {
+    if (message.filePath != null) {
+      return !message.isOptimistic;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PersonalChatCubit, PersonalChatState>(
+    return BlocConsumer<PersonalChatCubit, PersonalChatState>(
+      listenWhen: (previous, current) =>
+          current is FileUploadComplete ||
+          current is MessageSentSuccessfully ||
+          current is MessageAddedState,
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
+      },
       buildWhen: (previous, current) =>
           current is PersonalChatInitial ||
           current is FileUploadInProgress ||
           current is FileUploadComplete ||
-          current is FileUploadFailed,
+          current is FileUploadFailed ||
+          current is MessageAddedState ||
+          current is MessageUpdatedState,
       builder: (context, state) {
         final cubit = context.read<PersonalChatCubit>();
         final List<MessageModel> messages = cubit.messages;
+        final filteredMessages = messages
+            .where((message) => _shouldDisplayMessage(message, cubit))
+            .toList();
+
         Map<String, List<MessageModel>> groupedMessages = {};
-        for (var message in messages) {
+        for (var message in filteredMessages) {
           DateTime dateTime = DateTime.parse(message.sentAt);
           String dateOnly =
               "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
