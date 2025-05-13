@@ -20,11 +20,13 @@ class SearchCubit extends Cubit<SearchCubitState> {
   String? selectedYear;
   double? minPrice;
   double? maxPrice;
+  double? selectedRate;
   bool isBrandFilterSelected = false;
   bool isTypeFilterSelected = false;
   bool isTransmissionFilterSelected = false;
   bool isYearFilterSelected = false;
   bool isPriceFilterSelected = false;
+  bool isRateFilterSelected = false;
 
   SearchCubit() : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
@@ -150,6 +152,26 @@ class SearchCubit extends Cubit<SearchCubitState> {
 
   bool isYearSelected(String year) {
     return selectedYear == year;
+  }
+
+  void selectRate(double? rate) {
+    selectedRate = rate;
+    isRateFilterSelected = rate != null;
+    emit(SearchCubitRatingSelected(selectedRate));
+    fetchSearch();
+  }
+
+  void clearRateFilter() {
+    if (selectedRate != null) {
+      selectedRate = null;
+      isRateFilterSelected = false;
+      emit(SearchCubitRatingSelected(null));
+      fetchSearch();
+    }
+  }
+
+  bool isRateSelected(double rate) {
+    return selectedRate == rate;
   }
 
   void setPriceRange(double? min, double? max) {
