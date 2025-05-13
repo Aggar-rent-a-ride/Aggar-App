@@ -48,7 +48,6 @@ class _PersonalChatViewState extends State<PersonalChatView> {
   }
 
   Future<void> _fetchReceiverName() async {
-    
     setState(() {
       receiverName = "User #${widget.receiverId}";
     });
