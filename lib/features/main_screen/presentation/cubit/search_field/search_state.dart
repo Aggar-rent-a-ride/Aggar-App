@@ -34,7 +34,6 @@ class SearchCubitError extends SearchCubitState {
   SearchCubitError({required this.message});
 }
 
-// Filter-specific states
 class SearchCubitBrandSelected extends SearchCubitState {
   final int? selectedBrand;
 
@@ -64,4 +63,10 @@ class SearchCubitYearSelected extends SearchCubitState {
   final String? selectedYear;
 
   SearchCubitYearSelected(this.selectedYear);
+}
+
+class SearchCubitRatingSelected extends SearchCubitState {
+  final double? selectedRate;
+
+  SearchCubitRatingSelected(this.selectedRate);
 }
