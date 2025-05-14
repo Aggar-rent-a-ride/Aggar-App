@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/features/rent_history/presentation/views/rent_history_view.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,13 @@ class RentHistoryCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 10,
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RentHistoryView(),
+            ));
+      },
       backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
