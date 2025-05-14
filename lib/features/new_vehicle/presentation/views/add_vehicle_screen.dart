@@ -29,7 +29,7 @@ class AddVehicleScreen extends StatefulWidget {
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   String? _accessToken;
-  bool _isLoading = true;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (token != null) {
       setState(() {
         _accessToken = token;
-        _isLoading = false;
+        isLoading = false;
       });
 
       await _fetchInitialData(token);
