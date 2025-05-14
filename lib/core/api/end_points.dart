@@ -35,6 +35,9 @@ class EndPoint {
   static String getUserReviews = "$baseUrl/api/review/user-reviews";
   static String getVehicleReviews = "$baseUrl/api/review/vehicle-reviews";
   static String getReview = "$baseUrl/api/review";
+
+  //Rental Endpoint
+  static String rentalHistory = "/api/rental/history";
 }
 
 class ApiKey {
