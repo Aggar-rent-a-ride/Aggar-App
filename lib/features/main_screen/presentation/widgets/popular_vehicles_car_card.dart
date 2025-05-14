@@ -7,9 +7,8 @@ import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicle_
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/views/vehicle_details_after_adding_screen.dart';
 import 'package:aggar/core/cubit/refresh token/token_refresh_cubit.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -22,6 +21,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
   final double pricePerHour;
   final double rating;
   final String assetImagePath;
+  final String vehicleId;
 
   const PopularVehiclesCarCard({
     super.key,
@@ -30,6 +30,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
     required this.pricePerHour,
     required this.rating,
     required this.assetImagePath,
+    required this.vehicleId,
   });
 
   @override
@@ -41,18 +42,14 @@ class PopularVehiclesCarCard extends StatelessWidget {
             final token =
                 await context.read<TokenRefreshCubit>().getAccessToken();
             if (token != null) {
-              context.read<AddVehicleCubit>().getData("155", token);
-
-              context.read<ReviewCubit>().getVehicleReviews("15", token);
+              context.read<AddVehicleCubit>().getData(vehicleId, token);
             }
             if (context.read<AddVehicleCubit>().vehicleData != null) {
               final vehicle = context.read<AddVehicleCubit>().vehicleData!;
-              // TODO : here will change the navigator
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VehicleDetailsAfterAddingScreen(
-                    vehicleId: "155",
+                  builder: (context) => VehiclesDetailsView(
                     renterName: vehicle.renter!.name,
                     yearOfManufaction: vehicle.year,
                     vehicleModel: vehicle.model,
