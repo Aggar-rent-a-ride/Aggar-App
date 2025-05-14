@@ -2,8 +2,10 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/get_formatted_date.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_state.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/chat_bubble_for_reciver.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/chat_bubble_for_sender.dart';
@@ -26,6 +28,15 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
   @override
   void initState() {
     super.initState();
+    final realTimeCubit = context.read<RealTimeChatCubit>();
+    realTimeCubit.stream.listen((state) {
+      if (state is FileUploadComplete) {
+        final personalChatCubit = context.read<PersonalChatCubit>();
+        personalChatCubit.setMessages(realTimeCubit.messages);
+        _scrollToBottom();
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
@@ -41,16 +52,18 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
       );
     }
   }
+
   bool _shouldDisplayMessage(MessageModel message, PersonalChatCubit cubit) {
-    if (message.filePath != null) {
-      return !message.isOptimistic;
+    if (message.filePath != null &&
+        message.filePath!.startsWith('uploading://')) {
+      return false;
     }
-    return true;
+    return !message.isOptimistic || message.content != null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PersonalChatCubit, PersonalChatState>(
+    return BlocConsumer<RealTimeChatCubit, RealTimeChatState>(
       listenWhen: (previous, current) =>
           current is FileUploadComplete ||
           current is MessageSentSuccessfully ||

@@ -1,10 +1,10 @@
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
 
 class FileUploadProgressIndicator extends StatelessWidget {
   final String clientMessageId;
@@ -21,7 +21,7 @@ class FileUploadProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PersonalChatCubit, PersonalChatState>(
+    return BlocBuilder<RealTimeChatCubit, RealTimeChatState>(
       buildWhen: (previous, current) => 
         current is FileUploadInProgress && 
         current.clientMessageId == clientMessageId,
@@ -30,7 +30,7 @@ class FileUploadProgressIndicator extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        final cubit = context.read<PersonalChatCubit>();
+        final cubit = context.read<RealTimeChatCubit>();
         final progress = state.progress;
 
         return Container(
