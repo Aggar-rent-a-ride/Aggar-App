@@ -1,7 +1,9 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_state.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_state.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/image_and_name_person_message.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/menu_icon_button.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/personal_chat_body.dart';
@@ -20,30 +22,45 @@ class PersonalChatView extends StatefulWidget {
   final List<MessageModel> messageList;
   final int receiverId;
   final VoidCallback? onMessagesUpdated;
+
   @override
   State<PersonalChatView> createState() => _PersonalChatViewState();
 }
 
 class _PersonalChatViewState extends State<PersonalChatView> {
-  late final PersonalChatCubit cubit;
-  int currentUserId = 0;
+  late final PersonalChatCubit personalChatCubit;
+  late final RealTimeChatCubit realTimeChatCubit;
+  int senderId = 0;
   String? receiverName;
 
   @override
   void initState() {
     super.initState();
-    cubit = PersonalChatCubit();
+    personalChatCubit = PersonalChatCubit();
+    realTimeChatCubit = RealTimeChatCubit();
+
     print('PersonalChatView initialized with receiverId: ${widget.receiverId}');
-    cubit.setMessages(widget.messageList);
-    cubit.setReceiverId(widget.receiverId);
+
+    personalChatCubit.setMessages(widget.messageList);
+    personalChatCubit.setReceiverId(widget.receiverId);
+
+    realTimeChatCubit.setMessages(widget.messageList);
+    realTimeChatCubit.setReceiverId(widget.receiverId);
+
     _initializeUser();
     _fetchReceiverName();
+
+    realTimeChatCubit.stream.listen((state) {
+      if (state is MessageAddedState || state is MessageUpdatedState) {
+        personalChatCubit.setMessages(realTimeChatCubit.messages);
+      }
+    });
   }
 
   Future<void> _initializeUser() async {
-    await cubit.initializeSenderId();
+    await realTimeChatCubit.initializeSenderId();
     setState(() {
-      currentUserId = cubit.senderId;
+      senderId = realTimeChatCubit.senderId;
     });
   }
 
@@ -56,7 +73,8 @@ class _PersonalChatViewState extends State<PersonalChatView> {
   @override
   void dispose() {
     widget.onMessagesUpdated?.call();
-    cubit.close();
+    personalChatCubit.close();
+    realTimeChatCubit.close();
     super.dispose();
   }
 
@@ -67,9 +85,11 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     return BlocProvider(
       create: (context) => PersonalChatCubit(),
 =======*/
-
-    return BlocProvider.value(
-      value: cubit,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: personalChatCubit),
+        BlocProvider.value(value: realTimeChatCubit),
+      ],
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
         builder: (context, state) {
           return Scaffold(
@@ -82,42 +102,42 @@ class _PersonalChatViewState extends State<PersonalChatView> {
               centerTitle: false,
               surfaceTintColor: Colors.transparent,
               backgroundColor: context.theme.blue100_1,
-              title: cubit.isSearchActive
-                  ? SearchForMsgByContentOrDate(cubit: cubit)
+              title: personalChatCubit.isSearchActive
+                  ? SearchForMsgByContentOrDate(cubit: personalChatCubit)
                   : ImageAndNamePersonMessage(
                       name: receiverName ?? "Chat",
                     ),
-              leading: cubit.isSearchActive
+              leading: personalChatCubit.isSearchActive
                   ? IconButton(
                       icon: Icon(
                         Icons.arrow_back,
                         color: context.theme.white100_2,
                       ),
                       onPressed: () {
-                        cubit.clearSearch();
+                        personalChatCubit.clearSearch();
                       },
                     )
                   : null,
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: cubit.isSearchActive
+                  child: personalChatCubit.isSearchActive
                       ? IconButton(
-                          onPressed: () {
-                            cubit.selectDate(context);
+                          onPressed: () async {
+                            personalChatCubit.selectDate(context);
                           },
                           icon: Icon(
                             color: context.theme.white100_2,
                             Icons.date_range_outlined,
                           ),
                         )
-                      : MenuIconButton(cubit: cubit),
+                      : MenuIconButton(cubit: personalChatCubit),
                 ),
               ],
             ),
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
-              currentUserId: currentUserId,
+              currentUserId: senderId,
             ),
           );
         },

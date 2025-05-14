@@ -1,6 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,7 +11,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PersonalChatCubit>();
+    final cubit = context.read<RealTimeChatCubit>();
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
@@ -64,7 +64,7 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
   }
 
   Future<void> _pickAndSendFile(BuildContext context) async {
-    final cubit = context.read<PersonalChatCubit>();
+    final cubit = context.read<RealTimeChatCubit>();
     try {
       await cubit.pickAndSendFile();
     } catch (e) {

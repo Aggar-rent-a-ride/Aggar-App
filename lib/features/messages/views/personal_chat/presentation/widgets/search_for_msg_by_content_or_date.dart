@@ -1,6 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
 import 'package:flutter/material.dart';
 
 class SearchForMsgByContentOrDate extends StatelessWidget {
@@ -19,7 +19,7 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
               cursorOpacityAnimates: true,
               focusNode: FocusNode(),
               onSubmitted: (value) {
-                cubit.filtterMessage(
+                cubit.filterMessages(
                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6ImI3OTE0ZWQ1LTIxMWYtNDFlZS05MTgyLTA3N2RkZGQ4MWY1YSIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc0Njc5NjEwNiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.TMq0tKX6qVonAKRxMXc62rWvkBsWdiXrrG_73wPHXP8");
               },
               controller: cubit.searchController,

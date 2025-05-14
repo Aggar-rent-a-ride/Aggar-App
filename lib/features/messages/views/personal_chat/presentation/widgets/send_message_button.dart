@@ -1,7 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SendMessageButton extends StatelessWidget {
@@ -11,7 +11,7 @@ class SendMessageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PersonalChatCubit>();
+    final cubit = context.read<RealTimeChatCubit>();
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: cubit.messageController,
       builder: (context, value, child) {
@@ -53,7 +53,7 @@ class SendMessageButton extends StatelessWidget {
   }
 
   Future<void> _sendMessage(BuildContext context) async {
-    final cubit = context.read<PersonalChatCubit>();
+    final cubit = context.read<RealTimeChatCubit>();
     try {
       const storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: 'accessToken');
