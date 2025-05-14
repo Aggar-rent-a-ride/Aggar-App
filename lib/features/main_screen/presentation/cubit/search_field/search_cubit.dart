@@ -183,6 +183,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   }
 
   Future<void> fetchSearch() async {
+    print(query);
     try {
       emit(SearchCubitLoading());
       final queryParams = {
@@ -195,13 +196,14 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (selectedTransmission != null) "transmission": selectedTransmission,
         if (minPrice != null) "minPrice": minPrice,
         if (maxPrice != null) "maxPrice": maxPrice,
+        if (query != "") "searchKey": query,
       };
 
       final response = await dioConsumer.get(EndPoint.getVehicles,
           queryParameters: queryParams,
           options: Options(headers: {
             'Authorization':
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiZjM5ZjkzZjAtMTczMy00N2I3LTk1ZDQtOGU5NWViNmRlMTYxIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDcwNzYxNjYsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.WTIvHLmHnF9OMK3JshpyAUZQoACv57cIdz7PdoKYqMU',
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiODNmMjI2NzEtNGMyOS00OTVkLThjODUtM2MwY2MyMzIyMmFlIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDcyNTgyNzMsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.sQAzYpn3KbqLmO29grvSa_seRcJcFFLt8eAdUaCwJZo',
           }));
 
       final responseData = response as Map<String, dynamic>;
