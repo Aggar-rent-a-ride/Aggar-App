@@ -1,63 +1,139 @@
-import 'package:aggar/features/rent_history/data/models/rental_info.dart';
+import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
+import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/presentation/widgets/rent_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-class RentHistoryBody extends StatelessWidget {
-  const RentHistoryBody({
-    super.key,
-  });
+class RentHistoryBody extends StatefulWidget {
+  const RentHistoryBody({super.key});
+
+  @override
+  State<RentHistoryBody> createState() => _RentHistoryBodyState();
+}
+
+class _RentHistoryBodyState extends State<RentHistoryBody> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Load rental history when widget is first created
+    context.read<RentalHistoryCubit>().getRentalHistory();
+
+    // Setup scroll listener for pagination
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<RentalHistoryCubit>().loadMoreRentals();
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<RentalInfo> rentals = [
-      RentalInfo(
-        id: '#A0513U',
-        status: RentalStatus.Completed,
-        clientName: 'Adele Smith',
-        totalTime: '3 Days, 6 hours',
-        carNameId: 'Car name ID:',
-        carModel: 'Tesla Model S',
-        arrivalTime: '11/8/2024',
-      ),
-      RentalInfo(
-        id: '#BT724V',
-        status: RentalStatus.InProgress,
-        clientName: 'John Cooper',
-        totalTime: '5 Days, 2 hours',
-        carNameId: 'Car name ID:',
-        carModel: 'BMW M4',
-        arrivalTime: '12/8/2024',
-      ),
-      RentalInfo(
-        id: '#CX835W',
-        status: RentalStatus.NotStarted,
-        clientName: 'Emma Davis',
-        totalTime: '2 Days, 8 hours',
-        carNameId: 'Car name ID:',
-        carModel: 'Porsche 911',
-        arrivalTime: '13/8/2024',
-      ),
-      RentalInfo(
-        id: '#CX835W',
-        status: RentalStatus.Cancelled,
-        clientName: 'Emma Davis',
-        totalTime: '2 Days, 8 hours',
-        carNameId: 'Car name ID:',
-        carModel: 'Porsche 911',
-        arrivalTime: '13/8/2024',
-      ),
-    ];
     return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.all(20),
-        child: Expanded(
-          child: ListView.separated(
-            itemCount: rentals.length,
-            separatorBuilder: (context, index) => const Gap(15),
-            itemBuilder: (context, index) {
-              final rental = rentals[index];
-              return RentalCard(rental: rental);
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            context.read<RentalHistoryCubit>().refreshRentalHistory();
+          },
+          child: BlocBuilder<RentalHistoryCubit, RentalHistoryState>(
+            builder: (context, state) {
+              if (state is RentalHistoryInitial) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is RentalHistoryLoading &&
+                  state is! RentalHistoryLoaded) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is RentalHistoryLoaded) {
+                final rentals = state.rentals;
+
+                if (rentals.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No rental history found',
+                      style: AppStyles.medium18(context),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  controller: _scrollController,
+                  itemCount: rentals.length + (state.hasMoreData ? 1 : 0),
+                  separatorBuilder: (context, index) => const Gap(15),
+                  itemBuilder: (context, index) {
+                    if (index >= rentals.length) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
+                    final rental = rentals[index];
+                    return RentalCard(
+                      rental: rental,
+                      onViewMore: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Viewing details for rental #${rental.id}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              } else if (state is RentalHistoryError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Failed to load rental history',
+                        style: AppStyles.medium18(context),
+                      ),
+                      const Gap(10),
+                      Text(
+                        state.message,
+                        style: AppStyles.regular16(context)
+                            .copyWith(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Gap(20),
+                      ElevatedButton(
+                        onPressed: () {
+                          context
+                              .read<RentalHistoryCubit>()
+                              .refreshRentalHistory();
+                        },
+                        child: const Text('Try Again'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
             },
           ),
         ),

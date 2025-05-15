@@ -1,17 +1,19 @@
-import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/data/models/rent_history_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 
 class RentalHistoryCubit extends Cubit<RentalHistoryState> {
-  final ApiConsumer apiConsumer;
+  final Dio dio;
+  final TokenRefreshCubit tokenRefreshCubit;
   final int pageSize;
   List<RentalHistoryItem> _allRentals = [];
 
   RentalHistoryCubit({
-    required this.apiConsumer,
+    required this.dio,
+    required this.tokenRefreshCubit,
     this.pageSize = 10,
   }) : super(RentalHistoryInitial());
 
@@ -31,15 +33,28 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     }
 
     try {
-      final result = await apiConsumer.get(
+      // Get a valid token before making the API call
+      final accessToken = await tokenRefreshCubit.getAccessToken();
+      
+      if (accessToken == null) {
+        emit(RentalHistoryError(message: 'Authentication failed. Please login again.'));
+        return;
+      }
+
+      final response = await dio.get(
         EndPoint.rentalHistory,
         queryParameters: {
           'pageNo': pageNo,
           'pageSize': pageSize,
         },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
       );
 
-      final List<dynamic> rentalsList = result as List<dynamic>;
+      final List<dynamic> rentalsList = response.data as List<dynamic>;
       final rentals =
           rentalsList.map((item) => RentalHistoryItem.fromJson(item)).toList();
 
@@ -55,7 +70,19 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         hasMoreData: rentals.length >= pageSize,
       ));
     } on DioException catch (e) {
-      emit(RentalHistoryError(message: e.toString()));
+      // Handle token expiration specifically
+      if (e.response?.statusCode == 401) {
+        try {
+          // Try to refresh the token and retry the request once
+          await tokenRefreshCubit.refreshToken();
+          // Retry the request
+          return getRentalHistory(pageNo: pageNo, refresh: refresh);
+        } catch (refreshError) {
+          emit(RentalHistoryError(message: 'Session expired. Please login again.'));
+        }
+      } else {
+        emit(RentalHistoryError(message: e.toString()));
+      }
     } catch (e) {
       emit(RentalHistoryError(
           message: 'Failed to load rental history: ${e.toString()}'));
@@ -96,5 +123,21 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       }
     }
     return null;
+  }
+
+  List<RentalHistoryItem> getCompletedRentals() {
+    return getRentalsByStatus('Completed');
+  }
+
+  List<RentalHistoryItem> getInProgressRentals() {
+    return getRentalsByStatus('In Progress');
+  }
+
+  List<RentalHistoryItem> getNotStartedRentals() {
+    return getRentalsByStatus('Not Started');
+  }
+
+  List<RentalHistoryItem> getCancelledRentals() {
+    return getRentalsByStatus('Cancelled');
   }
 }
