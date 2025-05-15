@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/helper/handle_error.dart';
 import 'package:aggar/features/main_screen/data/model/list_vehicle_model.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:dio/dio.dart';
@@ -12,7 +13,7 @@ class VehicleCubit extends Cubit<VehicleState> {
     try {
       emit(VehicleLoading());
       final response = await dioConsumer.get(
-        EndPoint.getVehicles,
+        EndPoint.getPopularVehicles,
         queryParameters: {"pageNo": 1, "pageSize": 10},
         options: Options(headers: {
           'Authorization': 'Bearer $accessToken',
@@ -21,25 +22,9 @@ class VehicleCubit extends Cubit<VehicleState> {
       final vehicles = ListVehicleModel.fromJson(response);
       emit(VehicleLoaded(vehicles: vehicles));
     } catch (error) {
-      if (error is DioException) {
-        if (error.response?.statusCode == 403) {
-          emit(VehicleError(
-              message: 'Access forbidden: Invalid or expired token.'));
-        } else if (error.type == DioExceptionType.connectionTimeout ||
-            error.type == DioExceptionType.receiveTimeout ||
-            error.type == DioExceptionType.sendTimeout) {
-          emit(VehicleError(message: 'Network timeout. Please try again.'));
-        } else if (error.type == DioExceptionType.connectionError) {
-          emit(VehicleError(
-              message: 'No internet connection. Please check your network.'));
-        } else {
-          emit(VehicleError(
-              message:
-                  'Server error: ${error.response?.statusCode ?? 'Unknown'}'));
-        }
-      } else {
-        emit(VehicleError(message: 'An unexpected error occurred: $error'));
-      }
+      String errorMessage = handleError(error);
+      emit(
+          VehicleError(message: 'An unexpected error occurred: $errorMessage'));
     }
   }
 }
