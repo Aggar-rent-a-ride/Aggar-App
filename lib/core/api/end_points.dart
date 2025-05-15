@@ -16,6 +16,8 @@ class EndPoint {
   static String addVehicle = "$baseUrl/api/vehicle/?id=";
   static String vehicleDiscount = "$baseUrl/api/vehicle/vehicle-discounts";
   static String getVehicles = "$baseUrl/api/vehicle/get-vehicles";
+  static String getVehiclesByStatus = "$baseUrl/api/vehicle/vehicles-by-status";
+  static String statusCount = "$baseUrl/api/vehicle/count-vehicles-by-status";
 
   // Chat endpoints
   static String chatHub = "/Chat";

@@ -8,6 +8,7 @@ import 'package:aggar/features/main_screen/presentation/widgets/pricing_filter_c
 import 'package:aggar/features/main_screen/presentation/widgets/rating_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/search_field_navigation.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/search_result_section.dart';
+import 'package:aggar/features/main_screen/presentation/widgets/status_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/transmission_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/type_filter_chip.dart';
 import 'package:aggar/features/main_screen/presentation/widgets/year_filter_chip.dart';
@@ -65,7 +66,8 @@ class SearchScreen extends StatelessWidget {
                             TransmissionFilterChip(),
                             RatingFilterChip(),
                             PricingFilterChip(),
-                            YearFilterChip()
+                            YearFilterChip(),
+                            StatusFilterChip(),
                           ],
                         ),
                       )

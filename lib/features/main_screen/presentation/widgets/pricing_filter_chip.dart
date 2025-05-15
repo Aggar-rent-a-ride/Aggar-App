@@ -18,11 +18,15 @@ class PricingFilterChip extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       buildWhen: (previous, current) =>
           current is SearchCubitPriceRangeSelected ||
+          current is SearchCubitStatusSelected ||
+          current is SearchCubitFiltersReset ||
           (previous is SearchCubitPriceRangeSelected &&
               current is! SearchCubitPriceRangeSelected),
       builder: (context, state) {
         final searchCubit = context.read<SearchCubit>();
-        final isPriceSelected = searchCubit.isPriceFilterSelected;
+        final bool isPriceSelected = searchCubit.isStatusFilterSelected
+            ? false
+            : searchCubit.isPriceFilterSelected;
         final minPrice = searchCubit.minPrice;
         final maxPrice = searchCubit.maxPrice;
         final isFilterVisible = searchCubit.isFilterVisible;
@@ -56,6 +60,9 @@ class PricingFilterChip extends StatelessWidget {
             ],
           ),
           onSelected: (bool selected) {
+            if (searchCubit.isStatusFilterSelected) {
+              searchCubit.clearStatusFilter();
+            }
             customShowModelBottmSheet(
               context,
               "Price Range",

@@ -1,4 +1,5 @@
-// search_cubit.dart
+// Modified search_cubit.dart file with proper status count handling
+
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/handle_error.dart';
@@ -21,6 +22,8 @@ class SearchCubit extends Cubit<SearchCubitState> {
   double? minPrice;
   double? maxPrice;
   double? selectedRate;
+  String? selectedStatus;
+  int? statusCount;
   bool isBrandFilterSelected = false;
   bool isTypeFilterSelected = false;
   bool isTransmissionFilterSelected = false;
@@ -28,6 +31,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   bool isPriceFilterSelected = false;
   bool isRateFilterSelected = false;
   bool isNearestFilterSelected = false;
+  bool isStatusFilterSelected = false;
 
   SearchCubit() : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
@@ -62,6 +66,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
     selectedYear = null;
     minPrice = null;
     maxPrice = null;
+    statusCount = null;
 
     isBrandFilterSelected = false;
     isTypeFilterSelected = false;
@@ -143,12 +148,10 @@ class SearchCubit extends Cubit<SearchCubitState> {
   }
 
   void clearYearFilter() {
-    if (selectedYear != null) {
-      selectedYear = null;
-      isYearFilterSelected = false;
-      emit(SearchCubitYearSelected(null));
-      fetchSearch();
-    }
+    selectedYear = null;
+    isYearFilterSelected = false;
+    emit(SearchCubitYearSelected(null));
+    fetchSearch();
   }
 
   bool isYearSelected(String year) {
@@ -207,6 +210,52 @@ class SearchCubit extends Cubit<SearchCubitState> {
     }
   }
 
+  void selectStatus(String? status) {
+    selectedBrand = null;
+    selectedType = null;
+    selectedTransmission = null;
+    selectedYear = null;
+    minPrice = null;
+    maxPrice = null;
+    selectedRate = null;
+    query = '';
+    textController.clear();
+    isBrandFilterSelected = false;
+    isTypeFilterSelected = false;
+    isTransmissionFilterSelected = false;
+    isYearFilterSelected = false;
+    isPriceFilterSelected = false;
+    isRateFilterSelected = false;
+    isNearestFilterSelected = false;
+    selectedStatus = status;
+    isStatusFilterSelected = status != null;
+    emit(SearchCubitFiltersReset());
+    emit(SearchCubitStatusSelected(selectedStatus));
+
+    // Fetch status count when status is selected
+    if (selectedStatus != null) {
+      fetchStatusCount();
+    } else {
+      statusCount = null; // Reset status count
+    }
+
+    fetchSearch();
+  }
+
+  void clearStatusFilter() {
+    if (selectedStatus != null) {
+      selectedStatus = null;
+      isStatusFilterSelected = false;
+      statusCount = null; // Reset status count
+      emit(SearchCubitStatusSelected(null));
+      fetchSearch();
+    }
+  }
+
+  bool isStatusSelected(String status) {
+    return selectedStatus == status;
+  }
+
   Future<void> fetchSearch() async {
     try {
       emit(SearchCubitLoading());
@@ -221,6 +270,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (minPrice != null) "minPrice": minPrice,
         if (maxPrice != null) "maxPrice": maxPrice,
         if (query != "") "searchKey": query,
+        if (selectedStatus != null) "status": selectedStatus,
         if (isNearestFilterSelected == true)
           "byNearest": isNearestFilterSelected,
         if (isNearestFilterSelected == true) "latitude": "30.510187246065026",
@@ -228,17 +278,53 @@ class SearchCubit extends Cubit<SearchCubitState> {
         // TODO : the real location of the user
       };
 
-      final response = await dioConsumer.get(EndPoint.getVehicles,
+      final endpoint = selectedStatus != null
+          ? EndPoint.getVehiclesByStatus
+          : EndPoint.getVehicles;
+
+      final response = await dioConsumer.get(endpoint,
           queryParameters: queryParams,
           options: Options(headers: {
             'Authorization':
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiMTljOTkwYWMtYzM0NS00MjVhLTkzZjYtZGY4ZWMwNjA3YjRiIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDcyOTUwNTUsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.XIH71CN-FVrFy3ofOwAJ8bM7wT51VV23j5cFpTNtP38',
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiZDc4OTU3NTQtNzNkMi00YWE3LTliNzUtNDJlZTIwZDY0NTQ5IiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDczMjcyOTUsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.8kabnSU8xWmprK4KAtd1zY1Lav4P2Gz3MrO6Dfb0xDY',
           }));
 
       final responseData = response as Map<String, dynamic>;
       final vehicles = ListVehicleModel.fromJson(responseData);
 
-      emit(SearchCubitLoaded(vehicles: vehicles));
+      emit(SearchCubitLoaded(
+        vehicles: vehicles,
+        statusCount: statusCount,
+      ));
+    } catch (error) {
+      String errorMessage = handleSearchError(error);
+      emit(SearchCubitError(message: errorMessage));
+    }
+  }
+
+  Future<void> fetchStatusCount() async {
+    try {
+      final queryParams = {
+        if (selectedStatus != null) "status": selectedStatus,
+      };
+      final response = await dioConsumer.get(
+        EndPoint.statusCount,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Authorization':
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiZDc4OTU3NTQtNzNkMi00YWE3LTliNzUtNDJlZTIwZDY0NTQ5IiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDczMjcyOTUsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.8kabnSU8xWmprK4KAtd1zY1Lav4P2Gz3MrO6Dfb0xDY',
+          },
+        ),
+      );
+
+      final responseData = response as Map<String, dynamic>;
+
+      // Update status count
+      statusCount = responseData['data'] as int?;
+
+      // Emit status count state
+      emit(SearchCubitStatusCount(statusCount));
     } catch (error) {
       String errorMessage = handleSearchError(error);
       emit(SearchCubitError(message: errorMessage));

@@ -17,11 +17,15 @@ class RatingFilterChip extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       buildWhen: (previous, current) =>
           current is SearchCubitRatingSelected ||
+          current is SearchCubitStatusSelected ||
+          current is SearchCubitFiltersReset ||
           (previous is SearchCubitRatingSelected &&
               current is! SearchCubitRatingSelected),
       builder: (context, state) {
         final searchCubit = context.read<SearchCubit>();
-        final isRatingSelected = searchCubit.isRateFilterSelected;
+        final bool isRatingSelected = searchCubit.isStatusFilterSelected
+            ? false
+            : searchCubit.isRateFilterSelected;
         final selectedRating = searchCubit.selectedRate;
 
         return FilterChip(
@@ -55,6 +59,9 @@ class RatingFilterChip extends StatelessWidget {
             ],
           ),
           onSelected: (bool selected) {
+            if (searchCubit.isStatusFilterSelected) {
+              searchCubit.clearStatusFilter();
+            }
             customShowModelBottmSheet(
               context,
               "Rating",

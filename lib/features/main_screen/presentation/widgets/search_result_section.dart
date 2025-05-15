@@ -1,4 +1,5 @@
-// search_result_section.dart
+// Modified search_result_section.dart with status count display
+
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/main_screen/presentation/cubit/search_field/search_state.dart';
@@ -14,6 +15,8 @@ class SearchResultSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       builder: (context, state) {
+        final searchCubit = context.read<SearchCubit>();
+
         if (state is SearchCubitLoading) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -38,6 +41,10 @@ class SearchResultSection extends StatelessWidget {
 
         if (state is SearchCubitLoaded) {
           final vehicles = state.vehicles.data;
+          final int displayCount = searchCubit.isStatusFilterSelected &&
+                  searchCubit.statusCount != null
+              ? searchCubit.statusCount!
+              : vehicles.length;
 
           if (vehicles.isEmpty) {
             return Center(
@@ -62,7 +69,10 @@ class SearchResultSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Search Results (${vehicles.length} vehicles)',
+                  searchCubit.isStatusFilterSelected &&
+                          searchCubit.selectedStatus != null
+                      ? 'Status: ${searchCubit.selectedStatus} ($displayCount vehicles)'
+                      : 'Search Results (${vehicles.length} vehicles)',
                   style: AppStyles.medium18(context),
                 ),
                 const Gap(16),
@@ -72,14 +82,12 @@ class SearchResultSection extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final vehicle = vehicles[index];
                       return PopularVehiclesCarCard(
-                        //
                         vehicleId: vehicle.id.toString(),
                         carName: "${vehicle.brand} ${vehicle.model}",
-                        carType: vehicle.transmission,
-                        pricePerHour: vehicle.pricePerDay,
-                        rating:
-                            4.8, // Consider moving this to the vehicle model
-                        assetImagePath: vehicle.mainImagePath,
+                        carType: vehicle.transmission!,
+                        pricePerHour: vehicle.pricePerDay!,
+                        rating: 4.8,
+                        assetImagePath: vehicle.mainImagePath!,
                       );
                     },
                   ),
@@ -88,6 +96,7 @@ class SearchResultSection extends StatelessWidget {
             ),
           );
         }
+
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
