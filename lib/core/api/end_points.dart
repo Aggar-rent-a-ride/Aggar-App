@@ -162,4 +162,5 @@ class ApiKey {
   static String getVehiclePricePerDay = "pricePerDay";
   static String getVehicleIsFavourite = "isFavourite";
   static String getVehicleMainImagePath = "mainImagePath";
+  static String getVehicleTransmission = "transmission";
 }
