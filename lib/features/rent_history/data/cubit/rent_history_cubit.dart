@@ -1,4 +1,3 @@
-import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/data/models/rent_history_model.dart';
@@ -6,12 +5,12 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 
 class RentalHistoryCubit extends Cubit<RentalHistoryState> {
-  final ApiConsumer apiConsumer;
+  final Dio dio;
   final int pageSize;
   List<RentalHistoryItem> _allRentals = [];
 
   RentalHistoryCubit({
-    required this.apiConsumer,
+    required this.dio,
     this.pageSize = 10,
   }) : super(RentalHistoryInitial());
 
@@ -31,7 +30,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     }
 
     try {
-      final result = await apiConsumer.get(
+      final response = await dio.get(
         EndPoint.rentalHistory,
         queryParameters: {
           'pageNo': pageNo,
@@ -39,7 +38,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         },
       );
 
-      final List<dynamic> rentalsList = result as List<dynamic>;
+      final List<dynamic> rentalsList = response.data as List<dynamic>;
       final rentals =
           rentalsList.map((item) => RentalHistoryItem.fromJson(item)).toList();
 
@@ -96,5 +95,21 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       }
     }
     return null;
+  }
+
+  List<RentalHistoryItem> getCompletedRentals() {
+    return getRentalsByStatus('Completed');
+  }
+
+  List<RentalHistoryItem> getInProgressRentals() {
+    return getRentalsByStatus('In Progress');
+  }
+
+  List<RentalHistoryItem> getNotStartedRentals() {
+    return getRentalsByStatus('Not Started');
+  }
+
+  List<RentalHistoryItem> getCancelledRentals() {
+    return getRentalsByStatus('Cancelled');
   }
 }

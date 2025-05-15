@@ -26,6 +26,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dio = Dio();
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -89,7 +91,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AddVehicleCubit(
-            DioConsumer(dio: Dio()),
+            DioConsumer(dio: dio),
             MainImageCubit(),
             AdditionalImageCubit(),
             MapLocationCubit(),
@@ -99,13 +101,19 @@ class MyApp extends StatelessWidget {
           create: (context) => PickImageCubit(),
         ),
         BlocProvider(
+          create: (context) => RentalHistoryCubit(
+            dio: dio, // Use the shared Dio instance
+            pageSize: 10,
+          ),
+        ),
+        BlocProvider(
           create: (context) => DiscountCubit(
             tokenRefreshCubit: context.read<TokenRefreshCubit>(),
           ),
         ),
         BlocProvider(
           create: (context) => MessageCubit(
-            dioConsumer: DioConsumer(dio: Dio()),
+            dioConsumer: DioConsumer(dio: dio),
           ),
         ),
         BlocProvider(
@@ -128,7 +136,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => EditVehicleCubit(
-            DioConsumer(dio: Dio()),
+            DioConsumer(dio: dio), // Use the shared Dio instance
             MainImageCubit(),
             AdditionalImageCubit(),
             MapLocationCubit(),
@@ -136,13 +144,13 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<TokenRefreshCubit>(
           create: (context) => TokenRefreshCubit(
-            apiConsumer: DioConsumer(dio: Dio()),
+            apiConsumer: DioConsumer(dio: dio),
             secureStorage: const FlutterSecureStorage(),
           ),
         ),
         BlocProvider(
           create: (context) => LoginCubit(
-            dioConsumer: DioConsumer(dio: Dio()),
+            dioConsumer: DioConsumer(dio: dio),
             secureStorage: secureStorage,
           ),
         ),
@@ -186,7 +194,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-/* EditVehicleView(vehicleId: "127")*/
-/** DiscountScreenView()*/
-/**MessagesView() */
-/*const MainScreen()*/
