@@ -1,44 +1,52 @@
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/rent_history/data/models/rental_info.dart';
+import 'package:aggar/features/rent_history/data/models/rent_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
 class RentalCard extends StatelessWidget {
-  final RentalInfo rental;
+  final RentalHistoryItem rental;
+  final VoidCallback onViewMore;
 
   const RentalCard({
     super.key,
     required this.rental,
+    required this.onViewMore,
   });
 
   @override
   Widget build(BuildContext context) {
     Color statusColor;
     Color statusBgColor;
-    String statusText;
+    String statusText = rental.rentalStatus;
 
-    switch (rental.status) {
-      case RentalStatus.Completed:
+    switch (rental.rentalStatus) {
+      case 'Completed':
         statusColor = Colors.teal;
         statusBgColor = Colors.tealAccent.withOpacity(0.2);
-        statusText = 'Completed';
         break;
-      case RentalStatus.InProgress:
+      case 'In Progress':
         statusColor = Colors.deepOrange;
         statusBgColor = Colors.deepOrange.withOpacity(0.1);
-        statusText = 'In Progress';
         break;
-      case RentalStatus.NotStarted:
+      case 'Not Started':
         statusColor = Colors.orange;
         statusBgColor = Colors.orange.withOpacity(0.1);
-        statusText = 'Not Started';
         break;
-      case RentalStatus.Cancelled:
+      case 'Cancelled':
         statusColor = Colors.red;
         statusBgColor = Colors.red.withOpacity(0.1);
-        statusText = 'Cancelled';
         break;
+      default:
+        statusColor = Colors.grey;
+        statusBgColor = Colors.grey.withOpacity(0.1);
     }
+
+    // Format dates and duration
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    final startDate = dateFormat.format(rental.startDate);
+    final endDate = dateFormat.format(rental.endDate);
+    final totalTime = '${rental.totalDays} Days';
 
     return Container(
       decoration: BoxDecoration(
@@ -66,7 +74,7 @@ class RentalCard extends StatelessWidget {
                     ),
                     const Gap(10),
                     Text(
-                      rental.id,
+                      '#${rental.id}',
                       style: AppStyles.semiBold18(context),
                     ),
                   ],
@@ -104,23 +112,31 @@ class RentalCard extends StatelessWidget {
                         Container(
                           width: 30,
                           height: 30,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFDDDDDD),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDDDDDD),
                             shape: BoxShape.circle,
+                            image: rental.user.imagePath.isNotEmpty
+                                ? DecorationImage(
+                                    image: NetworkImage(rental.user.imagePath),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
                           ),
-                          child: Center(
-                            child: Text(
-                              rental.clientName.isNotEmpty
-                                  ? rental.clientName[0]
-                                  : '',
-                              style: AppStyles.medium16(context)
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ),
+                          child: rental.user.imagePath.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    rental.user.name.isNotEmpty
+                                        ? rental.user.name[0]
+                                        : '',
+                                    style: AppStyles.medium16(context)
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                )
+                              : null,
                         ),
                         const Gap(10),
                         Text(
-                          rental.clientName,
+                          rental.user.name,
                           style: AppStyles.medium18(context),
                         ),
                       ],
@@ -137,7 +153,7 @@ class RentalCard extends StatelessWidget {
                     ),
                     const Gap(5),
                     Text(
-                      rental.totalTime,
+                      totalTime,
                       style: AppStyles.medium18(context),
                     ),
                   ],
@@ -152,13 +168,13 @@ class RentalCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      rental.carNameId,
+                      'Vehicle ID: ${rental.vehicle.id}',
                       style: AppStyles.regular16(context)
                           .copyWith(color: Colors.grey),
                     ),
                     const Gap(5),
                     Text(
-                      rental.carModel,
+                      '${rental.finalPrice} \$',
                       style: AppStyles.bold16(context)
                           .copyWith(color: Colors.black87),
                     ),
@@ -168,13 +184,13 @@ class RentalCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'Arrival time',
+                      'Start date',
                       style: AppStyles.regular16(context)
                           .copyWith(color: Colors.grey),
                     ),
                     const Gap(5),
                     Text(
-                      rental.arrivalTime,
+                      startDate,
                       style: AppStyles.medium16(context),
                     ),
                   ],
@@ -185,7 +201,7 @@ class RentalCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: onViewMore,
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.grey),
                   shape: RoundedRectangleBorder(

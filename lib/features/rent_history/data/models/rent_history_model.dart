@@ -1,4 +1,6 @@
-class RentalHistoryItem {
+import 'package:equatable/equatable.dart';
+
+class RentalHistoryItem extends Equatable {
   final int id;
   final DateTime startDate;
   final DateTime endDate;
@@ -8,10 +10,10 @@ class RentalHistoryItem {
   final String rentalStatus;
   final Review? renterReview;
   final Review? customerReview;
-  final VehicleInfo vehicle;
-  final UserInfo user;
+  final Vehicle vehicle;
+  final User user;
 
-  RentalHistoryItem({
+  const RentalHistoryItem({
     required this.id,
     required this.startDate,
     required this.endDate,
@@ -40,24 +42,39 @@ class RentalHistoryItem {
       customerReview: json['CustomerReview'] != null
           ? Review.fromJson(json['CustomerReview'])
           : null,
-      vehicle: VehicleInfo.fromJson(json['Vehicle']),
-      user: UserInfo.fromJson(json['User']),
+      vehicle: Vehicle.fromJson(json['Vehicle']),
+      user: User.fromJson(json['User']),
     );
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        startDate,
+        endDate,
+        totalDays,
+        discount,
+        finalPrice,
+        rentalStatus,
+        renterReview,
+        customerReview,
+        vehicle,
+        user,
+      ];
 }
 
-class Review {
+class Review extends Equatable {
   final int id;
   final int rentalId;
   final DateTime createdAt;
   final double behavior;
   final double punctuality;
   final String comments;
-  final double? care;
-  final double? truthfulness;
-  final UserInfo reviewer;
+  final double? care; // Only in RenterReview
+  final double? truthfulness; // Only in CustomerReview
+  final User reviewer;
 
-  Review({
+  const Review({
     required this.id,
     required this.rentalId,
     required this.createdAt,
@@ -79,50 +96,69 @@ class Review {
       comments: json['Comments'] ?? '',
       care: json['Care']?.toDouble(),
       truthfulness: json['Truthfulness']?.toDouble(),
-      reviewer: UserInfo.fromJson(json['Reviewer']),
+      reviewer: User.fromJson(json['Reviewer']),
     );
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        rentalId,
+        createdAt,
+        behavior,
+        punctuality,
+        comments,
+        care,
+        truthfulness,
+        reviewer,
+      ];
 }
 
-class VehicleInfo {
+class Vehicle extends Equatable {
   final int id;
   final double pricePerDay;
   final String mainImagePath;
   final String address;
 
-  VehicleInfo({
+  const Vehicle({
     required this.id,
     required this.pricePerDay,
     required this.mainImagePath,
     required this.address,
   });
 
-  factory VehicleInfo.fromJson(Map<String, dynamic> json) {
-    return VehicleInfo(
+  factory Vehicle.fromJson(Map<String, dynamic> json) {
+    return Vehicle(
       id: json['Id'],
       pricePerDay: json['PricePerDay']?.toDouble() ?? 0.0,
       mainImagePath: json['MainImagePath'] ?? '',
       address: json['Address'] ?? '',
     );
   }
+
+  @override
+  List<Object?> get props => [id, pricePerDay, mainImagePath, address];
 }
 
-class UserInfo {
+class User extends Equatable {
   final int id;
   final String name;
   final String imagePath;
 
-  UserInfo({
+  const User({
     required this.id,
     required this.name,
     required this.imagePath,
   });
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    return UserInfo(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       id: json['Id'],
       name: json['Name'] ?? '',
       imagePath: json['ImagePath'] ?? '',
     );
   }
+
+  @override
+  List<Object?> get props => [id, name, imagePath];
 }
