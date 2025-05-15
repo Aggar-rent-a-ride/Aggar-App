@@ -90,6 +90,15 @@ class MyApp extends StatelessWidget {
           create: (context) => MainImageCubit(),
         ),
         BlocProvider(
+          create: (context) => PickImageCubit(),
+        ),
+        BlocProvider<TokenRefreshCubit>(
+          create: (context) => TokenRefreshCubit(
+            apiConsumer: DioConsumer(dio: dio),
+            secureStorage: const FlutterSecureStorage(),
+          ),
+        ),
+        BlocProvider(
           create: (context) => AddVehicleCubit(
             DioConsumer(dio: dio),
             MainImageCubit(),
@@ -98,12 +107,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => PickImageCubit(),
-        ),
-        BlocProvider(
           create: (context) => RentalHistoryCubit(
-            dio: dio, // Use the shared Dio instance
+            dio: dio,
             pageSize: 10,
+            tokenRefreshCubit: context.read<TokenRefreshCubit>(),
           ),
         ),
         BlocProvider(
@@ -136,16 +143,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => EditVehicleCubit(
-            DioConsumer(dio: dio), // Use the shared Dio instance
+            DioConsumer(dio: dio),
             MainImageCubit(),
             AdditionalImageCubit(),
             MapLocationCubit(),
-          ),
-        ),
-        BlocProvider<TokenRefreshCubit>(
-          create: (context) => TokenRefreshCubit(
-            apiConsumer: DioConsumer(dio: dio),
-            secureStorage: const FlutterSecureStorage(),
           ),
         ),
         BlocProvider(
