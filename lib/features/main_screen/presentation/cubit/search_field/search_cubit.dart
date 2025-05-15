@@ -27,6 +27,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   bool isYearFilterSelected = false;
   bool isPriceFilterSelected = false;
   bool isRateFilterSelected = false;
+  bool isNearestFilterSelected = false;
 
   SearchCubit() : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
@@ -182,6 +183,30 @@ class SearchCubit extends Cubit<SearchCubitState> {
     fetchSearch();
   }
 
+  void clearPricingFilter() {
+    if (maxPrice != null && minPrice != null) {
+      maxPrice = null;
+      minPrice = null;
+      isPriceFilterSelected = false;
+      emit(SearchCubitPriceRangeSelected(null, null));
+      fetchSearch();
+    }
+  }
+
+  void toggleNearestFilter() {
+    isNearestFilterSelected = !isNearestFilterSelected;
+    emit(SearchCubitNearestSelected(isNearestFilterSelected));
+    fetchSearch();
+  }
+
+  void clearNearestFilter() {
+    if (isNearestFilterSelected) {
+      isNearestFilterSelected = false;
+      emit(SearchCubitNearestSelected(false));
+      fetchSearch();
+    }
+  }
+
   Future<void> fetchSearch() async {
     try {
       emit(SearchCubitLoading());
@@ -195,13 +220,19 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (selectedTransmission != null) "transmission": selectedTransmission,
         if (minPrice != null) "minPrice": minPrice,
         if (maxPrice != null) "maxPrice": maxPrice,
+        if (query != "") "searchKey": query,
+        if (isNearestFilterSelected == true)
+          "byNearest": isNearestFilterSelected,
+        if (isNearestFilterSelected == true) "latitude": "30.510187246065026",
+        if (isNearestFilterSelected == true) "longitude": "31.352178770683253"
+        // TODO : the real location of the user
       };
 
       final response = await dioConsumer.get(EndPoint.getVehicles,
           queryParameters: queryParams,
           options: Options(headers: {
             'Authorization':
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiZjM5ZjkzZjAtMTczMy00N2I3LTk1ZDQtOGU5NWViNmRlMTYxIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDcwNzYxNjYsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.WTIvHLmHnF9OMK3JshpyAUZQoACv57cIdz7PdoKYqMU',
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiMTljOTkwYWMtYzM0NS00MjVhLTkzZjYtZGY4ZWMwNjA3YjRiIiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDcyOTUwNTUsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.XIH71CN-FVrFy3ofOwAJ8bM7wT51VV23j5cFpTNtP38',
           }));
 
       final responseData = response as Map<String, dynamic>;

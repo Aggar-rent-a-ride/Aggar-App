@@ -70,3 +70,9 @@ class SearchCubitRatingSelected extends SearchCubitState {
 
   SearchCubitRatingSelected(this.selectedRate);
 }
+
+class SearchCubitNearestSelected extends SearchCubitState {
+  final bool isNearest;
+
+  SearchCubitNearestSelected(this.isNearest);
+}

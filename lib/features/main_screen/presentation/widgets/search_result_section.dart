@@ -72,8 +72,10 @@ class SearchResultSection extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final vehicle = vehicles[index];
                       return PopularVehiclesCarCard(
+                        //
+                        vehicleId: vehicle.id.toString(),
                         carName: "${vehicle.brand} ${vehicle.model}",
-                        carType: vehicle.type,
+                        carType: vehicle.transmission,
                         pricePerHour: vehicle.pricePerDay,
                         rating:
                             4.8, // Consider moving this to the vehicle model
@@ -86,8 +88,6 @@ class SearchResultSection extends StatelessWidget {
             ),
           );
         }
-
-        // Initial or Empty state
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
