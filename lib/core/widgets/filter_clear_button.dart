@@ -13,10 +13,7 @@ class FilterClearButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        clearFunction;
-        Navigator.pop(context);
-      },
+      onPressed: clearFunction,
       child: Text(
         "Clear",
         style: AppStyles.medium16(context).copyWith(

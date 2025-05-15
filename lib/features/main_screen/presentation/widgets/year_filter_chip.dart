@@ -17,11 +17,15 @@ class YearFilterChip extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       buildWhen: (previous, current) =>
           current is SearchCubitYearSelected ||
+          current is SearchCubitStatusSelected ||
+          current is SearchCubitFiltersReset ||
           (previous is SearchCubitYearSelected &&
               current is! SearchCubitYearSelected),
       builder: (context, state) {
         final searchCubit = context.read<SearchCubit>();
-        final isYearSelected = searchCubit.isYearFilterSelected;
+        final bool isYearSelected = searchCubit.isStatusFilterSelected
+            ? false
+            : searchCubit.isYearFilterSelected;
         final selectedYear = searchCubit.selectedYear;
         return FilterChip(
           backgroundColor: context.theme.white100_1,
@@ -50,6 +54,9 @@ class YearFilterChip extends StatelessWidget {
             ],
           ),
           onSelected: (bool selected) {
+            if (searchCubit.isStatusFilterSelected) {
+              searchCubit.clearStatusFilter();
+            }
             customShowModelBottmSheet(
               context,
               "Year",

@@ -17,11 +17,15 @@ class TransmissionFilterChip extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       buildWhen: (previous, current) =>
           current is SearchCubitTransmissionSelected ||
+          current is SearchCubitStatusSelected ||
+          current is SearchCubitFiltersReset ||
           (previous is SearchCubitTransmissionSelected &&
               current is! SearchCubitTransmissionSelected),
       builder: (context, state) {
         final searchCubit = context.read<SearchCubit>();
-        final isTransmissionSelected = searchCubit.isTransmissionFilterSelected;
+        final bool isTransmissionSelected = searchCubit.isStatusFilterSelected
+            ? false
+            : searchCubit.isTransmissionFilterSelected;
         final selectedTransmission = searchCubit.selectedTransmission;
         return FilterChip(
           backgroundColor: context.theme.white100_1,
@@ -50,6 +54,9 @@ class TransmissionFilterChip extends StatelessWidget {
             ],
           ),
           onSelected: (bool selected) {
+            if (searchCubit.isStatusFilterSelected) {
+              searchCubit.clearStatusFilter();
+            }
             customShowModelBottmSheet(
               context,
               "Transmission",

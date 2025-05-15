@@ -1,4 +1,3 @@
-// search_state.dart
 import 'package:aggar/features/main_screen/data/model/list_vehicle_model.dart';
 
 abstract class SearchCubitState {}
@@ -19,9 +18,11 @@ class SearchCubitLoaded extends SearchCubitState {
   final bool canLoadMore;
   final int currentPage;
   final int totalPages;
+  final int? statusCount;
 
   SearchCubitLoaded({
     required this.vehicles,
+    this.statusCount,
     this.canLoadMore = false,
     this.currentPage = 1,
     this.totalPages = 1,
@@ -75,4 +76,18 @@ class SearchCubitNearestSelected extends SearchCubitState {
   final bool isNearest;
 
   SearchCubitNearestSelected(this.isNearest);
+}
+
+class SearchCubitStatusSelected extends SearchCubitState {
+  final String? selectedStatus;
+
+  SearchCubitStatusSelected(this.selectedStatus);
+}
+
+class SearchCubitFiltersReset extends SearchCubitState {}
+
+class SearchCubitStatusCount extends SearchCubitState {
+  final int? counter;
+
+  SearchCubitStatusCount(this.counter);
 }

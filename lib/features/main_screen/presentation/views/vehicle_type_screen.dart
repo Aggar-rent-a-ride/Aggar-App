@@ -40,10 +40,11 @@ class VehicleTypeScreen extends StatelessWidget {
                       vehicleId: state.vehicles!.data[index].id.toString(),
                       carName:
                           "${state.vehicles!.data[index].brand} ${state.vehicles!.data[index].model}",
-                      carType: state.vehicles!.data[index].type,
-                      pricePerHour: state.vehicles!.data[index].pricePerDay,
+                      carType: state.vehicles!.data[index].type!,
+                      pricePerHour: state.vehicles!.data[index].pricePerDay!,
                       rating: 4.8,
-                      assetImagePath: state.vehicles!.data[index].mainImagePath,
+                      assetImagePath:
+                          state.vehicles!.data[index].mainImagePath!,
                     ),
                   ),
                 ),

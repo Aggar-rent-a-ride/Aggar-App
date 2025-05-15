@@ -18,12 +18,16 @@ class BrandFilterChip extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       buildWhen: (previous, current) =>
           current is SearchCubitBrandSelected ||
+          current is SearchCubitStatusSelected ||
+          current is SearchCubitFiltersReset ||
           (previous is SearchCubitBrandSelected &&
               current is! SearchCubitBrandSelected),
       builder: (context, state) {
         final searchCubit = context.read<SearchCubit>();
         final vehilceBrandCubit = context.read<VehicleBrandCubit>();
-        final isBrandSelected = searchCubit.isBrandFilterSelected;
+        final bool isBrandSelected = searchCubit.isStatusFilterSelected
+            ? false
+            : searchCubit.isBrandFilterSelected;
         final selectedBrand = searchCubit.selectedBrand;
         final vehicleBrands = vehilceBrandCubit.vehicleBrands;
         final vehicleBrandIds = vehilceBrandCubit.vehicleBrandIds;
@@ -56,6 +60,9 @@ class BrandFilterChip extends StatelessWidget {
             ],
           ),
           onSelected: (bool selected) {
+            if (searchCubit.isStatusFilterSelected) {
+              searchCubit.clearStatusFilter();
+            }
             customShowModelBottmSheet(
               context,
               "Brand",

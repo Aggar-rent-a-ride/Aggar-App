@@ -15,11 +15,15 @@ class NearestFilterChip extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchCubitState>(
       buildWhen: (previous, current) =>
           current is SearchCubitNearestSelected ||
+          current is SearchCubitStatusSelected ||
+          current is SearchCubitFiltersReset ||
           (previous is SearchCubitNearestSelected &&
               current is! SearchCubitNearestSelected),
       builder: (context, state) {
         final searchCubit = context.read<SearchCubit>();
-        final isNearestSelected = searchCubit.isNearestFilterSelected;
+        final bool isNearestSelected = searchCubit.isStatusFilterSelected
+            ? false
+            : searchCubit.isNearestFilterSelected;
 
         return FilterChip(
           label: Text(
@@ -35,6 +39,9 @@ class NearestFilterChip extends StatelessWidget {
           checkmarkColor: context.theme.white100_1,
           selected: isNearestSelected,
           onSelected: (selected) {
+            if (searchCubit.isStatusFilterSelected) {
+              searchCubit.clearStatusFilter();
+            }
             searchCubit.toggleNearestFilter();
           },
         );
