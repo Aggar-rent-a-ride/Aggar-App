@@ -10,18 +10,18 @@ class VehicleModel {
   final double pricePerDay;
   final bool isFavourite;
   final String mainImagePath;
-
-  const VehicleModel({
-    required this.id,
-    required this.distance,
-    required this.brand,
-    required this.type,
-    required this.model,
-    required this.year,
-    required this.pricePerDay,
-    required this.isFavourite,
-    required this.mainImagePath,
-  });
+  final String transmission;
+  const VehicleModel(
+      {required this.id,
+      required this.distance,
+      required this.brand,
+      required this.type,
+      required this.model,
+      required this.year,
+      required this.pricePerDay,
+      required this.isFavourite,
+      required this.mainImagePath,
+      required this.transmission});
 
   factory VehicleModel.fromJson(Map<String, dynamic> json) {
     return VehicleModel(
@@ -34,6 +34,7 @@ class VehicleModel {
       pricePerDay: json[ApiKey.getVehiclePricePerDay],
       isFavourite: json[ApiKey.getVehicleIsFavourite],
       mainImagePath: json[ApiKey.getVehicleMainImagePath],
+      transmission: json[ApiKey.getVehicleTransmission],
     );
   }
 
@@ -48,6 +49,7 @@ class VehicleModel {
       ApiKey.getVehiclePricePerDay: pricePerDay,
       ApiKey.getVehicleIsFavourite: isFavourite,
       ApiKey.getVehicleMainImagePath: mainImagePath,
+      ApiKey.getVehicleTransmission: transmission,
     };
   }
 }
