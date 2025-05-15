@@ -84,10 +84,10 @@ class SearchResultSection extends StatelessWidget {
                       return PopularVehiclesCarCard(
                         vehicleId: vehicle.id.toString(),
                         carName: "${vehicle.brand} ${vehicle.model}",
-                        carType: vehicle.transmission!,
-                        pricePerHour: vehicle.pricePerDay!,
-                        rating: 4.8,
-                        assetImagePath: vehicle.mainImagePath!,
+                        carType: vehicle.transmission,
+                        pricePerHour: vehicle.pricePerDay,
+                        rating: vehicle.rate ?? 5.0,
+                        assetImagePath: vehicle.mainImagePath,
                       );
                     },
                   ),

@@ -3,7 +3,7 @@ import 'package:aggar/core/api/end_points.dart';
 class VehicleModel {
   final int id;
   final num distance;
-  final String? brand;
+  final String brand;
   final String type;
   final String model;
   final int year;
@@ -16,7 +16,7 @@ class VehicleModel {
   const VehicleModel({
     required this.id,
     required this.distance,
-    this.brand = "unknown",
+    required this.brand,
     required this.type,
     required this.model,
     required this.year,
@@ -31,8 +31,8 @@ class VehicleModel {
     return VehicleModel(
       id: json[ApiKey.getVehicleId],
       distance: json[ApiKey.getVehicleDistance],
-      brand: json[ApiKey.getVehicleBrand] ?? "unknown",
-      type: json[ApiKey.getVehicleType] ?? "unknown",
+      brand: json[ApiKey.getVehicleBrand],
+      type: json[ApiKey.getVehicleType],
       model: json[ApiKey.getVehicleModel],
       year: json[ApiKey.getVehicleYear],
       pricePerDay: (json[ApiKey.getVehiclePricePerDay] ?? 0.0).toDouble(),

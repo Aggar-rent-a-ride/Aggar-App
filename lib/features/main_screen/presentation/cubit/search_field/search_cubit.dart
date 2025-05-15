@@ -297,7 +297,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
         statusCount: statusCount,
       ));
     } catch (error) {
-      String errorMessage = handleSearchError(error);
+      String errorMessage = handleError(error);
       emit(SearchCubitError(message: errorMessage));
     }
   }
@@ -326,7 +326,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
       // Emit status count state
       emit(SearchCubitStatusCount(statusCount));
     } catch (error) {
-      String errorMessage = handleSearchError(error);
+      String errorMessage = handleError(error);
       emit(SearchCubitError(message: errorMessage));
     }
   }

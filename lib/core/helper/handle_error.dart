@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-String handleSearchError(dynamic error) {
+String handleError(dynamic error) {
   if (error is DioException) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
