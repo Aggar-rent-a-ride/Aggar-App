@@ -15,28 +15,39 @@ class VehicleList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<VehicleCubit, VehicleState>(
       builder: (context, state) {
-        if (state is VehicleLoaded) {
+        if (state is VehicleLoaded || state is VehicleLoadingMore) {
+          final vehicles = state is VehicleLoaded
+              ? state.vehicles.data
+              : (state as VehicleLoadingMore).vehicles.data;
           return Column(
-            children: List.generate(
-              state.vehicles.data.length,
-              (index) => PopularVehiclesCarCard(
-//
-                vehicleId: state.vehicles.data[index].id.toString(),
-                carName:
-                    "${state.vehicles.data[index].brand} ${state.vehicles.data[index].model}",
-                carType: state.vehicles.data[index].transmission,
-                pricePerHour: state.vehicles.data[index].pricePerDay,
-                rating: state.vehicles.data[index].rate ?? 5.0,
-                assetImagePath: state.vehicles.data[index].mainImagePath,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: vehicles.length,
+                itemBuilder: (context, index) => PopularVehiclesCarCard(
+                  vehicleId: vehicles[index].id.toString(),
+                  carName: "${vehicles[index].brand} ${vehicles[index].model}",
+                  carType: vehicles[index].transmission,
+                  pricePerHour: vehicles[index].pricePerDay,
+                  rating: vehicles[index].rate ?? 5.0,
+                  assetImagePath: vehicles[index].mainImagePath,
+                ),
               ),
-            ),
+              if (state is VehicleLoadingMore)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: CircularProgressIndicator(
+                    color: context.theme.blue100_5,
+                  ),
+                ),
+            ],
           );
         } else {
           return Shimmer.fromColors(
             baseColor: context.theme.gray100_1,
             highlightColor: context.theme.white100_1,
             child: Column(
-              spacing: 15,
               children: List.generate(
                 3,
                 (index) => Container(
@@ -46,6 +57,7 @@ class VehicleList extends StatelessWidget {
                     color: context.theme.white100_1,
                     borderRadius: BorderRadius.circular(4),
                   ),
+                  margin: const EdgeInsets.only(bottom: 15),
                 ),
               ),
             ),

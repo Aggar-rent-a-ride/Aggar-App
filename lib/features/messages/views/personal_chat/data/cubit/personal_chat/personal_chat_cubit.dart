@@ -13,35 +13,27 @@ import 'package:flutter/rendering.dart';
 class PersonalChatCubit extends Cubit<PersonalChatState> {
   PersonalChatCubit() : super(const PersonalChatInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
-
-  // Search related controllers and flags
   bool isSearchActive = false;
   final TextEditingController searchController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   bool dateSelected = false;
-  
-  // Message highlighting
+
   String? highlightedMessageId;
   List<String> searchResultMessageIds = [];
   int currentHighlightIndex = -1;
-  
-  // Scroll control
+
   ScrollController scrollController = ScrollController();
   Map<String, GlobalKey> messageKeys = {};
 
-  // Messages data
   List<MessageModel> _messages = [];
   int? _receiverId = 0;
 
-  // Getters
   List<MessageModel> get messages => _messages;
   int? get receiverId => _receiverId;
 
-  // Initialize from message state
   void initializeFromMessageState(MessageState state) {
     if (state is MessageSuccess && state.userId != null) {
       _receiverId = state.userId;
-      print('Receiver ID initialized from MessageState: $_receiverId');
 
       if (state.messages != null && state.messages!.data.isNotEmpty) {
         setMessages(state.messages!.data);
@@ -49,7 +41,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
-  // Set messages
   void setMessages(List<MessageModel> messageList) {
     _messages = List<MessageModel>.from(messageList);
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -57,7 +48,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     });
   }
 
-  // Scroll to bottom
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
@@ -68,19 +58,16 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
-  // Set receiver ID
   void setReceiverId(int id) {
     _receiverId = id;
     print('Receiver ID set to: $_receiverId');
   }
 
-  // Clear all highlights
   void clearHighlights() {
     highlightedMessageId = null;
     emit(state);
   }
 
-  // Highlight a specific message
   void highlightMessage(String messageId) {
     highlightedMessageId = messageId;
     emit(MessageHighlightedState(messageId));
@@ -98,7 +85,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     });
   }
 
-  // Go to next search result
   void goToNextSearchResult() {
     if (searchResultMessageIds.isEmpty) return;
 
@@ -110,7 +96,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     emit(MessageHighlightedState(nextMessageId));
   }
 
-  // Go to previous search result
   void goToPreviousSearchResult() {
     if (searchResultMessageIds.isEmpty) return;
 
@@ -123,7 +108,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     emit(MessageHighlightedState(prevMessageId));
   }
 
-  // Toggle search mode
   void toggleSearchMode() {
     if (state is PersonalChatSearch) {
       isSearchActive = !isSearchActive;
@@ -134,15 +118,14 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         currentHighlightIndex = -1;
         emit(const PersonalChatInitial());
       } else {
-        emit(PersonalChatSearch());
+        emit(const PersonalChatSearch());
       }
     } else {
       isSearchActive = true;
-      emit(PersonalChatSearch());
+      emit(const PersonalChatSearch());
     }
   }
 
-  // Update search query
   void updateSearchQuery(String query) {
     searchController.text = query;
     searchController.selection = TextSelection.fromPosition(
@@ -150,18 +133,17 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     );
     if (state is! PersonalChatSearch) {
       isSearchActive = true;
-      emit(PersonalChatSearch());
+      emit(const PersonalChatSearch());
     }
   }
 
-  // Filter messages
   Future<void> filterMessages(String accessToken) async {
     if (_receiverId == null) {
       emit(const PersonalChatFailure("Receiver ID is not set"));
       return;
     }
     try {
-      emit(PersonalChatLoading());
+      emit(const PersonalChatLoading());
       Map<String, dynamic> data = {
         ApiKey.filterMessagesSenderId: _receiverId,
         ApiKey.filterMsgPageNo: 1,
@@ -181,7 +163,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           },
         ),
       );
-      print("API Response: $response");
       if (response == null) {
         emit(const PersonalChatFailure("No response received from server."));
         return;
@@ -210,7 +191,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
-  // Scroll to specific message
   void scrollToMessage(String messageId, {int retryCount = 0}) {
     const maxRetries = 5;
     const retryDelay = Duration(milliseconds: 500);
@@ -260,7 +240,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     });
   }
 
-  // Select date for filtering
   Future<void> selectDate(BuildContext context) async {
     searchController.clear();
 
@@ -283,7 +262,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     }
   }
 
-  // Clear search
   void clearSearch() {
     isSearchActive = false;
     searchController.clear();
@@ -295,10 +273,9 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     emit(const PersonalChatInitial());
   }
 
-  // Mark messages as seen
   Future<void> markAsSeen(String accessToken, List<int> ids) async {
     try {
-      emit(PersonalChatLoading());
+      emit(const PersonalChatLoading());
       FormData formData = FormData();
       if (ids.isNotEmpty) {
         for (int i = 0; i < ids.length; i++) {
@@ -321,7 +298,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           },
         ),
       );
-      print(response);
       if (response.statusCode == 200) {
         emit(const PersonalChatInitial());
       } else {
