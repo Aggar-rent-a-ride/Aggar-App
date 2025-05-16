@@ -1,4 +1,4 @@
-import 'package:aggar/features/main_screen/presentation/cubit/main_screen/main_screen_cubit.dart';
+import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
