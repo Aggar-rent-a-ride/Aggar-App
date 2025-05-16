@@ -380,7 +380,8 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
+        type: FileType.any,
+        allowMultiple: false,
       );
 
       if (result != null && result.files.isNotEmpty) {
@@ -388,6 +389,10 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
         if (file.path != null) {
           final File fileObj = File(file.path!);
+          if (!await fileObj.exists()) {
+            emit(const RealTimeChatFailure("File does not exist"));
+            return;
+          }
           final bytes = await fileObj.readAsBytes();
 
           final fileName = path.basename(file.path!);
@@ -411,8 +416,10 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
             fileName,
             fileExtension,
           );
+        } else {
+          emit(const RealTimeChatFailure("Could not read file"));
         }
-      }
+      } else {}
     } catch (e) {
       emit(RealTimeChatFailure("Failed to pick file: ${e.toString()}"));
     }
