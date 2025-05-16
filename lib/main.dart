@@ -26,6 +26,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_veh
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
@@ -105,6 +106,10 @@ class MyApp extends StatelessWidget {
             AdditionalImageCubit(),
             MapLocationCubit(),
           ),
+        ),
+        BlocProvider(
+          create: (context) => NotificationCubit(
+              tokenRefreshCubit: context.read<TokenRefreshCubit>()),
         ),
         BlocProvider(
           create: (context) => RentalHistoryCubit(

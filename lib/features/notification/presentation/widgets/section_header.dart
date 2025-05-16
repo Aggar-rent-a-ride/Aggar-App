@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 class SectionHeader extends StatelessWidget {
   final String title;
   final String markTitle;
+  final VoidCallback? onMarkAsRead;
 
-  const SectionHeader(
-      {required this.title, super.key, required this.markTitle});
+  const SectionHeader({
+    required this.title,
+    super.key,
+    required this.markTitle,
+    this.onMarkAsRead,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class SectionHeader extends StatelessWidget {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            onPressed: () {},
+            onPressed: onMarkAsRead,
             child: Text(
               markTitle,
               style: AppStyles.medium16(context).copyWith(

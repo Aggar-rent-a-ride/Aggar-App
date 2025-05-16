@@ -50,20 +50,23 @@ class NotificationReceived extends NotificationState {
 
 class NotificationError extends NotificationState {
   final String message;
+  final bool isRecoverable;
 
-  const NotificationError(this.message);
+  const NotificationError(this.message, {this.isRecoverable = true});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, isRecoverable];
 }
 
 class NotificationConnectionState extends NotificationState {
   final bool isConnected;
+  final String? connectionErrorMessage;
 
-  const NotificationConnectionState(this.isConnected);
+  const NotificationConnectionState(this.isConnected,
+      {this.connectionErrorMessage});
 
   @override
-  List<Object?> get props => [isConnected];
+  List<Object?> get props => [isConnected, connectionErrorMessage];
 }
 
 class NotificationMarkedAsRead extends NotificationState {
@@ -81,4 +84,19 @@ class NotificationMarkedAsRead extends NotificationState {
 
 class AllNotificationsMarkedAsRead extends NotificationState {
   const AllNotificationsMarkedAsRead();
+}
+
+class ConnectionRetrying extends NotificationState {
+  final int attemptNumber;
+  final int maxAttempts;
+  final Duration nextRetryIn;
+
+  const ConnectionRetrying({
+    required this.attemptNumber,
+    required this.maxAttempts,
+    required this.nextRetryIn,
+  });
+
+  @override
+  List<Object?> get props => [attemptNumber, maxAttempts, nextRetryIn];
 }
