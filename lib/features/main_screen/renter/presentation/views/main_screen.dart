@@ -30,17 +30,6 @@ class MainScreen extends StatelessWidget {
                 child: const MainHeader(),
               ),
               const Gap(15),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("helllllllo"),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 100),
             ],
           ),
         ),
