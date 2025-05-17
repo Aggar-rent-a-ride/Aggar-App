@@ -26,16 +26,15 @@ class NotificationCubit extends Cubit<NotificationState> {
   Timer? _reconnectionTimer;
   bool _isReconnecting = false;
   bool _shouldBeConnected = false;
+  int _reconnectionAttempt = 0;
+  final int _maxReconnectionAttempts = 5;
 
   NotificationCubit({
     required TokenRefreshCubit tokenRefreshCubit,
     NotificationService? notificationService,
     FlutterSecureStorage? secureStorage,
   })  : _tokenRefreshCubit = tokenRefreshCubit,
-        _notificationService = notificationService ??
-            NotificationService(
-              apiConsumer: DioConsumer(dio: Dio()),
-            ),
+        _notificationService = notificationService ?? NotificationService(),
         _secureStorage = secureStorage ?? const FlutterSecureStorage(),
         super(NotificationInitial()) {
     _setupTokenRefreshCubit();
@@ -68,8 +67,8 @@ class NotificationCubit extends Cubit<NotificationState> {
           _isInitialized &&
           _shouldBeConnected &&
           !_notificationService.isConnected) {
-        // Short delay before attempting reconnect to allow network to stabilize
         await Future.delayed(const Duration(seconds: 1));
+        _reconnectionAttempt = 0;
         reconnect();
       }
     });
@@ -79,9 +78,11 @@ class NotificationCubit extends Cubit<NotificationState> {
     _notificationSubscription?.cancel();
     _connectionSubscription?.cancel();
     _unreadCountSubscription?.cancel();
+    print('Setting up notification subscription');
 
     _notificationSubscription =
         _notificationService.onNotificationReceived.listen((notification) {
+      print('Notification received: ${notification.id}');
       _notifications.insert(0, notification);
       _unreadCount++;
 
@@ -97,11 +98,13 @@ class NotificationCubit extends Cubit<NotificationState> {
             unreadCount: _unreadCount));
       }
     }, onError: (error) {
+      print('Notification error: $error');
       emit(NotificationError('Failed to receive notification: $error'));
     });
 
     _connectionSubscription =
         _notificationService.onConnectionChange.listen((isConnected) {
+      print('Connection status changed: $isConnected');
       String? errorMessage;
       if (!isConnected && _shouldBeConnected) {
         errorMessage = 'Connection lost. Attempting to reconnect...';
@@ -112,13 +115,14 @@ class NotificationCubit extends Cubit<NotificationState> {
       if (isConnected) {
         _isReconnecting = false;
         _reconnectionTimer?.cancel();
+        _reconnectionAttempt = 0;
         _shouldBeConnected = true;
 
         if (state is! NotificationsLoaded) {
           fetchNotifications();
         }
       } else if (_isInitialized && !_isReconnecting && _shouldBeConnected) {
-        reconnect();
+        _scheduleReconnect();
       }
     });
 
@@ -134,11 +138,13 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> initialize() async {
     if (_isInitialized && _notificationService.isConnected) return;
 
+    print('Initializing notification service');
     emit(NotificationLoading());
     try {
       final userIdStr = await _secureStorage.read(key: 'userId');
       final userId = userIdStr != null ? int.tryParse(userIdStr) : null;
 
+      print('User ID: $userId');
       if (userId == null) {
         emit(const NotificationError('User ID not found. Please login again.',
             isRecoverable: false));
@@ -160,13 +166,16 @@ class NotificationCubit extends Cubit<NotificationState> {
         return;
       }
 
-      // Set this flag to indicate we should try to maintain connection
       _shouldBeConnected = true;
+      _reconnectionAttempt = 0;
 
+      print('Calling notification service initialize');
       await _notificationService.initialize(userId: userId);
       _isInitialized = true;
+      print('Notification service initialized successfully');
       await fetchNotifications();
     } catch (e) {
+      print('Error initializing notification service: $e');
       // Detect specific WebSocket errors
       final errorMessage = e.toString();
       if (errorMessage.contains('WebSocketChannelException') ||
@@ -178,7 +187,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       }
 
       if (!_notificationService.isConnected && _shouldBeConnected) {
-        reconnect();
+        _scheduleReconnect();
       }
     }
   }
@@ -190,13 +199,17 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
 
     try {
+      print('Fetching notifications');
       if (!_notificationService.isConnected) {
+        print('Service not connected, initializing first');
         await initialize();
       }
 
       final notifications = await _notificationService.getNotifications();
       final unreadCount =
           await _notificationService.getUnreadNotificationCount();
+      print(
+          'Fetched ${notifications.length} notifications, $unreadCount unread');
       _notifications = notifications;
       _unreadCount = unreadCount;
 
@@ -205,21 +218,34 @@ class NotificationCubit extends Cubit<NotificationState> {
         unreadCount: _unreadCount,
       ));
     } catch (e) {
-      emit(const NotificationsLoaded(
-        notifications: [],
-        unreadCount: 0,
+      print('Error fetching notifications: $e');
+      if (e is DioException) {
+        if (e.response?.statusCode == 401) {
+          await _tokenRefreshCubit.refreshToken();
+          if (_tokenRefreshCubit.state is TokenRefreshSuccess) {
+            return fetchNotifications();
+          } else {
+            emit(const NotificationError(
+                'Authentication expired. Please login again.',
+                isRecoverable: false));
+            return;
+          }
+        }
+      }
+      emit(NotificationsLoaded(
+        notifications: _notifications,
+        unreadCount: _unreadCount,
       ));
       if (!_notificationService.isConnected && _shouldBeConnected) {
-        reconnect();
+        _scheduleReconnect();
       }
     }
   }
 
   Future<void> markAsRead(int notificationId) async {
-    // Store previous state to revert to on failure
     final previousState = state;
-
     try {
+      print('Marking notification $notificationId as read');
       final index = _notifications.indexWhere((n) => n.id == notificationId);
       if (index != -1) {
         if (!_notifications[index].isRead) {
@@ -243,12 +269,10 @@ class NotificationCubit extends Cubit<NotificationState> {
             unreadCount: _unreadCount,
           ));
 
-          if (previousState is NotificationsLoaded) {
-            emit(NotificationsLoaded(
-              notifications: List.from(_notifications),
-              unreadCount: _unreadCount,
-            ));
-          }
+          emit(NotificationsLoaded(
+            notifications: List.from(_notifications),
+            unreadCount: _unreadCount,
+          ));
         }
       }
       await _tokenRefreshCubit.ensureValidToken();
@@ -256,6 +280,7 @@ class NotificationCubit extends Cubit<NotificationState> {
           await _notificationService.markNotificationAsRead(notificationId);
 
       if (!success) {
+        print('Failed to mark notification as read on server');
         emit(previousState);
         fetchNotifications();
       }
@@ -267,6 +292,13 @@ class NotificationCubit extends Cubit<NotificationState> {
             (state as NotificationsLoaded).copyWith(unreadCount: _unreadCount));
       }
     } catch (e) {
+      print('Error marking notification as read: $e');
+      if (e is DioException && e.response?.statusCode == 401) {
+        await _tokenRefreshCubit.refreshToken();
+        if (_tokenRefreshCubit.state is TokenRefreshSuccess) {
+          return markAsRead(notificationId);
+        }
+      }
       if (state is! NotificationsLoaded) {
         emit(previousState);
       }
@@ -277,6 +309,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     final previousState = state;
 
     try {
+      print('Marking all notifications as read');
       List<Notification> updatedNotifications =
           _notifications.map((notification) {
         return Notification(
@@ -303,20 +336,65 @@ class NotificationCubit extends Cubit<NotificationState> {
       final success = await _notificationService.markAllNotificationsAsRead();
 
       if (!success) {
+        print('Failed to mark all notifications as read on server');
         emit(previousState);
         fetchNotifications();
       }
     } catch (e) {
+      print('Error marking all notifications as read: $e');
+      if (e is DioException && e.response?.statusCode == 401) {
+        await _tokenRefreshCubit.refreshToken();
+        if (_tokenRefreshCubit.state is TokenRefreshSuccess) {
+          return markAllAsRead();
+        }
+      }
       if (state is! NotificationsLoaded) {
         emit(previousState);
       }
     }
   }
 
-  Future<void> reconnect() async {
+  void _scheduleReconnect() {
+    if (_isReconnecting || !_shouldBeConnected) return;
+
     _isReconnecting = true;
+    _reconnectionAttempt++;
+
+    print('Scheduling reconnection attempt $_reconnectionAttempt');
+    if (_reconnectionAttempt > _maxReconnectionAttempts) {
+      emit(const NotificationError(
+          'Failed to reconnect after multiple attempts. Please try again later.',
+          isRecoverable: true));
+      _isReconnecting = false;
+      return;
+    }
+    const baseDelay = 1000;
+    const maxDelay = 30000;
+    final exponentialDelay = baseDelay * (1 << (_reconnectionAttempt - 1));
+    final delay = Duration(
+        milliseconds:
+            (exponentialDelay < maxDelay ? exponentialDelay : maxDelay) +
+                (DateTime.now().millisecondsSinceEpoch % 1000)); // Add jitter
+
+    emit(ConnectionRetrying(
+      attemptNumber: _reconnectionAttempt,
+      maxAttempts: _maxReconnectionAttempts,
+      nextRetryIn: delay,
+    ));
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = Timer(delay, () {
+      reconnect();
+    });
+  }
+
+  Future<void> reconnect() async {
+    if (!_shouldBeConnected) {
+      _isReconnecting = false;
+      return;
+    }
 
     try {
+      print('Attempting to reconnect');
       final token = await _tokenRefreshCubit.getAccessToken();
       if (token == null) {
         emit(const NotificationError(
@@ -335,16 +413,17 @@ class NotificationCubit extends Cubit<NotificationState> {
         emit(const NotificationError(
             'No internet connection. Please check your network settings.',
             isRecoverable: true));
-        _isReconnecting = false;
+        _scheduleReconnect();
         return;
       }
 
-      _shouldBeConnected = true;
       await initialize();
       _isReconnecting = false;
     } catch (e) {
+      print('Error reconnecting: $e');
       _isReconnecting = false;
-      if (state is! NotificationsLoaded) {
+      _scheduleReconnect();
+      if (state is! NotificationsLoaded && _notifications.isNotEmpty) {
         emit(NotificationsLoaded(
           notifications: _notifications,
           unreadCount: _unreadCount,
@@ -355,6 +434,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   @override
   Future<void> close() {
+    print('Closing notification cubit');
     _shouldBeConnected = false;
     _notificationSubscription?.cancel();
     _connectionSubscription?.cancel();
