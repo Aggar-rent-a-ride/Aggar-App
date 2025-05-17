@@ -1,9 +1,12 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/get_file_name.dart';
 import 'package:aggar/core/helper/get_mini_type_file.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/file_content.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ChatBubbleForReciver extends StatefulWidget {
   const ChatBubbleForReciver(
@@ -17,17 +20,30 @@ class ChatBubbleForReciver extends StatefulWidget {
 
 class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
   String? mimeType;
+  int? fileSizeInBytes;
 
   @override
   void initState() {
     super.initState();
     if (widget.isfile == true) {
-      loadMimeType();
+      loadMimeTypeAndSize();
     }
   }
 
-  void loadMimeType() async {
+  void loadMimeTypeAndSize() async {
     final type = await getFileMimeType(widget.message.message);
+    final url = "${EndPoint.baseUrl}${widget.message.message}";
+    try {
+      final response = await http.head(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final contentLength = response.headers['content-length'];
+        if (contentLength != null) {
+          fileSizeInBytes = int.tryParse(contentLength);
+        }
+      }
+    } catch (e) {
+      print('Error fetching file size: $e');
+    }
     if (mounted) {
       setState(() {
         mimeType = type;
@@ -38,6 +54,8 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width * 0.65;
+    final fileName =
+        widget.isfile == true ? getFileName(widget.message.message) : '';
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -84,9 +102,12 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
                         height: 240,
                         fit: BoxFit.cover,
                       )
-                    : const Icon(
-                        Icons.file_present_outlined,
-                        size: 50,
+                    : FileContent(
+                        message: widget.message,
+                        isSender: false,
+                        fileName: fileName,
+                        fileSizeInBytes: fileSizeInBytes,
+                        mimeType: mimeType,
                       ),
               ),
             Text(
