@@ -10,7 +10,8 @@ import 'package:aggar/features/authorization/presentation/widget/sign_in_email_a
 import 'package:aggar/features/authorization/presentation/widget/sign_in_face_book_and_google_buttons.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_forget_password_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_image_with_text.dart';
-import 'package:aggar/features/main_screen/customer/presentation/views/bottom_navigation_bar_views.dart';
+import 'package:aggar/features/main_screen/customer/presentation/views/customer_bottom_navigation_bar_views.dart';
+import 'package:aggar/features/main_screen/renter/presentation/views/renter_bottom_navigation_bar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
@@ -50,10 +51,23 @@ class _SignInContent extends StatelessWidget {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            Navigator.push(
+            if (loginCubit.userData!["data"]["roles"][1] == "Customer") {
+              Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const BottomNavigationBarViews()));
+                  builder: (context) =>
+                      const CustomerBottomNavigationBarViews(),
+                ),
+              );
+            }
+            if (loginCubit.userData!["data"]["roles"][1] == "Renter") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RenterBottomNavigationBarView(),
+                ),
+              );
+            }
           } else if (state is LoginInactiveAccount) {
             Navigator.push(
               context,

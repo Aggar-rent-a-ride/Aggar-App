@@ -6,15 +6,16 @@ import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
 import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 
-class BottomNavigationBarViews extends StatefulWidget {
-  const BottomNavigationBarViews({super.key});
+class CustomerBottomNavigationBarViews extends StatefulWidget {
+  const CustomerBottomNavigationBarViews({super.key});
 
   @override
-  State<BottomNavigationBarViews> createState() =>
-      _BottomNavigationBarViewsState();
+  State<CustomerBottomNavigationBarViews> createState() =>
+      _CustomerBottomNavigationBarViewsState();
 }
 
-class _BottomNavigationBarViewsState extends State<BottomNavigationBarViews> {
+class _CustomerBottomNavigationBarViewsState
+    extends State<CustomerBottomNavigationBarViews> {
   int selectedIndex = 0;
 
   void onTapped(int index) {
