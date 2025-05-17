@@ -1,16 +1,31 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
+import 'package:aggar/features/notification/data/cubit/notification_state.dart';
 import 'package:aggar/features/notification/presentation/widgets/accept_or_feedback_button.dart';
+import 'package:aggar/features/notification/presentation/widgets/connection_status_banner.dart';
 import 'package:aggar/features/notification/presentation/widgets/deny_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_card.dart';
 import 'package:aggar/features/notification/presentation/widgets/section_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:aggar/core/services/notification_service.dart' as service;
 
-import '../../../../core/utils/app_styles.dart';
-
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
+
+  @override
+  State<NotificationScreen> createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<NotificationCubit>().initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,87 +43,248 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
         ),
+        actions: [
+          BlocBuilder<NotificationCubit, NotificationState>(
+            builder: (context, state) {
+              if (state is NotificationConnectionState && !state.isConnected ||
+                  state is NotificationError && state.isRecoverable) {
+                return IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () =>
+                      context.read<NotificationCubit>().reconnect(),
+                  tooltip: 'Reconnect',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
+      body: Column(
+        children: [
+          // Connection status banner
+          _buildConnectionStatusBanner(),
+
+          // Main content
+          Expanded(
+            child: BlocConsumer<NotificationCubit, NotificationState>(
+              listener: (context, state) {
+                if (state is NotificationError) {
+                  // Only show SnackBar for transient errors that won't be displayed in the UI
+                  if (!state.isRecoverable ||
+                      !(state.message.contains('Failed to connect') ||
+                          state.message.contains('connection'))) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.message)),
+                    );
+                  }
+                }
+              },
+              builder: (context, state) {
+                if (state is NotificationLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is NotificationsLoaded) {
+                  if (state.notifications.isEmpty) {
+                    return const Center(child: Text('No notifications yet'));
+                  }
+
+                  return _buildNotificationsList(state.notifications);
+                } else if (state is NotificationError && !state.isRecoverable) {
+                  // Show non-recoverable errors prominently
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 48, color: Colors.red),
+                        const SizedBox(height: 16),
+                        Text(state.message, textAlign: TextAlign.center),
+                      ],
+                    ),
+                  );
+                }
+
+                // Default or loading state
+                return const Center(child: Text('Loading notifications...'));
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConnectionStatusBanner() {
+    return BlocBuilder<NotificationCubit, NotificationState>(
+      buildWhen: (previous, current) =>
+          current is NotificationConnectionState ||
+          current is ConnectionRetrying ||
+          current is NotificationError && current.isRecoverable,
+      builder: (context, state) {
+        if (state is NotificationConnectionState && !state.isConnected) {
+          return ConnectionStatusBanner(
+            message: state.connectionErrorMessage ??
+                'Connection lost. Attempting to reconnect...',
+            color: Colors.orange,
+            onRetry: () => context.read<NotificationCubit>().reconnect(),
+          );
+        } else if (state is ConnectionRetrying) {
+          return ConnectionStatusBanner(
+            message:
+                'Reconnecting... Attempt ${state.attemptNumber} of ${state.maxAttempts}',
+            color: Colors.orange,
+            showProgress: true,
+            onRetry: () => context.read<NotificationCubit>().reconnect(),
+          );
+        } else if (state is NotificationError && state.isRecoverable) {
+          return ConnectionStatusBanner(
+            message: state.message,
+            color: Colors.red,
+            onRetry: () => context.read<NotificationCubit>().reconnect(),
+          );
+        }
+
+        // No banner needed
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildNotificationsList(List<service.Notification> notifications) {
+    // Group notifications by date
+    final today = <service.Notification>[];
+    final earlier = <service.Notification>[];
+
+    final now = DateTime.now();
+    for (final notification in notifications) {
+      if (notification.createdAt.day == now.day &&
+          notification.createdAt.month == now.month &&
+          notification.createdAt.year == now.year) {
+        today.add(notification);
+      } else {
+        earlier.add(notification);
+      }
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => context.read<NotificationCubit>().fetchNotifications(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            const SectionHeader(title: 'Today', markTitle: 'Mark all as read'),
-            NotificationCard(
-              profileImage: AppAssets.assetsImagesNotificationPic1,
-              name: 'Jenny Wilson',
-              actionText: 'send a request to start chat',
-              timeAgo: '5 min ago',
-              isfoundButton: true,
-              widget: Row(
-                children: [
-                  AcceptOrFeedbackButton(
-                    title: "Accept",
-                    onPressed: () {},
-                  ),
-                  const Gap(8),
-                  DenyButton(
-                    onPressed: () {},
-                  )
-                ],
+            if (today.isNotEmpty) ...[
+              SectionHeader(
+                title: 'Today',
+                markTitle: 'Mark all as read',
+                onMarkAsRead: () =>
+                    context.read<NotificationCubit>().markAllAsRead(),
               ),
-            ),
-            NotificationCard(
-              profileImage: AppAssets.assetsImagesNotificationPic1,
-              name: 'Jenny Wilson',
-              actionText: 'send a request to start chat',
-              timeAgo: '5 min ago',
-              isfoundButton: true,
-              widget: Row(
-                children: [
-                  AcceptOrFeedbackButton(
-                    title: "Accept",
-                    onPressed: () {},
-                  ),
-                  const Gap(8),
-                  DenyButton(
-                    onPressed: () {},
-                  )
-                ],
+              ...today
+                  .map((notification) => _buildNotificationCard(notification)),
+            ],
+            if (earlier.isNotEmpty) ...[
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: SectionHeader(
+                  title: 'Earlier',
+                  markTitle: 'Mark all as read',
+                  onMarkAsRead: null,
+                ),
               ),
-            ),
-            const NotificationCard(
-              profileImage: AppAssets.assetsImagesNotificationPic2,
-              name: 'Annette Black',
-              actionText: 'have completed the steps to book the BMW',
-              timeAgo: '5 min ago',
-              isfoundButton: false,
-            ),
-            NotificationCard(
-              profileImage: AppAssets.assetsImagesNotificationPic1,
-              name: 'Robert Fox',
-              actionText: 'send a feedback on Tesla Model',
-              timeAgo: '1 hr ago',
-              isfoundButton: true,
-              widget: AcceptOrFeedbackButton(
-                title: "Send a Feedback",
-                onPressed: () {},
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: SectionHeader(
-                  title: 'Earlier', markTitle: 'Mark all as read'),
-            ),
-            NotificationCard(
-              profileImage: AppAssets.assetsImagesNotificationPic1,
-              name: 'Robert Fox',
-              actionText: 'send a feedback on Tesla Model',
-              timeAgo: '1 hr ago',
-              isfoundButton: true,
-              widget: AcceptOrFeedbackButton(
-                title: "Send a Feedback",
-                onPressed: () {},
-              ),
-            ),
+              ...earlier
+                  .map((notification) => _buildNotificationCard(notification)),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildNotificationCard(service.Notification notification) {
+    final timeAgo = _getTimeAgo(notification.createdAt);
+
+    // Determine what action buttons to show based on notification content
+    Widget? actionButtons;
+    bool hasButtons = false;
+
+    // Example logic for determining button types based on notification content
+    if (notification.content.contains('request to start chat')) {
+      hasButtons = true;
+      actionButtons = Row(
+        children: [
+          AcceptOrFeedbackButton(
+            title: "Accept",
+            onPressed: () => _handleAccept(notification),
+          ),
+          const Gap(8),
+          DenyButton(
+            onPressed: () => _handleDeny(notification),
+          )
+        ],
+      );
+    } else if (notification.content.contains('feedback')) {
+      hasButtons = true;
+      actionButtons = AcceptOrFeedbackButton(
+        title: "Send a Feedback",
+        onPressed: () => _handleFeedback(notification),
+      );
+    }
+
+    // Get avatar image - using placeholder for now but you would use notification.senderAvatar
+    final avatarImage =
+        notification.senderAvatar ?? AppAssets.assetsImagesNotificationPic1;
+
+    return GestureDetector(
+      onTap: () {
+        if (!notification.isRead) {
+          context.read<NotificationCubit>().markAsRead(notification.id);
+        }
+      },
+      child: Container(
+        color: notification.isRead
+            ? null
+            : context.theme.blue10_2.withOpacity(0.2),
+        child: NotificationCard(
+          profileImage: avatarImage,
+          name: notification.senderName ?? 'User',
+          actionText: notification.content,
+          timeAgo: timeAgo,
+          isfoundButton: hasButtons,
+          widget: actionButtons,
+        ),
+      ),
+    );
+  }
+
+  String _getTimeAgo(DateTime dateTime) {
+    final duration = DateTime.now().difference(dateTime);
+    if (duration.inMinutes < 60) {
+      return '${duration.inMinutes} min ago';
+    } else if (duration.inHours < 24) {
+      return '${duration.inHours} hr ago';
+    } else if (duration.inDays < 7) {
+      return '${duration.inDays} days ago';
+    } else {
+      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    }
+  }
+
+  void _handleAccept(service.Notification notification) {
+    // Handle accept action
+    context.read<NotificationCubit>().markAsRead(notification.id);
+    // Additional accept logic would go here
+  }
+
+  void _handleDeny(service.Notification notification) {
+    // Handle deny action
+    context.read<NotificationCubit>().markAsRead(notification.id);
+    // Additional deny logic would go here
+  }
+
+  void _handleFeedback(service.Notification notification) {
+    // Handle feedback action
+    context.read<NotificationCubit>().markAsRead(notification.id);
+    // Additional feedback logic would go here
   }
 }
