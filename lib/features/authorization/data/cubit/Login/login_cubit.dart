@@ -17,6 +17,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   bool obscurePassword = true;
   Map<String, dynamic>? userData;
+  String? userType;
 
   LoginCubit({
     required this.dioConsumer,
@@ -75,17 +76,20 @@ class LoginCubit extends Cubit<LoginState> {
         final accessToken = data[ApiKey.accessToken] ?? "";
         final refreshToken = data[ApiKey.refreshToken] ?? "";
         final userId = _extractUserId(data, accessToken);
+        userType = _extractUserType(data);
 
         await _storeTokens(
             accessToken: accessToken,
             refreshToken: refreshToken,
-            userId: userId);
+            userId: userId,
+            userType: userType);
 
         emit(LoginSuccess(
           accessToken: accessToken,
           refreshToken: refreshToken,
           username: _extractUsername(data, identifier),
           userId: userId,
+          userType: userType,
         ));
       } else {
         final errorMessage = _extractErrorMessage(response);
@@ -105,10 +109,20 @@ class LoginCubit extends Cubit<LoginState> {
     return null;
   }
 
+  String? _extractUserType(dynamic data) {
+    if (data['roles'] != null &&
+        data['roles'] is List &&
+        data['roles'].length > 1) {
+      return data['roles'][1].toString();
+    }
+    return null;
+  }
+
   Future<void> _storeTokens({
     required String accessToken,
     required String refreshToken,
     String? userId,
+    String? userType,
   }) async {
     try {
       if (secureStorage == null) {
@@ -126,9 +140,11 @@ class LoginCubit extends Cubit<LoginState> {
         secureStorage!.write(
             key: 'tokenCreatedAt', value: DateTime.now().toIso8601String()),
         if (userId != null) secureStorage!.write(key: 'userId', value: userId),
+        if (userType != null)
+          secureStorage!.write(key: 'userType', value: userType),
       ]);
 
-      print('Tokens and userId stored successfully');
+      print('Tokens, userId, and userType stored successfully');
     } catch (e) {
       print('Detailed token storage error: $e');
 
@@ -143,6 +159,14 @@ class LoginCubit extends Cubit<LoginState> {
       return await secureStorage?.read(key: 'userId');
     } catch (e) {
       print('Error retrieving userId: $e');
+      return null;
+    }
+  }
+  Future<String?> getUserType() async {
+    try {
+      return await secureStorage?.read(key: 'userType');
+    } catch (e) {
+      print('Error retrieving userType: $e');
       return null;
     }
   }

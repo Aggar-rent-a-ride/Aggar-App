@@ -51,7 +51,8 @@ class _SignInContent extends StatelessWidget {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            if (loginCubit.userData!["data"]["roles"][1] == "Customer") {
+            final userType = state.userType;
+            if (userType == "Customer") {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -59,8 +60,7 @@ class _SignInContent extends StatelessWidget {
                       const CustomerBottomNavigationBarViews(),
                 ),
               );
-            }
-            if (loginCubit.userData!["data"]["roles"][1] == "Renter") {
+            } else if (userType == "Renter") {
               Navigator.push(
                 context,
                 MaterialPageRoute(
