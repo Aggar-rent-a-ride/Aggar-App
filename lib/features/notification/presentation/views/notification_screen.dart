@@ -24,7 +24,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<NotificationCubit>().initialize();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NotificationCubit>().initialize();
+    });
   }
 
   @override
@@ -55,6 +57,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   tooltip: 'Reconnect',
                 );
               }
+              if (state is NotificationsLoaded &&
+                  state.notifications.isNotEmpty) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (state.unreadCount > 0)
+                      IconButton(
+                        icon: const Icon(Icons.done_all),
+                        onPressed: () =>
+                            context.read<NotificationCubit>().markAllAsRead(),
+                        tooltip: 'Mark all as read',
+                      ),
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () => context
+                          .read<NotificationCubit>()
+                          .fetchNotifications(),
+                      tooltip: 'Refresh',
+                    ),
+                  ],
+                );
+              }
               return const SizedBox.shrink();
             },
           ),
@@ -63,50 +87,104 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
       body: Column(
         children: [
-          // Connection status banner
           _buildConnectionStatusBanner(),
-
-          // Main content
           Expanded(
             child: BlocConsumer<NotificationCubit, NotificationState>(
+              listenWhen: (previous, current) =>
+                  current is NotificationError ||
+                  current is NotificationReceived,
               listener: (context, state) {
                 if (state is NotificationError) {
-                  // Only show SnackBar for transient errors that won't be displayed in the UI
                   if (!state.isRecoverable ||
                       !(state.message.contains('Failed to connect') ||
                           state.message.contains('connection'))) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.message)),
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                      ),
                     );
                   }
+                } else if (state is NotificationReceived) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.notification.content),
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
                 }
               },
+              buildWhen: (previous, current) =>
+                  current is NotificationLoading ||
+                  current is NotificationsLoaded ||
+                  current is NotificationError && !current.isRecoverable,
               builder: (context, state) {
                 if (state is NotificationLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 } else if (state is NotificationsLoaded) {
                   if (state.notifications.isEmpty) {
-                    return const Center(child: Text('No notifications yet'));
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.notifications_none,
+                            size: 64,
+                            color: context.theme.black50,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No notifications yet',
+                            style: AppStyles.medium18(context).copyWith(
+                              color: context.theme.black50,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   }
 
                   return _buildNotificationsList(state.notifications);
                 } else if (state is NotificationError && !state.isRecoverable) {
-                  // Show non-recoverable errors prominently
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline,
-                            size: 48, color: Colors.red),
+                        const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.red,
+                        ),
                         const SizedBox(height: 16),
-                        Text(state.message, textAlign: TextAlign.center),
+                        Text(
+                          state.message,
+                          textAlign: TextAlign.center,
+                          style: AppStyles.medium16(context).copyWith(
+                            color: context.theme.black100,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () =>
+                              context.read<NotificationCubit>().initialize(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: context.theme.blue100_1,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Retry'),
+                        ),
                       ],
                     ),
                   );
                 }
 
-                // Default or loading state
-                return const Center(child: Text('Loading notifications...'));
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               },
             ),
           ),
@@ -145,7 +223,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
           );
         }
 
-        // No banner needed
         return const SizedBox.shrink();
       },
     );
@@ -168,70 +245,104 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => context.read<NotificationCubit>().fetchNotifications(),
-      child: SingleChildScrollView(
+      onRefresh: () async {
+        await context.read<NotificationCubit>().fetchNotifications();
+      },
+      child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            if (today.isNotEmpty) ...[
-              SectionHeader(
-                title: 'Today',
+        children: [
+          if (today.isNotEmpty) ...[
+            SectionHeader(
+              title: 'Today',
+              markTitle: 'Mark all as read',
+              onMarkAsRead: () =>
+                  context.read<NotificationCubit>().markAllAsRead(),
+            ),
+            ...today
+                .map((notification) => _buildNotificationCard(notification)),
+          ],
+          if (earlier.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: SectionHeader(
+                title: 'Earlier',
                 markTitle: 'Mark all as read',
                 onMarkAsRead: () =>
                     context.read<NotificationCubit>().markAllAsRead(),
               ),
-              ...today
-                  .map((notification) => _buildNotificationCard(notification)),
-            ],
-            if (earlier.isNotEmpty) ...[
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: SectionHeader(
-                  title: 'Earlier',
-                  markTitle: 'Mark all as read',
-                  onMarkAsRead: null,
-                ),
-              ),
-              ...earlier
-                  .map((notification) => _buildNotificationCard(notification)),
-            ],
+            ),
+            ...earlier
+                .map((notification) => _buildNotificationCard(notification)),
           ],
-        ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
 
   Widget _buildNotificationCard(service.Notification notification) {
     final timeAgo = _getTimeAgo(notification.createdAt);
-
-    // Determine what action buttons to show based on notification content
+    final targetType = notification.additionalData?['targetType'] as String?;
+    final targetId = notification.additionalData?['targetId'];
     Widget? actionButtons;
     bool hasButtons = false;
 
-    // Example logic for determining button types based on notification content
-    if (notification.content.contains('request to start chat')) {
-      hasButtons = true;
-      actionButtons = Row(
-        children: [
-          AcceptOrFeedbackButton(
-            title: "Accept",
-            onPressed: () => _handleAccept(notification),
-          ),
-          const Gap(8),
-          DenyButton(
-            onPressed: () => _handleDeny(notification),
-          )
-        ],
-      );
-    } else if (notification.content.contains('feedback')) {
-      hasButtons = true;
-      actionButtons = AcceptOrFeedbackButton(
-        title: "Send a Feedback",
-        onPressed: () => _handleFeedback(notification),
-      );
+    switch (targetType) {
+      case 'CustomerReview':
+        hasButtons = true;
+        actionButtons = AcceptOrFeedbackButton(
+          title: "View Review",
+          onPressed: () => _handleViewReview(notification, targetId),
+        );
+        break;
+      case 'Message':
+        hasButtons = true;
+        actionButtons = AcceptOrFeedbackButton(
+          title: "Open Chat",
+          onPressed: () => _handleOpenChat(notification, targetId),
+        );
+        break;
+      case 'Booking':
+        hasButtons = true;
+        actionButtons = Row(
+          children: [
+            AcceptOrFeedbackButton(
+              title: "Accept",
+              onPressed: () => _handleAcceptBooking(notification, targetId),
+            ),
+            const Gap(8),
+            DenyButton(
+              onPressed: () => _handleDenyBooking(notification, targetId),
+            ),
+          ],
+        );
+        break;
+      default:
+        // Handle other notification types or no specific action needed
+        if (notification.content.contains('request to start chat')) {
+          hasButtons = true;
+          actionButtons = Row(
+            children: [
+              AcceptOrFeedbackButton(
+                title: "Accept",
+                onPressed: () => _handleAccept(notification),
+              ),
+              const Gap(8),
+              DenyButton(
+                onPressed: () => _handleDeny(notification),
+              ),
+            ],
+          );
+        } else if (notification.content.contains('feedback')) {
+          hasButtons = true;
+          actionButtons = AcceptOrFeedbackButton(
+            title: "Send Feedback",
+            onPressed: () => _handleFeedback(notification),
+          );
+        }
     }
 
-    // Get avatar image - using placeholder for now but you would use notification.senderAvatar
+    // Get avatar image
     final avatarImage =
         notification.senderAvatar ?? AppAssets.assetsImagesNotificationPic1;
 
@@ -240,6 +351,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         if (!notification.isRead) {
           context.read<NotificationCubit>().markAsRead(notification.id);
         }
+        _handleNotificationTap(notification, targetType, targetId);
       },
       child: Container(
         color: notification.isRead
@@ -247,7 +359,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             : context.theme.blue10_2.withOpacity(0.2),
         child: NotificationCard(
           profileImage: avatarImage,
-          name: notification.senderName ?? 'User',
+          name: notification.senderName ?? 'System',
           actionText: notification.content,
           timeAgo: timeAgo,
           isfoundButton: hasButtons,
@@ -270,21 +382,63 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-  void _handleAccept(service.Notification notification) {
-    // Handle accept action
+  void _handleNotificationTap(
+    service.Notification notification,
+    String? targetType,
+    dynamic targetId,
+  ) {
+    if (targetType == null || targetId == null) return;
+
+    switch (targetType) {
+      case 'CustomerReview':
+        _handleViewReview(notification, targetId);
+        break;
+      case 'Message':
+        _handleOpenChat(notification, targetId);
+        break;
+      case 'Booking':
+        _handleViewBooking(notification, targetId);
+        break;
+      case 'Rental':
+        _handleViewRental(notification, targetId);
+        break;
+    }
+  }
+
+  void _handleViewReview(service.Notification notification, dynamic targetId) {
     context.read<NotificationCubit>().markAsRead(notification.id);
-    // Additional accept logic would go here
+  }
+
+  void _handleOpenChat(service.Notification notification, dynamic targetId) {
+    context.read<NotificationCubit>().markAsRead(notification.id);
+  }
+
+  void _handleViewBooking(service.Notification notification, dynamic targetId) {
+    context.read<NotificationCubit>().markAsRead(notification.id);
+  }
+
+  void _handleViewRental(service.Notification notification, dynamic targetId) {
+    context.read<NotificationCubit>().markAsRead(notification.id);
+  }
+
+  void _handleAcceptBooking(
+      service.Notification notification, dynamic targetId) {
+    context.read<NotificationCubit>().markAsRead(notification.id);
+  }
+
+  void _handleDenyBooking(service.Notification notification, dynamic targetId) {
+    context.read<NotificationCubit>().markAsRead(notification.id);
+  }
+
+  void _handleAccept(service.Notification notification) {
+    context.read<NotificationCubit>().markAsRead(notification.id);
   }
 
   void _handleDeny(service.Notification notification) {
-    // Handle deny action
     context.read<NotificationCubit>().markAsRead(notification.id);
-    // Additional deny logic would go here
   }
 
   void _handleFeedback(service.Notification notification) {
-    // Handle feedback action
     context.read<NotificationCubit>().markAsRead(notification.id);
-    // Additional feedback logic would go here
   }
 }

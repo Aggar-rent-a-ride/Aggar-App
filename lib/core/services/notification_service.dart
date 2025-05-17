@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 import 'package:dio/dio.dart';
 
 class Notification {
@@ -29,36 +29,50 @@ class Notification {
   });
 
   factory Notification.fromJson(Map<String, dynamic> json) {
+    T? getValue<T>(String key, {T? defaultValue}) {
+      return json[key] ??
+          json[key.toLowerCase()] ??
+          json[key.toUpperCase()] ??
+          defaultValue;
+    }
+
     return Notification(
-      id: json['Id'] as int,
-      senderId: json['SenderId'] ?? 0,
-      content: json['Content'] as String,
-      createdAt: DateTime.parse(json['SentAt'] as String),
-      isRead: json['IsSeen'] as bool,
-      senderName: json['SenderName'],
-      senderAvatar: json['SenderAvatar'],
+      id: getValue<int>('id', defaultValue: 0) ?? 0,
+      senderId: getValue<int>('senderId', defaultValue: 0) ?? 0,
+      content: getValue<String>('content', defaultValue: '') ?? '',
+      createdAt: getValue<String>('sentAt') != null
+          ? DateTime.parse(getValue<String>('sentAt')!)
+          : DateTime.now(),
+      isRead: getValue<bool>('isSeen', defaultValue: false) ?? false,
+      senderName: getValue<String>('senderName'),
+      senderAvatar: getValue<String>('senderAvatar'),
       additionalData: {
-        'targetType': json['TargetType'],
+        'targetType': getValue<String>('targetType'),
         'targetId': _extractTargetId(json),
       },
     );
   }
 
   static dynamic _extractTargetId(Map<String, dynamic> json) {
-    final targetType = json['TargetType'] as String?;
+    // Helper function to get value with fallback for different case formats
+    T? getValue<T>(String key) {
+      return json[key] ?? json[key.toLowerCase()] ?? json[key.toUpperCase()];
+    }
+
+    final targetType = getValue<String>('targetType');
     if (targetType == null) return null;
 
     switch (targetType) {
       case 'Message':
-        return json['TargetMessageId'];
+        return getValue<int>('targetMessageId');
       case 'CustomerReview':
-        return json['TargetCustomerReviewId'];
+        return getValue<int>('targetCustomerReviewId');
       case 'RenterReview':
-        return json['TargetRenterReviewId'];
+        return getValue<int>('targetRenterReviewId');
       case 'Booking':
-        return json['TargetBookingId'];
+        return getValue<int>('targetBookingId');
       case 'Rental':
-        return json['TargetRentalId'];
+        return getValue<int>('targetRentalId');
       default:
         return null;
     }
@@ -66,10 +80,14 @@ class Notification {
 }
 
 class NotificationService {
-  final ApiConsumer _apiConsumer;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  static final NotificationService _instance =
+      NotificationService._internal(DioConsumer(dio: Dio()));
+  factory NotificationService() => _instance;
+  NotificationService._internal(this._dioConsumer);
 
-  WebSocketChannel? _channel;
+  final DioConsumer _dioConsumer;
+
+  HubConnection? _hubConnection;
   TokenRefreshCubit? _tokenRefreshCubit;
   bool _isConnected = false;
   int? _userId;
@@ -84,20 +102,16 @@ class NotificationService {
   Stream<int> get onUnreadCountChange => _unreadCountController.stream;
   bool get isConnected => _isConnected;
   int get currentUserId => _userId ?? 0;
-
-  NotificationService({required ApiConsumer apiConsumer})
-      : _apiConsumer = apiConsumer;
-
   void setTokenRefreshCubit(TokenRefreshCubit cubit) {
     _tokenRefreshCubit = cubit;
   }
 
   Future<void> initialize({required int userId}) async {
     _userId = userId;
-    await _connectWebSocket();
+    await _connectToNotificationHub();
   }
 
-  Future<void> _connectWebSocket() async {
+  Future<void> _connectToNotificationHub() async {
     if (_tokenRefreshCubit == null) {
       throw Exception('TokenRefreshCubit must be set before connecting');
     }
@@ -111,40 +125,117 @@ class NotificationService {
       // Close existing connection if any
       await disconnect();
 
-      // Create new websocket connection with auth token
-      final wsUrl =
-          'wss://${EndPoint.baseUrl.replaceAll('https://', '')}${EndPoint.notificationHub}';
-      _channel = WebSocketChannel.connect(
-        Uri.parse('$wsUrl?userId=$_userId&access_token=$token'),
-      );
+      _hubConnection = HubConnectionBuilder()
+          .withUrl(
+              '${EndPoint.baseUrl}${EndPoint.notificationHub}?access_token=$token')
+          .withAutomaticReconnect(
+        retryDelays: [2000, 5000, 10000, 20000, 30000],
+      ).build();
 
-      // Listen to incoming messages
-      _channel!.stream.listen(
-        (message) {
-          final data = jsonDecode(message);
-          if (data['type'] == 'notification') {
-            final notification = Notification.fromJson(data['data']);
-            _notificationController.add(notification);
-          } else if (data['type'] == 'unreadCount') {
-            _unreadCountController.add(data['count']);
-          }
-        },
-        onDone: () {
-          _isConnected = false;
-          _connectionController.add(false);
-        },
-        onError: (error) {
-          _isConnected = false;
-          _connectionController.add(false);
-        },
-      );
+      _registerEventHandlers();
+
+      await _hubConnection!.start();
+
+      if (_hubConnection?.connectionId == null) {
+        throw Exception('Failed to obtain SignalR connection ID');
+      }
 
       _isConnected = true;
       _connectionController.add(true);
+
+      print(
+          'Notification Hub connection established successfully with ID: ${_hubConnection?.connectionId}');
     } catch (e) {
       _isConnected = false;
       _connectionController.add(false);
-      throw Exception('Failed to connect to notification service: $e');
+      print('Error establishing Notification Hub connection: $e');
+      throw Exception('Failed to connect to notification hub: $e');
+    }
+  }
+
+  void _registerEventHandlers() {
+    _hubConnection!.on('ReceiveNotification', _handleReceiveNotification);
+    _hubConnection!.on('UnreadCountUpdate', _handleUnreadCountUpdate);
+
+    _hubConnection!.onreconnecting(({error}) {
+      _isConnected = false;
+      _connectionController.add(false);
+      print('Notification Hub reconnecting: $error');
+    });
+
+    _hubConnection!.onreconnected(({connectionId}) {
+      _isConnected = true;
+      _connectionController.add(true);
+      print('Notification Hub reconnected with ID: $connectionId');
+    });
+
+    _hubConnection!.onclose(({error}) {
+      _isConnected = false;
+      _connectionController.add(false);
+      print('Notification Hub connection closed: $error');
+    });
+  }
+
+  void _handleReceiveNotification(List<Object?>? parameters) {
+    if (parameters == null || parameters.isEmpty) return;
+
+    try {
+      String responseStr = parameters[0].toString();
+      print('Received notification: $responseStr');
+
+      // Handle possible format inconsistencies
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r'(\w+):'),
+        (match) => '"${match.group(1)}":',
+      );
+      responseStr = responseStr.replaceAllMapped(
+        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
+        (match) => ': "${match.group(1)}"',
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      print('Parsed notification data: $responseData');
+
+      // Handle different response formats
+      Map<String, dynamic> notificationData;
+      if (responseData.containsKey('data')) {
+        notificationData = responseData['data'];
+      } else {
+        notificationData = responseData;
+      }
+
+      final notification = Notification.fromJson(notificationData);
+      _notificationController.add(notification);
+    } catch (e) {
+      print('Error handling received notification: $e');
+      _notificationController.addError('Failed to process notification: $e');
+    }
+  }
+
+  void _handleUnreadCountUpdate(List<Object?>? parameters) {
+    if (parameters == null || parameters.isEmpty) return;
+
+    try {
+      final count = int.tryParse(parameters[0].toString()) ?? 0;
+      _unreadCountController.add(count);
+    } catch (e) {
+      print('Error handling unread count update: $e');
+    }
+  }
+
+  Future<void> _invokeHubMethod(
+      String methodName, Map<String, dynamic> args) async {
+    if (!_isConnected || _hubConnection == null) {
+      print('Cannot invoke method: Hub not connected');
+      throw Exception('Notification Hub not connected');
+    }
+
+    try {
+      await _hubConnection!.invoke(methodName, args: [args]);
+      print('Hub method $methodName invoked successfully');
+    } catch (e) {
+      print('Error invoking hub method $methodName: $e');
+      throw Exception('Failed to invoke hub method $methodName: $e');
     }
   }
 
@@ -161,7 +252,7 @@ class NotificationService {
     }
 
     try {
-      final response = await _apiConsumer.get(
+      final response = await _dioConsumer.get(
         '/api/notification',
         queryParameters: {'pageNo': page, 'pageSize': pageSize},
         options: Options(
@@ -172,60 +263,30 @@ class NotificationService {
         ),
       );
 
-      // Handle the response formats properly
       List<dynamic> notificationData = [];
-      
       if (response is Map<String, dynamic>) {
-        // Check for different possible response structures
-        if (response.containsKey('data') && response['data'] is List) {
-          notificationData = response['data'] as List<dynamic>;
-        } else if (response.containsKey('items') && response['items'] is List) {
-          notificationData = response['items'] as List<dynamic>;
-        } else if (response.containsKey('notifications') && response['notifications'] is List) {
-          notificationData = response['notifications'] as List<dynamic>;
-        } else if (response.containsKey('totalPages')) {
-          // This might be pagination info with data
-          if (response.containsKey('data') && response['data'] is List) {
-            notificationData = response['data'] as List<dynamic>;
-          } else {
-            // Extract all keys that contain lists and use the first one
-            for (final key in response.keys) {
-              if (response[key] is List && (response[key] as List).isNotEmpty) {
-                notificationData = response[key] as List<dynamic>;
-                break;
-              }
-            }
-          }
-        } else {
-          // If no known list field, check if any field is a list
-          for (final key in response.keys) {
-            if (response[key] is List && (response[key] as List).isNotEmpty) {
-              notificationData = response[key] as List<dynamic>;
-              break;
-            }
-          }
+        final data = response['data'];
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          notificationData = data['data'] as List<dynamic>;
         }
-      } else if (response is List<dynamic>) {
-        notificationData = response;
       }
 
-      // Convert to notification objects
-      return notificationData.map((json) {
+      // Convert to ntification objects
+      final notifications = notificationData.map((json) {
         if (json is Map<String, dynamic>) {
           return Notification.fromJson(json);
         } else {
           throw Exception('Invalid notification data format');
         }
       }).toList();
+
+      print('Parsed ${notifications.length} notifications');
+      return notifications;
     } catch (e) {
-      // For API errors, return empty list instead of throwing
-      if (e is DioException) {
-        // Status code 204 (No Content) or 404 (Not Found) can indicate empty results
-        if (e.response?.statusCode == 204 || e.response?.statusCode == 404) {
-          return [];
-        }
+      print('Error fetching notifications: $e');
+      if (e is Exception) {
+        return [];
       }
-      // Rethrow for other errors
       throw Exception('Failed to fetch notifications: $e');
     }
   }
@@ -242,45 +303,10 @@ class NotificationService {
     }
 
     try {
-      // First try the specific unread-count endpoint
-      final response = await _apiConsumer.get(
-        '/api/notification/unread-count',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
-
-      // Handle different response formats
-      if (response is Map<String, dynamic>) {
-        if (response.containsKey('count')) {
-          return response['count'] as int? ?? 0;
-        } else if (response.containsKey('unreadCount')) {
-          return response['unreadCount'] as int? ?? 0;
-        }
-        // Look for any integer field as a fallback
-        for (final value in response.values) {
-          if (value is int) {
-            return value;
-          }
-        }
-        return 0;
-      } else if (response is int) {
-        return response;
-      } else if (response is String) {
-        // Parse string response to int
-        try {
-          return int.parse(response.trim());
-        } catch (e) {
-          return 0;
-        }
-      }
-      
-      return 0;
+      final notifications = await getNotifications();
+      return notifications.where((n) => !n.isRead).length;
     } catch (e) {
-      // In case of errors, return 0 as fallback
+      print('Error getting unread count: $e');
       return 0;
     }
   }
@@ -297,7 +323,7 @@ class NotificationService {
     }
 
     try {
-      await _apiConsumer.put(
+      await _dioConsumer.put(
         '/api/notification/ack',
         data: [notificationId],
         options: Options(
@@ -335,7 +361,7 @@ class NotificationService {
     }
 
     try {
-      await _apiConsumer.put(
+      await _dioConsumer.put(
         '/api/notification/ack',
         data: unreadIds,
         options: Options(
@@ -356,46 +382,59 @@ class NotificationService {
     required int receiverId,
     required String content,
   }) async {
-    if (_tokenRefreshCubit == null) {
-      throw Exception(
-          'TokenRefreshCubit must be set before sending notification');
+    if (_isConnected && _hubConnection != null) {
+      await _invokeHubMethod('SendNotification', {
+        'clientMessageId': clientMessageId,
+        'receiverId': receiverId,
+        'content': content,
+      });
+    } else {
+      if (_tokenRefreshCubit == null) {
+        throw Exception(
+            'TokenRefreshCubit must be set before sending notification');
+      }
+
+      final token = await _tokenRefreshCubit!.getAccessToken();
+      if (token == null) {
+        throw Exception('Failed to get access token');
+      }
+
+      final data = {
+        'clientMessageId': clientMessageId,
+        'receiverId': receiverId,
+        'content': content,
+      };
+
+      await _dioConsumer.post(
+        '/api/notification',
+        data: data,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
     }
-
-    final token = await _tokenRefreshCubit!.getAccessToken();
-    if (token == null) {
-      throw Exception('Failed to get access token');
-    }
-
-    final data = {
-      'clientMessageId': clientMessageId,
-      'receiverId': receiverId,
-      'content': content,
-    };
-
-    await _apiConsumer.post(
-      '/api/notification',
-      data: data,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      ),
-    );
   }
 
   Future<void> reconnect() async {
     if (_userId == null) {
       throw Exception('Must initialize with userId before reconnecting');
     }
-    await _connectWebSocket();
+    await _connectToNotificationHub();
   }
 
   Future<void> disconnect() async {
-    await _channel?.sink.close();
-    _isConnected = false;
-    _connectionController.add(false);
+    if (_hubConnection != null) {
+      await _hubConnection!.stop();
+      _isConnected = false;
+      _connectionController.add(false);
+      print('Notification Hub connection closed');
+    }
   }
+
+  String? get connectionId => _hubConnection?.connectionId;
 
   void dispose() {
     disconnect();
