@@ -18,8 +18,8 @@ class MainScreen extends StatelessWidget {
       backgroundColor: context.theme.white100_1,
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<ReportCubit>().filterReports(
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6IjhmNjAyMDY0LTcyOTgtNDQ3YS04NmY0LTQ1NjkzODQyZWU5NyIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTYzMjEwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.aj6ODr_t88C18bDjMPoSvukX7UtWoS5H3lLW_6_EHpQ");
+          context.read<ReportCubit>().fetchReportTotals(
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImY4NTc5OGM2LTlhNzQtNGYyMy05MDEzLTJkYTk4M2MzMTVhOCIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTY2NzYxLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.uJdb9g1qOoZMFG4KV1cm6UhZLL3DCF1LplqC29FDZr0");
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

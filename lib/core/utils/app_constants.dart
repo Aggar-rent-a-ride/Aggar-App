@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class AppConstants {
   static Color myBlack100_1 = const Color(0xff000000);
   static Color myWhite100_1 = const Color(0xffffffff);
@@ -10,4 +12,13 @@ class AppConstants {
   static Color myBlue100_5 = const Color(0xff3D5685);
   static Color myBlue100_6 = const Color(0xff143062);
   static Color myBlue100_7 = const Color(0xff253A6F);
+  static final List<Color> myBlue100Colors = [
+    myBlue100_1,
+    myBlue100_2,
+    myBlue100_3,
+    myBlue100_4,
+    myBlue100_5,
+    myBlue100_6,
+    myBlue100_7
+  ];
 }

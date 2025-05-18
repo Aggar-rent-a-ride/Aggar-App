@@ -21,6 +21,15 @@ class ReportLoaded extends ReportState {
   List<Object?> get props => [reports];
 }
 
+class ReportTotalsLoaded extends ReportState {
+  final Map<String, int> totalReportsByType;
+
+  const ReportTotalsLoaded({required this.totalReportsByType});
+
+  @override
+  List<Object?> get props => [totalReportsByType];
+}
+
 class ReportError extends ReportState {
   final String message;
 

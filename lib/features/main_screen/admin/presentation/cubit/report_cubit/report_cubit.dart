@@ -10,15 +10,27 @@ class ReportCubit extends Cubit<ReportState> {
   ReportCubit() : super(ReportInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
 
-  Future<void> filterReports(String accessToken) async {
+  // List of report types
+  final List<String> reportTypes = [
+    'Message',
+    'CustomerReview',
+    'RenterReview',
+    'AppUser',
+    'Vehicle',
+    'Booking',
+    'Rental'
+  ];
+
+  Future<void> filterReportsTargetType(
+      String accessToken, String targetType) async {
     try {
       emit(ReportLoading());
       final response = await dioConsumer.get(
         EndPoint.filterReport,
         data: {
           "pageNo": 1,
-          "pageSize": 10,
-          "targetType": "Message",
+          "pageSize": 1,
+          "targetType": targetType,
           "status": null,
           "date": null,
           "sortingDirection": null
@@ -30,9 +42,38 @@ class ReportCubit extends Cubit<ReportState> {
         ),
       );
       final reports = ListReportModel.fromJson(response);
-      print(reports.data[0]);
-      print("kkkkk");
       emit(ReportLoaded(reports: reports));
+    } catch (error) {
+      String errorMessage = handleError(error);
+      emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
+    }
+  }
+
+  Future<void> fetchReportTotals(String accessToken) async {
+    try {
+      emit(ReportLoading());
+      final Map<String, int> totalReportsByType = {};
+      for (String type in reportTypes) {
+        final response = await dioConsumer.get(
+          EndPoint.filterReport,
+          data: {
+            "pageNo": 1,
+            "pageSize": 1,
+            "targetType": type,
+            "status": null,
+            "date": null,
+            "sortingDirection": null
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+            },
+          ),
+        );
+        final reports = ListReportModel.fromJson(response);
+        totalReportsByType[type] = reports.totalPages ?? 0;
+      }
+      emit(ReportTotalsLoaded(totalReportsByType: totalReportsByType));
     } catch (error) {
       String errorMessage = handleError(error);
       emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
