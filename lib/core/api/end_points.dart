@@ -52,6 +52,10 @@ class EndPoint {
   static String getReportById = "$baseUrl/api/report/";
   static String updateReportStatus = "$baseUrl/api/report/status";
   static String filterReport = "$baseUrl/api/report/filter";
+
+  //User Endpoint
+  static String getTotalUser = "$baseUrl/api/user/all";
+  static String getTotalUserCount = "$baseUrl/api/user/count-all";
 }
 
 class ApiKey {

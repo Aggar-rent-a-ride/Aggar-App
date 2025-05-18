@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_statistics_card.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_type_card.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/user_statistics_card.dart';
@@ -18,8 +19,17 @@ class MainScreen extends StatelessWidget {
       backgroundColor: context.theme.white100_1,
       body: RefreshIndicator(
         onRefresh: () async {
+          context.read<ReportCubit>().fetchReportById(
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImE5MzdkNDQ5LWRmMDgtNDk0NC04ZTNlLTgwNzMxY2FiZDE2YSIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTc1MzAzLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.hYSirBOGIcp865bPjsyG9DnQjDShRupyNr8F8mFQLoA",
+              54);
+          context.read<ReportCubit>().updateReportStatus(
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImE5MzdkNDQ5LWRmMDgtNDk0NC04ZTNlLTgwNzMxY2FiZDE2YSIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTc1MzAzLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.hYSirBOGIcp865bPjsyG9DnQjDShRupyNr8F8mFQLoA",
+              "Rejected",
+              [54]);
           context.read<ReportCubit>().fetchReportTotals(
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImY4NTc5OGM2LTlhNzQtNGYyMy05MDEzLTJkYTk4M2MzMTVhOCIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTY2NzYxLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.uJdb9g1qOoZMFG4KV1cm6UhZLL3DCF1LplqC29FDZr0");
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImE5MzdkNDQ5LWRmMDgtNDk0NC04ZTNlLTgwNzMxY2FiZDE2YSIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTc1MzAzLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.hYSirBOGIcp865bPjsyG9DnQjDShRupyNr8F8mFQLoA");
+          context.read<UserCubit>().fetchUserTotals(
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImE5MzdkNDQ5LWRmMDgtNDk0NC04ZTNlLTgwNzMxY2FiZDE2YSIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTc1MzAzLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.hYSirBOGIcp865bPjsyG9DnQjDShRupyNr8F8mFQLoA");
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -55,7 +65,6 @@ class MainScreen extends StatelessWidget {
                             color: context.theme.blue100_1,
                           ),
                         ),
-                        // here is a filter
                       ],
                     ),
                     const ReportTypeCard()
