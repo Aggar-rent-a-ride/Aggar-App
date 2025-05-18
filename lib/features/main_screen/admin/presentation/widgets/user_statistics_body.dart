@@ -6,8 +6,8 @@ import 'package:aggar/features/main_screen/admin/presentation/widgets/user_stati
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class MainScreenBody extends StatelessWidget {
-  const MainScreenBody({
+class UserStatisticsBody extends StatelessWidget {
+  const UserStatisticsBody({
     super.key,
   });
 
@@ -27,17 +27,17 @@ class MainScreenBody extends StatelessWidget {
                   spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PieChartItem(
+                    ChartItem(
                       title: "Admin",
                       color: const Color(0xFFC6C7F4),
                       onTap: () => UserPieChart.updateIndex(2),
                     ),
-                    PieChartItem(
+                    ChartItem(
                       title: "Renter",
                       color: const Color(0xFF8E90E8),
                       onTap: () => UserPieChart.updateIndex(1),
                     ),
-                    PieChartItem(
+                    ChartItem(
                       title: "Customer",
                       color: const Color(0xFF3A3F9B),
                       onTap: () => UserPieChart.updateIndex(0),
