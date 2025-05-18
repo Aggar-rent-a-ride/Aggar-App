@@ -14,6 +14,7 @@ import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cu
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
@@ -141,6 +142,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => RealTimeChatCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ReportCubit(),
         ),
         BlocProvider(
           create: (context) => SearchCubit(),
