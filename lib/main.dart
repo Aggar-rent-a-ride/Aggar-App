@@ -35,6 +35,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'features/main_screen/admin/presentation/views/main_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   CacheHelper().init();
@@ -192,7 +194,7 @@ class MyApp extends StatelessWidget {
                     GlobalCupertinoLocalizations.delegate,
                   ],
                   //builder: DevicePreview.appBuilder,
-                  home: const SplashView());
+                  home: const MainScreen());
             },
           );
         },

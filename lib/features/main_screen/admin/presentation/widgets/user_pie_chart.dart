@@ -1,4 +1,4 @@
-import 'package:aggar/features/main_screen/admin/presentation/views/main_screen.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/show_user_sections.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
