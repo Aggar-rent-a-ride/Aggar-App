@@ -35,6 +35,9 @@ class EndPoint {
   static String uploadMethod = "UploadAsync";
   static String finishUploadMethod = "FinishUploadingAsync";
 
+  // Notification endpoint
+  static String notificationHub = "/Notification";
+
   // Review endpoints
   static String createReview = "$baseUrl/api/review/";
   static String getUserReviews = "$baseUrl/api/review/user-reviews";

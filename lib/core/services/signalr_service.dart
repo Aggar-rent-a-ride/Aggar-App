@@ -1,130 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:aggar/core/services/signalr_service_component.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:crypto/crypto.dart';
 import 'package:aggar/core/api/end_points.dart';
 
-/// Response model for API calls
-class ApiResponse<T> {
-  final T? data;
-  final int statusCode;
-  final String message;
-
-  ApiResponse({
-    this.data,
-    required this.statusCode,
-    required this.message,
-  });
-
-  factory ApiResponse.fromJson(
-      Map<String, dynamic> json, T Function(Map<String, dynamic>)? fromJson) {
-    return ApiResponse(
-      data: json['Data'] != null && fromJson != null
-          ? fromJson(json['Data'])
-          : null,
-      statusCode: json['StatusCode'] ?? 0,
-      message: json['Message'] ?? '',
-    );
-  }
-}
-
-/// Message model
-class ChatMessage {
-  final int id;
-  final String clientMessageId;
-  final int senderId;
-  final int receiverId;
-  final DateTime sentAt;
-  final bool seen;
-  final String? content;
-  final String? filePath;
-  final bool isMe;
-
-  ChatMessage({
-    required this.id,
-    required this.clientMessageId,
-    required this.senderId,
-    required this.receiverId,
-    required this.sentAt,
-    required this.seen,
-    this.content,
-    this.filePath,
-    required this.isMe,
-  });
-
-  factory ChatMessage.fromJson(Map<String, dynamic> json,
-      {required int currentUserId}) {
-    return ChatMessage(
-      id: json['Id'] ?? 0,
-      clientMessageId: json['ClientMessageId'] ?? '',
-      senderId: json['SenderId'] ?? 0,
-      receiverId: json['ReceiverId'] ?? 0,
-      sentAt: json['SentAt'] != null
-          ? DateTime.parse(json['SentAt'])
-          : DateTime.now(),
-      seen: json['Seen'] ?? false,
-      content: json['Content'],
-      filePath: json['FilePath'],
-      isMe: json['SenderId'] == currentUserId,
-    );
-  }
-}
-
-/// Upload initiation response
-class UploadInitiationResponse {
-  final String filePath;
-  final String clientMessageId;
-
-  UploadInitiationResponse({
-    required this.filePath,
-    required this.clientMessageId,
-  });
-
-  factory UploadInitiationResponse.fromJson(Map<String, dynamic> json) {
-    return UploadInitiationResponse(
-      filePath: json['FilePath'] ?? '',
-      clientMessageId: json['ClientMessageId'] ?? '',
-    );
-  }
-}
-
-/// Upload progress model
-class UploadProgress {
-  final String clientMessageId;
-  final int bytesUploaded;
-  final double progressPercentage;
-
-  UploadProgress({
-    required this.clientMessageId,
-    required this.bytesUploaded,
-    required this.progressPercentage,
-  });
-
-  factory UploadProgress.fromJson(Map<String, dynamic> json,
-      {int totalBytes = 1}) {
-    final bytesUploaded = json['Progress'] ?? 0;
-    return UploadProgress(
-      clientMessageId: json['ClientMessageId'] ?? '',
-      bytesUploaded: bytesUploaded,
-      progressPercentage:
-          totalBytes > 0 ? (bytesUploaded / totalBytes) * 100 : 0,
-    );
-  }
-}
-
-/// User connection status
-class UserConnectionStatus {
-  final int userId;
-  final bool isConnected;
-
-  UserConnectionStatus({
-    required this.userId,
-    required this.isConnected,
-  });
-}
-
-/// SignalR service for chat functionality
 class SignalRService {
   static final SignalRService _instance = SignalRService._internal();
   factory SignalRService() => _instance;
@@ -139,7 +20,6 @@ class SignalRService {
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
-  // Stream controllers
   final _messageController = StreamController<ChatMessage>.broadcast();
   final _connectionStatusController = StreamController<bool>.broadcast();
   final _userConnectionController =
@@ -149,7 +29,6 @@ class SignalRService {
   final _uploadProgressController =
       StreamController<UploadProgress>.broadcast();
 
-  // Stream getters
   Stream<ChatMessage> get onMessageReceived => _messageController.stream;
   Stream<bool> get onConnectionChange => _connectionStatusController.stream;
   Stream<UserConnectionStatus> get onUserConnectionChange =>
@@ -159,11 +38,9 @@ class SignalRService {
   Stream<UploadProgress> get onUploadProgress =>
       _uploadProgressController.stream;
 
-  // Public getters
   bool get isConnected => _isConnected;
   int get currentUserId => _currentUserId;
 
-  /// Initialize SignalR connection
   Future<void> initialize({int? userId}) async {
     if (_isConnected && _hubConnection?.connectionId != null) {
       print(
@@ -176,7 +53,6 @@ class SignalRService {
         _currentUserId = userId;
       }
 
-      // Get access token from secure storage
       final accessToken = await _secureStorage.read(key: 'accessToken');
       if (accessToken == null || accessToken.isEmpty) {
         throw Exception('Access token not found. Please login first.');
@@ -197,7 +73,7 @@ class SignalRService {
           10000,
           20000,
           30000
-        ], // Configure retry intervals in milliseconds
+        ], 
       ).build();
 
       _registerEventHandlers();
@@ -221,7 +97,6 @@ class SignalRService {
     }
   }
 
-  /// Register all event handlers
   void _registerEventHandlers() {
     _hubConnection!.on('ReceiveMessage', _handleReceiveMessage);
     _hubConnection!.on('UserConnected', _handleUserConnected);
@@ -229,7 +104,6 @@ class SignalRService {
     _hubConnection!.on('UploadInitiationResponse', _handleUploadInitiation);
     _hubConnection!.on('ReceiveUploadingProgress', _handleUploadProgress);
 
-    // Connection state handlers
     _hubConnection!.onreconnecting(({error}) {
       _isConnected = false;
       _connectionStatusController.add(false);
@@ -249,7 +123,6 @@ class SignalRService {
     });
   }
 
-  /// Close the SignalR connection
   Future<void> disconnect() async {
     if (!_isConnected || _hubConnection == null) return;
 
@@ -263,7 +136,6 @@ class SignalRService {
     }
   }
 
-  /// Invokes a hub method with error handling
   Future<T?> _invokeMethod<T>(String methodName, Map<String, dynamic> args,
       {T Function(dynamic)? resultConverter}) async {
     if (!_isConnected || _hubConnection == null) {
@@ -283,7 +155,6 @@ class SignalRService {
     }
   }
 
-  /// Send a text message
   Future<void> sendMessage(
       {required String clientMessageId,
       required int receiverId,
@@ -350,7 +221,6 @@ class SignalRService {
 
       print('Invoking InitiateUploadingAsync with args: $args');
 
-      // Create a completer to handle the async response
       final completer = Completer<UploadInitiationResponse>();
 
       StreamSubscription? subscription;
@@ -406,7 +276,6 @@ class SignalRService {
     }
   }
 
-  /// Upload file chunks
   Future<void> uploadFileChunk({
     required String clientMessageId,
     required int receiverId,
@@ -446,7 +315,6 @@ class SignalRService {
     }
   }
 
-  /// Complete file upload process
   Future<ChatMessage> finishFileUpload({
     required String clientMessageId,
     required int receiverId,
@@ -526,7 +394,6 @@ class SignalRService {
     }
   }
 
-  /// Handle received messages
   void _handleReceiveMessage(List<Object?>? parameters) {
     if (parameters == null || parameters.isEmpty) return;
 
@@ -574,7 +441,6 @@ class SignalRService {
     }
   }
 
-  /// Handle user connected event
   void _handleUserConnected(List<Object?>? parameters) {
     if (parameters == null || parameters.isEmpty) return;
 
@@ -590,7 +456,6 @@ class SignalRService {
     }
   }
 
-  /// Handle user disconnected event
   void _handleUserDisconnected(List<Object?>? parameters) {
     if (parameters == null || parameters.isEmpty) return;
 
@@ -606,7 +471,6 @@ class SignalRService {
     }
   }
 
-  /// Handle upload initiation response
   void _handleUploadInitiation(List<Object?>? parameters) {
     if (parameters == null || parameters.isEmpty) return;
 
@@ -686,7 +550,6 @@ class SignalRService {
     }
   }
 
-  /// Handle upload progress updates
   void _handleUploadProgress(List<Object?>? parameters) {
     if (parameters == null || parameters.isEmpty) return;
 
@@ -738,10 +601,8 @@ class SignalRService {
     }
   }
 
-  /// Get current connection ID
   String? get connectionId => _hubConnection?.connectionId;
 
-  /// Dispose method to clean up resources
   void dispose() {
     disconnect();
     _messageController.close();

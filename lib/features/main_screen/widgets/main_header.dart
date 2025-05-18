@@ -3,6 +3,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/widgets/main_screen_location_icon_and_location_text.dart';
 import 'package:aggar/features/main_screen/widgets/main_screen_search_field_with_filter_icon.dart';
 import 'package:aggar/features/main_screen/widgets/notification_icon_button.dart';
+import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -28,7 +29,13 @@ class MainHeader extends StatelessWidget {
                 const MainScreenLocationIconAndLocationText(),
               ],
             ),
-            const NotificationIconButton(),
+            NotificationIconButton(
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationScreen(),
+                  )),
+            ),
           ],
         ),
         const Gap(20),

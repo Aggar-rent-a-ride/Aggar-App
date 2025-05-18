@@ -67,8 +67,14 @@ class SplashCubit extends Cubit<SplashState> {
 
       Widget destination;
       if (isAuthenticated) {
-        //TODO: condithin is renter or customer
-        destination = const RenterBottomNavigationBarView();
+        final userType = await _secureStorage.read(key: 'userType');
+        if (userType == "Customer") {
+          destination = const CustomerBottomNavigationBarViews();
+        } else if (userType == "Renter") {
+          destination = const RenterBottomNavigationBarView();
+        } else {
+          destination = const SignInView();
+        }
       } else if (seenOnboarding) {
         destination = const SignInView();
       } else {
@@ -77,6 +83,7 @@ class SplashCubit extends Cubit<SplashState> {
 
       emit(state.copyWith(navigateTo: destination));
     } catch (e) {
+      print('Error in navigation logic: $e');
       emit(state.copyWith(navigateTo: const OnboardingView()));
     }
   }
@@ -118,6 +125,15 @@ class AuthService {
     } catch (e) {
       print('Error checking authentication status: $e');
       return false;
+    }
+  }
+
+  Future<String?> getUserType() async {
+    try {
+      return await _secureStorage.read(key: 'userType');
+    } catch (e) {
+      print('Error retrieving userType: $e');
+      return null;
     }
   }
 

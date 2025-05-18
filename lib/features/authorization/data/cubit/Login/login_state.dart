@@ -16,16 +16,19 @@ class LoginSuccess extends LoginState {
   final String refreshToken;
   final String username;
   final String? userId;
+  final String? userType;
 
   const LoginSuccess({
     required this.accessToken,
     required this.refreshToken,
     required this.username,
     this.userId,
+    this.userType,
   });
 
   @override
-  List<Object?> get props => [accessToken, refreshToken, username, userId];
+  List<Object?> get props =>
+      [accessToken, refreshToken, username, userId, userType];
 }
 
 class LoginFailure extends LoginState {

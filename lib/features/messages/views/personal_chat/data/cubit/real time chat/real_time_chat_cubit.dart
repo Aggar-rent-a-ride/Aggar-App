@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/services/signalr_service.dart';
+import 'package:aggar/core/services/signalr_service_component.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:bloc/bloc.dart';
