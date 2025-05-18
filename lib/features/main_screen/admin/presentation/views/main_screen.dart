@@ -1,13 +1,12 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/line_colored.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_statistics_card.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/report_status_container.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_type_card.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/reported_by_section_with_reported_date.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/user_statistics_card.dart';
 import 'package:aggar/features/main_screen/widgets/main_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class MainScreen extends StatelessWidget {
@@ -18,7 +17,10 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.theme.white100_1,
       body: RefreshIndicator(
-        onRefresh: () async {},
+        onRefresh: () async {
+          context.read<ReportCubit>().filterReports(
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6IjhmNjAyMDY0LTcyOTgtNDQ3YS04NmY0LTQ1NjkzODQyZWU5NyIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NTYzMjEwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.aj6ODr_t88C18bDjMPoSvukX7UtWoS5H3lLW_6_EHpQ");
+        },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(

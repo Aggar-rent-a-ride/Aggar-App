@@ -46,6 +46,12 @@ class EndPoint {
 
   //Rental Endpoint
   static String rentalHistory = "/api/rental/history";
+
+  //Report Endpoint
+  static String createReport = "$baseUrl/api/report/";
+  static String getReportById = "$baseUrl/api/report/";
+  static String updateReportStatus = "$baseUrl/api/report/status";
+  static String filterReport = "$baseUrl/api/report/filter";
 }
 
 class ApiKey {
@@ -171,4 +177,58 @@ class ApiKey {
   static String getVehicleIsFavourite = "isFavourite";
   static String getVehicleMainImagePath = "mainImagePath";
   static String getVehicleTransmission = "transmission";
+
+  ///////////////GetFilterReports////////////////////////
+  static String getFilterReportId = "id";
+  static String getFilterReportDescrption = "description";
+  static String getFilterReportCreatedAt = "createdAt";
+  static String getFilterReportStatus = "status";
+  static String getFilterReportReporter = "reporter";
+  static String getFilterReportReporterId = "id";
+  static String getFilterReportReporterName = "name";
+  static String getFilterReportReporterPfp = "imagePath";
+  static String getFilterReportTargetType = "targetType";
+  //////////////////////////////////////////////////////
+  static String getFilterReportTargetAppUser = "targetAppUser";
+  static String getFilterReportTargetAppUserId = "id";
+  static String getFilterReportTargetAppUserName = "name";
+  static String getFilterReportTargetAppUserPfp = "imagePath";
+  //////////////////////////////////////////////////////
+  static String getFilterReportTargetRenterReview = "targetRenterReview";
+  static String getFilterReportTargetRenterReviewId = "id";
+  static String getFilterReportTargetRenterReviewRentalId = "rentalId";
+  static String getFilterReportTargetRenterReviewCreatedAt = "createdAt";
+  static String getFilterReportTargetRenterReviewBehavior = "behavior";
+  static String getFilterReportTargetRenterReviewPunctuality = "punctuality";
+  static String getFilterReportTargetRenterReviewComments = "comments";
+  static String getFilterReportTargetRenterReviewCare = "care";
+  //////////////////////////////////////////////////////
+  static String getFilterReportTargetCustomerReview = "targetCustomerReview";
+  static String getFilterReportTargetCustomerReviewId = "id";
+  static String getFilterReportTargetCustomerReviewRentalId = "rentalId";
+  static String getFilterReportTargetCustomerReviewCreatedAt = "createdAt";
+  static String getFilterReportTargetCustomerReviewBehavior = "behavior";
+  static String getFilterReportTargetCustomerReviewPunctuality = "punctuality";
+  static String getFilterReportTargetCustomerReviewComments = "comments";
+  static String getFilterReportTargetCustomerReviewCare = "care";
+  //////////////////////////////////////////////////////
+  static String getFilterReportTargetMessage = "targetFileMessage";
+  static String getFilterReportTargetMessageFilePath = "filePath";
+  static String getFilterReportTargetMessageContent = "content";
+  static String getFilterReportTargetMessageId = "id";
+  static String getFilterReportTargetMessageSenderId = "senderId";
+  static String getFilterReportTargetMessageReceiverId = "receiverId";
+  static String getFilterReportTargetMessageSentAt = "sentAt";
+  static String getFilterReportTargetMessageIsSeen = "isSeen";
+  //////////////////////////////////////////////////////
+  static String getFilterReportTargetVehicle = "targetVehicle";
+  static String getFilterReportTargetVehicleId = "id";
+  static String getFilterReportTargetVehicleDistance = "distance";
+  static String getFilterReportTargetVehicleModel = "model";
+  static String getFilterReportTargetVehicleYear = "year";
+  static String getFilterReportTargetVehiclePricePerDay = "pricePerDay";
+  static String getFilterReportTargetVehicleIsFavourite = "isFavourite";
+  static String getFilterReportTargetVehicleTransmission = "transmission";
+  static String getFilterReportTargetVehicleRate = "rate";
+  static String getFilterReportTargetVehicleMainImagePath = "mainImagePath";
 }
