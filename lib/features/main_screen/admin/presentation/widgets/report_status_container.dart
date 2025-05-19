@@ -1,12 +1,16 @@
-import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class ReportStatusContainer extends StatelessWidget {
   const ReportStatusContainer({
     super.key,
+    this.containerColor,
+    this.textColor,
+    required this.statusText,
   });
-
+  final Color? containerColor;
+  final Color? textColor;
+  final String statusText;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +19,7 @@ class ReportStatusContainer extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: context.theme.yellow10_1,
+        color: containerColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(
@@ -26,9 +30,9 @@ class ReportStatusContainer extends StatelessWidget {
         ],
       ),
       child: Text(
-        "Pending",
+        statusText,
         style: AppStyles.medium12(context).copyWith(
-          color: context.theme.yellow100_1,
+          color: textColor,
         ),
       ),
     );

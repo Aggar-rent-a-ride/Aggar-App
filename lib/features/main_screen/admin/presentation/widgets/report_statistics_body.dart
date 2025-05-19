@@ -35,7 +35,7 @@ class _ReportStatisticsBodyState extends State<ReportStatisticsBody> {
     return BlocBuilder<ReportCubit, ReportState>(
       builder: (context, state) {
         Map<String, int> totalReportsByType = {};
-        if (state is ReportTotalsLoaded) {
+        if (state is ReportDataLoaded) {
           totalReportsByType = state.totalReportsByType;
         }
         final reportTypes = [

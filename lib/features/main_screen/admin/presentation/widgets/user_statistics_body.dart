@@ -67,9 +67,9 @@ class UserStatisticsBody extends StatelessWidget {
                     ),
                     const Gap(10),
                     Text(
-                      "total users: $totalUsers",
+                      "Total Users: $totalUsers",
                       style: AppStyles.medium12(context).copyWith(
-                        color: context.theme.black25,
+                        color: context.theme.black100,
                       ),
                     ),
                   ],

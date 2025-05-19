@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/vehicle_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -22,25 +23,8 @@ class PopularVehiclesSection extends StatelessWidget {
                 color: context.theme.blue100_5,
               ),
             ),
-            TextButton(
-              onPressed: () {},
-              child: Row(
-                children: [
-                  Text(
-                    'see all',
-                    style: AppStyles.medium15(context).copyWith(
-                      color: context.theme.blue100_2,
-                    ),
-                  ),
-                  const Gap(5),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: context.theme.blue100_2,
-                    size: 12,
-                  ),
-                ],
-              ),
-            ),
+            const Spacer(),
+            const SeeMoreButton(),
           ],
         ),
         const Gap(5),

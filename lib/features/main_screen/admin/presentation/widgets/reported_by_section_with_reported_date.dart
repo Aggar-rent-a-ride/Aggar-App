@@ -6,17 +6,20 @@ import 'package:flutter/material.dart';
 class ReportedBySectionWithReportedDate extends StatelessWidget {
   const ReportedBySectionWithReportedDate({
     super.key,
+    required this.date,
+    required this.reportedBy,
   });
-
+  final String date;
+  final String reportedBy;
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        const ReportedBySection(),
+        ReportedBySection(reportedBy: reportedBy),
         const Spacer(),
         Text(
-          "2025-05-02",
+          date,
           style: AppStyles.bold12(context).copyWith(
             color: context.theme.black100,
           ),

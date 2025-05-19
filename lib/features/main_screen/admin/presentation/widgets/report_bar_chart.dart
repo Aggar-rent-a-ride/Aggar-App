@@ -24,7 +24,7 @@ class ReportBarChart extends StatelessWidget {
     return BlocBuilder<ReportCubit, ReportState>(builder: (context, state) {
       Map<String, int> totalReportsByType = {};
       double maxY = 10;
-      if (state is ReportTotalsLoaded) {
+      if (state is ReportDataLoaded) {
         totalReportsByType = state.totalReportsByType;
         if (totalReportsByType.isNotEmpty) {
           maxY = totalReportsByType.values
@@ -56,7 +56,7 @@ class ReportBarChart extends StatelessWidget {
         );
       }).toList();
       return SizedBox(
-        height: 170,
+        height: 130,
         width: double.infinity,
         child: BarChart(
           BarChartData(
