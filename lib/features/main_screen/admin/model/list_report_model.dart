@@ -14,23 +14,23 @@ class ListReportModel {
   });
 
   factory ListReportModel.fromJson(Map<String, dynamic> json) {
-    List<ReportModel> vehicles = [];
+    List<ReportModel> reports = [];
     if (json.containsKey('data') && json['data'] is Map<String, dynamic>) {
       var nestedData = json['data'] as Map<String, dynamic>;
       if (nestedData.containsKey('data') && nestedData['data'] is List) {
-        vehicles = (nestedData['data'] as List)
+        reports = (nestedData['data'] as List)
             .map((vehicleJson) =>
                 ReportModel.fromJson(vehicleJson as Map<String, dynamic>))
             .toList();
       }
     } else if (json.containsKey('data') && json['data'] is List) {
-      vehicles = (json['data'] as List)
+      reports = (json['data'] as List)
           .map((vehicleJson) =>
               ReportModel.fromJson(vehicleJson as Map<String, dynamic>))
           .toList();
     }
     return ListReportModel(
-      data: vehicles,
+      data: reports,
       totalPages: json['data']?['totalPages'] as int?,
       pageNumber: json['data']?['pageNumber'] as int?,
       pageSize: json['data']?['pageSize'] as int?,

@@ -7,11 +7,24 @@ import 'package:gap/gap.dart';
 class ReportTypeCardContent extends StatelessWidget {
   const ReportTypeCardContent({
     super.key,
+    required this.reportType,
+    required this.reportDescription,
+    this.containerColor,
+    this.textColor,
+    required this.statusText,
+    required this.date,
+    required this.reportedBy,
   });
-
+  final String reportType;
+  final String reportDescription;
+  final Color? containerColor;
+  final Color? textColor;
+  final String statusText;
+  final String date;
+  final String reportedBy;
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -21,17 +34,27 @@ class ReportTypeCardContent extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: ReportTypeWithDescreption(),
+                  child: ReportTypeWithDescreption(
+                    reportDescerption: reportDescription,
+                    reportType: reportType,
+                  ),
                 ),
-                Spacer(
+                const Spacer(
                   flex: 1,
                 ),
-                ReportStatusContainer(),
+                ReportStatusContainer(
+                  statusText: statusText,
+                  containerColor: containerColor,
+                  textColor: textColor,
+                ),
               ],
             ),
           ),
-          Gap(12),
-          ReportedBySectionWithReportedDate()
+          const Gap(12),
+          ReportedBySectionWithReportedDate(
+            date: date,
+            reportedBy: reportedBy,
+          )
         ],
       ),
     );

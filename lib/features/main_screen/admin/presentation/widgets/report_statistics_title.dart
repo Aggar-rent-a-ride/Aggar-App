@@ -15,7 +15,7 @@ class ReportStatisticsTitle extends StatelessWidget {
     return BlocBuilder<ReportCubit, ReportState>(
       builder: (context, state) {
         int totalReports = 0;
-        if (state is ReportTotalsLoaded) {
+        if (state is ReportDataLoaded) {
           totalReports = state.totalReportsByType.values
               .fold(0, (sum, count) => sum + (count));
         }

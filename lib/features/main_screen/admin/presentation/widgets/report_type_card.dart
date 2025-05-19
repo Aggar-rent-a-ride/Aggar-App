@@ -7,8 +7,21 @@ import 'package:gap/gap.dart';
 class ReportTypeCard extends StatelessWidget {
   const ReportTypeCard({
     super.key,
+    required this.reportType,
+    required this.reportDescription,
+    this.containerColor,
+    this.textColor,
+    required this.statusText,
+    required this.date,
+    required this.reportedBy,
   });
-
+  final String reportType;
+  final String reportDescription;
+  final Color? containerColor;
+  final Color? textColor;
+  final String statusText;
+  final String date;
+  final String reportedBy;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,13 +38,23 @@ class ReportTypeCard extends StatelessWidget {
           ),
         ],
       ),
-      child: const IntrinsicHeight(
+      child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            LineColored(),
-            Gap(10),
-            ReportTypeCardContent(),
+            LineColored(
+              color: textColor,
+            ),
+            const Gap(10),
+            ReportTypeCardContent(
+              date: date,
+              reportDescription: reportDescription,
+              reportType: reportType,
+              reportedBy: reportedBy,
+              statusText: statusText,
+              containerColor: containerColor,
+              textColor: textColor,
+            ),
           ],
         ),
       ),

@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class ReportedBySection extends StatelessWidget {
   const ReportedBySection({
     super.key,
+    required this.reportedBy,
   });
-
+  final String reportedBy;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,7 +20,7 @@ class ReportedBySection extends StatelessWidget {
           ),
         ),
         Text(
-          "Esraa Ehab",
+          reportedBy,
           style: AppStyles.bold14(context).copyWith(
             color: context.theme.black100,
           ),

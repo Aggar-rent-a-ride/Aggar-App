@@ -20,35 +20,8 @@ class ReportCubit extends Cubit<ReportState> {
     'Rental'
   ];
 
-  Future<void> filterReportsTargetType(
+  Future<void> fetchReportsAndTotals(
       String accessToken, String targetType) async {
-    try {
-      emit(ReportLoading());
-      final response = await dioConsumer.get(
-        EndPoint.filterReport,
-        data: {
-          "pageNo": 1,
-          "pageSize": 1,
-          "targetType": targetType,
-          "status": null,
-          "date": null,
-          "sortingDirection": null
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
-      );
-      final reports = ListReportModel.fromJson(response);
-      emit(ReportLoaded(reports: reports));
-    } catch (error) {
-      String errorMessage = handleError(error);
-      emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
-    }
-  }
-
-  Future<void> fetchReportTotals(String accessToken) async {
     try {
       emit(ReportLoading());
       final Map<String, int> totalReportsByType = {};
@@ -72,7 +45,28 @@ class ReportCubit extends Cubit<ReportState> {
         final reports = ListReportModel.fromJson(response);
         totalReportsByType[type] = reports.totalPages ?? 0;
       }
-      emit(ReportTotalsLoaded(totalReportsByType: totalReportsByType));
+
+      final response = await dioConsumer.get(
+        EndPoint.filterReport,
+        data: {
+          "pageNo": 1,
+          "pageSize": 10,
+          "targetType": targetType,
+          "status": null,
+          "date": null,
+          "sortingDirection": null
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      final reports = ListReportModel.fromJson(response);
+      emit(ReportDataLoaded(
+        reports: reports,
+        totalReportsByType: totalReportsByType,
+      ));
     } catch (error) {
       String errorMessage = handleError(error);
       emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
@@ -96,7 +90,6 @@ class ReportCubit extends Cubit<ReportState> {
           },
         ),
       );
-      print(response);
       emit(ReportUpdateStatus());
     } catch (error) {
       String errorMessage = handleError(error);
@@ -107,7 +100,6 @@ class ReportCubit extends Cubit<ReportState> {
   Future<void> fetchReportById(String accessToken, int id) async {
     try {
       emit(ReportLoading());
-
       final response = await dioConsumer.get(
         EndPoint.getReportById,
         queryParameters: {
@@ -119,9 +111,7 @@ class ReportCubit extends Cubit<ReportState> {
           },
         ),
       );
-      print(response);
       final report = ReportModel.fromJson(response);
-      print(report.id);
       emit(ReportByIdLoaded(report: report));
     } catch (error) {
       String errorMessage = handleError(error);
