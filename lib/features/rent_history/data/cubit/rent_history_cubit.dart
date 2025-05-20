@@ -33,11 +33,11 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     }
 
     try {
-      // Get a valid token before making the API call
       final accessToken = await tokenRefreshCubit.getAccessToken();
-      
+
       if (accessToken == null) {
-        emit(RentalHistoryError(message: 'Authentication failed. Please login again.'));
+        emit(RentalHistoryError(
+            message: 'Authentication failed. Please login again.'));
         return;
       }
 
@@ -53,24 +53,61 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           },
         ),
       );
+      List<RentalHistoryItem> rentals = [];
 
-      final List<dynamic> rentalsList = response.data as List<dynamic>;
-      final rentals =
-          rentalsList.map((item) => RentalHistoryItem.fromJson(item)).toList();
+      try {
+        if (response.data is Map<String, dynamic>) {
+          final responseData = response.data as Map<String, dynamic>;
+
+          if (responseData.containsKey('data') &&
+              responseData['data'] is Map<String, dynamic>) {
+            final innerData = responseData['data'] as Map<String, dynamic>;
+
+            if (innerData.containsKey('data') && innerData['data'] is List) {
+              final List<dynamic> rentalsList = innerData['data'];
+
+              for (var item in rentalsList) {
+                try {
+                  rentals.add(RentalHistoryItem.fromJson(item));
+                } catch (e) {}
+              }
+            }
+          } else if (responseData.containsKey('data') &&
+              responseData['data'] is List) {
+            final List<dynamic> rentalsList = responseData['data'];
+
+            for (var item in rentalsList) {
+              try {
+                rentals.add(RentalHistoryItem.fromJson(item));
+              } catch (e) {}
+            }
+          }
+        } else if (response.data is List) {
+          final List<dynamic> rentalsList = response.data;
+          for (var item in rentalsList) {
+            try {
+              rentals.add(RentalHistoryItem.fromJson(item));
+            } catch (e) {}
+          }
+        } else {
+          throw Exception(
+              'Unexpected API response format: ${response.data.runtimeType}');
+        }
+      } catch (parseError) {
+        throw Exception('Failed to parse rental data: $parseError');
+      }
 
       if (refresh || pageNo == 1) {
         _allRentals = rentals;
       } else {
         _allRentals = [..._allRentals, ...rentals];
       }
-
       emit(RentalHistoryLoaded(
         rentals: _allRentals,
         currentPage: pageNo,
         hasMoreData: rentals.length >= pageSize,
       ));
     } on DioException catch (e) {
-      // Handle token expiration specifically
       if (e.response?.statusCode == 401) {
         try {
           // Try to refresh the token and retry the request once
@@ -78,7 +115,8 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           // Retry the request
           return getRentalHistory(pageNo: pageNo, refresh: refresh);
         } catch (refreshError) {
-          emit(RentalHistoryError(message: 'Session expired. Please login again.'));
+          emit(RentalHistoryError(
+              message: 'Session expired. Please login again.'));
         }
       } else {
         emit(RentalHistoryError(message: e.toString()));

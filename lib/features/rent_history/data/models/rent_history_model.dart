@@ -29,21 +29,21 @@ class RentalHistoryItem extends Equatable {
 
   factory RentalHistoryItem.fromJson(Map<String, dynamic> json) {
     return RentalHistoryItem(
-      id: json['Id'],
-      startDate: DateTime.parse(json['StartDate']),
-      endDate: DateTime.parse(json['EndDate']),
-      totalDays: json['TotalDays'],
-      discount: json['Discount']?.toDouble() ?? 0.0,
-      finalPrice: json['FinalPrice']?.toDouble() ?? 0.0,
-      rentalStatus: json['RentalStatus'],
-      renterReview: json['RenterReview'] != null
-          ? Review.fromJson(json['RenterReview'])
+      id: json['id'],
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      totalDays: json['totalDays'],
+      discount: (json['discount'] ?? 0.0).toDouble(),
+      finalPrice: (json['finalPrice'] ?? 0.0).toDouble(),
+      rentalStatus: json['rentalStatus'] ?? '',
+      renterReview: json['renterReview'] != null
+          ? Review.fromJson(json['renterReview'])
           : null,
-      customerReview: json['CustomerReview'] != null
-          ? Review.fromJson(json['CustomerReview'])
+      customerReview: json['customerReview'] != null
+          ? Review.fromJson(json['customerReview'])
           : null,
-      vehicle: Vehicle.fromJson(json['Vehicle']),
-      user: User.fromJson(json['User']),
+      vehicle: Vehicle.fromJson(json['vehicle']),
+      user: User.fromJson(json['user']),
     );
   }
 
@@ -88,15 +88,15 @@ class Review extends Equatable {
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
-      id: json['Id'],
-      rentalId: json['RentalId'],
-      createdAt: DateTime.parse(json['CreatedAt']),
-      behavior: json['Behavior']?.toDouble() ?? 0.0,
-      punctuality: json['Punctuality']?.toDouble() ?? 0.0,
-      comments: json['Comments'] ?? '',
-      care: json['Care']?.toDouble(),
-      truthfulness: json['Truthfulness']?.toDouble(),
-      reviewer: User.fromJson(json['Reviewer']),
+      id: json['id'],
+      rentalId: json['rentalId'],
+      createdAt: DateTime.parse(json['createdAt']),
+      behavior: (json['behavior'] ?? 0.0).toDouble(),
+      punctuality: (json['punctuality'] ?? 0.0).toDouble(),
+      comments: json['comments'] ?? '',
+      care: json['care']?.toDouble(),
+      truthfulness: json['truthfulness']?.toDouble(),
+      reviewer: User.fromJson(json['reviewer']),
     );
   }
 
@@ -129,10 +129,10 @@ class Vehicle extends Equatable {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
-      id: json['Id'],
-      pricePerDay: json['PricePerDay']?.toDouble() ?? 0.0,
-      mainImagePath: json['MainImagePath'] ?? '',
-      address: json['Address'] ?? '',
+      id: json['id'],
+      pricePerDay: (json['pricePerDay'] ?? 0.0).toDouble(),
+      mainImagePath: json['mainImagePath'] ?? '',
+      address: json['address'] ?? '',
     );
   }
 
@@ -153,9 +153,9 @@ class User extends Equatable {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['Id'],
-      name: json['Name'] ?? '',
-      imagePath: json['ImagePath'] ?? '',
+      id: json['id'],
+      name: json['name'] ?? '',
+      imagePath: json['imagePath'] ?? '',
     );
   }
 
