@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/widgets/main_header.dart';
+import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -27,7 +28,14 @@ class MainScreen extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 55, bottom: 20),
-                child: const MainHeader(),
+                child: MainHeader(
+                  //will be changed
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationScreen(),
+                      )),
+                ),
               ),
               const Gap(15),
             ],

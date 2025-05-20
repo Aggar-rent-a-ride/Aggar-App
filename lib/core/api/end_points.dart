@@ -56,6 +56,9 @@ class EndPoint {
   //User Endpoint
   static String getTotalUser = "$baseUrl/api/user/all";
   static String getTotalUserCount = "$baseUrl/api/user/count-all";
+  static String getSearchUsers = "$baseUrl/api/user/search";
+  static String deleteUser = "$baseUrl/api/user/";
+  static String punishUser = "$baseUrl/api/user/punish";
 }
 
 class ApiKey {
@@ -235,4 +238,11 @@ class ApiKey {
   static String getFilterReportTargetVehicleTransmission = "transmission";
   static String getFilterReportTargetVehicleRate = "rate";
   static String getFilterReportTargetVehicleMainImagePath = "mainImagePath";
+
+  //////////////////////Users/////////////////////////////////
+  static String getSearchUsersId = "id";
+  static String getSearchUsersName = "name";
+  static String getSearchUsersUsername = "username";
+  static String getSearchUsersImage = "imagePath";
+  static String getSearchUsersrate = "rate";
 }

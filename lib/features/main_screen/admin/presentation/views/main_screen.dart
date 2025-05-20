@@ -2,15 +2,15 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/all_report_section.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/main_header.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_statistics_card.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/user_statistics_card.dart';
-import 'package:aggar/features/main_screen/widgets/main_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 String accestoken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6IjU2OWExNzI0LWQ2NDgtNDkzMC1iYmE1LTM4NmE1MDYzZTkxYiIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NjQxMjcwLCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.b35NMVH-ByRrS8DMqJfmLoOstNzsmqpA2CP8wdqVWYE";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImM1ZmJjNWMwLTAwNGEtNDQ1Yi05YjUyLTQ3NzQzMjJjNTk5OCIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NzI3MDg5LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.Odtpj7oo5b_i1eW21ZiGwQBN3dHbNiL4RgUZue2xwtI";
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -21,10 +21,7 @@ class MainScreen extends StatelessWidget {
       backgroundColor: context.theme.white100_1,
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<ReportCubit>().fetchReportById(accestoken, 54);
-          context
-              .read<ReportCubit>()
-              .updateReportStatus(accestoken, "Reviwed", [54]);
+          context.read<UserCubit>().searchUsers(accestoken, "esraa");
           context
               .read<ReportCubit>()
               .fetchReportsAndTotals(accestoken, "Vehicle");

@@ -1,4 +1,4 @@
-import 'package:aggar/features/main_screen/admin/model/report_model.dart';
+import 'package:aggar/features/main_screen/admin/model/list_user_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class UserState extends Equatable {
@@ -10,20 +10,18 @@ abstract class UserState extends Equatable {
 
 class UserInitial extends UserState {}
 
+class UserNoSearch extends UserState {}
+
 class UserLoading extends UserState {}
 
-class UserLoaded extends UserState {}
+class UserLoaded extends UserState {
+  final ListUserModel users;
 
-class UserByIdLoaded extends UserState {
-  final ReportModel report;
-
-  const UserByIdLoaded({required this.report});
+  const UserLoaded({required this.users});
 
   @override
-  List<Object?> get props => [report];
+  List<Object?> get props => [users];
 }
-
-class UserUpdateStatus extends UserState {}
 
 class UserTotalsLoaded extends UserState {
   final Map<String, int> totalReportsByType;

@@ -1,5 +1,6 @@
 // Modified search_result_section.dart with status count display
 
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_state.dart';
@@ -73,7 +74,9 @@ class SearchResultSection extends StatelessWidget {
                           searchCubit.selectedStatus != null
                       ? 'Status: ${searchCubit.selectedStatus} ($displayCount vehicles)'
                       : 'Search Results (${vehicles.length} vehicles)',
-                  style: AppStyles.medium18(context),
+                  style: AppStyles.medium18(context).copyWith(
+                    color: context.theme.black100,
+                  ),
                 ),
                 const Gap(16),
                 Expanded(
