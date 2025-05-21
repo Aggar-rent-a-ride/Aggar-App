@@ -19,42 +19,19 @@ class ReportCubit extends Cubit<ReportState> {
     'Booking',
     'Rental'
   ];
-
-  Future<void> fetchReportsAndTotals(
-      String accessToken, String targetType) async {
+  Future<void> fetchReports(String accessToken, String? targetType,
+      String? status, String? date, String? sortingDirection) async {
     try {
-      emit(ReportLoading());
-      final Map<String, int> totalReportsByType = {};
-      for (String type in reportTypes) {
-        final response = await dioConsumer.get(
-          EndPoint.filterReport,
-          data: {
-            "pageNo": 1,
-            "pageSize": 1,
-            "targetType": type,
-            "status": null,
-            "date": null,
-            "sortingDirection": null
-          },
-          options: Options(
-            headers: {
-              'Authorization': 'Bearer $accessToken',
-            },
-          ),
-        );
-        final reports = ListReportModel.fromJson(response);
-        totalReportsByType[type] = reports.totalPages ?? 0;
-      }
-
+      emit(ReportsLoading());
       final response = await dioConsumer.get(
         EndPoint.filterReport,
         data: {
           "pageNo": 1,
           "pageSize": 10,
           "targetType": targetType,
-          "status": null,
-          "date": null,
-          "sortingDirection": null
+          "status": status,
+          "date": date,
+          "sortingDirection": sortingDirection
         },
         options: Options(
           headers: {
@@ -63,10 +40,7 @@ class ReportCubit extends Cubit<ReportState> {
         ),
       );
       final reports = ListReportModel.fromJson(response);
-      emit(ReportDataLoaded(
-        reports: reports,
-        totalReportsByType: totalReportsByType,
-      ));
+      emit(ReportsLoaded(reports: reports));
     } catch (error) {
       String errorMessage = handleError(error);
       emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
@@ -77,6 +51,7 @@ class ReportCubit extends Cubit<ReportState> {
       String accessToken, String status, List<int> reportIds) async {
     try {
       emit(ReportLoading());
+      // ignore: unused_local_variable
       final response = await dioConsumer.put(
         EndPoint.updateReportStatus,
         data: {

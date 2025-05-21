@@ -20,7 +20,6 @@ class SearchResultSection extends StatelessWidget {
         if (state is UserLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-
         if (state is UserError) {
           return Center(
             child: Column(
@@ -38,7 +37,6 @@ class SearchResultSection extends StatelessWidget {
             ),
           );
         }
-
         if (state is UserLoaded) {
           final users = state.users.data;
           if (users.isEmpty) {
@@ -46,7 +44,8 @@ class SearchResultSection extends StatelessWidget {
           }
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 16),
+            padding:
+                const EdgeInsets.only(left: 25, right: 15, top: 16, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,6 +58,7 @@ class SearchResultSection extends StatelessWidget {
                 Expanded(
                   child: ListView.builder(
                     itemCount: users.length,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     itemBuilder: (context, index) {
                       final user = users[index];
                       return UserSearchCard(user: user);
@@ -69,11 +69,9 @@ class SearchResultSection extends StatelessWidget {
             ),
           );
         }
-
         if (state is UserNoSearch) {
           return const NoSearchResultBody();
         }
-
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

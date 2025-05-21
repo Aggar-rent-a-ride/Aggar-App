@@ -14,8 +14,11 @@ import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cu
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart'
+    show AdminMainCubit;
 import 'package:aggar/features/main_screen/admin/presentation/cubit/filter_cubit/filter_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/admin_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
@@ -34,12 +37,12 @@ import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'features/main_screen/admin/presentation/views/main_screen.dart';
+import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,9 +53,12 @@ void main() async {
   languageCubit.changeToEnglish();
 
   runApp(
-    MyApp(
-      secureStorage: secureStorage,
-      initialLanguageCubit: languageCubit,
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(
+        secureStorage: secureStorage,
+        initialLanguageCubit: languageCubit,
+      ),
     ),
   );
 }
@@ -183,6 +189,17 @@ class MyApp extends StatelessWidget {
             vehicleCubit: context.read<VehicleCubit>(),
           ),
         ),
+        BlocProvider(
+          create: (context) => StatisticsCubit(),
+        ),
+        BlocProvider(
+          create: (context) => AdminMainCubit(
+            tokenRefreshCubit: context.read<TokenRefreshCubit>(),
+            reportCubit: context.read<ReportCubit>(),
+            userCubit: context.read<UserCubit>(),
+            statisticsCubit: context.read<StatisticsCubit>(),
+          ),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
@@ -193,9 +210,9 @@ class MyApp extends StatelessWidget {
                   darkTheme: darkTheme,
                   theme: lightTheme,
                   debugShowCheckedModeBanner: false,
-                  /** locale: languageState is LanguageChanged
+                  locale: languageState is LanguageChanged
                       ? languageState.locale
-                      : DevicePreview.locale(context), */
+                      : DevicePreview.locale(context),
                   supportedLocales: const [
                     Locale('en', 'US'),
                     Locale('ar', 'SA'),
@@ -206,8 +223,8 @@ class MyApp extends StatelessWidget {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
-                  //builder: DevicePreview.appBuilder,
-                  home: const AdminBottomNavigationBar());
+                  builder: DevicePreview.appBuilder,
+                  home: const SplashView());
             },
           );
         },

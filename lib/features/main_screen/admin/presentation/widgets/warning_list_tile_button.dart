@@ -10,10 +10,11 @@ class WarningListTileButton extends StatelessWidget {
   const WarningListTileButton({
     super.key,
     required this.user,
+    required this.accessToken,
   });
 
   final UserModel user;
-
+  final String accessToken;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -35,7 +36,7 @@ class WarningListTileButton extends StatelessWidget {
                 "Are you sure you want to send a warning to ${user.name} ?",
             onPressed: () {
               context.read<UserCubit>().punishUser(
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImRhYzIzZTllLTgxYjktNGM4OS1hMDNiLTRkZGMyODIzZTExNCIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NzIyMjI1LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.DNpGeA7ywq8sQDs9H-O1VNhgsiVJoKg1ztOknVylhDA",
+                    accessToken,
                     user.id.toString(),
                     "Warning",
                     0,

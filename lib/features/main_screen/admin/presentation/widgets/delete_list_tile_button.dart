@@ -10,9 +10,11 @@ class DeleteListTileButton extends StatelessWidget {
   const DeleteListTileButton({
     super.key,
     required this.user,
+    required this.accessToken,
   });
 
   final UserModel user;
+  final String accessToken;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class DeleteListTileButton extends StatelessWidget {
             subtitle: "Are you sure you want to delete ${user.name} ?",
             onPressed: () {
               context.read<UserCubit>().deleteUser(
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6ImM1ZmJjNWMwLTAwNGEtNDQ1Yi05YjUyLTQ3NzQzMjJjNTk5OCIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NzI3MDg5LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.Odtpj7oo5b_i1eW21ZiGwQBN3dHbNiL4RgUZue2xwtI",
+                    accessToken,
                     user.id,
                   );
               Navigator.pop(context);

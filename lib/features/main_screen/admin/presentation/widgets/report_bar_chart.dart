@@ -1,8 +1,10 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
-import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_state.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_state.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_state.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/bar_chart_group_column.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -21,45 +23,69 @@ class ReportBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReportCubit, ReportState>(builder: (context, state) {
-      Map<String, int> totalReportsByType = {};
-      double maxY = 10;
-      if (state is ReportDataLoaded) {
-        totalReportsByType = state.totalReportsByType;
-        if (totalReportsByType.isNotEmpty) {
-          maxY = totalReportsByType.values
-                  .reduce((a, b) => a > b ? a : b)
-                  .toDouble() *
-              1.2;
-        }
-      }
-      final reportTypes = context.read<ReportCubit>().reportTypes;
-      final filteredReportTypes =
-          reportTypes.where((type) => type != 'None').toList();
+    return BlocBuilder<StatisticsCubit, StatisticsState>(
+      builder: (context, state) {
+        Map<String, int> totalReportsByType = {};
+        double maxY = 10;
 
-      List<BarChartGroupData> barGroups =
-          filteredReportTypes.asMap().entries.map((entry) {
-        final index = entry.key;
-        final type = entry.value;
-        final value = (totalReportsByType[type] ?? 0).toDouble();
-        return createBarGroup(
-          index,
-          value,
-          selectedIndex == index
-              ? AppConstants
-                  .myBlue100Colors[index % AppConstants.myBlue100Colors.length]
-                  .withOpacity(1)
-              : AppConstants
-                  .myBlue100Colors[index % AppConstants.myBlue100Colors.length]
-                  .withOpacity(0.5),
-          selectedIndex == index,
-        );
-      }).toList();
-      return SizedBox(
-        height: 130,
-        width: double.infinity,
-        child: BarChart(
-          BarChartData(
+        if (state is StatisticsLoaded) {
+          totalReportsByType = state.totalReportsByType;
+          if (totalReportsByType.isNotEmpty) {
+            maxY = totalReportsByType.values
+                    .reduce((a, b) => a > b ? a : b)
+                    .toDouble() *
+                1.2;
+          }
+        } else if (state is StatisticsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is StatisticsError) {
+          return Center(
+            child: Column(
+              children: [
+                Text('Error: ${state.message}'),
+                ElevatedButton(
+                  onPressed: () {
+                    final mainState = context.read<AdminMainCubit>().state;
+                    if (mainState is AdminMainConnected) {
+                      context
+                          .read<StatisticsCubit>()
+                          .fetchTotalReports(mainState.accessToken);
+                    }
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
+        }
+        final reportTypes = context.read<StatisticsCubit>().reportTypes;
+        final filteredReportTypes =
+            reportTypes.where((type) => type != 'None').toList();
+
+        List<BarChartGroupData> barGroups =
+            filteredReportTypes.asMap().entries.map((entry) {
+          final index = entry.key;
+          final type = entry.value;
+          final value = (totalReportsByType[type] ?? 0).toDouble();
+          return createBarGroup(
+            index,
+            value,
+            selectedIndex == index
+                ? AppConstants.myBlue100Colors[
+                        index % AppConstants.myBlue100Colors.length]
+                    .withOpacity(1)
+                : AppConstants.myBlue100Colors[
+                        index % AppConstants.myBlue100Colors.length]
+                    .withOpacity(0.5),
+            selectedIndex == index,
+          );
+        }).toList();
+
+        return SizedBox(
+          height: 130,
+          width: double.infinity,
+          child: BarChart(
+            BarChartData(
               alignment: BarChartAlignment.center,
               groupsSpace: 15,
               minY: 0,
@@ -152,11 +178,13 @@ class ReportBarChart extends StatelessWidget {
                   bottom: BorderSide(color: Colors.black, width: 1),
                 ),
               ),
-              barGroups: barGroups),
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        ),
-      );
-    });
+              barGroups: barGroups,
+            ),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        );
+      },
+    );
   }
 }
