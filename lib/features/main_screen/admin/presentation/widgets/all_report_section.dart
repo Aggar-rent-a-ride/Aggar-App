@@ -20,7 +20,7 @@ class AllReportSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReportCubit, ReportState>(
       builder: (context, state) {
-        if (state is ReportDataLoaded) {
+        if (state is ReportsLoaded) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [

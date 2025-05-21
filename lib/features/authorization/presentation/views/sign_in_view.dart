@@ -10,6 +10,7 @@ import 'package:aggar/features/authorization/presentation/widget/sign_in_email_a
 import 'package:aggar/features/authorization/presentation/widget/sign_in_face_book_and_google_buttons.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_forget_password_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_image_with_text.dart';
+import 'package:aggar/features/main_screen/admin/presentation/views/admin_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/views/customer_bottom_navigation_bar_views.dart';
 import 'package:aggar/features/main_screen/renter/presentation/views/renter_bottom_navigation_bar_view.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,14 @@ class _SignInContent extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginSuccess) {
             final userType = state.userType;
-            if (userType == "Customer") {
+            if (userType == "User") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AdminBottomNavigationBar(),
+                ),
+              );
+            } else if (userType == "Customer") {
               Navigator.push(
                 context,
                 MaterialPageRoute(

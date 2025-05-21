@@ -9,9 +9,11 @@ class BanListTileButton extends StatelessWidget {
   BanListTileButton({
     super.key,
     required this.user,
+    required this.accessToken,
   });
 
   final UserModel user;
+  final String accessToken;
   final TextEditingController durationController = TextEditingController();
 
   @override
@@ -97,7 +99,7 @@ class BanListTileButton extends StatelessWidget {
                     return;
                   }
                   context.read<UserCubit>().punishUser(
-                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6IjBjNTA2Yzg5LTIyNDctNDA3Yy1hOTk4LTBhZTA0Njk4YzNkYyIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIiwiQ3VzdG9tZXIiXSwiZXhwIjoxNzQ3NzI2MzA2LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.l_s9yQcWtLqcsUuGdT1Tn0I4t5ZNlLBNP3P-IOdfIas",
+                        accessToken,
                         user.id.toString(),
                         "Ban",
                         duration,

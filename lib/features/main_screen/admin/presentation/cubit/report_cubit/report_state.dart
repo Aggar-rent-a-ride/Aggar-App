@@ -13,17 +13,26 @@ class ReportInitial extends ReportState {}
 
 class ReportLoading extends ReportState {}
 
-class ReportDataLoaded extends ReportState {
+class ReportsLoaded extends ReportState {
   final ListReportModel reports;
+
+  const ReportsLoaded({required this.reports});
+
+  @override
+  List<Object?> get props => [reports];
+}
+
+class ReportsLoading extends ReportState {}
+
+class ReportDataLoaded extends ReportState {
   final Map<String, int> totalReportsByType;
 
   const ReportDataLoaded({
-    required this.reports,
     required this.totalReportsByType,
   });
 
   @override
-  List<Object?> get props => [reports, totalReportsByType];
+  List<Object?> get props => [totalReportsByType];
 }
 
 class ReportByIdLoaded extends ReportState {

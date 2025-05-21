@@ -1,46 +1,19 @@
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_state.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/show_user_sections.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserPieChart extends StatefulWidget {
-  const UserPieChart({super.key, required this.accessToken});
+class UserPieChart extends StatelessWidget {
+  const UserPieChart({
+    super.key,
+    this.selectedIndex,
+    required this.onPieSectionTap,
+  });
 
-  final String accessToken;
-
-  static void updateIndex(int index) {
-    if (_state != null) {
-      // ignore: invalid_use_of_protected_member
-      _state!.setState(() {
-        _state!.touchedIndex = index;
-      });
-    }
-  }
-
-  @override
-  State<UserPieChart> createState() => _UserPieChartState();
-
-  static _UserPieChartState? _state;
-}
-
-class _UserPieChartState extends State<UserPieChart> {
-  int touchedIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    UserPieChart._state = this;
-    // Fetch user totals when the widget is initialized
-    context.read<UserCubit>().fetchUserTotals(widget.accessToken);
-  }
-
-  @override
-  void dispose() {
-    UserPieChart._state = null;
-    super.dispose();
-  }
+  final int? selectedIndex;
+  final void Function(int index) onPieSectionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +21,7 @@ class _UserPieChartState extends State<UserPieChart> {
       aspectRatio: 1,
       child: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
+          print('UserPieChart UserCubit state: $state');
           if (state is UserLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is UserError) {
@@ -57,24 +31,23 @@ class _UserPieChartState extends State<UserPieChart> {
               PieChartData(
                 pieTouchData: PieTouchData(
                   touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                    setState(() {
-                      if (!event.isInterestedForInteractions ||
-                          pieTouchResponse == null ||
-                          pieTouchResponse.touchedSection == null) {
-                        touchedIndex = -1;
-                        return;
-                      }
-                      touchedIndex =
+                    if (event is FlTapUpEvent &&
+                        pieTouchResponse != null &&
+                        pieTouchResponse.touchedSection != null) {
+                      final index =
                           pieTouchResponse.touchedSection!.touchedSectionIndex;
-                    });
+                      print('Pie section tapped: index=$index');
+                      onPieSectionTap(index);
+                    }
                   },
                 ),
                 borderData: FlBorderData(show: false),
                 sectionsSpace: 0,
                 centerSpaceRadius: 40,
-                sections: showingSections(
+                sections: _showingSections(
                   state.totalReportsByType,
-                  touchedIndex,
+                  selectedIndex,
+                  context,
                 ),
               ),
             );
@@ -83,5 +56,51 @@ class _UserPieChartState extends State<UserPieChart> {
         },
       ),
     );
+  }
+
+  List<PieChartSectionData> _showingSections(
+    Map<String, int> totalUsersByRole,
+    int? selectedIndex,
+    BuildContext context,
+  ) {
+    final roleItems = [
+      {'role': 'Customer', 'color': const Color(0xFFC6C7F4), 'index': 0},
+      {'role': 'Renter', 'color': const Color(0xFF8E90E8), 'index': 1},
+      {'role': 'Admin', 'color': const Color(0xFF3A3F9B), 'index': 2},
+    ];
+
+    final totalUsers =
+        totalUsersByRole.values.fold(0, (sum, count) => sum + count);
+    final percentages = totalUsers > 0
+        ? totalUsersByRole.map((role, count) => MapEntry(
+              role,
+              (count / totalUsers * 100).toDouble(),
+            ))
+        : <String, double>{};
+
+    return roleItems.asMap().entries.map((entry) {
+      final index = entry.key;
+      final item = entry.value;
+      final role = item['role'] as String;
+      final color = item['color'] as Color;
+      final isSelected = selectedIndex == index;
+      final count = totalUsersByRole[role] ?? 0;
+      final percentage = percentages[role] ?? 0.0;
+      final radius = isSelected ? 60.0 : 50.0;
+      final fontSize = isSelected ? 18.0 : 16.0;
+
+      return PieChartSectionData(
+        color: color,
+        value: percentage,
+        title: count > 0 ? '$role\n${percentage.toStringAsFixed(1)}%' : '',
+        radius: radius,
+        titleStyle: AppStyles.medium.copyWith(
+          fontSize: fontSize,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        showTitle: count > 0,
+      );
+    }).toList();
   }
 }
