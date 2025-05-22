@@ -13,6 +13,13 @@ class ReportCubit extends Cubit<ReportState> {
   bool isLoadingMore = false;
   int currentPage = 1;
   List<ReportModel> allReports = [];
+  int totalPages = 0;
+
+  String? _lastTargetType;
+  String? _lastStatus;
+  String? _lastDate;
+  String? _lastSortingDirection;
+
   final List<String> reportTypes = [
     'Message',
     'CustomerReview',
@@ -23,17 +30,47 @@ class ReportCubit extends Cubit<ReportState> {
     'Rental'
   ];
 
+  bool _filtersChanged(String? targetType, String? status, String? date,
+      String? sortingDirection) {
+    return _lastTargetType != targetType ||
+        _lastStatus != status ||
+        _lastDate != date ||
+        _lastSortingDirection != sortingDirection;
+  }
+
+  void _updateLastFilters(String? targetType, String? status, String? date,
+      String? sortingDirection) {
+    _lastTargetType = targetType;
+    _lastStatus = status;
+    _lastDate = date;
+    _lastSortingDirection = sortingDirection;
+  }
+
   Future<void> fetchReports(String accessToken, String? targetType,
       String? status, String? date, String? sortingDirection,
       {bool isLoadMore = false}) async {
+    if (_filtersChanged(targetType, status, date, sortingDirection) ||
+        !isLoadMore) {
+      currentPage = 1;
+      allReports.clear();
+      isLoadMore = false;
+      _updateLastFilters(targetType, status, date, sortingDirection);
+    }
+    if (isLoadMore && currentPage > totalPages && totalPages > 0) {
+      isLoadingMore = false;
+      return;
+    }
+
     for (int attempt = 1; attempt <= 3; attempt++) {
       try {
         if (!isLoadMore) {
           emit(ReportLoading());
         } else {
           emit(ReportsLoadingMore(
-              reports: ListReportModel(data: allReports, totalPages: 0)));
+              reports:
+                  ListReportModel(data: allReports, totalPages: totalPages)));
         }
+
         final response = await dioConsumer.get(
           EndPoint.filterReport,
           data: {
@@ -48,22 +85,28 @@ class ReportCubit extends Cubit<ReportState> {
             'Authorization': 'Bearer $accessToken',
           }),
         );
+
         final reports = ListReportModel.fromJson(response);
+        totalPages = reports.totalPages!;
 
         if (isLoadMore) {
           allReports.addAll(reports.data);
-          currentPage++;
         } else {
-          allReports = reports.data;
-          currentPage = 1;
+          allReports = List.from(reports.data);
         }
-        if (allReports.length > 50) {
-          allReports.removeRange(0, allReports.length - 50);
+        if (isLoadMore && reports.data.isNotEmpty) {
+          currentPage++;
+        } else if (!isLoadMore) {
+          currentPage = 2;
         }
+        if (allReports.length > 100) {
+          allReports.removeRange(0, allReports.length - 100);
+        }
+
         emit(ReportsLoaded(
           reports: ListReportModel(
             data: allReports,
-            totalPages: reports.totalPages,
+            totalPages: totalPages,
           ),
         ));
         return;
@@ -78,6 +121,13 @@ class ReportCubit extends Cubit<ReportState> {
         isLoadingMore = false;
       }
     }
+  }
+
+  Future<void> refreshReports(String accessToken, String? targetType,
+      String? status, String? date, String? sortingDirection) async {
+    currentPage = 1;
+    allReports.clear();
+    await fetchReports(accessToken, targetType, status, date, sortingDirection);
   }
 
   Future<void> updateReportStatus(
@@ -125,5 +175,17 @@ class ReportCubit extends Cubit<ReportState> {
       String errorMessage = handleError(error);
       emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
     }
+  }
+
+  void clearReports() {
+    currentPage = 1;
+    totalPages = 0;
+    allReports.clear();
+    isLoadingMore = false;
+    _lastTargetType = null;
+    _lastStatus = null;
+    _lastDate = null;
+    _lastSortingDirection = null;
+    emit(ReportInitial());
   }
 }
