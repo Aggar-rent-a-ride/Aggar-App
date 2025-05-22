@@ -36,7 +36,7 @@ class AllReportSection extends StatelessWidget {
               ),
               Column(
                 children: List.generate(
-                  6,
+                  state.reports.data.length,
                   (index) {
                     DateTime datetime =
                         DateTime.parse(state.reports.data[index].createdAt);
