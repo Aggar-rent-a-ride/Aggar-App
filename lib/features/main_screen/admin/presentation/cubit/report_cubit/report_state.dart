@@ -22,18 +22,16 @@ class ReportsLoaded extends ReportState {
   List<Object?> get props => [reports];
 }
 
-class ReportsLoading extends ReportState {}
+class ReportsLoadingMore extends ReportState {
+  final ListReportModel reports;
 
-class ReportDataLoaded extends ReportState {
-  final Map<String, int> totalReportsByType;
-
-  const ReportDataLoaded({
-    required this.totalReportsByType,
-  });
+  const ReportsLoadingMore({required this.reports});
 
   @override
-  List<Object?> get props => [totalReportsByType];
+  List<Object?> get props => [reports];
 }
+
+class ReportsLoading extends ReportState {}
 
 class ReportByIdLoaded extends ReportState {
   final ReportModel report;
@@ -54,3 +52,35 @@ class ReportError extends ReportState {
   @override
   List<Object?> get props => [message];
 }
+
+class FilterToggleVisibility extends ReportState {
+  final bool isVisible;
+
+  const FilterToggleVisibility(this.isVisible);
+}
+
+class FilterTypeSelected extends ReportState {
+  final String? type;
+
+  const FilterTypeSelected(this.type);
+}
+
+class FilterStatusSelected extends ReportState {
+  final String? status;
+
+  const FilterStatusSelected(this.status);
+}
+
+class FilterDateSelected extends ReportState {
+  final String? date;
+
+  const FilterDateSelected(this.date);
+}
+
+class FilterSortingDirectionSelected extends ReportState {
+  final String? sortingDirection;
+
+  const FilterSortingDirectionSelected(this.sortingDirection);
+}
+
+class FilterReset extends ReportState {}

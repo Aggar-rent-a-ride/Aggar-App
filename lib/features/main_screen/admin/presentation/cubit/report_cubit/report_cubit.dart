@@ -10,6 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ReportCubit extends Cubit<ReportState> {
   ReportCubit() : super(ReportInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
+  bool isLoadingMore = false;
+  int currentPage = 1;
+  List<ReportModel> allReports = [];
   final List<String> reportTypes = [
     'Message',
     'CustomerReview',
@@ -19,31 +22,61 @@ class ReportCubit extends Cubit<ReportState> {
     'Booking',
     'Rental'
   ];
+
   Future<void> fetchReports(String accessToken, String? targetType,
-      String? status, String? date, String? sortingDirection) async {
-    try {
-      emit(ReportsLoading());
-      final response = await dioConsumer.get(
-        EndPoint.filterReport,
-        data: {
-          "pageNo": 1,
-          "pageSize": 10,
-          "targetType": targetType,
-          "status": status,
-          "date": date,
-          "sortingDirection": sortingDirection
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
+      String? status, String? date, String? sortingDirection,
+      {bool isLoadMore = false}) async {
+    for (int attempt = 1; attempt <= 3; attempt++) {
+      try {
+        if (!isLoadMore) {
+          emit(ReportLoading());
+        } else {
+          emit(ReportsLoadingMore(
+              reports: ListReportModel(data: allReports, totalPages: 0)));
+        }
+        final response = await dioConsumer.get(
+          EndPoint.filterReport,
+          data: {
+            "pageNo": currentPage,
+            "pageSize": 8,
+            "targetType": targetType,
+            "status": status,
+            "date": date,
+            "sortingDirection": sortingDirection
           },
-        ),
-      );
-      final reports = ListReportModel.fromJson(response);
-      emit(ReportsLoaded(reports: reports));
-    } catch (error) {
-      String errorMessage = handleError(error);
-      emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
+          options: Options(headers: {
+            'Authorization': 'Bearer $accessToken',
+          }),
+        );
+        final reports = ListReportModel.fromJson(response);
+
+        if (isLoadMore) {
+          allReports.addAll(reports.data);
+          currentPage++;
+        } else {
+          allReports = reports.data;
+          currentPage = 1;
+        }
+        if (allReports.length > 50) {
+          allReports.removeRange(0, allReports.length - 50);
+        }
+        emit(ReportsLoaded(
+          reports: ListReportModel(
+            data: allReports,
+            totalPages: reports.totalPages,
+          ),
+        ));
+        return;
+      } catch (error) {
+        if (attempt == 3) {
+          emit(ReportError(
+              message:
+                  'Failed to fetch reports after $attempt attempts: $error'));
+        }
+        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      } finally {
+        isLoadingMore = false;
+      }
     }
   }
 

@@ -6,12 +6,13 @@ import 'package:gap/gap.dart';
 class SeeMoreButton extends StatelessWidget {
   const SeeMoreButton({
     super.key,
+    this.onPressed,
   });
-
+  final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_state.dart';
@@ -37,7 +38,6 @@ class _UserStatisticsBodyState extends State<UserStatisticsBody> {
   Widget build(BuildContext context) {
     return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
-        print('UserStatisticsBody UserCubit state: $state');
         Map<String, int> totalUsersByRole = {
           "Admin": 0,
           "Renter": 0,
@@ -86,9 +86,9 @@ class _UserStatisticsBodyState extends State<UserStatisticsBody> {
         }
 
         final roleItems = [
-          {'role': 'Customer', 'color': const Color(0xFFC6C7F4), 'index': 0},
-          {'role': 'Renter', 'color': const Color(0xFF8E90E8), 'index': 1},
-          {'role': 'Admin', 'color': const Color(0xFF3A3F9B), 'index': 2},
+          {'role': 'Customer', 'color': AppConstants.myBlue100_1, 'index': 0},
+          {'role': 'Renter', 'color': AppConstants.myBlue100_2, 'index': 1},
+          {'role': 'Admin', 'color': AppConstants.myBlue100_3, 'index': 2},
         ];
 
         return Row(
