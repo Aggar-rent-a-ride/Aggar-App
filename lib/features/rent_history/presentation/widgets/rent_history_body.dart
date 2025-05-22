@@ -1,6 +1,7 @@
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
+import 'package:aggar/features/rent_history/presentation/views/rent_history_view_details.dart';
 import 'package:aggar/features/rent_history/presentation/widgets/rent_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +20,8 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
   @override
   void initState() {
     super.initState();
-    // Load rental history when widget is first created
     context.read<RentalHistoryCubit>().getRentalHistory();
 
-    // Setup scroll listener for pagination
     _scrollController.addListener(_onScroll);
   }
 
@@ -92,11 +91,12 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                     return RentalCard(
                       rental: rental,
                       onViewMore: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'Viewing details for rental #${rental.id}'),
-                            duration: const Duration(seconds: 2),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RentalHistoryDetail(
+                              rentalItem: rental,
+                            ),
                           ),
                         );
                       },

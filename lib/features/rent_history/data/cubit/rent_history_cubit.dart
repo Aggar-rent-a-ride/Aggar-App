@@ -1,7 +1,7 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
-import 'package:aggar/features/rent_history/data/models/rent_history_model.dart';
+import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 
