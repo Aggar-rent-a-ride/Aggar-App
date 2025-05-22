@@ -179,6 +179,13 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
+  void reset() {
+    _lastSearchKey = null;
+    _totalPages = 0;
+    searchController.clear();
+    emit(UserNoSearch());
+  }
+
   @override
   Future<void> close() {
     _debounceTimer?.cancel();

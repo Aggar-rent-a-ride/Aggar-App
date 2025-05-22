@@ -1,7 +1,10 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/search_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainScreenSearchField extends StatelessWidget {
   final VoidCallback? onTap;
@@ -37,14 +40,14 @@ class MainScreenSearchField extends StatelessWidget {
         focusNode: focusNode,
         onTap: onTap == null
             ? () {
+                context.read<UserCubit>().reset();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) {
-                      return const UserSearchScreen();
-                    },
-                  ),
-                );
+                      builder: (context) => const UserSearchScreen()),
+                ).then((_) {
+                  context.read<AdminMainCubit>().refreshData();
+                });
               }
             : null,
         decoration: InputDecoration(
