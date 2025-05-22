@@ -2,6 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
+import 'package:aggar/features/rent_history/presentation/views/rent_history_view_details.dart';
 import 'package:aggar/features/rent_history/presentation/widgets/rent_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,21 +38,24 @@ class RentHistoryView extends StatelessWidget {
                       cubit.refreshRentalHistory();
                       break;
                     case 'Completed':
-                      _showFilteredRentals(context, cubit.getCompletedRentals());
+                      _showFilteredRentals(
+                          context, cubit.getCompletedRentals());
                       break;
                     case 'In Progress':
-                      _showFilteredRentals(context, cubit.getInProgressRentals());
+                      _showFilteredRentals(
+                          context, cubit.getInProgressRentals());
                       break;
                     case 'Not Started':
-                      _showFilteredRentals(context, cubit.getNotStartedRentals());
+                      _showFilteredRentals(
+                          context, cubit.getNotStartedRentals());
                       break;
                     case 'Cancelled':
-                      _showFilteredRentals(context, cubit.getCancelledRentals());
+                      _showFilteredRentals(
+                          context, cubit.getCancelledRentals());
                       break;
                   }
                 },
-                itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<String>>[
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
                     value: 'all',
                     child: Text('All Rentals'),
@@ -95,7 +99,7 @@ class RentHistoryView extends StatelessWidget {
 }
 
 class RentHistoryBody extends StatefulWidget {
-  const RentHistoryBody({Key? key}) : super(key: key);
+  const RentHistoryBody({super.key});
 
   @override
   State<RentHistoryBody> createState() => _RentHistoryBodyState();
@@ -103,17 +107,17 @@ class RentHistoryBody extends StatefulWidget {
 
 class _RentHistoryBodyState extends State<RentHistoryBody> {
   final _scrollController = ScrollController();
-  
+
   @override
   void initState() {
     super.initState();
     // Load rental history when widget is first created
     context.read<RentalHistoryCubit>().getRentalHistory();
-    
+
     // Setup scroll listener for pagination
     _scrollController.addListener(_onScroll);
   }
-  
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
@@ -147,11 +151,12 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
             builder: (context, state) {
               if (state is RentalHistoryInitial) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is RentalHistoryLoading && !(state is RentalHistoryLoaded)) {
+              } else if (state is RentalHistoryLoading &&
+                  state is! RentalHistoryLoaded) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is RentalHistoryLoaded) {
                 final rentals = state.rentals;
-                
+
                 if (rentals.isEmpty) {
                   return Center(
                     child: Text(
@@ -160,7 +165,7 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                     ),
                   );
                 }
-                
+
                 return ListView.separated(
                   controller: _scrollController,
                   itemCount: rentals.length + (state.hasMoreData ? 1 : 0),
@@ -174,15 +179,18 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                         ),
                       );
                     }
-                    
+
                     final rental = rentals[index];
                     return RentalCard(
                       rental: rental,
                       onViewMore: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Viewing details for rental #${rental.id}'),
-                            duration: const Duration(seconds: 2),
+                        // Fixed: Navigate to detail page instead of showing snackbar
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RentalHistoryDetail(
+                              rentalItem: rental,
+                            ),
                           ),
                         );
                       },
@@ -201,13 +209,16 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                       const Gap(10),
                       Text(
                         state.message,
-                        style: AppStyles.regular16(context).copyWith(color: Colors.red),
+                        style: AppStyles.regular16(context)
+                            .copyWith(color: Colors.red),
                         textAlign: TextAlign.center,
                       ),
                       const Gap(20),
                       ElevatedButton(
                         onPressed: () {
-                          context.read<RentalHistoryCubit>().refreshRentalHistory();
+                          context
+                              .read<RentalHistoryCubit>()
+                              .refreshRentalHistory();
                         },
                         child: const Text('Try Again'),
                       ),
@@ -215,7 +226,7 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                   ),
                 );
               }
-              
+
               return const SizedBox.shrink();
             },
           ),

@@ -1,4 +1,4 @@
-import 'package:aggar/features/rent_history/data/models/rent_history_model.dart';
+import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
