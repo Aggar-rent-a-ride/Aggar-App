@@ -38,7 +38,6 @@ class VehicleCubit extends Cubit<VehicleState> {
         } else {
           allVehicles = vehicles.data;
         }
-        // Cap allVehicles at 50 items
         if (allVehicles.length > 50) {
           allVehicles.removeRange(0, allVehicles.length - 50);
         }

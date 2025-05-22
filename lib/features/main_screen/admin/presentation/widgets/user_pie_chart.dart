@@ -1,3 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_state.dart';
@@ -21,7 +23,6 @@ class UserPieChart extends StatelessWidget {
       aspectRatio: 1,
       child: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
-          print('UserPieChart UserCubit state: $state');
           if (state is UserLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is UserError) {
@@ -36,7 +37,6 @@ class UserPieChart extends StatelessWidget {
                         pieTouchResponse.touchedSection != null) {
                       final index =
                           pieTouchResponse.touchedSection!.touchedSectionIndex;
-                      print('Pie section tapped: index=$index');
                       onPieSectionTap(index);
                     }
                   },
@@ -64,9 +64,9 @@ class UserPieChart extends StatelessWidget {
     BuildContext context,
   ) {
     final roleItems = [
-      {'role': 'Customer', 'color': const Color(0xFFC6C7F4), 'index': 0},
-      {'role': 'Renter', 'color': const Color(0xFF8E90E8), 'index': 1},
-      {'role': 'Admin', 'color': const Color(0xFF3A3F9B), 'index': 2},
+      {'role': 'Customer', 'color': AppConstants.myBlue100_1, 'index': 0},
+      {'role': 'Renter', 'color': AppConstants.myBlue100_2, 'index': 1},
+      {'role': 'Admin', 'color': AppConstants.myBlue100_3, 'index': 2},
     ];
 
     final totalUsers =
@@ -92,11 +92,11 @@ class UserPieChart extends StatelessWidget {
       return PieChartSectionData(
         color: color,
         value: percentage,
-        title: count > 0 ? '$role\n${percentage.toStringAsFixed(1)}%' : '',
+        title: count > 0 ? '${percentage.toStringAsFixed(1)}%' : '',
         radius: radius,
         titleStyle: AppStyles.medium.copyWith(
           fontSize: fontSize,
-          color: Colors.white,
+          color: context.theme.white100_1,
           fontWeight: FontWeight.bold,
         ),
         showTitle: count > 0,

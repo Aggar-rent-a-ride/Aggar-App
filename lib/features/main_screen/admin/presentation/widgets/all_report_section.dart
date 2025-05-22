@@ -5,7 +5,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_state.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/filter_button.dart';
+import 'package:aggar/features/main_screen/admin/presentation/views/all_reports_screen.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,13 +32,11 @@ class AllReportSection extends StatelessWidget {
                       color: context.theme.blue100_1,
                     ),
                   ),
-                  const Spacer(),
-                  const FilterButton(),
                 ],
               ),
               Column(
                 children: List.generate(
-                  3,
+                  6,
                   (index) {
                     DateTime datetime =
                         DateTime.parse(state.reports.data[index].createdAt);
@@ -63,7 +61,16 @@ class AllReportSection extends StatelessWidget {
                   },
                 ),
               ),
-              const SeeMoreButton(),
+              SeeMoreButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AllReportsScreen(),
+                    ),
+                  );
+                },
+              ),
               const Gap(25),
             ],
           );
