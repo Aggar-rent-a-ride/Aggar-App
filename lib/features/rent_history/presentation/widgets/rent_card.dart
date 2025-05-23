@@ -1,5 +1,5 @@
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/rent_history/data/models/rent_history_model.dart';
+import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -42,10 +42,8 @@ class RentalCard extends StatelessWidget {
         statusBgColor = Colors.grey.withOpacity(0.1);
     }
 
-    // Format dates and duration
     final dateFormat = DateFormat('dd/MM/yyyy');
     final startDate = dateFormat.format(rental.startDate);
-    final endDate = dateFormat.format(rental.endDate);
     final totalTime = '${rental.totalDays} Days';
 
     return Container(
@@ -115,14 +113,16 @@ class RentalCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: const Color(0xFFDDDDDD),
                             shape: BoxShape.circle,
-                            image: rental.user.imagePath.isNotEmpty
+                            image: rental.user.imagePath != null &&
+                                    rental.user.imagePath!.isNotEmpty
                                 ? DecorationImage(
-                                    image: NetworkImage(rental.user.imagePath),
+                                    image: NetworkImage(rental.user.imagePath!),
                                     fit: BoxFit.cover,
                                   )
                                 : null,
                           ),
-                          child: rental.user.imagePath.isEmpty
+                          child: rental.user.imagePath == null ||
+                                  rental.user.imagePath!.isEmpty
                               ? Center(
                                   child: Text(
                                     rental.user.name.isNotEmpty
