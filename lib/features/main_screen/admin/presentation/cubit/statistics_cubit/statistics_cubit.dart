@@ -18,7 +18,6 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     'Booking',
     'Rental'
   ];
-
   Future<void> fetchTotalReports(String accessToken) async {
     try {
       emit(StatisticsLoading());

@@ -15,14 +15,14 @@ class AdminMainConnected extends AdminMainState {
   final String accessToken;
   final bool isStatisticsLoaded;
   final bool isReportsLoaded;
-  final bool isUsersLoaded;
+  final bool isUserStatisticsLoaded;
   final bool isSignalRConnected;
 
   const AdminMainConnected({
     required this.accessToken,
     required this.isStatisticsLoaded,
     required this.isReportsLoaded,
-    required this.isUsersLoaded,
+    required this.isUserStatisticsLoaded,
     this.isSignalRConnected = false,
   });
 
@@ -31,7 +31,7 @@ class AdminMainConnected extends AdminMainState {
         accessToken,
         isStatisticsLoaded,
         isReportsLoaded,
-        isUsersLoaded,
+        isUserStatisticsLoaded,
         isSignalRConnected,
       ];
 }

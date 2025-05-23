@@ -13,26 +13,28 @@ class UserStatisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AdminMainCubit, AdminMainState>(
-        builder: (context, state) {
-      if (state is AdminMainConnected && state.isUsersLoaded) {
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          decoration: BoxDecoration(
-            color: context.theme.white100_2,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: Offset(0, 0),
-              ),
-            ],
-          ),
-          child: const UserStatisticsBody(),
-        );
-      }
-      return const Center(child: CircularProgressIndicator());
-    });
+      builder: (context, state) {
+        print('UserStatisticsCard state: $state'); // Debug log
+        if (state is AdminMainConnected && state.isUserStatisticsLoaded) {
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(
+              color: context.theme.white100_2,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: const UserStatisticsBody(),
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
   }
 }

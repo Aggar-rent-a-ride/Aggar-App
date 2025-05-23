@@ -2,6 +2,7 @@ import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/handle_error.dart';
 import 'package:aggar/features/main_screen/admin/model/list_user_model.dart';
+import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,31 +14,13 @@ class UserCubit extends Cubit<UserState> {
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
   TextEditingController searchController = TextEditingController();
   Timer? _debounceTimer;
-
-  final List<String> userTypes = ["Admin", "Renter", "Customer"];
+  bool isLoadingMore = false;
+  int currentPage = 1;
+  List<UserModel> allUsers = [];
   String? _lastSearchKey;
   int _totalPages = 0;
 
   int get totalPages => _totalPages;
-
-  Future<void> fetchUserTotals(String accessToken) async {
-    try {
-      emit(UserLoading());
-      final Map<String, int> totalUsersByRole = {};
-      for (String role in userTypes) {
-        final response = await dioConsumer.get(
-          EndPoint.getTotalUserCount,
-          queryParameters: {"role": role},
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-        );
-        totalUsersByRole[role] = response["data"];
-      }
-      emit(UserTotalsLoaded(totalReportsByType: totalUsersByRole));
-    } catch (error) {
-      String errorMessage = handleError(error);
-      emit(UserError(message: 'Failed to fetch user totals: $errorMessage'));
-    }
-  }
 
   Future<void> getTotalPages(String accessToken, String searchKey) async {
     if (searchKey.trim().isEmpty) {
@@ -56,8 +39,7 @@ class UserCubit extends Cubit<UserState> {
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
       final users = ListUserModel.fromJson(response);
-      final totalUsers = users.totalPages;
-      _totalPages = totalUsers ?? 0;
+      _totalPages = users.totalPages ?? 0;
     } catch (error) {
       String errorMessage = handleError(error);
       emit(UserError(message: 'Failed to fetch total pages: $errorMessage'));
@@ -69,6 +51,7 @@ class UserCubit extends Cubit<UserState> {
     if (searchKey.trim().isEmpty) {
       _lastSearchKey = null;
       _totalPages = 0;
+      allUsers.clear();
       emit(UserNoSearch());
       return;
     }
@@ -89,6 +72,7 @@ class UserCubit extends Cubit<UserState> {
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
         final users = ListUserModel.fromJson(response);
+        allUsers = users.data;
         emit(UserLoaded(users: users));
       } catch (error) {
         String errorMessage = handleError(error);
@@ -100,6 +84,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> deleteUser(String accessToken, int userId) async {
     try {
       emit(UserLoading());
+      // ignore: unused_local_variable
       final response = await dioConsumer.delete(
         EndPoint.deleteUser,
         queryParameters: {"userId": userId},
@@ -109,9 +94,9 @@ class UserCubit extends Cubit<UserState> {
         await searchUsers(accessToken, _lastSearchKey!);
       } else {
         _totalPages = 0;
+        allUsers.clear();
         emit(UserNoSearch());
       }
-      print(response);
     } catch (error) {
       String errorMessage = handleError(error);
       emit(UserError(message: 'Failed to delete user: $errorMessage'));
@@ -136,6 +121,7 @@ class UserCubit extends Cubit<UserState> {
         await searchUsers(accessToken, _lastSearchKey!);
       } else {
         _totalPages = 0;
+        allUsers.clear();
         emit(UserNoSearch());
       }
     } catch (error) {
@@ -144,44 +130,75 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> getUserWithRole(String accessToken, String role) async {
+  Future<void> getUserWithRole(String accessToken, String role,
+      {bool isLoadMore = false}) async {
+    if (isLoadMore && currentPage > _totalPages && _totalPages > 0) {
+      isLoadingMore = false;
+      return;
+    }
+
     try {
-      emit(UserLoading());
-      _lastSearchKey = null;
-      _totalPages = 0;
-      final totalResponse = await dioConsumer.get(
-        EndPoint.getSearchUsers,
-        queryParameters: {
-          "role": role,
-          "pageNo": 1,
-          "pageSize": 1,
-        },
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-      );
-      final totalUsersModel = ListUserModel.fromJson(totalResponse);
-      final totalUsers = totalUsersModel.totalPages;
-      _totalPages = totalUsers ?? 0;
+      if (!isLoadMore) {
+        emit(UserLoading());
+        currentPage = 1;
+        allUsers.clear();
+      } else {
+        isLoadingMore = true;
+        emit(UsersLoadingMore(
+          users: ListUserModel(
+            data: allUsers,
+            totalPages: _totalPages,
+          ),
+        ));
+      }
 
       final response = await dioConsumer.get(
-        EndPoint.getSearchUsers,
+        EndPoint.getTotalUser,
         queryParameters: {
           "role": role,
-          "pageNo": 1,
-          "pageSize": 10,
+          "pageNo": currentPage,
+          "pageSize": 15,
         },
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
+
       final users = ListUserModel.fromJson(response);
-      emit(UserLoaded(users: users));
+      _totalPages = users.totalPages ?? 0;
+      if (isLoadMore) {
+        allUsers.addAll(users.data);
+      } else {
+        allUsers = List.from(users.data);
+      }
+
+      if (users.data.isNotEmpty || !isLoadMore) {
+        currentPage++;
+      }
+
+      isLoadingMore = false;
+      emit(UserLoaded(
+        users: ListUserModel(
+          data: allUsers,
+          totalPages: _totalPages,
+        ),
+      ));
     } catch (error) {
+      isLoadingMore = false;
       String errorMessage = handleError(error);
       emit(UserError(message: 'Failed to fetch users by role: $errorMessage'));
     }
   }
 
+  Future<void> refreshUsers(String accessToken, String role) async {
+    currentPage = 1;
+    allUsers.clear();
+    await getUserWithRole(accessToken, role);
+  }
+
   void reset() {
     _lastSearchKey = null;
     _totalPages = 0;
+    currentPage = 1;
+    allUsers.clear();
     searchController.clear();
     emit(UserNoSearch());
   }

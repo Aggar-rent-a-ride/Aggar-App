@@ -20,6 +20,7 @@ import 'package:aggar/features/main_screen/admin/presentation/cubit/filter_cubit
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/admin_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
@@ -193,10 +194,13 @@ class MyApp extends StatelessWidget {
           create: (context) => StatisticsCubit(),
         ),
         BlocProvider(
+          create: (context) => UserStatisticsCubit(),
+        ),
+        BlocProvider(
           create: (context) => AdminMainCubit(
+            userStatisticsCubit: context.read<UserStatisticsCubit>(),
             tokenRefreshCubit: context.read<TokenRefreshCubit>(),
             reportCubit: context.read<ReportCubit>(),
-            userCubit: context.read<UserCubit>(),
             statisticsCubit: context.read<StatisticsCubit>(),
           ),
         ),

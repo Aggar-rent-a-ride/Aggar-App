@@ -43,7 +43,7 @@ class UserSearchCard extends StatelessWidget {
           ),
           const Gap(5),
           Text(
-            user.username,
+            user.username ?? "",
             style: AppStyles.medium16(context).copyWith(
               color: context.theme.black50,
             ),

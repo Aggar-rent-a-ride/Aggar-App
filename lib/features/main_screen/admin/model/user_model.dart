@@ -3,7 +3,7 @@ import 'package:aggar/core/api/end_points.dart';
 class UserModel {
   final int id;
   final String name;
-  final String username;
+  final String? username;
   final String? imagePath;
   final num? rate;
 

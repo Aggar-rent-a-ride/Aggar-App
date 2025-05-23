@@ -3,13 +3,13 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_state.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/no_internet_all_report_screen.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/filter_button.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/report_list.dart';
+import 'package:aggar/features/main_screen/admin/presentation/views/search_screen.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/users_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AllReportsScreen extends StatelessWidget {
-  const AllReportsScreen({super.key});
+class AllUsersScreen extends StatelessWidget {
+  const AllUsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,7 @@ class AllReportsScreen extends StatelessWidget {
         if (state is AdminMainConnected) {
           return Scaffold(
             backgroundColor: context.theme.white100_1,
-            body: SizedBox(
-              height: MediaQuery.of(context).size.height,
+            body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -46,21 +45,33 @@ class AllReportsScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "All Reports",
+                          "All Users",
                           style: AppStyles.bold20(context).copyWith(
                             color: context.theme.white100_1,
                           ),
                         ),
                         const Spacer(),
-                        FilterButton(
-                          accessToken: state.accessToken,
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const UserSearchScreen(),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.search,
+                            color: context.theme.white100_1,
+                            size: 20,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  ReportList(
+                  UsersList(
                     accessToken: state.accessToken,
-                  )
+                  ),
                 ],
               ),
             ),
