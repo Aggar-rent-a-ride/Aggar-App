@@ -1,8 +1,8 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
-import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_state.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_state.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,13 +21,19 @@ class UserPieChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1,
-      child: BlocBuilder<UserCubit, UserState>(
+      child: BlocBuilder<UserStatisticsCubit, UserStatisticsState>(
         builder: (context, state) {
-          if (state is UserLoading) {
+          print('StatisticsCubit State in UserPieChart: $state'); // Debug log
+          if (state is UserStatisticsLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is UserError) {
+          } else if (state is UserStatisticsError) {
             return Center(child: Text(state.message));
-          } else if (state is UserTotalsLoaded) {
+          } else if (state is UserStatisticsUserTotalsLoaded) {
+            final totalUsers = state.totalUsersByRole.values
+                .fold(0, (sum, count) => sum + count);
+            if (totalUsers == 0) {
+              return const Center(child: Text('No users found'));
+            }
             return PieChart(
               PieChartData(
                 pieTouchData: PieTouchData(
@@ -45,14 +51,14 @@ class UserPieChart extends StatelessWidget {
                 sectionsSpace: 0,
                 centerSpaceRadius: 40,
                 sections: _showingSections(
-                  state.totalReportsByType,
+                  state.totalUsersByRole,
                   selectedIndex,
                   context,
                 ),
               ),
             );
           }
-          return const Center(child: Text('No data available'));
+          return const Center(child: Text('Initializing data...'));
         },
       ),
     );

@@ -1,9 +1,11 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_state.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_state.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/views/all_users_screen.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/all_report_section.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/loading_all_report_section.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/loading_report_statistics_card.dart';
@@ -118,17 +120,26 @@ class MainScreen extends StatelessWidget {
                             );
                           }
                           return Column(
-                            spacing: 10,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              if (!state.isUsersLoaded)
+                              if (!state.isUserStatisticsLoaded)
                                 const LoadingUserStatisticsCard()
                               else
                                 const UserStatisticsCard(),
+                              SeeMoreButton(onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AllUsersScreen(),
+                                  ),
+                                );
+                              }),
                               if (!state.isStatisticsLoaded)
                                 const LoadingReportStatisticsCard()
                               else
                                 const ReportStatisticsCard(),
+                              const Gap(10),
                               if (!state.isReportsLoaded)
                                 const LoadingAllReportSection()
                               else

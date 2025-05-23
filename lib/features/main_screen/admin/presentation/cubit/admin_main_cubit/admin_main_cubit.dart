@@ -1,3 +1,5 @@
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_cubit.dart';
+import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -7,8 +9,6 @@ import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit
 import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit/report_state.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/statistics_cubit/statistics_state.dart';
-import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
-import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_state.dart';
 import 'admin_main_state.dart';
 
 class AdminMainCubit extends Cubit<AdminMainState> {
@@ -16,24 +16,24 @@ class AdminMainCubit extends Cubit<AdminMainState> {
   late final InternetConnectionChecker _internetChecker;
   final TokenRefreshCubit _tokenRefreshCubit;
   final ReportCubit _reportCubit;
-  final UserCubit _userCubit;
+  final UserStatisticsCubit _userStatisticsCubit;
   final StatisticsCubit _statisticsCubit;
   final SignalRService _signalRService = SignalRService();
 
   bool _isStatisticsLoaded = false;
   bool _isReportsLoaded = false;
-  bool _isUsersLoaded = false;
+  bool _isStatisticsUsersLoaded = false;
   bool _isSignalRConnected = false;
   bool _isInitializing = false;
 
   AdminMainCubit({
     required TokenRefreshCubit tokenRefreshCubit,
     required ReportCubit reportCubit,
-    required UserCubit userCubit,
+    required UserStatisticsCubit userStatisticsCubit,
     required StatisticsCubit statisticsCubit,
   })  : _tokenRefreshCubit = tokenRefreshCubit,
         _reportCubit = reportCubit,
-        _userCubit = userCubit,
+        _userStatisticsCubit = userStatisticsCubit,
         _statisticsCubit = statisticsCubit,
         super(AdminMainInitial()) {
     _setupInternetChecker();
@@ -88,15 +88,15 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       }
     });
 
-    _userCubit.stream.listen((userState) {
+    _userStatisticsCubit.stream.listen((userState) {
       if (state is AdminMainConnected) {
-        if (userState is UserTotalsLoaded) {
-          _isUsersLoaded = true;
+        if (userState is UserStatisticsUserTotalsLoaded) {
+          _isStatisticsUsersLoaded = true;
           _updateConnectedState();
-        } else if (userState is UserLoading) {
-          _isUsersLoaded = false;
+        } else if (userState is UserStatisticsUserLoading) {
+          _isStatisticsUsersLoaded = false;
           _updateConnectedState();
-        } else if (userState is UserError) {
+        } else if (userState is UserStatisticsError) {
           _handleAuthError('Users fetch failed: ${userState.message}');
         }
       }
@@ -110,7 +110,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         accessToken: currentState.accessToken,
         isStatisticsLoaded: _isStatisticsLoaded,
         isReportsLoaded: _isReportsLoaded,
-        isUsersLoaded: _isUsersLoaded,
+        isUserStatisticsLoaded: _isStatisticsUsersLoaded,
         isSignalRConnected: _isSignalRConnected,
       ));
     }
@@ -177,13 +177,13 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       if (token != null) {
         _isStatisticsLoaded = false;
         _isReportsLoaded = false;
-        _isUsersLoaded = false;
+        _isStatisticsUsersLoaded = false;
         _isSignalRConnected = false;
         emit(AdminMainConnected(
           accessToken: token,
           isStatisticsLoaded: false,
           isReportsLoaded: false,
-          isUsersLoaded: false,
+          isUserStatisticsLoaded: false,
           isSignalRConnected: false,
         ));
 
@@ -236,7 +236,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       null,
       null,
     );
-    _userCubit.fetchUserTotals(accessToken);
+    _userStatisticsCubit.fetchUserTotals(accessToken);
   }
 
   void handleTokenRefreshSuccess(String accessToken) {
@@ -244,7 +244,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       accessToken: accessToken,
       isStatisticsLoaded: false,
       isReportsLoaded: false,
-      isUsersLoaded: false,
+      isUserStatisticsLoaded: false,
       isSignalRConnected: _isSignalRConnected,
     ));
     _fetchData(accessToken);

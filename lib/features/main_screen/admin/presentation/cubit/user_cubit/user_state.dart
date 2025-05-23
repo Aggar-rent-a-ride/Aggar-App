@@ -8,8 +8,6 @@ abstract class UserState extends Equatable {
   List<Object?> get props => [];
 }
 
-class UserInitial extends UserState {}
-
 class UserNoSearch extends UserState {}
 
 class UserLoading extends UserState {}
@@ -23,13 +21,13 @@ class UserLoaded extends UserState {
   List<Object?> get props => [users];
 }
 
-class UserTotalsLoaded extends UserState {
-  final Map<String, int> totalReportsByType;
+class UsersLoadingMore extends UserState {
+  final ListUserModel users;
 
-  const UserTotalsLoaded({required this.totalReportsByType});
+  const UsersLoadingMore({required this.users});
 
   @override
-  List<Object?> get props => [totalReportsByType];
+  List<Object?> get props => [users];
 }
 
 class UserError extends UserState {
