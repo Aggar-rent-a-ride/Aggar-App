@@ -17,12 +17,13 @@ class PersonalChatView extends StatefulWidget {
     required this.messageList,
     this.onMessagesUpdated,
     required this.receiverId,
+    required this.receiverName,
   });
 
   final List<MessageModel> messageList;
   final int receiverId;
   final VoidCallback? onMessagesUpdated;
-
+  final String receiverName;
   @override
   State<PersonalChatView> createState() => _PersonalChatViewState();
 }
@@ -31,7 +32,6 @@ class _PersonalChatViewState extends State<PersonalChatView> {
   late final PersonalChatCubit personalChatCubit;
   late final RealTimeChatCubit realTimeChatCubit;
   int senderId = 0;
-  String? receiverName;
 
   @override
   void initState() {
@@ -48,7 +48,6 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     realTimeChatCubit.setReceiverId(widget.receiverId);
 
     _initializeUser();
-    _fetchReceiverName();
 
     realTimeChatCubit.stream.listen((state) {
       if (state is MessageAddedState || state is MessageUpdatedState) {
@@ -64,12 +63,6 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     });
   }
 
-  Future<void> _fetchReceiverName() async {
-    setState(() {
-      receiverName = "User #${widget.receiverId}";
-    });
-  }
-
   @override
   void dispose() {
     widget.onMessagesUpdated?.call();
@@ -80,11 +73,6 @@ class _PersonalChatViewState extends State<PersonalChatView> {
 
   @override
   Widget build(BuildContext context) {
-    /*<<<<<<< esraa
-    int currentUserId = 20; // Replace with the actual current user ID
-    return BlocProvider(
-      create: (context) => PersonalChatCubit(),
-=======*/
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: personalChatCubit),
@@ -105,7 +93,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
               title: personalChatCubit.isSearchActive
                   ? SearchForMsgByContentOrDate(cubit: personalChatCubit)
                   : ImageAndNamePersonMessage(
-                      name: receiverName ?? "Chat",
+                      name: widget.receiverName,
                     ),
               leading: personalChatCubit.isSearchActive
                   ? IconButton(

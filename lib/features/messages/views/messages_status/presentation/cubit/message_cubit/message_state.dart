@@ -1,4 +1,5 @@
-part of 'message_cubit.dart';
+import 'package:aggar/features/messages/views/messages_status/data/model/list_chat_model.dart';
+import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
 
 sealed class MessageState {}
 
@@ -7,7 +8,9 @@ final class MessageInitial extends MessageState {}
 final class MessageSuccess extends MessageState {
   final ListMessageModel? messages;
   final int? userId;
-  MessageSuccess({this.messages, this.userId});
+  final String receiverName;
+
+  MessageSuccess({this.messages, this.userId, required this.receiverName});
 }
 
 final class ChatSuccess extends MessageState {
