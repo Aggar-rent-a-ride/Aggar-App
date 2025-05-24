@@ -19,7 +19,7 @@ class LastMessageModel {
     return LastMessageModel(
       id: json[ApiKey.getMyChatLastMsgId],
       sentAt: json[ApiKey.getMyChatLastMsgSentAt],
-      isSeen: json[ApiKey.getMtChatLastMsgSeen],
+      isSeen: json[ApiKey.getMtChatLastMsgSeen] ?? false,
       content: json[ApiKey.getMyChatLastMsgContent],
       filePath: json[ApiKey.getMyChatLastMsgFilePath],
     );
