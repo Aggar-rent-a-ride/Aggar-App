@@ -27,7 +27,7 @@ class MessageModel {
       senderId: json[ApiKey.msgSenderId],
       receiverId: json[ApiKey.msgReceiverId],
       sentAt: json[ApiKey.msgDate],
-      isSeen: json[ApiKey.msgStatus],
+      isSeen: json[ApiKey.msgStatus] ?? false,
       content: json[ApiKey.msgContent],
       filePath: json[ApiKey.msgFilePath],
       isOptimistic: false,
