@@ -120,6 +120,8 @@ class _AllMessagesViewState extends State<AllMessagesView>
                       msg: chatData.lastMessage.content ??
                           chatData.lastMessage.filePath ??
                           "No message",
+                      isMsg:
+                          chatData.lastMessage.content != null ? true : false,
                       time: hoursAndMinutes,
                       numberMsg: chatData.unseenMessageIds.length,
                       image: chatData.user.imagePath,

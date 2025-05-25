@@ -13,13 +13,15 @@ class ChatPerson extends StatelessWidget {
       required this.time,
       required this.numberMsg,
       this.image,
-      this.onTap});
+      this.onTap,
+      required this.isMsg});
   final String name;
   final String msg;
   final String time;
   final int numberMsg;
   final String? image;
   final void Function()? onTap;
+  final bool isMsg;
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +56,7 @@ class ChatPerson extends StatelessWidget {
                     image: image,
                   ),
                   const Gap(10),
-                  NameAndMessageChatView(
-                    name: name,
-                    msg: msg,
-                  ),
+                  NameAndMessageChatView(name: name, msg: msg, isMsg: isMsg),
                   TimeAndNumberOfMsgChatView(
                     time: time,
                     numberMsg: numberMsg,
