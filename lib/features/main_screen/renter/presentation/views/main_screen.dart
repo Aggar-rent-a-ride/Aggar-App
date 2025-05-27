@@ -29,6 +29,7 @@ class MainScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 55, bottom: 20),
                 child: MainHeader(
+                  accesstoken: "",
                   //will be changed
                   onPressed: () => Navigator.push(
                       context,

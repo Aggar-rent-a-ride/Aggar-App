@@ -81,6 +81,7 @@ class SearchResultSection extends StatelessWidget {
                 const Gap(16),
                 Expanded(
                   child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
                     itemCount: vehicles.length,
                     itemBuilder: (context, index) {
                       final vehicle = vehicles[index];

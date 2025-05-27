@@ -17,12 +17,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, required this.accesstoken});
+  final String accesstoken;
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SearchCubit>();
     return BlocBuilder<SearchCubit, SearchCubitState>(
       builder: (context, state) {
+        cubit.setAccessToken(accesstoken);
         return Scaffold(
           backgroundColor: context.theme.white100_1,
           body: Column(

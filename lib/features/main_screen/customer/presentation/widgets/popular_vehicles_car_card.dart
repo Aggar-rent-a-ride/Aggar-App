@@ -19,7 +19,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
   final String carName;
   final String carType;
   final double pricePerHour;
-  final double rating;
+  final double? rating;
   final String assetImagePath;
   final String vehicleId;
 
@@ -28,7 +28,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
     required this.carName,
     required this.carType,
     required this.pricePerHour,
-    required this.rating,
+    this.rating,
     required this.assetImagePath,
     required this.vehicleId,
   });
