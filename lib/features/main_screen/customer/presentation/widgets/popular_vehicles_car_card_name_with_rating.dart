@@ -11,7 +11,7 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
   });
 
   final String carName;
-  final double rating;
+  final double? rating;
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +27,21 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Gap(5),
-        Icon(
-          Icons.star,
-          size: 12,
-          color: context.theme.blue100_2,
-        ),
-        Text(
-          rating.toString(),
-          style: AppStyles.semiBold12(context).copyWith(
+        if (rating != null) ...[
+          const Gap(5),
+          Icon(
+            Icons.star,
+            size: 12,
             color: context.theme.blue100_2,
           ),
-        ),
+          Text(
+            rating!.toString(),
+            style: AppStyles.semiBold12(context).copyWith(
+              color: context.theme.blue100_2,
+            ),
+          ),
+        ] else
+          const SizedBox(),
       ],
     );
   }

@@ -22,6 +22,7 @@ class VehicleList extends StatelessWidget {
           return Column(
             children: [
               ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 0),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: vehicles.length,
@@ -30,7 +31,7 @@ class VehicleList extends StatelessWidget {
                   carName: "${vehicles[index].brand} ${vehicles[index].model}",
                   carType: vehicles[index].transmission,
                   pricePerHour: vehicles[index].pricePerDay,
-                  rating: vehicles[index].rate ?? 5.0,
+                  rating: vehicles[index].rate,
                   assetImagePath: vehicles[index].mainImagePath,
                 ),
               ),

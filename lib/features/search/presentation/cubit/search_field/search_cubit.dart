@@ -1,5 +1,3 @@
-// Modified search_cubit.dart file with proper status count handling
-
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/handle_error.dart';
@@ -11,9 +9,10 @@ import 'package:aggar/features/search/presentation/cubit/search_field/search_sta
 
 class SearchCubit extends Cubit<SearchCubitState> {
   final TextEditingController textController = TextEditingController();
+  final DioConsumer dioConsumer = DioConsumer(dio: Dio());
 
   String query = '';
-  final DioConsumer dioConsumer = DioConsumer(dio: Dio());
+  String? accessToken; // Store access token
   bool isFilterVisible = true;
   int? selectedBrand;
   int? selectedType;
@@ -33,8 +32,13 @@ class SearchCubit extends Cubit<SearchCubitState> {
   bool isNearestFilterSelected = false;
   bool isStatusFilterSelected = false;
 
-  SearchCubit() : super(SearchCubitInitial()) {
+  SearchCubit({this.accessToken}) : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
+  }
+
+  // Method to set access token after authentication
+  void setAccessToken(String token) {
+    accessToken = token;
   }
 
   void onTextChanged() {
@@ -67,7 +71,6 @@ class SearchCubit extends Cubit<SearchCubitState> {
     minPrice = null;
     maxPrice = null;
     statusCount = null;
-
     isBrandFilterSelected = false;
     isTypeFilterSelected = false;
     isTransmissionFilterSelected = false;
@@ -187,7 +190,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   }
 
   void clearPricingFilter() {
-    if (maxPrice != null && minPrice != null) {
+    if (maxPrice != null || minPrice != null) {
       maxPrice = null;
       minPrice = null;
       isPriceFilterSelected = false;
@@ -257,6 +260,12 @@ class SearchCubit extends Cubit<SearchCubitState> {
   }
 
   Future<void> fetchSearch() async {
+    if (accessToken == null) {
+      emit(
+          SearchCubitError(message: 'Access token is missing. Please log in.'));
+      return;
+    }
+
     try {
       emit(SearchCubitLoading());
       final queryParams = {
@@ -269,25 +278,25 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (selectedTransmission != null) "transmission": selectedTransmission,
         if (minPrice != null) "minPrice": minPrice,
         if (maxPrice != null) "maxPrice": maxPrice,
-        if (query != "") "searchKey": query,
+        if (query.isNotEmpty) "searchKey": query,
         if (selectedStatus != null) "status": selectedStatus,
-        if (isNearestFilterSelected == true)
-          "byNearest": isNearestFilterSelected,
-        if (isNearestFilterSelected == true) "latitude": "30.510187246065026",
-        if (isNearestFilterSelected == true) "longitude": "31.352178770683253"
-        // TODO : the real location of the user
+        if (isNearestFilterSelected) "byNearest": isNearestFilterSelected,
+        if (isNearestFilterSelected) "latitude": "30.510187246065026",
+        if (isNearestFilterSelected) "longitude": "31.352178770683253",
+        // TODO: Replace with the real location of the user
       };
 
       final endpoint = selectedStatus != null
           ? EndPoint.getVehiclesByStatus
           : EndPoint.getVehicles;
 
-      final response = await dioConsumer.get(endpoint,
-          queryParameters: queryParams,
-          options: Options(headers: {
-            'Authorization':
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiNGFlNDQ0ZWMtYWQzMC00MzA2LTlhZjQtYWE1MzQxOWM5ZTM3IiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDc0NDAxNzAsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.Cq6ruf2Nqe4c2txgVMRVZp118MSgG-VAEpLAuapiY_k',
-          }));
+      final response = await dioConsumer.get(
+        endpoint,
+        queryParameters: queryParams,
+        options: Options(headers: {
+          'Authorization': 'Bearer $accessToken',
+        }),
+      );
 
       final responseData = response as Map<String, dynamic>;
       final vehicles = ListVehicleModel.fromJson(responseData);
@@ -303,6 +312,12 @@ class SearchCubit extends Cubit<SearchCubitState> {
   }
 
   Future<void> fetchStatusCount() async {
+    if (accessToken == null) {
+      emit(
+          SearchCubitError(message: 'Access token is missing. Please log in.'));
+      return;
+    }
+
     try {
       final queryParams = {
         if (selectedStatus != null) "status": selectedStatus,
@@ -312,8 +327,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
         queryParameters: queryParams,
         options: Options(
           headers: {
-            'Authorization':
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc4IiwianRpIjoiNGFlNDQ0ZWMtYWQzMC00MzA2LTlhZjQtYWE1MzQxOWM5ZTM3IiwidXNlcm5hbWUiOiJlc3JhYTEyIiwidWlkIjoiMTA3OCIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDc0NDAxNzAsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.Cq6ruf2Nqe4c2txgVMRVZp118MSgG-VAEpLAuapiY_k',
+            'Authorization': 'Bearer $accessToken',
           },
         ),
       );
