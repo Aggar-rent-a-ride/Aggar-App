@@ -91,7 +91,7 @@ class SearchResultSection extends StatelessWidget {
                         carName: "${vehicle.brand} ${vehicle.model}",
                         carType: vehicle.transmission,
                         pricePerHour: vehicle.pricePerDay,
-                        rating: vehicle.rate!,
+                        rating: vehicle.rate ?? 0.0,
                         assetImagePath: vehicle.mainImagePath,
                       );
                     },
