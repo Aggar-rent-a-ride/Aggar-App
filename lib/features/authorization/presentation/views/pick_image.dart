@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_state.dart';
@@ -67,9 +68,11 @@ class PickImageContent extends StatelessWidget {
       listener: (context, state) {
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: context.theme.red100_1,
+            customSnackBar(
+              context,
+              "Error",
+              "Sign Up Error: ${state.errorMessage!}",
+              SnackBarType.error,
             ),
           );
           context.read<PickImageCubit>().resetError();
@@ -77,10 +80,8 @@ class PickImageContent extends StatelessWidget {
 
         if (state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Registration successful!'),
-              backgroundColor: context.theme.green100_1,
-            ),
+            customSnackBar(context, "Success", "Registration successful!",
+                SnackBarType.success),
           );
 
           if (onRegistrationSuccess != null) {

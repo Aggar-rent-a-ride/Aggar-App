@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_cubit.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_state.dart';
@@ -31,11 +32,21 @@ class LogoutCard extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const SignInView()),
               (route) => false,
             );
+            ScaffoldMessenger.of(context).showSnackBar(
+              customSnackBar(
+                context,
+                "Success",
+                "Sign out successful!",
+                SnackBarType.success,
+              ),
+            );
           } else if (state is LogoutFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage),
-                backgroundColor: Colors.red,
+              customSnackBar(
+                context,
+                "Error",
+                "Sign out failed!",
+                SnackBarType.error,
               ),
             );
           }
