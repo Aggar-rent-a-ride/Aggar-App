@@ -14,10 +14,8 @@ import 'package:gap/gap.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MainScreenBody extends StatelessWidget {
-  const MainScreenBody(
-      {super.key, required this.state, required this.scrollController});
+  const MainScreenBody({super.key, required this.state});
   final MainConnected state;
-  final ScrollController scrollController;
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -25,7 +23,6 @@ class MainScreenBody extends StatelessWidget {
         context.read<MainCubit>().refreshData();
       },
       child: SingleChildScrollView(
-        controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

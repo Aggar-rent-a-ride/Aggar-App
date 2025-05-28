@@ -3,7 +3,6 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../data/model/list_vehicle_model.dart';
 import '../../../data/model/vehicle_model.dart';
 
@@ -25,7 +24,7 @@ class VehicleCubit extends Cubit<VehicleState> {
               vehicles: ListVehicleModel(data: allVehicles, totalPages: 0)));
         }
         final response = await dioConsumer.get(
-          EndPoint.getPopularVehicles,
+          EndPoint.getVehicles,
           queryParameters: {"pageNo": currentPage, "pageSize": 5},
           options: Options(headers: {
             'Authorization': 'Bearer $accessToken',
@@ -58,6 +57,77 @@ class VehicleCubit extends Cubit<VehicleState> {
       } finally {
         isLoadingMore = false;
       }
+    }
+  }
+
+  Future<void> toggleFavorite(
+      String accessToken, String vehicleId, bool currentValue) async {
+    try {
+      final updatedVehicles = allVehicles.map((vehicle) {
+        // ignore: unrelated_type_equality_checks
+        if (vehicle.id == vehicleId) {
+          return VehicleModel(
+            distance: vehicle.distance,
+            type: vehicle.type,
+            year: vehicle.year,
+            rate: vehicle.rate,
+            id: vehicle.id,
+            model: vehicle.model,
+            brand: vehicle.brand,
+            transmission: vehicle.transmission,
+            pricePerDay: vehicle.pricePerDay,
+            mainImagePath: vehicle.mainImagePath,
+            isFavourite: !currentValue,
+          );
+        }
+        return vehicle;
+      }).toList();
+
+      allVehicles = updatedVehicles;
+      emit(VehicleLoaded(
+        vehicles: ListVehicleModel(
+          data: allVehicles,
+          totalPages: state is VehicleLoaded
+              ? (state as VehicleLoaded).vehicles.totalPages
+              : 0,
+        ),
+      ));
+      await dioConsumer.put(
+        EndPoint.putFavourite,
+        data: {"vehicleId": vehicleId, "isFavourite": !currentValue},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+    } catch (error) {
+      final revertedVehicles = allVehicles.map((vehicle) {
+        // ignore: unrelated_type_equality_checks
+        if (vehicle.id == vehicleId) {
+          return VehicleModel(
+            distance: vehicle.distance,
+            type: vehicle.type,
+            year: vehicle.year,
+            rate: vehicle.rate,
+            id: vehicle.id,
+            model: vehicle.model,
+            brand: vehicle.brand,
+            transmission: vehicle.transmission,
+            pricePerDay: vehicle.pricePerDay,
+            mainImagePath: vehicle.mainImagePath,
+            isFavourite: currentValue,
+          );
+        }
+        return vehicle;
+      }).toList();
+
+      allVehicles = revertedVehicles;
+      emit(VehicleLoaded(
+        vehicles: ListVehicleModel(
+          data: allVehicles,
+          totalPages: state is VehicleLoaded
+              ? (state as VehicleLoaded).vehicles.totalPages
+              : 0,
+        ),
+      ));
+      emit(VehicleError(message: 'Failed to toggle favorite: $error'));
     }
   }
 

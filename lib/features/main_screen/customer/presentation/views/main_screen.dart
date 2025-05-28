@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
@@ -21,36 +20,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final ScrollController scrollController = ScrollController();
-  Timer? _debounce;
-
-  @override
-  void initState() {
-    super.initState();
-    final vehicleCubit = context.read<VehicleCubit>();
-    final mainCubit = context.read<MainCubit>();
-    scrollController.addListener(() {
-      if (_debounce?.isActive ?? false) return;
-      _debounce = Timer(const Duration(milliseconds: 200), () {
-        if (scrollController.position.pixels >=
-                scrollController.position.maxScrollExtent - 200 &&
-            !vehicleCubit.isLoadingMore) {
-          final mainState = mainCubit.state;
-          if (mainState is MainConnected) {
-            vehicleCubit.loadMoreVehicles(mainState.accessToken);
-          }
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MainCubit, MainState>(
@@ -101,7 +70,6 @@ class _MainScreenState extends State<MainScreen> {
                   backgroundColor: context.theme.white100_1,
                   body: MainScreenBody(
                     state: state,
-                    scrollController: scrollController,
                   ),
                 );
               }
