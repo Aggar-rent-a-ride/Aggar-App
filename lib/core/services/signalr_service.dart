@@ -67,13 +67,7 @@ class SignalRService {
           .withUrl(
               '${EndPoint.baseUrl}${EndPoint.chatHub}?access_token=$accessToken')
           .withAutomaticReconnect(
-        retryDelays: [
-          2000,
-          5000,
-          10000,
-          20000,
-          30000
-        ], 
+        retryDelays: [2000, 5000, 10000, 20000, 30000],
       ).build();
 
       _registerEventHandlers();
@@ -398,37 +392,103 @@ class SignalRService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      String responseStr = parameters[0].toString();
-      print('Received message: $responseStr');
+      final rawResponse = parameters[0];
+      print('Received message: $rawResponse');
 
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r'(\w+):'),
-        (match) => '"${match.group(1)}":',
-      );
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
-        (match) => ': "${match.group(1)}"',
-      );
+      Map<String, dynamic> responseData;
 
-      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      // ✅ BETTER APPROACH: Handle different response formats
+      if (rawResponse is Map<String, dynamic>) {
+        // Response is already a Map
+        responseData = rawResponse;
+      } else if (rawResponse is String) {
+        // Try to parse as JSON string
+        try {
+          responseData = jsonDecode(rawResponse);
+        } catch (jsonError) {
+          print('Failed to parse as JSON string, trying custom parsing...');
+
+          // If JSON parsing fails, try the regex approach as fallback
+          String responseStr = rawResponse;
+
+          // More conservative regex that only targets clear property names
+          responseStr = responseStr.replaceAllMapped(
+            RegExp(r'\b(\w+)(?=\s*:)(?![^{]*})'),
+            (match) => '"${match.group(1)}"',
+          );
+
+          responseData = jsonDecode(responseStr);
+        }
+      } else {
+        // Convert to string and try to parse
+        String responseStr = rawResponse.toString();
+        responseData = jsonDecode(responseStr);
+      }
+
       print('Parsed message data: $responseData');
 
+      // Check for error response
       if (responseData['statusCode'] != null &&
-          responseData['statusCode'] != 200) {
+          responseData['statusCode'] != 200 &&
+          responseData['statusCode'] != 201) {
         final errorMessage =
             responseData['message'] ?? 'Unknown error occurred';
         print('Error response received: $errorMessage');
         _messageController.addError(errorMessage);
         return;
       }
+
       if (responseData['data'] == null) {
         print('Received message with null data');
         return;
       }
+
       final data = responseData['data'];
       if (data is Map<String, dynamic>) {
+        // ✅ FIXED: Handle both camelCase and PascalCase property names
+        final processedData = <String, dynamic>{};
+
+        data.forEach((key, value) {
+          // Convert PascalCase to camelCase for consistency
+          String normalizedKey = key;
+          if (key.length > 1) {
+            normalizedKey = key[0].toLowerCase() + key.substring(1);
+          }
+
+          // Handle both formats
+          switch (normalizedKey.toLowerCase()) {
+            case 'id':
+              processedData['Id'] = value;
+              break;
+            case 'clientmessageid':
+              processedData['ClientMessageId'] = value;
+              break;
+            case 'senderid':
+              processedData['SenderId'] = value;
+              break;
+            case 'receiverid':
+              processedData['ReceiverId'] = value;
+              break;
+            case 'sentat':
+              processedData['SentAt'] = value;
+              break;
+            case 'isseen':
+            case 'seen':
+              processedData['Seen'] = value;
+              break;
+            case 'content':
+              processedData['Content'] = value;
+              break;
+            case 'filepath':
+              processedData['FilePath'] = value;
+              break;
+            default:
+              processedData[key] = value;
+          }
+        });
+
         final message = ChatMessage.fromJson(
-          data,
+          processedData,
           currentUserId: _currentUserId,
         );
         _messageController.add(message);
@@ -437,6 +497,8 @@ class SignalRService {
       }
     } catch (e) {
       print('Error handling received message: $e');
+      print('Raw response was: ${parameters[0]}');
+      print('Response type: ${parameters[0].runtimeType}');
       _messageController.addError('Failed to process message: $e');
     }
   }
@@ -475,23 +537,33 @@ class SignalRService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      print('Received upload initiation response: $parameters');
+      final rawResponse = parameters[0];
+      print('Received upload initiation response: $rawResponse');
 
-      String responseStr = parameters[0].toString();
-      print('Raw response string: $responseStr');
+      Map<String, dynamic> responseData;
 
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r'(\w+):'),
-        (match) => '"${match.group(1)}":',
-      );
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
-        (match) => ': "${match.group(1)}"',
-      );
+      // Handle different response formats
+      if (rawResponse is Map<String, dynamic>) {
+        responseData = rawResponse;
+      } else if (rawResponse is String) {
+        try {
+          responseData = jsonDecode(rawResponse);
+        } catch (jsonError) {
+          print('Failed to parse as JSON string, trying custom parsing...');
 
-      print('Formatted response string: $responseStr');
+          String responseStr = rawResponse;
+          responseStr = responseStr.replaceAllMapped(
+            RegExp(r'\b(\w+)(?=\s*:)(?![^{]*})'),
+            (match) => '"${match.group(1)}"',
+          );
 
-      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+          responseData = jsonDecode(responseStr);
+        }
+      } else {
+        String responseStr = rawResponse.toString();
+        responseData = jsonDecode(responseStr);
+      }
+
       print('Parsed response data: $responseData');
 
       if (responseData.containsKey('statusCode') &&
@@ -502,49 +574,39 @@ class SignalRService {
         return;
       }
 
+      String filePath = '';
+      String clientMessageId = '';
+
       if (responseData.containsKey('data')) {
         final data = responseData['data'];
         if (data is Map<String, dynamic>) {
-          final response = UploadInitiationResponse(
-            filePath: data['filePath'] ?? data['FilePath'] ?? '',
-            clientMessageId:
-                data['clientMessageId'] ?? data['ClientMessageId'] ?? '',
-          );
-
-          if (response.filePath.isEmpty) {
-            print('Error: Server returned empty file path in API response');
-            _uploadInitiationController
-                .addError('Server returned empty file path');
-            return;
-          }
-
-          print('Emitting API response data: $response');
-          _uploadInitiationController.add(response);
-        } else {
-          print('Error: Invalid data format in API response');
-          _uploadInitiationController
-              .addError('Invalid data format in response');
+          filePath = data['filePath'] ?? data['FilePath'] ?? '';
+          clientMessageId =
+              data['clientMessageId'] ?? data['ClientMessageId'] ?? '';
         }
       } else {
-        final response = UploadInitiationResponse(
-          filePath: responseData['filePath'] ?? responseData['FilePath'] ?? '',
-          clientMessageId: responseData['clientMessageId'] ??
-              responseData['ClientMessageId'] ??
-              '',
-        );
-
-        if (response.filePath.isEmpty) {
-          print('Error: Server returned empty file path in direct response');
-          _uploadInitiationController
-              .addError('Server returned empty file path');
-          return;
-        }
-
-        print('Emitting direct response data: $response');
-        _uploadInitiationController.add(response);
+        filePath = responseData['filePath'] ?? responseData['FilePath'] ?? '';
+        clientMessageId = responseData['clientMessageId'] ??
+            responseData['ClientMessageId'] ??
+            '';
       }
+
+      if (filePath.isEmpty) {
+        print('Error: Server returned empty file path');
+        _uploadInitiationController.addError('Server returned empty file path');
+        return;
+      }
+
+      final response = UploadInitiationResponse(
+        filePath: filePath,
+        clientMessageId: clientMessageId,
+      );
+
+      print('Emitting upload initiation response: $response');
+      _uploadInitiationController.add(response);
     } catch (e) {
       print('Error handling upload initiation: $e');
+      print('Raw response was: ${parameters[0]}');
       _uploadInitiationController
           .addError('Failed to parse server response: $e');
     }
@@ -554,48 +616,73 @@ class SignalRService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      String responseStr = parameters[0].toString();
-      print('Received upload progress: $responseStr');
+      final rawResponse = parameters[0];
+      print('Received upload progress: $rawResponse');
 
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r'(\w+):'),
-        (match) => '"${match.group(1)}":',
-      );
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
-        (match) => ': "${match.group(1)}"',
-      );
+      Map<String, dynamic> responseData;
 
-      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      // Handle different response formats
+      if (rawResponse is Map<String, dynamic>) {
+        responseData = rawResponse;
+      } else if (rawResponse is String) {
+        try {
+          responseData = jsonDecode(rawResponse);
+        } catch (jsonError) {
+          print('Failed to parse as JSON string, trying custom parsing...');
+
+          String responseStr = rawResponse;
+          responseStr = responseStr.replaceAllMapped(
+            RegExp(r'\b(\w+)(?=\s*:)(?![^{]*})'),
+            (match) => '"${match.group(1)}"',
+          );
+
+          responseData = jsonDecode(responseStr);
+        }
+      } else {
+        String responseStr = rawResponse.toString();
+        responseData = jsonDecode(responseStr);
+      }
+
       print('Parsed progress data: $responseData');
 
+      Map<String, dynamic>? data;
       if (responseData.containsKey('data')) {
-        final data = responseData['data'];
-        if (data is Map<String, dynamic>) {
-          final progress = data['progress'];
-          int progressInt;
-          if (progress is String) {
-            progressInt = int.tryParse(progress) ?? 0;
-          } else if (progress is int) {
-            progressInt = progress;
-          } else {
-            progressInt = 0;
-          }
+        data = responseData['data'] as Map<String, dynamic>?;
+      } else {
+        data = responseData;
+      }
 
-          final totalBytes = data['totalBytes'] as int? ?? 0;
+      if (data != null) {
+        final progress = data['progress'] ?? data['Progress'] ?? 0;
+        int progressInt;
 
-          final uploadProgress = UploadProgress(
-            clientMessageId:
-                data['clientMessageId'] ?? data['ClientMessageId'] ?? '',
-            bytesUploaded: progressInt,
-            progressPercentage:
-                totalBytes > 0 ? (progressInt / totalBytes) * 100 : 0,
-          );
-          _uploadProgressController.add(uploadProgress);
+        if (progress is String) {
+          progressInt = int.tryParse(progress) ?? 0;
+        } else if (progress is int) {
+          progressInt = progress;
+        } else if (progress is double) {
+          progressInt = progress.round();
+        } else {
+          progressInt = 0;
         }
+
+        final totalBytes =
+            (data['totalBytes'] ?? data['TotalBytes'] ?? 0) as int;
+        final clientMessageId =
+            data['clientMessageId'] ?? data['ClientMessageId'] ?? '';
+
+        final uploadProgress = UploadProgress(
+          clientMessageId: clientMessageId,
+          bytesUploaded: progressInt,
+          progressPercentage:
+              totalBytes > 0 ? (progressInt / totalBytes) * 100 : 0,
+        );
+
+        _uploadProgressController.add(uploadProgress);
       }
     } catch (e) {
       print('Error handling upload progress: $e');
+      print('Raw response was: ${parameters![0]}');
       _uploadProgressController
           .addError('Failed to process upload progress: $e');
     }
