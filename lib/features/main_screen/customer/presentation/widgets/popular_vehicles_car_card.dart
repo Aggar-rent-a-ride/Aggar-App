@@ -1,12 +1,12 @@
 import 'package:aggar/core/api/end_points.dart';
-import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
+import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_state.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/favorite_button.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,122 +35,126 @@ class PopularVehiclesCarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddVehicleCubit, AddVehicleState>(
+    return BlocBuilder<MainCubit, MainState>(
       builder: (context, state) {
-        return GestureDetector(
-          onTap: () async {
-            final token =
-                await context.read<TokenRefreshCubit>().getAccessToken();
-            if (token != null) {
-              context.read<AddVehicleCubit>().getData(vehicleId, token);
-            }
-            if (context.read<AddVehicleCubit>().vehicleData != null) {
-              final vehicle = context.read<AddVehicleCubit>().vehicleData!;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VehiclesDetailsView(
-                    vehiceSeatsNo: vehicle.numOfPassengers.toString(),
-                    renterName: vehicle.renter!.name,
-                    yearOfManufaction: vehicle.year,
-                    vehicleModel: vehicle.model,
-                    vehicleRentPrice: vehicle.pricePerDay,
-                    vehicleColor: vehicle.color,
-                    vehicleOverView: vehicle.extraDetails ?? "",
-                    images: vehicle.vehicleImages,
-                    mainImage: vehicle.mainImagePath,
-                    vehicleHealth: vehicle.physicalStatus == "Excellent"
-                        ? "excellent"
-                        : vehicle.physicalStatus == "Good"
-                            ? "good"
-                            : vehicle.physicalStatus == "Scratched"
-                                ? "minor dents"
-                                : "not bad",
-                    vehicleStatus: vehicle.status == "OutOfService"
-                        ? "out of stock"
-                        : "active",
-                    transmissionMode: vehicle.transmission == "Automatic"
-                        ? 1
-                        : vehicle.transmission == "None"
-                            ? 0
-                            : 2,
-                    vehicleType: vehicle.vehicleType.name,
-                    vehicleBrand: vehicle.vehicleBrand.name,
-                    vehicleAddress: vehicle.address,
-                    vehicleLongitude: vehicle.location.longitude,
-                    vehicleLatitude: vehicle.location.latitude,
-                  ),
-                ),
-              );
-            }
-          },
-          child: Stack(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration: BoxDecoration(
-                  color: context.theme.white100_2,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                      offset: Offset(0, 0),
+        if (state is MainConnected) {
+          return GestureDetector(
+            onTap: () async {
+              context
+                  .read<AddVehicleCubit>()
+                  .getData(vehicleId, state.accessToken);
+              if (context.read<AddVehicleCubit>().vehicleData != null) {
+                final vehicle = context.read<AddVehicleCubit>().vehicleData!;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VehiclesDetailsView(
+                      vehiceSeatsNo: vehicle.numOfPassengers.toString(),
+                      renterName: vehicle.renter!.name,
+                      yearOfManufaction: vehicle.year,
+                      vehicleModel: vehicle.model,
+                      vehicleRentPrice: vehicle.pricePerDay,
+                      vehicleColor: vehicle.color,
+                      vehicleOverView: vehicle.extraDetails ?? "",
+                      images: vehicle.vehicleImages,
+                      mainImage: vehicle.mainImagePath,
+                      vehicleHealth: vehicle.physicalStatus == "Excellent"
+                          ? "excellent"
+                          : vehicle.physicalStatus == "Good"
+                              ? "good"
+                              : vehicle.physicalStatus == "Scratched"
+                                  ? "minor dents"
+                                  : "not bad",
+                      vehicleStatus: vehicle.status == "OutOfService"
+                          ? "out of stock"
+                          : "active",
+                      transmissionMode: vehicle.transmission == "Automatic"
+                          ? 1
+                          : vehicle.transmission == "None"
+                              ? 0
+                              : 2,
+                      vehicleType: vehicle.vehicleType.name,
+                      vehicleBrand: vehicle.vehicleBrand.name,
+                      vehicleAddress: vehicle.address,
+                      vehicleLongitude: vehicle.location.longitude,
+                      vehicleLatitude: vehicle.location.latitude,
                     ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            PopularVehiclesCarCardNameWithRating(
-                                carName: carName, rating: rating),
-                            PopularVehiclesCarCardCarType(carType: carType),
-                            const Gap(10),
-                            PopularVehicleCarCardPrice(
-                                pricePerHour: pricePerHour.toString()),
-                          ],
+                  ),
+                );
+              }
+            },
+            child: Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: context.theme.white100_2,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              PopularVehiclesCarCardNameWithRating(
+                                  carName: carName, rating: rating),
+                              PopularVehiclesCarCardCarType(carType: carType),
+                              const Gap(10),
+                              PopularVehicleCarCardPrice(
+                                  pricePerHour: pricePerHour.toString()),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const Gap(5),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Image.network(
-                        "${EndPoint.baseUrl}$assetImagePath",
-                        height: 100,
-                        width: 150,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            AppAssets.assetsImagesCar,
-                            height: 100,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          );
-                        },
+                      const Gap(5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Image.network(
+                          "${EndPoint.baseUrl}$assetImagePath",
+                          height: 100,
+                          width: 150,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              AppAssets.assetsImagesCar,
+                              height: 100,
+                              width: 150,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Positioned(
-                top: 18,
-                right: 12,
-                child: FavoriteButton(
-                  vehicleId: vehicleId,
-                  isFavorite: isFavorite,
+                Positioned(
+                  top: 18,
+                  right: 12,
+                  child: FavoriteButton(
+                    vehicleId: vehicleId,
+                    isFavorite: isFavorite,
+                    token: state.accessToken,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        } else {
+          return Container();
+        }
       },
     );
   }

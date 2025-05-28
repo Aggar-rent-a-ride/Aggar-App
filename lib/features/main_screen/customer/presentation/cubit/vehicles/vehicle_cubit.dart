@@ -11,9 +11,16 @@ class VehicleCubit extends Cubit<VehicleState> {
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
   bool isLoadingMore = false;
   int currentPage = 1;
-  List<VehicleModel> allVehicles = [];
+  List<VehicleModel> _allVehicles = [];
+  List<VehicleModel> _popularVehicles = [];
+  List<VehicleModel> _mostRentedVehicles = [];
 
-  Future<void> fetchVehicle(String accessToken,
+  // Getters to access vehicle lists
+  List<VehicleModel> get allVehicles => _allVehicles;
+  List<VehicleModel> get popularVehicles => _popularVehicles;
+  List<VehicleModel> get mostRentedVehicles => _mostRentedVehicles;
+
+  Future<void> fetchAllVehicles(String accessToken,
       {bool isLoadMore = false}) async {
     for (int attempt = 1; attempt <= 3; attempt++) {
       try {
@@ -21,28 +28,31 @@ class VehicleCubit extends Cubit<VehicleState> {
           emit(VehicleLoading());
         } else {
           emit(VehicleLoadingMore(
-              vehicles: ListVehicleModel(data: allVehicles, totalPages: 0)));
+            vehicles: ListVehicleModel(data: _allVehicles, totalPages: 0),
+          ));
         }
+
         final response = await dioConsumer.get(
           EndPoint.getVehicles,
           queryParameters: {"pageNo": currentPage, "pageSize": 5},
-          options: Options(headers: {
-            'Authorization': 'Bearer $accessToken',
-          }),
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
+
         final vehicles = ListVehicleModel.fromJson(response);
 
         if (isLoadMore) {
-          allVehicles.addAll(vehicles.data);
+          _allVehicles.addAll(vehicles.data);
         } else {
-          allVehicles = vehicles.data;
+          _allVehicles = vehicles.data;
         }
-        if (allVehicles.length > 50) {
-          allVehicles.removeRange(0, allVehicles.length - 50);
+
+        if (_allVehicles.length > 50) {
+          _allVehicles.removeRange(0, _allVehicles.length - 50);
         }
+
         emit(VehicleLoaded(
           vehicles: ListVehicleModel(
-            data: allVehicles,
+            data: _allVehicles,
             totalPages: vehicles.totalPages,
           ),
         ));
@@ -60,11 +70,75 @@ class VehicleCubit extends Cubit<VehicleState> {
     }
   }
 
+  Future<void> fetchPopularVehicles(String accessToken) async {
+    for (int attempt = 1; attempt <= 3; attempt++) {
+      try {
+        emit(VehicleLoading());
+
+        final response = await dioConsumer.get(
+          EndPoint.getPopularVehicles,
+          queryParameters: {"pageNo": 1, "pageSize": 5},
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        );
+
+        final vehicles = ListVehicleModel.fromJson(response);
+        _popularVehicles = vehicles.data;
+
+        emit(VehicleLoaded(
+          vehicles: ListVehicleModel(
+            data: _popularVehicles,
+            totalPages: vehicles.totalPages,
+          ),
+        ));
+        return;
+      } catch (error) {
+        if (attempt == 3) {
+          emit(VehicleError(
+              message:
+                  'Failed to fetch popular vehicles after $attempt attempts: $error'));
+        }
+        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      }
+    }
+  }
+
+  Future<void> fetchMostRentedVehicles(String accessToken) async {
+    for (int attempt = 1; attempt <= 3; attempt++) {
+      try {
+        emit(VehicleLoading());
+
+        final response = await dioConsumer.get(
+          EndPoint.mostRentedVehicles,
+          queryParameters: {"pageNo": 1, "pageSize": 1},
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        );
+
+        final vehicles = ListVehicleModel.fromJson(response);
+        _mostRentedVehicles = vehicles.data;
+
+        emit(VehicleLoaded(
+          vehicles: ListVehicleModel(
+            data: _mostRentedVehicles,
+            totalPages: vehicles.totalPages,
+          ),
+        ));
+        return;
+      } catch (error) {
+        if (attempt == 3) {
+          emit(VehicleError(
+              message:
+                  'Failed to fetch most rented vehicles after $attempt attempts: $error'));
+        }
+        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      }
+    }
+  }
+
   Future<void> toggleFavorite(
       String accessToken, String vehicleId, bool currentValue) async {
     try {
-      final updatedVehicles = allVehicles.map((vehicle) {
-        // ignore: unrelated_type_equality_checks
+      // Update all vehicle lists
+      final updatedAllVehicles = _allVehicles.map((vehicle) {
         if (vehicle.id == vehicleId) {
           return VehicleModel(
             distance: vehicle.distance,
@@ -83,23 +157,65 @@ class VehicleCubit extends Cubit<VehicleState> {
         return vehicle;
       }).toList();
 
-      allVehicles = updatedVehicles;
+      final updatedPopularVehicles = _popularVehicles.map((vehicle) {
+        if (vehicle.id == vehicleId) {
+          return VehicleModel(
+            distance: vehicle.distance,
+            type: vehicle.type,
+            year: vehicle.year,
+            rate: vehicle.rate,
+            id: vehicle.id,
+            model: vehicle.model,
+            brand: vehicle.brand,
+            transmission: vehicle.transmission,
+            pricePerDay: vehicle.pricePerDay,
+            mainImagePath: vehicle.mainImagePath,
+            isFavourite: !currentValue,
+          );
+        }
+        return vehicle;
+      }).toList();
+
+      final updatedMostRentedVehicles = _mostRentedVehicles.map((vehicle) {
+        if (vehicle.id == vehicleId) {
+          return VehicleModel(
+            distance: vehicle.distance,
+            type: vehicle.type,
+            year: vehicle.year,
+            rate: vehicle.rate,
+            id: vehicle.id,
+            model: vehicle.model,
+            brand: vehicle.brand,
+            transmission: vehicle.transmission,
+            pricePerDay: vehicle.pricePerDay,
+            mainImagePath: vehicle.mainImagePath,
+            isFavourite: !currentValue,
+          );
+        }
+        return vehicle;
+      }).toList();
+
+      _allVehicles = updatedAllVehicles;
+      _popularVehicles = updatedPopularVehicles;
+      _mostRentedVehicles = updatedMostRentedVehicles;
+
       emit(VehicleLoaded(
         vehicles: ListVehicleModel(
-          data: allVehicles,
+          data: _allVehicles,
           totalPages: state is VehicleLoaded
               ? (state as VehicleLoaded).vehicles.totalPages
               : 0,
         ),
       ));
+
       await dioConsumer.put(
         EndPoint.putFavourite,
         data: {"vehicleId": vehicleId, "isFavourite": !currentValue},
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
     } catch (error) {
-      final revertedVehicles = allVehicles.map((vehicle) {
-        // ignore: unrelated_type_equality_checks
+      // Revert changes in case of error
+      final revertedAllVehicles = _allVehicles.map((vehicle) {
         if (vehicle.id == vehicleId) {
           return VehicleModel(
             distance: vehicle.distance,
@@ -118,15 +234,57 @@ class VehicleCubit extends Cubit<VehicleState> {
         return vehicle;
       }).toList();
 
-      allVehicles = revertedVehicles;
+      final revertedPopularVehicles = _popularVehicles.map((vehicle) {
+        if (vehicle.id == vehicleId) {
+          return VehicleModel(
+            distance: vehicle.distance,
+            type: vehicle.type,
+            year: vehicle.year,
+            rate: vehicle.rate,
+            id: vehicle.id,
+            model: vehicle.model,
+            brand: vehicle.brand,
+            transmission: vehicle.transmission,
+            pricePerDay: vehicle.pricePerDay,
+            mainImagePath: vehicle.mainImagePath,
+            isFavourite: currentValue,
+          );
+        }
+        return vehicle;
+      }).toList();
+
+      final revertedMostRentedVehicles = _mostRentedVehicles.map((vehicle) {
+        if (vehicle.id == vehicleId) {
+          return VehicleModel(
+            distance: vehicle.distance,
+            type: vehicle.type,
+            year: vehicle.year,
+            rate: vehicle.rate,
+            id: vehicle.id,
+            model: vehicle.model,
+            brand: vehicle.brand,
+            transmission: vehicle.transmission,
+            pricePerDay: vehicle.pricePerDay,
+            mainImagePath: vehicle.mainImagePath,
+            isFavourite: currentValue,
+          );
+        }
+        return vehicle;
+      }).toList();
+
+      _allVehicles = revertedAllVehicles;
+      _popularVehicles = revertedPopularVehicles;
+      _mostRentedVehicles = revertedMostRentedVehicles;
+
       emit(VehicleLoaded(
         vehicles: ListVehicleModel(
-          data: allVehicles,
+          data: _allVehicles,
           totalPages: state is VehicleLoaded
               ? (state as VehicleLoaded).vehicles.totalPages
               : 0,
         ),
       ));
+
       emit(VehicleError(message: 'Failed to toggle favorite: $error'));
     }
   }
@@ -143,6 +301,6 @@ class VehicleCubit extends Cubit<VehicleState> {
     }
     isLoadingMore = true;
     currentPage++;
-    fetchVehicle(accessToken, isLoadMore: true);
+    fetchAllVehicles(accessToken, isLoadMore: true);
   }
 }

@@ -1,4 +1,3 @@
-import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +8,12 @@ class FavoriteButton extends StatefulWidget {
     super.key,
     required this.vehicleId,
     required this.isFavorite,
+    required this.token,
   });
 
   final String vehicleId;
   final bool isFavorite;
+  final String token;
 
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
@@ -54,16 +55,12 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               size: 20,
             ),
             onPressed: () async {
-              final token =
-                  await context.read<TokenRefreshCubit>().getAccessToken();
-              if (token != null) {
-                setState(() {
-                  _isFavorite = !_isFavorite;
-                });
-                await context
-                    .read<VehicleCubit>()
-                    .toggleFavorite(token, widget.vehicleId, !_isFavorite);
-              }
+              setState(() {
+                _isFavorite = !_isFavorite;
+              });
+              await context
+                  .read<VehicleCubit>()
+                  .toggleFavorite(widget.token, widget.vehicleId, !_isFavorite);
             },
           ),
         );
