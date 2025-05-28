@@ -49,11 +49,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
 
     _initializeUser();
 
-    realTimeChatCubit.stream.listen((state) {
-      if (state is MessageAddedState || state is MessageUpdatedState) {
-        personalChatCubit.setMessages(realTimeChatCubit.messages);
-      }
-    });
+    // No need for manual listener - PersonalChatBody handles this now
   }
 
   Future<void> _initializeUser() async {
