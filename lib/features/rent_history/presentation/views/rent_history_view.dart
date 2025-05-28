@@ -88,8 +88,6 @@ class RentHistoryView extends StatelessWidget {
   }
 
   void _showFilteredRentals(BuildContext context, List rentals) {
-    // This is a placeholder implementation - you might want to implement actual filtering
-    // by updating the UI or showing a filtered view
     final snackBar = SnackBar(
       content: Text('Showing ${rentals.length} rentals'),
       duration: const Duration(seconds: 2),

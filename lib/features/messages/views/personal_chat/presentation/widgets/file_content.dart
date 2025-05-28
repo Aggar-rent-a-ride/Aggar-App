@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/helper/file_handler.dart';
 import 'package:aggar/core/helper/formate_size.dart';
 import 'package:aggar/core/helper/get_file_extention.dart';
@@ -37,7 +38,12 @@ class FileContent extends StatelessWidget {
           await FileHandler.openFile(file);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to download file')),
+            customSnackBar(
+              context,
+              "Error",
+              "Failed to download file",
+              SnackBarType.error,
+            ),
           );
         }
       },

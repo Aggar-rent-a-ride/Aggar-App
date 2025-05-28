@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_state.dart';
@@ -52,6 +53,14 @@ class _SignInContent extends StatelessWidget {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              customSnackBar(
+                context,
+                "Success",
+                "Sign In successful!",
+                SnackBarType.success,
+              ),
+            );
             final userType = state.userType;
             if (userType == "User") {
               Navigator.push(
@@ -86,16 +95,15 @@ class _SignInContent extends StatelessWidget {
               ),
             );
           } else if (state is LoginFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage),
-              ),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
+                context,
+                "Error",
+                "Sign In Error: ${state.errorMessage}",
+                SnackBarType.error));
           }
         },
         builder: (context, state) {
           final isLoading = state is LoginLoading;
-
           return SafeArea(
             child: SingleChildScrollView(
               child: Padding(

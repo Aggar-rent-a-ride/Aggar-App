@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
@@ -20,9 +21,11 @@ class VerificationViewContent extends StatelessWidget {
       listener: (context, state) {
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: context.theme.red100_1,
+            customSnackBar(
+              context,
+              "Error",
+              "Verifcation Error :${state.errorMessage!}",
+              SnackBarType.error,
             ),
           );
           context.read<VerificationCubit>().resetError();
@@ -30,12 +33,13 @@ class VerificationViewContent extends StatelessWidget {
 
         if (state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Account verified successfully!'),
-              backgroundColor: context.theme.green100_1,
+            customSnackBar(
+              context,
+              "Success",
+              "Account verified successfully!",
+              SnackBarType.success,
             ),
           );
-          // Navigate to home or dashboard
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return const SignInView();
           }));

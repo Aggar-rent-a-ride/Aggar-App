@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,9 +60,11 @@ class SendMessageButton extends StatelessWidget {
       final accessToken = await storage.read(key: 'accessToken');
       if (accessToken == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Authentication error. Please login again.'),
-            backgroundColor: Colors.red,
+          customSnackBar(
+            context,
+            "Error",
+            "Authentication error. Please login again.",
+            SnackBarType.error,
           ),
         );
         return;
@@ -69,9 +72,11 @@ class SendMessageButton extends StatelessWidget {
       await cubit.sendMessage(accessToken);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to send message: $e'),
-          backgroundColor: Colors.red,
+        customSnackBar(
+          context,
+          "Error",
+          "Failed to send message: ${e.toString()}",
+          SnackBarType.error,
         ),
       );
     }

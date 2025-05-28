@@ -16,13 +16,11 @@ class SignUpView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => SignUpCubit()),
-        // We'll create the PickImageCubit at this level so it persists throughout navigation
         BlocProvider(
           create: (context) {
             final signUpCubit = context.read<SignUpCubit>();
             return PickImageCubit(
               userData: signUpCubit.userData,
-              // We'll pass a null controller here, and set it properly in the StatefulWidget
             );
           },
         ),
@@ -45,7 +43,6 @@ class _SignUpPageViewState extends State<SignUpPageView> {
   @override
   void initState() {
     super.initState();
-    // Set the controller for the PickImageCubit after initialization
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<PickImageCubit>().setPageController(_pageController);
     });
@@ -60,26 +57,13 @@ class _SignUpPageViewState extends State<SignUpPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<SignUpCubit, SignUpState>(
-        listener: (context, state) {
-          if (state.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Sign Up Successful!')),
-            );
-          } else if (state.error != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Sign Up Failed: ${state.error}')),
-            );
-          }
-        },
+      body: BlocBuilder<SignUpCubit, SignUpState>(
         builder: (context, state) {
           final SignUpCubit cubit = context.read<SignUpCubit>();
-          
-          // Also listen to changes in the SignUpCubit and update the PickImageCubit
+
           if (context.read<PickImageCubit>().userData != cubit.userData) {
             context.read<PickImageCubit>().updateUserData(cubit.userData);
           }
-
           return PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
@@ -98,11 +82,9 @@ class _SignUpPageViewState extends State<SignUpPageView> {
                   cubit.updateFormData(data);
                 },
               ),
-              // Use the existing PickImageCubit instead of creating a new one
               BlocBuilder<PickImageCubit, PickImageState>(
                 builder: (context, pickImageState) {
                   return PickImage(
-                    // We don't pass userData here because the cubit already has it
                     controller: _pageController,
                     onRegistrationSuccess: (data) {
                       cubit.updateFormData(data);

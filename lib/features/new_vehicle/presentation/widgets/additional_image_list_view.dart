@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_state.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/add_image_button.dart';
@@ -47,9 +48,11 @@ class _AdditionalImageListViewState extends State<AdditionalImageListView> {
       listener: (context, state) {
         if (state is AdditionalImagesFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: ${state.message}'),
-              backgroundColor: Colors.red,
+            customSnackBar(
+              context,
+              "Error",
+              "Unexepected error occured!",
+              SnackBarType.error,
             ),
           );
         }

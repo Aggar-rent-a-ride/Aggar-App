@@ -27,4 +27,8 @@ class AppConstants {
   static Color myGreen10_1 = const Color(0xffE1EDE4);
   static Color myYellow100_1 = const Color(0xffFBBC05);
   static Color myYellow10_1 = const Color(0xffF5EFDC);
+
+  static Color myGreen100_2 = const Color(0xffB5F8C3);
+  static Color myRed100_2 = const Color(0xffFFB7B8);
+  static Color myYellow100_2 = const Color(0xffFAE5C6);
 }

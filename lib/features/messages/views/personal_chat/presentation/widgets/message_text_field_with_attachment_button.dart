@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
 import 'package:flutter/material.dart';
@@ -69,9 +70,11 @@ class MessageTextFieldWithAttachmentButton extends StatelessWidget {
       await cubit.pickAndSendFile();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to pick file: $e'),
-          backgroundColor: Colors.red,
+        customSnackBar(
+          context,
+          "Error",
+          "Failed to pick file: ${e.toString()}",
+          SnackBarType.error,
         ),
       );
     }
