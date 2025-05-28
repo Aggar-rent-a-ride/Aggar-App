@@ -1,3 +1,4 @@
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_chat_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
@@ -67,7 +68,12 @@ class _AllMessagesViewState extends State<AllMessagesView>
           );
         } else if (state is MessageFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage)),
+            customSnackBar(
+              context,
+              "Error",
+              "Messages Error: ${state.errorMessage}",
+              SnackBarType.error,
+            ),
           );
         }
       },

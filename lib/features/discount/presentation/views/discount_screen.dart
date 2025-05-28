@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/widgets/discount_list_section.dart';
 import 'package:aggar/features/discount/presentation/widgets/yes_no_buttons_row.dart';
@@ -11,25 +12,25 @@ import '../../../../core/utils/app_styles.dart';
 
 class DiscountScreenView extends StatefulWidget {
   final String vehicleId;
-  
+
   const DiscountScreenView({
     super.key,
     required this.vehicleId,
   });
-  
+
   @override
   State<DiscountScreenView> createState() => _DiscountScreenViewState();
 }
 
 class _DiscountScreenViewState extends State<DiscountScreenView> {
   bool showDiscountSection = false;
-  
+
   void updateDiscountSectionVisibility(bool show) {
     setState(() {
       showDiscountSection = show;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -86,11 +87,13 @@ class _DiscountScreenViewState extends State<DiscountScreenView> {
           bottomNavigationBar: BottomNavigationBarContent(
             title: "Continue",
             onPressed: () {
-              // Make sure we have a non-empty vehicle ID
               if (widget.vehicleId.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Vehicle ID is missing. Cannot add discounts.'),
+                  customSnackBar(
+                    context,
+                    "Error",
+                    "Vehicle ID is missing. Cannot add discounts.",
+                    SnackBarType.error,
                   ),
                 );
                 return;

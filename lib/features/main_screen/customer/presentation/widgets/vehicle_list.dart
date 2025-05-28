@@ -27,11 +27,12 @@ class VehicleList extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: vehicles.length,
                 itemBuilder: (context, index) => PopularVehiclesCarCard(
+                  isFavorite: vehicles[index].isFavourite,
                   vehicleId: vehicles[index].id.toString(),
                   carName: "${vehicles[index].brand} ${vehicles[index].model}",
                   carType: vehicles[index].transmission,
                   pricePerHour: vehicles[index].pricePerDay,
-                  rating: vehicles[index].rate,
+                  // rating: vehicles[index].rate, // Uncomment if rate is available
                   assetImagePath: vehicles[index].mainImagePath,
                 ),
               ),

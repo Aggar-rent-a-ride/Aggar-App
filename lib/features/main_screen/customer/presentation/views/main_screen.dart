@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/helper/show_dialog.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
@@ -21,43 +21,18 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final ScrollController scrollController = ScrollController();
-  Timer? _debounce;
-
-  @override
-  void initState() {
-    super.initState();
-    final vehicleCubit = context.read<VehicleCubit>();
-    final mainCubit = context.read<MainCubit>();
-    scrollController.addListener(() {
-      if (_debounce?.isActive ?? false) return;
-      _debounce = Timer(const Duration(milliseconds: 200), () {
-        if (scrollController.position.pixels >=
-                scrollController.position.maxScrollExtent - 200 &&
-            !vehicleCubit.isLoadingMore) {
-          final mainState = mainCubit.state;
-          if (mainState is MainConnected) {
-            vehicleCubit.loadMoreVehicles(mainState.accessToken);
-          }
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MainCubit, MainState>(
       listener: (context, state) {
         if (state is MainAuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
+            customSnackBar(
+              context,
+              "Error",
+              "Auth Error: ${state.message}",
+              SnackBarType.error,
+            ),
           );
           Navigator.push(
             context,
@@ -84,7 +59,12 @@ class _MainScreenState extends State<MainScreen> {
             listener: (context, vehicleState) {
               if (vehicleState is VehicleError) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(vehicleState.message)),
+                  customSnackBar(
+                    context,
+                    "Error",
+                    "Vehicle Error: ${vehicleState.message}",
+                    SnackBarType.error,
+                  ),
                 );
               }
             },
@@ -101,7 +81,6 @@ class _MainScreenState extends State<MainScreen> {
                   backgroundColor: context.theme.white100_1,
                   body: MainScreenBody(
                     state: state,
-                    scrollController: scrollController,
                   ),
                 );
               }

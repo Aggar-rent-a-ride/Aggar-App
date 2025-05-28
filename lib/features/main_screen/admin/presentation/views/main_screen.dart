@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_state.dart';
@@ -28,11 +29,21 @@ class MainScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is AdminMainAuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Auth Error: ${state.message}')),
+              customSnackBar(
+                context,
+                "Error",
+                "Auth Error: ${state.message}",
+                SnackBarType.error,
+              ),
             );
           } else if (state is AdminMainDisconnected) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No internet connection')),
+              customSnackBar(
+                context,
+                "Error",
+                "No internet connection",
+                SnackBarType.error,
+              ),
             );
           }
         },

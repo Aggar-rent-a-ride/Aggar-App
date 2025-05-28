@@ -1,3 +1,4 @@
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/address_search_bar.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/pick_image_map.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/selected_location_section.dart';
@@ -29,13 +30,17 @@ class _MapScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //  final theme = Theme.of(context);
     return Scaffold(
       body: BlocConsumer<MapLocationCubit, MapLocationState>(
         listener: (context, state) {
           if (state is MapLocationError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
+              customSnackBar(
+                context,
+                "Error",
+                "Map Location failed!",
+                SnackBarType.error,
+              ),
             );
           }
         },

@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_state.dart';
 import 'package:flutter/material.dart';
@@ -49,8 +50,11 @@ class ConfirmLocationWithPickCurrentLocation extends StatelessWidget {
                     Navigator.pop(context, locationData);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select a location first'),
+                      customSnackBar(
+                        context,
+                        "Warning",
+                        "Please select a location first",
+                        SnackBarType.warning,
                       ),
                     );
                   }

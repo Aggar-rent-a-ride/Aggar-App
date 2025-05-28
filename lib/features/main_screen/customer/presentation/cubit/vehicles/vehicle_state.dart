@@ -6,7 +6,7 @@ abstract class VehicleState extends Equatable {
   const VehicleState();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class VehicleInitial extends VehicleState {}
@@ -19,7 +19,7 @@ class VehicleLoadingMore extends VehicleState {
   const VehicleLoadingMore({required this.vehicles});
 
   @override
-  List<Object?> get props => [vehicles];
+  List<Object> get props => [vehicles];
 }
 
 class VehicleLoaded extends VehicleState {
@@ -28,7 +28,18 @@ class VehicleLoaded extends VehicleState {
   const VehicleLoaded({required this.vehicles});
 
   @override
-  List<Object?> get props => [vehicles];
+  List<Object> get props => [vehicles];
+}
+
+class VehicleFavoriteLoading extends VehicleState {
+  final String vehicleId;
+  final ListVehicleModel vehicles;
+
+  const VehicleFavoriteLoading(
+      {required this.vehicleId, required this.vehicles});
+
+  @override
+  List<Object> get props => [vehicleId, vehicles];
 }
 
 class VehicleError extends VehicleState {
@@ -37,5 +48,5 @@ class VehicleError extends VehicleState {
   const VehicleError({required this.message});
 
   @override
-  List<Object?> get props => [message];
+  List<Object> get props => [message];
 }

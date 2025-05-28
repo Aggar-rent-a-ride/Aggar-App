@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
@@ -50,9 +51,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       await _fetchInitialData(token);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to get authentication token'),
-          backgroundColor: Colors.red,
+        customSnackBar(
+          context,
+          "Error",
+          "Failed to get authentication token",
+          SnackBarType.error,
         ),
       );
     }
@@ -69,28 +72,23 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<AddVehicleCubit, AddVehicleState>(
       listener: (context, state) {
-        // Handle state changes here
         if (state is AddVehicleSuccess) {
-          // Access the response data through the cubit
-          final responseData =
-              context.read<AddVehicleCubit>().getResponseData();
-
-          // Show success message with data if available
+          context.read<AddVehicleCubit>().getResponseData();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Vehicle added successfully!'),
-              backgroundColor: Colors.green,
+            customSnackBar(
+              context,
+              "Success",
+              "Vehicle added successfully!",
+              SnackBarType.success,
             ),
           );
-
-          // Log the full response data for verification
-          print('Full Response Data in UI: $responseData');
         } else if (state is AddVehicleFailure) {
-          // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to add vehicle: ${state.errorMessage}'),
-              backgroundColor: Colors.red,
+            customSnackBar(
+              context,
+              "Error",
+              "Failed to add vehicle!",
+              SnackBarType.error,
             ),
           );
         }
@@ -102,19 +100,16 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             onPressed: () async {
               if (_accessToken == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Authentication token not available. Please try again.'),
-                    backgroundColor: Colors.red,
+                  customSnackBar(
+                    context,
+                    "Error",
+                    "Authentication token not available. Please try again.",
+                    SnackBarType.error,
                   ),
                 );
                 return;
               }
-
-              // Get the MapLocationCubit instance
               final mapLocationCubit = context.read<MapLocationCubit>();
-
-              // Validate the form
               if (context
                       .read<AddVehicleCubit>()
                       .addVehicleFormKey
@@ -123,8 +118,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   false) {
                 if (mapLocationCubit.selectedLocation == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please select a location on the map'),
+                    customSnackBar(
+                      context,
+                      "Warning",
+                      "Please select a location on the map",
+                      SnackBarType.warning,
                     ),
                   );
                   return;

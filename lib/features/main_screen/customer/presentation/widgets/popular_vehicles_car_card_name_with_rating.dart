@@ -7,7 +7,7 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
   const PopularVehiclesCarCardNameWithRating({
     super.key,
     required this.carName,
-    required this.rating,
+    this.rating,
   });
 
   final String carName;

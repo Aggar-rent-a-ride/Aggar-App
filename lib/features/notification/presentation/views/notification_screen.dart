@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
@@ -99,19 +100,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       !(state.message.contains('Failed to connect') ||
                           state.message.contains('connection'))) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: Colors.red,
-                        behavior: SnackBarBehavior.floating,
+                      customSnackBar(
+                        context,
+                        "Error",
+                        "Notificaation Error: ${state.message}",
+                        SnackBarType.error,
                       ),
                     );
                   }
                 } else if (state is NotificationReceived) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.notification.content),
-                      behavior: SnackBarBehavior.floating,
-                      duration: const Duration(seconds: 2),
+                    customSnackBar(
+                      context,
+                      "Success",
+                      state.notification.content,
+                      SnackBarType.success,
                     ),
                   );
                 }
