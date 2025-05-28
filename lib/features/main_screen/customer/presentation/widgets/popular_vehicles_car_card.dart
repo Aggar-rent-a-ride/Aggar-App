@@ -1,18 +1,16 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/features/main_screen/customer/presentation/widgets/favorite_button.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_state.dart';
-import 'package:aggar/core/cubit/refresh token/token_refresh_cubit.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
 import '../../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 
 class PopularVehiclesCarCard extends StatelessWidget {
@@ -22,6 +20,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
   final double? rating;
   final String assetImagePath;
   final String vehicleId;
+  final bool isFavorite;
 
   const PopularVehiclesCarCard({
     super.key,
@@ -31,6 +30,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
     this.rating,
     required this.assetImagePath,
     required this.vehicleId,
+    required this.isFavorite,
   });
 
   @override
@@ -50,13 +50,13 @@ class PopularVehiclesCarCard extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => VehiclesDetailsView(
+                    vehiceSeatsNo: vehicle.numOfPassengers.toString(),
                     renterName: vehicle.renter!.name,
                     yearOfManufaction: vehicle.year,
                     vehicleModel: vehicle.model,
                     vehicleRentPrice: vehicle.pricePerDay,
                     vehicleColor: vehicle.color,
                     vehicleOverView: vehicle.extraDetails ?? "",
-                    vehiceSeatsNo: vehicle.numOfPassengers.toString(),
                     images: vehicle.vehicleImages,
                     mainImage: vehicle.mainImagePath,
                     vehicleHealth: vehicle.physicalStatus == "Excellent"
@@ -84,59 +84,71 @@ class PopularVehiclesCarCard extends StatelessWidget {
               );
             }
           },
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            decoration: BoxDecoration(
-              color: context.theme.white100_2,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, 0),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        PopularVehiclesCarCardNameWithRating(
-                            carName: carName, rating: rating),
-                        PopularVehiclesCarCardCarType(carType: carType),
-                        const Gap(10),
-                        PopularVehicleCarCardPrice(
-                            pricePerHour: pricePerHour.toString()),
-                      ],
+          child: Stack(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                decoration: BoxDecoration(
+                  color: context.theme.white100_2,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 0),
                     ),
-                  ),
+                  ],
                 ),
-                const Gap(5),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.network(
-                    "${EndPoint.baseUrl}$assetImagePath",
-                    height: 100,
-                    width: 150,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        AppAssets.assetsImagesCar,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PopularVehiclesCarCardNameWithRating(
+                                carName: carName, rating: rating),
+                            PopularVehiclesCarCardCarType(carType: carType),
+                            const Gap(10),
+                            PopularVehicleCarCardPrice(
+                                pricePerHour: pricePerHour.toString()),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Gap(5),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.network(
+                        "${EndPoint.baseUrl}$assetImagePath",
                         height: 100,
                         width: 150,
                         fit: BoxFit.cover,
-                      );
-                    },
-                  ),
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            AppAssets.assetsImagesCar,
+                            height: 100,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                top: 18,
+                right: 12,
+                child: FavoriteButton(
+                  vehicleId: vehicleId,
+                  isFavorite: isFavorite,
+                ),
+              ),
+            ],
           ),
         );
       },

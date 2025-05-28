@@ -8,12 +8,12 @@ class VehicleModel {
   final String model;
   final int year;
   final double pricePerDay;
-  final bool isFavourite;
+  bool isFavourite;
   final String mainImagePath;
   final String transmission;
   final double? rate;
 
-  const VehicleModel({
+  VehicleModel({
     required this.id,
     required this.distance,
     required this.brand,
@@ -36,7 +36,7 @@ class VehicleModel {
       model: json[ApiKey.getVehicleModel],
       year: json[ApiKey.getVehicleYear],
       pricePerDay: (json[ApiKey.getVehiclePricePerDay] ?? 0.0).toDouble(),
-      isFavourite: json[ApiKey.getVehicleIsFavourite] ?? false,
+      isFavourite: json["isFavourite"] ?? false,
       mainImagePath: json[ApiKey.getVehicleMainImagePath],
       transmission: json[ApiKey.getVehicleTransmission],
       rate: json[ApiKey.getVehicleRate] != null

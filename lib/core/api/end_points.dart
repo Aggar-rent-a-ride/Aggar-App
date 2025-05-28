@@ -21,6 +21,7 @@ class EndPoint {
   static String getPopularVehicles = "$baseUrl/api/vehicle/popular-vehicles";
   static String mostRentedVehicles =
       "$baseUrl/api/vehicle/most-rented-vehicles";
+  static String putFavourite = "$baseUrl/api/vehicle/favourite";
 
   // Chat endpoints
   static String chatHub = "/Chat";
