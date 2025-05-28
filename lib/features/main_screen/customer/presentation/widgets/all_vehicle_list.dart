@@ -1,5 +1,8 @@
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
+import 'package:aggar/features/main_screen/customer/presentation/views/all_vehicles_category_screen.dart';
+import 'package:aggar/features/main_screen/customer/presentation/views/most_rented_vehicles_category_screen.dart';
+import 'package:aggar/features/main_screen/customer/presentation/views/popular_vehicles_category_screen.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_all_vehicle.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/vehicle_category_section.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +40,33 @@ class AllVehicleList extends StatelessWidget {
                     onFavoriteToggle: (vehicleId, isFavorite) {
                       cubit.toggleFavorite(accessToken, vehicleId, isFavorite);
                     },
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MostRentedVehiclesCategoryScreen(
+                            accessToken: accessToken,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   VehicleCategorySection(
                     title: 'Popular Vehicles',
                     vehicles: cubit.popularVehicles,
                     onFavoriteToggle: (vehicleId, isFavorite) {
                       cubit.toggleFavorite(accessToken, vehicleId, isFavorite);
+                    },
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PopularVehiclesCategoryScreen(
+                            accessToken: accessToken,
+                          ),
+                        ),
+                      );
                     },
                   ),
                   VehicleCategorySection(
@@ -51,10 +75,16 @@ class AllVehicleList extends StatelessWidget {
                     onFavoriteToggle: (vehicleId, isFavorite) {
                       cubit.toggleFavorite(accessToken, vehicleId, isFavorite);
                     },
-                    onLoadMore: () {
-                      cubit.loadMoreVehicles(accessToken);
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AllVehiclesCategoryScreen(
+                            accessToken: accessToken,
+                          ),
+                        ),
+                      );
                     },
-                    isLoadingMore: cubit.isLoadingMore,
                   ),
                 ],
               ),

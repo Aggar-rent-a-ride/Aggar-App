@@ -9,32 +9,71 @@ import '../../../data/model/vehicle_model.dart';
 class VehicleCubit extends Cubit<VehicleState> {
   VehicleCubit() : super(VehicleInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
-  bool isLoadingMore = false;
-  int currentPage = 1;
+
+  bool isLoadingMoreAll = false;
+  bool isLoadingMorePopular = false;
+  bool isLoadingMoreMostRented = false;
+
+  int currentPageAll = 1;
+  int currentPagePopular = 1;
+  int currentPageMostRented = 1;
+
+  int totalPagesAll = 1;
+  int totalPagesPopular = 1;
+  int totalPagesMostRented = 1;
+
   List<VehicleModel> _allVehicles = [];
   List<VehicleModel> _popularVehicles = [];
   List<VehicleModel> _mostRentedVehicles = [];
 
-  // Getters to access vehicle lists
-  List<VehicleModel> get allVehicles => _allVehicles;
-  List<VehicleModel> get popularVehicles => _popularVehicles;
-  List<VehicleModel> get mostRentedVehicles => _mostRentedVehicles;
+  List<VehicleModel> get allVehicles => List.unmodifiable(_allVehicles);
+  List<VehicleModel> get popularVehicles => List.unmodifiable(_popularVehicles);
+  List<VehicleModel> get mostRentedVehicles =>
+      List.unmodifiable(_mostRentedVehicles);
+
+  void resetAllVehicles() {
+    _allVehicles.clear();
+    currentPageAll = 1;
+    totalPagesAll = 1;
+    isLoadingMoreAll = false;
+  }
+
+  void resetPopularVehicles() {
+    _popularVehicles.clear();
+    currentPagePopular = 1;
+    totalPagesPopular = 1;
+    isLoadingMorePopular = false;
+  }
+
+  void resetMostRentedVehicles() {
+    _mostRentedVehicles.clear();
+    currentPageMostRented = 1;
+    totalPagesMostRented = 1;
+    isLoadingMoreMostRented = false;
+  }
 
   Future<void> fetchAllVehicles(String accessToken,
-      {bool isLoadMore = false}) async {
+      {bool isLoadMore = false, int? page}) async {
+    final targetPage = page ?? (isLoadMore ? currentPageAll + 1 : 1);
+    if (isLoadMore && isLoadingMoreAll) return;
+    if (isLoadMore && targetPage > totalPagesAll) return;
+
     for (int attempt = 1; attempt <= 3; attempt++) {
       try {
         if (!isLoadMore) {
           emit(VehicleLoading());
+          resetAllVehicles();
         } else {
+          isLoadingMoreAll = true;
           emit(VehicleLoadingMore(
-            vehicles: ListVehicleModel(data: _allVehicles, totalPages: 0),
+            vehicles:
+                ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
           ));
         }
 
         final response = await dioConsumer.get(
           EndPoint.getVehicles,
-          queryParameters: {"pageNo": currentPage, "pageSize": 5},
+          queryParameters: {"pageNo": targetPage, "pageSize": 5},
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
 
@@ -43,17 +82,20 @@ class VehicleCubit extends Cubit<VehicleState> {
         if (isLoadMore) {
           _allVehicles.addAll(vehicles.data);
         } else {
-          _allVehicles = vehicles.data;
+          _allVehicles = List.from(vehicles.data);
         }
 
         if (_allVehicles.length > 50) {
           _allVehicles.removeRange(0, _allVehicles.length - 50);
         }
 
+        currentPageAll = targetPage;
+        totalPagesAll = vehicles.totalPages ?? 1;
+
         emit(VehicleLoaded(
           vehicles: ListVehicleModel(
             data: _allVehicles,
-            totalPages: vehicles.totalPages,
+            totalPages: totalPagesAll,
           ),
         ));
         return;
@@ -62,32 +104,60 @@ class VehicleCubit extends Cubit<VehicleState> {
           emit(VehicleError(
               message:
                   'Failed to fetch vehicles after $attempt attempts: $error'));
+        } else {
+          await Future.delayed(Duration(milliseconds: 500 * attempt));
         }
-        await Future.delayed(Duration(milliseconds: 500 * attempt));
       } finally {
-        isLoadingMore = false;
+        if (isLoadMore) {
+          isLoadingMoreAll = false;
+        }
       }
     }
   }
 
-  Future<void> fetchPopularVehicles(String accessToken) async {
+  Future<void> fetchPopularVehicles(String accessToken,
+      {bool isLoadMore = false, int? page}) async {
+    final targetPage = page ?? (isLoadMore ? currentPagePopular + 1 : 1);
+
+    if (isLoadMore && isLoadingMorePopular) return;
+    if (isLoadMore && targetPage > totalPagesPopular) return;
+
     for (int attempt = 1; attempt <= 3; attempt++) {
       try {
-        emit(VehicleLoading());
+        if (!isLoadMore) {
+          emit(VehicleLoading());
+          resetPopularVehicles();
+        } else {
+          isLoadingMorePopular = true;
+          emit(VehicleLoadingMore(
+            vehicles: ListVehicleModel(
+                data: _popularVehicles, totalPages: totalPagesPopular),
+          ));
+        }
 
         final response = await dioConsumer.get(
           EndPoint.getPopularVehicles,
-          queryParameters: {"pageNo": 1, "pageSize": 5},
+          queryParameters: {"pageNo": targetPage, "pageSize": 5},
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
 
         final vehicles = ListVehicleModel.fromJson(response);
-        _popularVehicles = vehicles.data;
+
+        if (isLoadMore) {
+          _popularVehicles.addAll(vehicles.data);
+        } else {
+          _popularVehicles = List.from(vehicles.data);
+        }
+        if (_popularVehicles.length > 50) {
+          _popularVehicles.removeRange(0, _popularVehicles.length - 50);
+        }
+        currentPagePopular = targetPage;
+        totalPagesPopular = vehicles.totalPages ?? 1;
 
         emit(VehicleLoaded(
           vehicles: ListVehicleModel(
             data: _popularVehicles,
-            totalPages: vehicles.totalPages,
+            totalPages: totalPagesPopular,
           ),
         ));
         return;
@@ -96,30 +166,59 @@ class VehicleCubit extends Cubit<VehicleState> {
           emit(VehicleError(
               message:
                   'Failed to fetch popular vehicles after $attempt attempts: $error'));
+        } else {
+          await Future.delayed(Duration(milliseconds: 500 * attempt));
         }
-        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      } finally {
+        if (isLoadMore) {
+          isLoadingMorePopular = false;
+        }
       }
     }
   }
 
-  Future<void> fetchMostRentedVehicles(String accessToken) async {
+  Future<void> fetchMostRentedVehicles(String accessToken,
+      {bool isLoadMore = false, int? page}) async {
+    final targetPage = page ?? (isLoadMore ? currentPageMostRented + 1 : 1);
+    if (isLoadMore && isLoadingMoreMostRented) return;
+    if (isLoadMore && targetPage > totalPagesMostRented) return;
+
     for (int attempt = 1; attempt <= 3; attempt++) {
       try {
-        emit(VehicleLoading());
+        if (!isLoadMore) {
+          emit(VehicleLoading());
+          resetMostRentedVehicles();
+        } else {
+          isLoadingMoreMostRented = true;
+          emit(VehicleLoadingMore(
+            vehicles: ListVehicleModel(
+                data: _mostRentedVehicles, totalPages: totalPagesMostRented),
+          ));
+        }
 
         final response = await dioConsumer.get(
           EndPoint.mostRentedVehicles,
-          queryParameters: {"pageNo": 1, "pageSize": 1},
+          queryParameters: {"pageNo": targetPage, "pageSize": 5},
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
 
         final vehicles = ListVehicleModel.fromJson(response);
-        _mostRentedVehicles = vehicles.data;
+
+        if (isLoadMore) {
+          _mostRentedVehicles.addAll(vehicles.data);
+        } else {
+          _mostRentedVehicles = List.from(vehicles.data);
+        }
+        if (_mostRentedVehicles.length > 50) {
+          _mostRentedVehicles.removeRange(0, _mostRentedVehicles.length - 50);
+        }
+        currentPageMostRented = targetPage;
+        totalPagesMostRented = vehicles.totalPages ?? 1;
 
         emit(VehicleLoaded(
           vehicles: ListVehicleModel(
             data: _mostRentedVehicles,
-            totalPages: vehicles.totalPages,
+            totalPages: totalPagesMostRented,
           ),
         ));
         return;
@@ -128,8 +227,13 @@ class VehicleCubit extends Cubit<VehicleState> {
           emit(VehicleError(
               message:
                   'Failed to fetch most rented vehicles after $attempt attempts: $error'));
+        } else {
+          await Future.delayed(Duration(milliseconds: 500 * attempt));
         }
-        await Future.delayed(Duration(milliseconds: 500 * attempt));
+      } finally {
+        if (isLoadMore) {
+          isLoadingMoreMostRented = false;
+        }
       }
     }
   }
@@ -137,151 +241,29 @@ class VehicleCubit extends Cubit<VehicleState> {
   Future<void> toggleFavorite(
       String accessToken, String vehicleId, bool currentValue) async {
     try {
-      // Update all vehicle lists
-      final updatedAllVehicles = _allVehicles.map((vehicle) {
-        if (vehicle.id == vehicleId) {
-          return VehicleModel(
-            distance: vehicle.distance,
-            type: vehicle.type,
-            year: vehicle.year,
-            rate: vehicle.rate,
-            id: vehicle.id,
-            model: vehicle.model,
-            brand: vehicle.brand,
-            transmission: vehicle.transmission,
-            pricePerDay: vehicle.pricePerDay,
-            mainImagePath: vehicle.mainImagePath,
-            isFavourite: !currentValue,
-          );
-        }
-        return vehicle;
-      }).toList();
-
-      final updatedPopularVehicles = _popularVehicles.map((vehicle) {
-        if (vehicle.id == vehicleId) {
-          return VehicleModel(
-            distance: vehicle.distance,
-            type: vehicle.type,
-            year: vehicle.year,
-            rate: vehicle.rate,
-            id: vehicle.id,
-            model: vehicle.model,
-            brand: vehicle.brand,
-            transmission: vehicle.transmission,
-            pricePerDay: vehicle.pricePerDay,
-            mainImagePath: vehicle.mainImagePath,
-            isFavourite: !currentValue,
-          );
-        }
-        return vehicle;
-      }).toList();
-
-      final updatedMostRentedVehicles = _mostRentedVehicles.map((vehicle) {
-        if (vehicle.id == vehicleId) {
-          return VehicleModel(
-            distance: vehicle.distance,
-            type: vehicle.type,
-            year: vehicle.year,
-            rate: vehicle.rate,
-            id: vehicle.id,
-            model: vehicle.model,
-            brand: vehicle.brand,
-            transmission: vehicle.transmission,
-            pricePerDay: vehicle.pricePerDay,
-            mainImagePath: vehicle.mainImagePath,
-            isFavourite: !currentValue,
-          );
-        }
-        return vehicle;
-      }).toList();
-
-      _allVehicles = updatedAllVehicles;
-      _popularVehicles = updatedPopularVehicles;
-      _mostRentedVehicles = updatedMostRentedVehicles;
-
+      emit(VehicleFavoriteLoading(
+        vehicleId: vehicleId,
+        vehicles:
+            ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
+      ));
+      _updateVehicleFavoriteStatus(vehicleId, !currentValue);
       emit(VehicleLoaded(
         vehicles: ListVehicleModel(
           data: _allVehicles,
-          totalPages: state is VehicleLoaded
-              ? (state as VehicleLoaded).vehicles.totalPages
-              : 0,
+          totalPages: totalPagesAll,
         ),
       ));
-
       await dioConsumer.put(
         EndPoint.putFavourite,
         data: {"vehicleId": vehicleId, "isFavourite": !currentValue},
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
     } catch (error) {
-      // Revert changes in case of error
-      final revertedAllVehicles = _allVehicles.map((vehicle) {
-        if (vehicle.id == vehicleId) {
-          return VehicleModel(
-            distance: vehicle.distance,
-            type: vehicle.type,
-            year: vehicle.year,
-            rate: vehicle.rate,
-            id: vehicle.id,
-            model: vehicle.model,
-            brand: vehicle.brand,
-            transmission: vehicle.transmission,
-            pricePerDay: vehicle.pricePerDay,
-            mainImagePath: vehicle.mainImagePath,
-            isFavourite: currentValue,
-          );
-        }
-        return vehicle;
-      }).toList();
-
-      final revertedPopularVehicles = _popularVehicles.map((vehicle) {
-        if (vehicle.id == vehicleId) {
-          return VehicleModel(
-            distance: vehicle.distance,
-            type: vehicle.type,
-            year: vehicle.year,
-            rate: vehicle.rate,
-            id: vehicle.id,
-            model: vehicle.model,
-            brand: vehicle.brand,
-            transmission: vehicle.transmission,
-            pricePerDay: vehicle.pricePerDay,
-            mainImagePath: vehicle.mainImagePath,
-            isFavourite: currentValue,
-          );
-        }
-        return vehicle;
-      }).toList();
-
-      final revertedMostRentedVehicles = _mostRentedVehicles.map((vehicle) {
-        if (vehicle.id == vehicleId) {
-          return VehicleModel(
-            distance: vehicle.distance,
-            type: vehicle.type,
-            year: vehicle.year,
-            rate: vehicle.rate,
-            id: vehicle.id,
-            model: vehicle.model,
-            brand: vehicle.brand,
-            transmission: vehicle.transmission,
-            pricePerDay: vehicle.pricePerDay,
-            mainImagePath: vehicle.mainImagePath,
-            isFavourite: currentValue,
-          );
-        }
-        return vehicle;
-      }).toList();
-
-      _allVehicles = revertedAllVehicles;
-      _popularVehicles = revertedPopularVehicles;
-      _mostRentedVehicles = revertedMostRentedVehicles;
-
+      _updateVehicleFavoriteStatus(vehicleId, currentValue);
       emit(VehicleLoaded(
         vehicles: ListVehicleModel(
           data: _allVehicles,
-          totalPages: state is VehicleLoaded
-              ? (state as VehicleLoaded).vehicles.totalPages
-              : 0,
+          totalPages: totalPagesAll,
         ),
       ));
 
@@ -289,18 +271,66 @@ class VehicleCubit extends Cubit<VehicleState> {
     }
   }
 
-  void loadMoreVehicles(String accessToken) {
-    if (isLoadingMore) {
-      return;
-    }
-    if (state is VehicleLoaded) {
-      final currentState = state as VehicleLoaded;
-      if (currentPage >= (currentState.vehicles.totalPages ?? 1)) {
-        return;
+  void _updateVehicleFavoriteStatus(String vehicleId, bool isFavorite) {
+    _allVehicles = _allVehicles.map((vehicle) {
+      if (vehicle.id == vehicleId) {
+        return _copyVehicleWithFavoriteStatus(vehicle, isFavorite);
       }
-    }
-    isLoadingMore = true;
-    currentPage++;
+      return vehicle;
+    }).toList();
+
+    _popularVehicles = _popularVehicles.map((vehicle) {
+      if (vehicle.id == vehicleId) {
+        return _copyVehicleWithFavoriteStatus(vehicle, isFavorite);
+      }
+      return vehicle;
+    }).toList();
+
+    _mostRentedVehicles = _mostRentedVehicles.map((vehicle) {
+      if (vehicle.id == vehicleId) {
+        return _copyVehicleWithFavoriteStatus(vehicle, isFavorite);
+      }
+      return vehicle;
+    }).toList();
+  }
+
+  VehicleModel _copyVehicleWithFavoriteStatus(
+      VehicleModel vehicle, bool isFavorite) {
+    return VehicleModel(
+      distance: vehicle.distance,
+      type: vehicle.type,
+      year: vehicle.year,
+      rate: vehicle.rate,
+      id: vehicle.id,
+      model: vehicle.model,
+      brand: vehicle.brand,
+      transmission: vehicle.transmission,
+      pricePerDay: vehicle.pricePerDay,
+      mainImagePath: vehicle.mainImagePath,
+      isFavourite: isFavorite,
+    );
+  }
+
+  void loadMoreVehicles(String accessToken) {
+    if (isLoadingMoreAll || currentPageAll >= totalPagesAll) return;
     fetchAllVehicles(accessToken, isLoadMore: true);
   }
+
+  void loadMorePopularVehicles(String accessToken) {
+    if (isLoadingMorePopular || currentPagePopular >= totalPagesPopular) return;
+    fetchPopularVehicles(accessToken, isLoadMore: true);
+  }
+
+  void loadMoreMostRentedVehicles(String accessToken) {
+    if (isLoadingMoreMostRented ||
+        currentPageMostRented >= totalPagesMostRented) return;
+    fetchMostRentedVehicles(accessToken, isLoadMore: true);
+  }
+
+  bool get canLoadMoreAll =>
+      currentPageAll < totalPagesAll && !isLoadingMoreAll;
+  bool get canLoadMorePopular =>
+      currentPagePopular < totalPagesPopular && !isLoadingMorePopular;
+  bool get canLoadMoreMostRented =>
+      currentPageMostRented < totalPagesMostRented && !isLoadingMoreMostRented;
 }

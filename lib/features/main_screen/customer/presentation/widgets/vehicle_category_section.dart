@@ -9,15 +9,11 @@ class VehicleCategorySection extends StatelessWidget {
   final String title;
   final List<VehicleModel> vehicles;
   final Function(String, bool)? onFavoriteToggle;
-  final VoidCallback? onLoadMore;
-  final bool isLoadingMore;
   final void Function()? onPressed;
   const VehicleCategorySection({
     required this.title,
     required this.vehicles,
     this.onFavoriteToggle,
-    this.onLoadMore,
-    this.isLoadingMore = false,
     super.key,
     this.onPressed,
   });
