@@ -4,13 +4,17 @@ import 'package:aggar/core/helper/get_file_name.dart';
 import 'package:aggar/core/helper/get_mini_type_file.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/views/image_view.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/file_content.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ChatBubbleForSender extends StatefulWidget {
-  const ChatBubbleForSender(
-      {super.key, required this.message, this.isfile = false});
+  const ChatBubbleForSender({
+    super.key,
+    required this.message,
+    this.isfile = false,
+  });
   final Message message;
   final bool? isfile;
 
@@ -87,7 +91,7 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Text(
                   widget.message.message,
-                  style: AppStyles.medium18(context).copyWith(
+                  style: AppStyles.medium16(context).copyWith(
                     color: context.theme.white100_1,
                   ),
                 ),
@@ -96,14 +100,28 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: mimeType == "image"
-                    ? Image.network(
-                        "${EndPoint.baseUrl}${widget.message.message}",
-                        width: 240,
-                        height: 240,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.error, size: 50);
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ImageView(
+                                imageUrl:
+                                    "${EndPoint.baseUrl}${widget.message.message}",
+                                imagefrom: "You",
+                              ),
+                            ),
+                          );
                         },
+                        child: Image.network(
+                          "${EndPoint.baseUrl}${widget.message.message}",
+                          width: 240,
+                          height: 240,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.error, size: 50);
+                          },
+                        ),
                       )
                     : FileContent(
                         message: widget.message,

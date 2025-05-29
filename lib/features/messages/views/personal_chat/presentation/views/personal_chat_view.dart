@@ -3,7 +3,6 @@ import 'package:aggar/features/messages/views/messages_status/data/model/message
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
-import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/image_and_name_person_message.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/menu_icon_button.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/personal_chat_body.dart';
@@ -122,6 +121,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
               currentUserId: senderId,
+              reciverName: widget.receiverName,
             ),
           );
         },

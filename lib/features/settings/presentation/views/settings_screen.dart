@@ -48,6 +48,7 @@ class SettingsScreen extends StatelessWidget {
               SupportSection(),
               Gap(5),
               LogoutCard(),
+              Gap(50),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_cubit.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_state.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
@@ -56,7 +57,10 @@ class LogoutCard extends StatelessWidget {
             padingHorizental: 5,
             padingVeritical: 10,
             onPressed: state is! LogoutLoading
-                ? () => context.read<LogoutCubit>().logout()
+                ? () {
+                    context.read<LogoutCubit>().logout();
+                    context.read<MessageCubit>().clearCache();
+                  }
                 : null,
             backgroundColor: context.theme.blue100_7,
             child: Row(
