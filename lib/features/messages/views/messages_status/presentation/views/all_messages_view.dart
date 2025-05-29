@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_chat_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
@@ -8,8 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AllMessagesView extends StatefulWidget {
-  const AllMessagesView({super.key, required this.accessToken});
-  final String accessToken;
+  const AllMessagesView({super.key});
 
   @override
   _AllMessagesViewState createState() => _AllMessagesViewState();
@@ -18,6 +18,7 @@ class AllMessagesView extends StatefulWidget {
 class _AllMessagesViewState extends State<AllMessagesView>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   late MessageCubit _messageCubit;
+  bool _isViewActive = true; // Track if AllMessagesView is the active view
 
   @override
   bool get wantKeepAlive => true;
@@ -27,14 +28,24 @@ class _AllMessagesViewState extends State<AllMessagesView>
     super.initState();
     _messageCubit = context.read<MessageCubit>();
     WidgetsBinding.instance.addObserver(this);
-    _messageCubit.startPolling(widget.accessToken, isViewActive: true);
+    _startPollingWithToken();
+  }
+
+  Future<void> _startPollingWithToken() async {
+    if (!_isViewActive) return; // Only start polling if view is active
+    final tokenCubit = context.read<TokenRefreshCubit>();
+    final token = await tokenCubit.getAccessToken();
+    if (token != null) {
+      _messageCubit.startPolling(token, isViewActive: true);
+    }
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      _messageCubit.startPolling(widget.accessToken, isViewActive: true);
+    if (state == AppLifecycleState.resumed && _isViewActive) {
+      // Only resume polling if AllMessagesView is active
+      _startPollingWithToken();
     } else if (state == AppLifecycleState.paused) {
       _messageCubit.stopPolling();
     }
@@ -53,6 +64,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
     return BlocConsumer<MessageCubit, MessageState>(
       listener: (context, state) {
         if (state is MessageSuccess) {
+          _isViewActive = false;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -65,7 +77,10 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 ),
               ),
             ),
-          );
+          ).then((_) {
+            _isViewActive = true;
+            _startPollingWithToken();
+          });
         } else if (state is MessageFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             customSnackBar(
@@ -96,7 +111,9 @@ class _AllMessagesViewState extends State<AllMessagesView>
               final chats = snapshot.data!;
               return RefreshIndicator(
                 onRefresh: () async {
-                  await _messageCubit.getMyChat(widget.accessToken);
+                  final tokenCubit = context.read<TokenRefreshCubit>();
+                  final token = await tokenCubit.getAccessToken();
+                  if (token != null) await _messageCubit.getMyChat(token);
                 },
                 child: ListView.builder(
                   padding: const EdgeInsets.only(top: 10),
@@ -112,15 +129,21 @@ class _AllMessagesViewState extends State<AllMessagesView>
                     String hoursAndMinutes =
                         "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
                     return ChatPerson(
-                      onTap: () {
-                        _messageCubit.getMessages(
-                          userId: chatData.user.id.toString(),
-                          dateTime: DateTime.now().toUtc().toIso8601String(),
-                          pageSize: "20",
-                          dateFilter: "0",
-                          accessToken: widget.accessToken,
-                          receiverName: chatData.user.name,
-                        );
+                      onTap: () async {
+                        final tokenCubit = context.read<TokenRefreshCubit>();
+                        final token = await tokenCubit.getAccessToken();
+                        if (token != null) {
+                          _messageCubit.stopPolling();
+                          _isViewActive = false;
+                          await _messageCubit.getMessages(
+                            userId: chatData.user.id.toString(),
+                            dateTime: DateTime.now().toUtc().toIso8601String(),
+                            pageSize: "20",
+                            dateFilter: "0",
+                            accessToken: token,
+                            receiverName: chatData.user.name,
+                          );
+                        }
                       },
                       name: chatData.user.name,
                       msg: chatData.lastMessage.content ??
@@ -142,8 +165,11 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 children: [
                   const Text("No chats available"),
                   ElevatedButton(
-                    onPressed: () =>
-                        _messageCubit.getMyChat(widget.accessToken),
+                    onPressed: () async {
+                      final tokenCubit = context.read<TokenRefreshCubit>();
+                      final token = await tokenCubit.getAccessToken();
+                      if (token != null) _messageCubit.getMyChat(token);
+                    },
                     child: const Text("Refresh"),
                   ),
                 ],
