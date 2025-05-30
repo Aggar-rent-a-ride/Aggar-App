@@ -64,7 +64,7 @@ class AllVehicleCategoryBody extends StatelessWidget {
                       isFavorite: vehicle.isFavourite,
                       pricePerHour: vehicle.pricePerDay,
                       vehicleId: vehicle.id.toString(),
-                      rating: vehicle.rate ?? 0.0,
+                      rating: vehicle.rate,
                     ),
                   );
                 },

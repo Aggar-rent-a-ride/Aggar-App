@@ -28,6 +28,7 @@ class ImageView extends StatelessWidget {
           ),
           onPressed: () => Navigator.pop(context),
         ),
+        centerTitle: false,
         title: Text(
           imagefrom,
           style: AppStyles.medium18(context).copyWith(

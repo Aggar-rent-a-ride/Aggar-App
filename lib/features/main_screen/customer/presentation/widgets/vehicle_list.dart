@@ -32,7 +32,7 @@ class VehicleList extends StatelessWidget {
                   carName: "${vehicles[index].brand} ${vehicles[index].model}",
                   carType: vehicles[index].transmission,
                   pricePerHour: vehicles[index].pricePerDay,
-                  // rating: vehicles[index].rate, // Uncomment if rate is available
+                  rating: vehicles[index].rate,
                   assetImagePath: vehicles[index].mainImagePath,
                 ),
               ),

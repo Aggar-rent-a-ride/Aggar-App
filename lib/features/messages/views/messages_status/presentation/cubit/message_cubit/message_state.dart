@@ -9,8 +9,13 @@ final class MessageSuccess extends MessageState {
   final ListMessageModel? messages;
   final int? userId;
   final String receiverName;
+  final String? reciverImg;
 
-  MessageSuccess({this.messages, this.userId, required this.receiverName});
+  MessageSuccess(
+      {this.messages,
+      this.userId,
+      required this.receiverName,
+      this.reciverImg});
 }
 
 final class ChatSuccess extends MessageState {

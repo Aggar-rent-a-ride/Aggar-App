@@ -63,14 +63,14 @@ class _SignInContent extends StatelessWidget {
             );
             final userType = state.userType;
             if (userType == "User") {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AdminBottomNavigationBar(),
                 ),
               );
             } else if (userType == "Customer") {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
@@ -78,7 +78,7 @@ class _SignInContent extends StatelessWidget {
                 ),
               );
             } else if (userType == "Renter") {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const RenterBottomNavigationBarView(),

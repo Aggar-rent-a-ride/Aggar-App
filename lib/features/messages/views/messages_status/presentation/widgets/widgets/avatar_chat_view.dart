@@ -6,8 +6,10 @@ class AvatarChatView extends StatelessWidget {
   const AvatarChatView({
     super.key,
     this.image,
+    this.size,
   });
   final String? image;
+  final double? size;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -27,19 +29,19 @@ class AvatarChatView extends StatelessWidget {
         child: image == null
             ? Image.asset(
                 AppAssets.assetsImagesDafaultPfp,
-                height: 50,
-                width: 50,
+                height: size ?? 50,
+                width: size ?? 50,
               )
             : Image.network(
                 "${EndPoint.baseUrl}$image",
-                height: 50,
-                width: 50,
+                height: size ?? 50,
+                width: size ?? 50,
                 errorBuilder: (context, error, stackTrace) {
                   debugPrint("Error loading avatar image: $error");
                   return Image.asset(
                     AppAssets.assetsImagesDafaultPfp,
-                    height: 50,
-                    width: 50,
+                    height: size ?? 50,
+                    width: size ?? 50,
                     fit: BoxFit.cover,
                   );
                 },

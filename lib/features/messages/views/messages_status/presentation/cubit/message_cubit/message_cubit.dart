@@ -146,6 +146,7 @@ class MessageCubit extends Cubit<MessageState> {
     required String dateFilter,
     required String accessToken,
     required String receiverName,
+    String? receiverImg,
   }) async {
     try {
       emit(MessageLoading());
@@ -164,10 +165,10 @@ class MessageCubit extends Cubit<MessageState> {
       final ListMessageModel messages = ListMessageModel.fromJson(response);
       await Future.delayed(const Duration(seconds: 1));
       emit(MessageSuccess(
-        messages: messages,
-        userId: int.parse(userId),
-        receiverName: receiverName,
-      ));
+          messages: messages,
+          userId: int.parse(userId),
+          receiverName: receiverName,
+          reciverImg: receiverImg));
     } on DioException catch (e) {
       String errorMessage = handleError(e);
       emit(MessageFailure(errorMessage));

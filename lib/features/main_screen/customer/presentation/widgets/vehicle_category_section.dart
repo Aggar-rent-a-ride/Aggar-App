@@ -60,7 +60,7 @@ class VehicleCategorySection extends StatelessWidget {
                 assetImagePath: vehicle.mainImagePath,
                 vehicleId: vehicle.id.toString(),
                 isFavorite: vehicle.isFavourite,
-                rating: vehicle.rate ?? 0.0,
+                rating: vehicle.rate,
               );
             },
           ),
