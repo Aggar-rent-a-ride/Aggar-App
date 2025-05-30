@@ -9,11 +9,11 @@ class NameSection extends StatelessWidget {
     super.key,
     required this.date,
     required this.name,
-    required this.rating,
+    this.rating,
   });
   final String date;
   final String name;
-  final double rating;
+  final double? rating;
   @override
   Widget build(BuildContext context) {
     return Column(

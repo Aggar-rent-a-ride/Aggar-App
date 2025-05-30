@@ -71,6 +71,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
               builder: (context) => BlocProvider.value(
                 value: _messageCubit,
                 child: PersonalChatView(
+                  reciverImg: state.reciverImg,
                   messageList: state.messages!.data,
                   receiverId: state.userId!,
                   receiverName: state.receiverName,
@@ -136,6 +137,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                           _messageCubit.stopPolling();
                           _isViewActive = false;
                           await _messageCubit.getMessages(
+                            receiverImg: chatData.user.imagePath,
                             userId: chatData.user.id.toString(),
                             dateTime: DateTime.now().toUtc().toIso8601String(),
                             pageSize: "20",

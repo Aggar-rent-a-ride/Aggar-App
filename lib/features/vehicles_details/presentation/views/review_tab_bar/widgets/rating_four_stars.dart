@@ -3,26 +3,29 @@ import 'package:flutter/material.dart';
 class RatingFourStars extends StatelessWidget {
   const RatingFourStars({
     super.key,
-    required this.rating,
+    this.rating,
     required this.color,
   });
 
-  final double rating;
+  final double? rating;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
+    if (rating == null) {
+      return const SizedBox.shrink();
+    }
     return Row(
       children: List.generate(
         5,
         (index) {
-          if (index < rating.floor()) {
+          if (index < rating!.floor()) {
             return Icon(
               Icons.star,
               color: color,
               size: 12,
             );
-          } else if (index < rating && rating - index < 1) {
+          } else if (index < rating! && rating! - index < 1) {
             return Icon(
               Icons.star_half,
               color: color,

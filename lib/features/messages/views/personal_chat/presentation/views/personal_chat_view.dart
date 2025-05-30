@@ -17,12 +17,14 @@ class PersonalChatView extends StatefulWidget {
     this.onMessagesUpdated,
     required this.receiverId,
     required this.receiverName,
+    this.reciverImg,
   });
 
   final List<MessageModel> messageList;
   final int receiverId;
   final VoidCallback? onMessagesUpdated;
   final String receiverName;
+  final String? reciverImg;
   @override
   State<PersonalChatView> createState() => _PersonalChatViewState();
 }
@@ -89,6 +91,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
                   ? SearchForMsgByContentOrDate(cubit: personalChatCubit)
                   : ImageAndNamePersonMessage(
                       name: widget.receiverName,
+                      image: widget.reciverImg,
                     ),
               leading: personalChatCubit.isSearchActive
                   ? IconButton(

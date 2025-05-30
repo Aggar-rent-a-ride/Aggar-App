@@ -9,12 +9,12 @@ class NameAndRateSection extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.name,
-    required this.rate,
+    this.rate,
     required this.date,
   });
   final String imageUrl;
   final String name;
-  final double rate;
+  final double? rate;
   final String date;
 
   @override

@@ -11,6 +11,7 @@ import 'package:aggar/features/messages/views/personal_chat/presentation/widgets
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/send_messages_with_attach_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class PersonalChatBody extends StatefulWidget {
   const PersonalChatBody({
@@ -285,6 +286,7 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
                   ),
                 ),
                 const SendMessagesWithAttachSection(),
+                const Gap(10)
               ],
             ),
           );

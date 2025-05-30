@@ -109,7 +109,7 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
                               builder: (context) => ImageView(
                                 imageUrl:
                                     "${EndPoint.baseUrl}${widget.message.message}",
-                                imagefrom: "l",
+                                imagefrom: widget.reciverName,
                               ),
                             ),
                           );
@@ -132,7 +132,7 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
             Text(
               widget.message.time,
               style: AppStyles.medium12(context).copyWith(
-                color: context.theme.black25,
+                color: context.theme.black50,
               ),
             ),
           ],
