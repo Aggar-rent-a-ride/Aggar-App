@@ -96,8 +96,8 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginFailure(errorMessage: errorMessage));
       }
     } catch (e) {
-      emit(LoginFailure(
-        errorMessage: "Connection error: ${e.toString()}",
+      emit(const LoginFailure(
+        errorMessage: "Connection error",
       ));
     }
   }
@@ -162,6 +162,7 @@ class LoginCubit extends Cubit<LoginState> {
       return null;
     }
   }
+
   Future<String?> getUserType() async {
     try {
       return await secureStorage?.read(key: 'userType');
