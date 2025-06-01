@@ -149,7 +149,11 @@ class MyApp extends StatelessWidget {
           create: (context) => PersonalChatCubit(),
         ),
         BlocProvider(
-          create: (context) => RealTimeChatCubit(),
+          create: (context) => RealTimeChatCubit(
+            MessageCubit(
+              dioConsumer: DioConsumer(dio: dio),
+            ),
+          ),
         ),
         BlocProvider(
           create: (context) => ReportCubit(),

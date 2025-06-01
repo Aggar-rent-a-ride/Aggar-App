@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
@@ -7,6 +8,8 @@ import 'package:aggar/features/messages/views/personal_chat/presentation/widgets
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/menu_icon_button.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/personal_chat_body.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/widgets/search_for_msg_by_content_or_date.dart';
+import 'package:aggar/core/api/dio_consumer.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,6 +28,7 @@ class PersonalChatView extends StatefulWidget {
   final VoidCallback? onMessagesUpdated;
   final String receiverName;
   final String? reciverImg;
+
   @override
   State<PersonalChatView> createState() => _PersonalChatViewState();
 }
@@ -32,15 +36,15 @@ class PersonalChatView extends StatefulWidget {
 class _PersonalChatViewState extends State<PersonalChatView> {
   late final PersonalChatCubit personalChatCubit;
   late final RealTimeChatCubit realTimeChatCubit;
+  late final MessageCubit messageCubit;
   int senderId = 0;
 
   @override
   void initState() {
     super.initState();
+    messageCubit = MessageCubit(dioConsumer: DioConsumer(dio: Dio()));
     personalChatCubit = PersonalChatCubit();
-    realTimeChatCubit = RealTimeChatCubit();
-
-    print('PersonalChatView initialized with receiverId: ${widget.receiverId}');
+    realTimeChatCubit = RealTimeChatCubit(messageCubit);
 
     personalChatCubit.setMessages(widget.messageList);
     personalChatCubit.setReceiverId(widget.receiverId);
@@ -49,8 +53,6 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     realTimeChatCubit.setReceiverId(widget.receiverId);
 
     _initializeUser();
-
-    // No need for manual listener - PersonalChatBody handles this now
   }
 
   Future<void> _initializeUser() async {
@@ -65,6 +67,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     widget.onMessagesUpdated?.call();
     personalChatCubit.close();
     realTimeChatCubit.close();
+    messageCubit.close();
     super.dispose();
   }
 
@@ -74,6 +77,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
       providers: [
         BlocProvider.value(value: personalChatCubit),
         BlocProvider.value(value: realTimeChatCubit),
+        BlocProvider.value(value: messageCubit),
       ],
       child: BlocBuilder<PersonalChatCubit, PersonalChatState>(
         builder: (context, state) {
@@ -123,6 +127,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
             ),
             backgroundColor: context.theme.white100_1,
             body: PersonalChatBody(
+              reciverId: widget.receiverId.toString(),
               currentUserId: senderId,
               reciverName: widget.receiverName,
             ),

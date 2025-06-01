@@ -5,6 +5,8 @@ import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/services/signalr_service.dart';
 import 'package:aggar/core/services/signalr_service_component.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -16,7 +18,7 @@ import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 
 class RealTimeChatCubit extends Cubit<RealTimeChatState> {
-  RealTimeChatCubit() : super(const RealTimeChatInitial()) {
+  RealTimeChatCubit(this.messageCubit) : super(const RealTimeChatInitial()) {
     _initServices();
   }
 
@@ -24,11 +26,15 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   final SignalRService _signalRService = SignalRService();
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   final TextEditingController messageController = TextEditingController();
+  final MessageCubit messageCubit;
 
   ScrollController scrollController = ScrollController();
 
   bool _isSendingMessage = false;
   bool _isUploadingFile = false;
+  bool _canLoadMore = true;
+  final int _pageSize = 20;
+  String? _lastDateTime;
   final Map<String, double> _fileUploadProgress = {};
   final Map<String, String> _pendingUploads = {};
   final Map<String, PendingMessage> _pendingMessages = {};
@@ -41,12 +47,13 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   StreamSubscription? _messageSubscription;
   StreamSubscription? _connectionStatusSubscription;
   StreamSubscription? _uploadProgressSubscription;
+  StreamSubscription? _messageCubitSubscription;
 
-  int? _receiverId = 0;
+  int? _receiverId;
   int _senderId = 0;
-
   bool get isUploadingFile => _isUploadingFile;
   bool get isConnected => _signalRService.isConnected;
+  bool get canLoadMore => _canLoadMore;
   Map<String, double> get fileUploadProgress => _fileUploadProgress;
   Map<String, String> get pendingUploads => _pendingUploads;
   List<MessageModel> get messages => _messages;
@@ -90,6 +97,41 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
             progress.progressPercentage));
       }
     });
+
+    _messageCubitSubscription = messageCubit.stream.listen((state) {
+      if (state is MessageSuccess) {
+        final newMessages = state.messages!.data;
+        if (newMessages.isEmpty) {
+          _canLoadMore = false;
+          emit(const MessagesLoaded());
+          emit(const RealTimeChatInitial());
+          return;
+        }
+
+        final existingMessageIds = _messages.map((m) => m.id).toSet();
+        final filteredNewMessages = newMessages
+            .where((m) => !existingMessageIds.contains(m.id))
+            .toList();
+
+        if (filteredNewMessages.isEmpty) {
+          _canLoadMore = false;
+          emit(const MessagesLoaded());
+          emit(const RealTimeChatInitial());
+          return;
+        }
+
+        _messages.addAll(filteredNewMessages);
+        _messages.sort((a, b) =>
+            DateTime.parse(b.sentAt).compareTo(DateTime.parse(a.sentAt)));
+        _lastDateTime = _messages.last.sentAt;
+        _processedServerMessageIds.addAll(filteredNewMessages.map((m) => m.id));
+        emit(const MessagesLoaded());
+        emit(const RealTimeChatInitial());
+      } else if (state is MessageFailure) {
+        emit(RealTimeChatFailure(
+            "Failed to load more messages: ${state.errorMessage}"));
+      }
+    });
   }
 
   Future<void> _attemptReconnection() async {
@@ -130,173 +172,108 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   }
 
   void _handleIncomingMessage(ChatMessage message) {
-  print("📨 PROCESSING MESSAGE: ${message.content} from ${message.senderId} to ${message.receiverId} with ID: ${message.id}");
-  print("📨 Current conversation: senderId=$_senderId, receiverId=$_receiverId");
+    print(
+        "📨 PROCESSING MESSAGE: ${message.content} from ${message.senderId} to ${message.receiverId} with ID: ${message.id}");
+    print(
+        "📨 Current conversation: senderId=$_senderId, receiverId=$_receiverId");
 
-  // ✅ ENHANCED DEBUGGING: Print all values clearly
-  print("📨 DEBUG VALUES:");
-  print("   - Message senderId: ${message.senderId}");
-  print("   - Message receiverId: ${message.receiverId}");
-  print("   - Current _senderId: $_senderId");
-  print("   - Current _receiverId: $_receiverId");
+    bool isForCurrentConversation = false;
 
-  // ✅ IMPROVED: More robust conversation matching with better logging
-  bool isForCurrentConversation = false;
+    if (_receiverId != null && _senderId != 0) {
+      bool isIncoming =
+          (message.senderId == _receiverId && message.receiverId == _senderId);
+      bool isOutgoing =
+          (message.senderId == _senderId && message.receiverId == _receiverId);
 
-  if (_receiverId != null && _senderId != 0) {
-    // Message from receiver to sender (incoming message from other user)
-    bool isIncoming = (message.senderId == _receiverId && message.receiverId == _senderId);
-    // Message from sender to receiver (outgoing confirmation from server)
-    bool isOutgoing = (message.senderId == _senderId && message.receiverId == _receiverId);
+      isForCurrentConversation = isIncoming || isOutgoing;
 
-    isForCurrentConversation = isIncoming || isOutgoing;
-
-    print("📨 CONVERSATION CHECK:");
-    print("   - Is incoming (${message.senderId} == $_receiverId && ${message.receiverId} == $_senderId): $isIncoming");
-    print("   - Is outgoing (${message.senderId} == $_senderId && ${message.receiverId} == $_receiverId): $isOutgoing");
-    print("   - Is for current conversation: $isForCurrentConversation");
-  } else {
-    print("❌ Missing conversation context - senderId: $_senderId, receiverId: $_receiverId");
-  }
-
-  if (!isForCurrentConversation) {
-    print("❌ Message not for current conversation - IGNORING");
-    return;
-  }
-
-  // ✅ FIXED: Better duplicate prevention
-  if (message.id > 0 && _processedServerMessageIds.contains(message.id)) {
-    print("⚠️ Message with ID ${message.id} already processed, ignoring duplicate");
-    return;
-  }
-
-  // Add to processed set immediately for positive server IDs
-  if (message.id > 0) {
-    _processedServerMessageIds.add(message.id);
-  }
-
-  final newMessage = MessageModel(
-    id: message.id,
-    senderId: message.senderId,
-    receiverId: message.receiverId,
-    sentAt: message.sentAt.toIso8601String(),
-    isSeen: message.seen ?? false, // ✅ FIXED: Handle null isSeen
-    content: message.content,
-    filePath: message.filePath,
-    isOptimistic: false,
-  );
-
-  print("✅ Created MessageModel: ${newMessage.content}");
-
-  // ✅ IMPROVED: Handle different message types with better logging
-  if (message.senderId == _senderId) {
-    // This is a message we sent (confirmation from server)
-    print("📤 Handling sent message confirmation");
-    _handleOptimisticMessageReplacement(newMessage);
-  } else {
-    // This is an incoming message from another user
-    print("📥 Handling incoming message from other user");
-    _addIncomingMessage(newMessage);
-  }
-
-  // ✅ CRITICAL: Force UI update by emitting state after message processing
-  print("🔄 Forcing UI update...");
-  
-  // Always scroll to bottom for any new message
-  _scrollToBottomImmediate();
-}
-
-void _addIncomingMessage(MessageModel message) {
-  print("📥 Adding incoming message: ${message.content}");
-
-  // ✅ IMPROVED: Check for duplicates more thoroughly
-  final existingIndex = _messages.indexWhere((m) => 
-    m.id == message.id && 
-    !m.isOptimistic &&
-    m.senderId == message.senderId &&
-    m.receiverId == message.receiverId
-  );
-
-  if (existingIndex == -1) {
-    _addNewMessage(message);
-    print("✅ Added new incoming message successfully");
-  } else {
-    print("⚠️ Duplicate incoming message ignored");
-  }
-}
-
-void _addNewMessage(MessageModel message) {
-  print("➕ Adding message to list: ${message.content}");
-
-  // ✅ IMPROVED: Check for duplicates more thoroughly
-  final existingIndex = _messages.indexWhere((m) =>
-      m.id == message.id &&
-      !m.isOptimistic &&
-      m.senderId == message.senderId &&
-      m.receiverId == message.receiverId);
-
-  if (existingIndex != -1) {
-    print("⚠️ Message already exists, skipping duplicate");
-    return;
-  }
-
-  // ✅ IMPROVED: Insert message in correct chronological order
-  // Find the correct position to insert the message
-  int insertIndex = 0;
-  final messageTime = DateTime.parse(message.sentAt);
-
-  for (int i = 0; i < _messages.length; i++) {
-    final existingTime = DateTime.parse(_messages[i].sentAt);
-    if (messageTime.isAfter(existingTime)) {
-      insertIndex = i;
-      break;
+      print(
+          "📨 CONVERSATION CHECK: isIncoming=$isIncoming, isOutgoing=$isOutgoing");
     }
-    insertIndex = i + 1;
+
+    if (!isForCurrentConversation) {
+      print("❌ Message not for current conversation - IGNORING");
+      return;
+    }
+
+    if (message.id > 0 && _processedServerMessageIds.contains(message.id)) {
+      print("⚠️ Duplicate message ID ${message.id}, ignoring");
+      return;
+    }
+
+    if (message.id > 0) {
+      _processedServerMessageIds.add(message.id);
+    }
+
+    final newMessage = MessageModel(
+      id: message.id,
+      senderId: message.senderId,
+      receiverId: message.receiverId,
+      sentAt: message.sentAt.toIso8601String(),
+      isSeen: message.seen,
+      content: message.content,
+      filePath: message.filePath,
+      isOptimistic: false,
+    );
+
+    if (message.senderId == _senderId) {
+      _handleOptimisticMessageReplacement(newMessage);
+    } else {
+      _addIncomingMessage(newMessage);
+    }
+
+    _scrollToBottomImmediate();
   }
 
-  _messages.insert(insertIndex, message);
-  print("📍 Inserted message at index $insertIndex");
+  void _addIncomingMessage(MessageModel message) {
+    final existingIndex = _messages.indexWhere((m) =>
+        m.id == message.id &&
+        !m.isOptimistic &&
+        m.senderId == message.senderId &&
+        m.receiverId == message.receiverId);
 
-  // ✅ CRITICAL: Emit the state immediately for instant UI update
-  emit(MessageAddedState(message));
-  print("📡 Emitted MessageAddedState for message: ${message.content}");
-  
-  // ✅ ADDITIONAL: Force a general state update to ensure UI refresh
-  Future.delayed(const Duration(milliseconds: 50), () {
-    if (!isClosed) {
-      emit(RealTimeChatInitial());
-      print("🔄 Emitted additional state update for UI refresh");
+    if (existingIndex == -1) {
+      _addNewMessage(message);
     }
-  });
-}
+  }
+
+  void _addNewMessage(MessageModel message) {
+    int insertIndex = 0;
+    final messageTime = DateTime.parse(message.sentAt);
+
+    for (int i = 0; i < _messages.length; i++) {
+      final existingTime = DateTime.parse(_messages[i].sentAt);
+      if (messageTime.isAfter(existingTime)) {
+        insertIndex = i;
+        break;
+      }
+      insertIndex = i + 1;
+    }
+
+    _messages.insert(insertIndex, message);
+    emit(MessageAddedState(message));
+
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (!isClosed) {
+        emit(const RealTimeChatInitial());
+      }
+    });
+  }
 
   void _handleOptimisticMessageReplacement(MessageModel serverMessage) {
     String? matchingClientId;
     PendingMessage? matchingPending;
 
-    // Find matching pending message with better logging
-    print(
-        "🔍 Looking for matching optimistic message among ${_pendingMessages.length} pending messages");
-
     for (var entry in _pendingMessages.entries) {
       final pending = entry.value;
-      print(
-          "🔍 Checking pending message: ${pending.message.content} vs server: ${serverMessage.content}");
-
       if (_messagesMatch(pending.message, serverMessage)) {
         matchingClientId = entry.key;
         matchingPending = pending;
-        print(
-            "✅ Found matching pending message with clientId: $matchingClientId");
         break;
       }
     }
 
     if (matchingPending != null && matchingClientId != null) {
-      print(
-          "🔄 Found matching optimistic message, replacing with server message");
-
-      // Find and replace the optimistic message
       final index = _messages.indexWhere(
           (m) => m.id == matchingPending!.message.id && m.isOptimistic);
 
@@ -304,38 +281,26 @@ void _addNewMessage(MessageModel message) {
         _messages[index] = serverMessage;
         _pendingMessages.remove(matchingClientId);
         emit(MessageUpdatedState(serverMessage));
-        print("✅ Successfully replaced optimistic message with server message");
       } else {
-        print(
-            "⚠️ Could not find optimistic message to replace in _messages list");
-        // Check if message already exists (might have been added elsewhere)
         final existingIndex = _messages
             .indexWhere((m) => m.id == serverMessage.id && !m.isOptimistic);
 
         if (existingIndex == -1) {
-          print("➕ Adding as new message since optimistic version not found");
           _addNewMessage(serverMessage);
-        } else {
-          print("ℹ️ Server message already exists in list, skipping");
         }
         _pendingMessages.remove(matchingClientId);
       }
     } else {
-      print("ℹ️ No matching optimistic message found, adding as new message");
-      // Check for duplicates before adding
       final existingIndex = _messages
           .indexWhere((m) => m.id == serverMessage.id && !m.isOptimistic);
 
       if (existingIndex == -1) {
         _addNewMessage(serverMessage);
-      } else {
-        print("⚠️ Duplicate server message ignored");
       }
     }
   }
 
   bool _messagesMatch(MessageModel msg1, MessageModel msg2) {
-    // Check basic message properties
     bool basicMatch = msg1.senderId == msg2.senderId &&
         msg1.receiverId == msg2.receiverId &&
         msg1.content == msg2.content &&
@@ -343,7 +308,6 @@ void _addNewMessage(MessageModel message) {
 
     if (!basicMatch) return false;
 
-    // For time matching, be more lenient
     return _timesMatch(msg1.sentAt, msg2.sentAt);
   }
 
@@ -351,54 +315,38 @@ void _addNewMessage(MessageModel message) {
     try {
       final dt1 = DateTime.parse(time1);
       final dt2 = DateTime.parse(time2);
-      // ✅ INCREASED: Consider messages sent within 10 seconds as potentially the same
-      // This accounts for network delays and server processing time
       return dt1.difference(dt2).abs().inSeconds <= 10;
     } catch (e) {
-      print("⚠️ Error parsing dates for comparison: $e");
       return time1 == time2;
     }
   }
 
   void setMessages(List<MessageModel> messageList) {
-    print("📝 Setting ${messageList.length} messages");
     _messages = List<MessageModel>.from(messageList);
     _pendingMessages.clear();
     _processedServerMessageIds.clear();
 
-    // Mark all existing messages as processed
     for (var message in _messages) {
       if (!message.isOptimistic) {
         _processedServerMessageIds.add(message.id);
       }
     }
 
+    // Sort messages to ensure oldest is last
+    _messages.sort(
+        (a, b) => DateTime.parse(b.sentAt).compareTo(DateTime.parse(a.sentAt)));
+    _lastDateTime = _messages.isNotEmpty ? _messages.last.sentAt : null;
+    print(
+        "📅 Set _lastDateTime to: $_lastDateTime (messages: ${_messages.length})");
+    _canLoadMore = true; // Reset canLoadMore
     _scrollToBottomImmediate();
-    print("✅ Messages set successfully");
   }
 
   void _scrollToBottomImmediate() {
     if (scrollController.hasClients) {
-      // ✅ IMPROVED: Multiple attempts to ensure scrolling works
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
-          scrollController.animateTo(
-            0,
-            duration:
-                const Duration(milliseconds: 100), // Faster for real-time feel
-            curve: Curves.easeOut,
-          );
-        }
-      });
-
-      // ✅ ADD: Backup scroll attempt
-      Future.delayed(const Duration(milliseconds: 50), () {
-        if (scrollController.hasClients) {
-          scrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 50),
-            curve: Curves.easeOut,
-          );
+          scrollController.jumpTo(0);
         }
       });
     }
@@ -418,6 +366,8 @@ void _addNewMessage(MessageModel message) {
     _receiverId = id;
     _pendingMessages.clear();
     _processedServerMessageIds.clear();
+    _canLoadMore = true;
+    _lastDateTime = null;
     print('🎯 Receiver ID set to: $_receiverId');
     _ensureConnected();
   }
@@ -428,23 +378,14 @@ void _addNewMessage(MessageModel message) {
         print("🔌 Connecting to SignalR...");
         emit(const RealTimeChatLoading());
 
-        // ✅ ADD: Check if already connecting to prevent multiple connection attempts
-        if (_isReconnecting) {
-          print("⏳ Already reconnecting, waiting...");
-          return false;
-        }
-
         await _signalRService.initialize(userId: _senderId);
 
-        // ✅ IMPROVED: Better connection state handling
         final isConnected = _signalRService.isConnected;
         emit(ConnectionStatusChanged(isConnected));
 
         if (isConnected) {
           print("✅ Connected to SignalR successfully");
           emit(const RealTimeChatInitial());
-
-          // ✅ ADD: Start heartbeat when connected
           startHeartbeat();
         } else {
           print("❌ Failed to connect to SignalR");
@@ -464,52 +405,67 @@ void _addNewMessage(MessageModel message) {
   Future<void> initializeSenderId() async {
     try {
       final userIdStr = await _secureStorage.read(key: 'userId');
-      print('🔐 Retrieved userId from secure storage: $userIdStr');
-
       int parsedId = 0;
 
       if (userIdStr != null && userIdStr.isNotEmpty) {
-        try {
-          parsedId = int.parse(userIdStr);
-        } catch (parseError) {
-          print('❌ Error parsing user ID: $parseError');
-        }
+        parsedId = int.parse(userIdStr);
       }
-      if (parsedId == 0) {
-        try {
-          final accessToken = await _secureStorage.read(key: 'accessToken');
-          if (accessToken != null && accessToken.isNotEmpty) {
-            final Map<String, dynamic> decodedToken =
-                JwtDecoder.decode(accessToken);
-            final userId = decodedToken['sub'] ??
-                decodedToken['uid'] ??
-                decodedToken['userId'];
 
-            if (userId != null) {
-              if (userId is int) {
-                parsedId = userId;
-              } else if (userId is String) {
-                parsedId = int.tryParse(userId) ?? 0;
-              }
-              if (parsedId > 0) {
-                await _secureStorage.write(
-                    key: 'userId', value: parsedId.toString());
-                print('✅ Updated userId in secure storage: $parsedId');
-              }
+      if (parsedId == 0) {
+        final accessToken = await _secureStorage.read(key: 'accessToken');
+        if (accessToken != null && accessToken.isNotEmpty) {
+          final Map<String, dynamic> decodedToken =
+              JwtDecoder.decode(accessToken);
+          final userId = decodedToken['sub'] ??
+              decodedToken['uid'] ??
+              decodedToken['userId'];
+
+          if (userId != null) {
+            if (userId is int) {
+              parsedId = userId;
+            } else if (userId is String) {
+              parsedId = int.tryParse(userId) ?? 0;
+            }
+            if (parsedId > 0) {
+              await _secureStorage.write(
+                  key: 'userId', value: parsedId.toString());
             }
           }
-        } catch (tokenError) {
-          print('❌ Error extracting user ID from token: $tokenError');
         }
       }
+
       _senderId = parsedId;
-      print('👤 Sender ID initialized: $_senderId');
+      print('👤 Sender ID: $_senderId');
       emit(SenderIdInitialized(_senderId));
     } catch (e) {
-      print('❌ Error retrieving sender ID: $e');
       _senderId = 0;
-      print('⚠️ Using fallback sender ID after error: $_senderId');
       emit(SenderIdInitialized(_senderId));
+    }
+  }
+
+  Future<void> loadMoreMessages({
+    required String userId,
+    required String receiverName,
+    required String accessToken,
+  }) async {
+    if (!_canLoadMore) {
+      return;
+    }
+    if (_lastDateTime == null && _messages.isNotEmpty) {
+      _lastDateTime = _messages.last.sentAt;
+    }
+    try {
+      emit(const MessagesLoading());
+      await messageCubit.getMessages(
+        userId: userId,
+        dateTime: _lastDateTime ?? DateTime.now().toIso8601String(),
+        pageSize: _pageSize.toString(),
+        dateFilter: '0',
+        accessToken: accessToken,
+        receiverName: receiverName,
+      );
+    } catch (e) {
+      emit(RealTimeChatFailure("Failed to load messages: ${e.toString()}"));
     }
   }
 
@@ -520,6 +476,7 @@ void _addNewMessage(MessageModel message) {
     }
 
     if (messageController.text.trim().isEmpty || _isSendingMessage) {
+      print("🚫 Message empty or sending in progress");
       return;
     }
 
@@ -827,6 +784,7 @@ void _addNewMessage(MessageModel message) {
     _messageSubscription?.cancel();
     _connectionStatusSubscription?.cancel();
     _uploadProgressSubscription?.cancel();
+    _messageCubitSubscription?.cancel();
     stopHeartbeat();
 
     messageController.dispose();
@@ -835,7 +793,6 @@ void _addNewMessage(MessageModel message) {
   }
 }
 
-// Helper class to track pending messages
 class PendingMessage {
   final String clientId;
   final MessageModel message;
