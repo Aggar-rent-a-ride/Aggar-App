@@ -68,7 +68,7 @@ class MessageCubit extends Cubit<MessageState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('cached_chats', jsonEncode(chats.toJson()));
-      _cachedChats = chats; // Update local cache
+      _cachedChats = chats;
     } catch (e) {
       emit(MessageFailure("Failed to cache chats: $e"));
     }
@@ -163,7 +163,6 @@ class MessageCubit extends Cubit<MessageState> {
         return;
       }
       final ListMessageModel messages = ListMessageModel.fromJson(response);
-      await Future.delayed(const Duration(seconds: 1));
       emit(MessageSuccess(
           messages: messages,
           userId: int.parse(userId),
