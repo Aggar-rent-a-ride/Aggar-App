@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:aggar/core/api/api_consumer.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
-import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart'
-    show MainImageCubit;
+import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:bloc/bloc.dart';
@@ -23,6 +21,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
   Map<String, dynamic>? responseData;
   int? vehicleId;
+  VehicleDataModel? vehicleData;
 
   AddVehicleCubit(this.apiConsumer, this.mainImageCubit,
       this.additionalImageCubit, this.mapLocationCubit)
@@ -111,7 +110,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       return "Good"; // Default value that's acceptable to the API
     }
 
-    // Only run the switch if we have a non-null value
     switch (selectedVehicleHealthValue) {
       case "Excellent":
         return "Excellent";
@@ -141,10 +139,10 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     return status;
   }
 
-  // Method to access the full response data
   Map<String, dynamic>? getResponseData() {
     return responseData;
   }
+
   String getVehicleId() {
     return vehicleId?.toString() ?? '';
   }
@@ -157,7 +155,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   }) async {
     print("Selected transmission mode: $selectedTransmissionModeValue");
     print("Transmission mode: ${getVehicleTransmission()}");
-    print("Vehicle brand: ${vehicleBrandController.text}");   
+    print("Vehicle brand: ${vehicleBrandController.text}");
     try {
       emit(AddVehicleLoading());
       if (mainImageFile == null) {
@@ -186,7 +184,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
             ApiKey.vehicleLocationLongitude, (location?.longitude).toString()),
         MapEntry(ApiKey.vehicleAddress, vehicleAddressController.text),
       ]);
-      // Add main image
       formData.files.add(MapEntry(
         ApiKey.vehicleMainImage,
         await MultipartFile.fromFile(
@@ -208,7 +205,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           }
         }
       }
- print("vehicleTypeId: $selectedVehicleTypeId");
+      print("vehicleTypeId: $selectedVehicleTypeId");
       print("vehicleBrandId: $selectedVehicleBrandId");
       print("vehicleHealth: ${getVehicleHealth()}");
       try {
@@ -228,11 +225,9 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
           ),
         );
 
-        // Store the full response data
         responseData = response.data;
 
         if (response.statusCode! >= 200 && response.statusCode! < 300) {
-          // Parse the response and store vehicle data if available
           if (response.data != null && response.data['data'] != null) {
             try {
               vehicleData = VehicleDataModel.fromJson(response.data["data"]);
@@ -240,7 +235,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
               print("Successfully extracted vehicle ID: $vehicleId");
             } catch (parseError) {
               print('Error parsing vehicle data: $parseError');
-              // Continue with success emission even if parsing fails
             }
           }
           emit(AddVehicleSuccess(response.data));
@@ -259,7 +253,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
             "Error ${e.response!.statusCode}: ${e.response!.data.toString()}";
       }
 
-      // Handle specific Dio exception types
       switch (e.type) {
         case DioExceptionType.connectionTimeout:
           errorMessage = "Connection timeout";
@@ -283,9 +276,6 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     }
   }
 
-  // ignore: prefer_typing_uninitialized_variables
-  var vehicleData;
-///////////////////////////////////////////////////////////////////////////////////////////
   Future<void> getData(String id, String token) async {
     try {
       emit(AddVehicleLoading());
@@ -302,22 +292,18 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
         ),
       );
 
-      // Store the full response data
       responseData = response.data;
 
-      // Check if response has data
       if (response.data == null || response.data['data'] == null) {
         emit(AddVehicleFailure('No vehicle data found'));
         return;
       }
 
-      // Print raw JSON data before parsing
       print('Raw Vehicle JSON: ${response.data["data"]}');
 
       try {
         vehicleData = VehicleDataModel.fromJson(response.data["data"]);
         vehicleId = response.data["data"]["id"];
-
         emit(AddVehicleSuccess(response.data));
       } catch (parseError) {
         emit(AddVehicleFailure('Failed to parse vehicle data: $parseError'));
@@ -328,5 +314,12 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     } catch (e) {
       emit(AddVehicleFailure("Unexpected error: $e"));
     }
+  }
+
+  void reset() {
+    vehicleData = null;
+    vehicleId = null;
+    responseData = null;
+    emit(AddVehicleInitial());
   }
 }

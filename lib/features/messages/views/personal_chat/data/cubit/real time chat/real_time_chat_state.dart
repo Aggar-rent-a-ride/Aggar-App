@@ -1,4 +1,7 @@
-class RealTimeChatState {
+import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart'
+    show MessageModel;
+
+abstract class RealTimeChatState {
   const RealTimeChatState();
 }
 
@@ -10,35 +13,43 @@ class RealTimeChatLoading extends RealTimeChatState {
   const RealTimeChatLoading();
 }
 
+class MessagesLoading extends RealTimeChatState {
+  const MessagesLoading();
+}
+
+class MessagesLoaded extends RealTimeChatState {
+  const MessagesLoaded();
+}
+
 class RealTimeChatFailure extends RealTimeChatState {
-  final String message;
-  const RealTimeChatFailure(this.message);
-}
+  final String error;
 
-class SenderIdInitialized extends RealTimeChatState {
-  final int senderId;
-  const SenderIdInitialized(this.senderId);
-}
-
-class MessageSentSuccessfully extends RealTimeChatState {
-  final String messageId;
-  const MessageSentSuccessfully(this.messageId);
+  const RealTimeChatFailure(this.error);
 }
 
 class MessageAddedState extends RealTimeChatState {
-  final dynamic message;
+  final MessageModel message;
+
   const MessageAddedState(this.message);
 }
 
 class MessageUpdatedState extends RealTimeChatState {
-  final dynamic message;
+  final MessageModel message;
+
   const MessageUpdatedState(this.message);
+}
+
+class MessageSentSuccessfully extends RealTimeChatState {
+  final String clientMessageId;
+
+  const MessageSentSuccessfully(this.clientMessageId);
 }
 
 class FileUploadInProgress extends RealTimeChatState {
   final String clientMessageId;
   final String fileName;
   final double progress;
+
   const FileUploadInProgress(
       this.clientMessageId, this.fileName, this.progress);
 }
@@ -46,30 +57,26 @@ class FileUploadInProgress extends RealTimeChatState {
 class FileUploadComplete extends RealTimeChatState {
   final String clientMessageId;
   final String fileName;
+
   const FileUploadComplete(this.clientMessageId, this.fileName);
 }
 
 class FileUploadFailed extends RealTimeChatState {
   final String clientMessageId;
   final String fileName;
-  final String errorMessage;
-  const FileUploadFailed(
-      this.clientMessageId, this.fileName, this.errorMessage);
-}
+  final String error;
 
-class SearchResultsState extends RealTimeChatState {
-  final String searchQuery;
-  final String? highlightedMessageId;
-  final bool isDateSearch;
-
-  const SearchResultsState({
-    required this.searchQuery,
-    this.highlightedMessageId,
-    this.isDateSearch = false,
-  });
+  const FileUploadFailed(this.clientMessageId, this.fileName, this.error);
 }
 
 class ConnectionStatusChanged extends RealTimeChatState {
   final bool isConnected;
+
   const ConnectionStatusChanged(this.isConnected);
+}
+
+class SenderIdInitialized extends RealTimeChatState {
+  final int senderId;
+
+  const SenderIdInitialized(this.senderId);
 }

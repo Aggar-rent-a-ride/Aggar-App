@@ -1,9 +1,9 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_state.dart';
-import 'package:aggar/features/main_screen/customer/presentation/widgets/favorite_button.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
@@ -20,7 +20,6 @@ class PopularVehiclesCarCard extends StatelessWidget {
   final double? rating;
   final String assetImagePath;
   final String vehicleId;
-  final bool isFavorite;
 
   const PopularVehiclesCarCard({
     super.key,
@@ -30,7 +29,6 @@ class PopularVehiclesCarCard extends StatelessWidget {
     this.rating,
     required this.assetImagePath,
     required this.vehicleId,
-    required this.isFavorite,
   });
 
   @override
@@ -40,45 +38,83 @@ class PopularVehiclesCarCard extends StatelessWidget {
         if (state is MainConnected) {
           return GestureDetector(
             onTap: () async {
-              context
-                  .read<AddVehicleCubit>()
-                  .getData(vehicleId, state.accessToken);
-              if (context.read<AddVehicleCubit>().vehicleData != null) {
-                final vehicle = context.read<AddVehicleCubit>().vehicleData!;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VehiclesDetailsView(
-                      vehiceSeatsNo: vehicle.numOfPassengers.toString(),
-                      renterName: vehicle.renter!.name,
-                      yearOfManufaction: vehicle.year,
-                      vehicleModel: vehicle.model,
-                      vehicleRentPrice: vehicle.pricePerDay,
-                      vehicleColor: vehicle.color,
-                      vehicleOverView: vehicle.extraDetails ?? "",
-                      images: vehicle.vehicleImages,
-                      mainImage: vehicle.mainImagePath,
-                      vehicleHealth: vehicle.physicalStatus == "Excellent"
-                          ? "excellent"
-                          : vehicle.physicalStatus == "Good"
-                              ? "good"
-                              : vehicle.physicalStatus == "Scratched"
-                                  ? "minor dents"
-                                  : "not bad",
-                      vehicleStatus: vehicle.status == "OutOfService"
-                          ? "out of stock"
-                          : "active",
-                      transmissionMode: vehicle.transmission == "Automatic"
-                          ? 1
-                          : vehicle.transmission == "None"
-                              ? 0
-                              : 2,
-                      vehicleType: vehicle.vehicleType.name,
-                      vehicleBrand: vehicle.vehicleBrand.name,
-                      vehicleAddress: vehicle.address,
-                      vehicleLongitude: vehicle.location.longitude,
-                      vehicleLatitude: vehicle.location.latitude,
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: context.theme.blue100_2,
                     ),
+                  );
+                },
+              );
+
+              try {
+                await context
+                    .read<AddVehicleCubit>()
+                    .getData(vehicleId, state.accessToken);
+                Navigator.of(context).pop();
+                final vehicleData = context.read<AddVehicleCubit>().vehicleData;
+
+                if (vehicleData != null) {
+                  final vehicle = vehicleData;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VehiclesDetailsView(
+                        vehiceSeatsNo: vehicle.numOfPassengers.toString(),
+                        renterName: vehicle.renter!.name,
+                        yearOfManufaction: vehicle.year,
+                        vehicleModel: vehicle.model,
+                        vehicleRentPrice: vehicle.pricePerDay,
+                        vehicleColor: vehicle.color,
+                        vehicleOverView: vehicle.extraDetails ?? "",
+                        images: vehicle.vehicleImages,
+                        mainImage: vehicle.mainImagePath,
+                        vehicleHealth: vehicle.physicalStatus == "Excellent"
+                            ? "excellent"
+                            : vehicle.physicalStatus == "Good"
+                                ? "good"
+                                : vehicle.physicalStatus == "Scratched"
+                                    ? "minor dents"
+                                    : "not bad",
+                        vehicleStatus: vehicle.status == "OutOfService"
+                            ? "out of stock"
+                            : "active",
+                        transmissionMode: vehicle.transmission == "Automatic"
+                            ? 1
+                            : vehicle.transmission == "None"
+                                ? 0
+                                : 2,
+                        vehicleType: vehicle.vehicleType.name,
+                        vehicleBrand: vehicle.vehicleBrand.name,
+                        vehicleAddress: vehicle.address,
+                        vehicleLongitude: vehicle.location.longitude,
+                        vehicleLatitude: vehicle.location.latitude,
+                      ),
+                    ),
+                  ).then((_) {
+                    context.read<AddVehicleCubit>().reset();
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    customSnackBar(
+                      context,
+                      "Error",
+                      "Failed to load vehicle details",
+                      SnackBarType.error,
+                    ),
+                  );
+                }
+              } catch (e) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(
+                    context,
+                    "Error",
+                    "Error loading vehicle",
+                    SnackBarType.error,
                   ),
                 );
               }
@@ -138,15 +174,6 @@ class PopularVehiclesCarCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Positioned(
-                  top: 18,
-                  right: 12,
-                  child: FavoriteButton(
-                    vehicleId: vehicleId,
-                    isFavorite: isFavorite,
-                    token: state.accessToken,
                   ),
                 ),
               ],

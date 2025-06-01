@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/get_formatted_date.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -18,21 +19,49 @@ class PersonalChatBody extends StatefulWidget {
     super.key,
     required this.currentUserId,
     required this.reciverName,
+    required this.reciverId,
   });
+
   final int currentUserId;
   final String reciverName;
+  final String reciverId;
 
   @override
   State<PersonalChatBody> createState() => _PersonalChatBodyState();
 }
 
 class _PersonalChatBodyState extends State<PersonalChatBody> {
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
+    final realTimeCubit = context.read<RealTimeChatCubit>();
+    realTimeCubit.scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
+  }
+
+  void _scrollListener() async {
+    final realTimeCubit = context.read<RealTimeChatCubit>();
+    if (realTimeCubit.scrollController.position.pixels >=
+            realTimeCubit.scrollController.position.maxScrollExtent - 200 &&
+        !_isLoadingMore &&
+        realTimeCubit.canLoadMore) {
+      setState(() {
+        _isLoadingMore = true;
+      });
+      final tokenCubit = context.read<TokenRefreshCubit>();
+      final token = await tokenCubit.getAccessToken();
+      if (token != null) {
+        realTimeCubit.loadMoreMessages(
+          accessToken: token,
+          userId: widget.reciverId,
+          receiverName: widget.reciverName,
+        );
+      }
+    }
   }
 
   void _scrollToBottom() {
@@ -66,7 +95,6 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
     for (var message in messages) {
       DateTime dateTime;
       try {
-        // Ensure sentAt is treated as UTC by appending 'Z' if needed
         String sentAt = message.sentAt.endsWith('Z')
             ? message.sentAt
             : '${message.sentAt}Z';
@@ -87,34 +115,35 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<RealTimeChatCubit, RealTimeChatState>(
-      listener: (context, realTimeState) {
-        print("🎯 RealTime state changed: ${realTimeState.runtimeType}");
-        if (realTimeState is MessageAddedState ||
-            realTimeState is MessageUpdatedState ||
-            realTimeState is FileUploadComplete ||
-            realTimeState is MessageSentSuccessfully) {
-          print(
-              "📱 UI update triggered by state: ${realTimeState.runtimeType}");
+      listener: (context, state) {
+        print("🎯 RealTime state: ${state.runtimeType}");
+        if (state is MessageAddedState ||
+            state is MessageUpdatedState ||
+            state is FileUploadComplete ||
+            state is MessageSentSuccessfully) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _scrollToBottom();
           });
         }
-        if (realTimeState is ConnectionStatusChanged) {
-          print("🔗 Connection status changed: ${realTimeState.isConnected}");
+        if (state is MessagesLoaded) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+        }
+        if (state is RealTimeChatFailure) {
+          setState(() {
+            _isLoadingMore = false;
+          });
         }
       },
       child: BlocBuilder<RealTimeChatCubit, RealTimeChatState>(
         buildWhen: (previous, current) {
-          print(
-              "🏗️ BlocBuilder buildWhen: ${previous.runtimeType} -> ${current.runtimeType}");
           return true;
         },
-        builder: (context, realTimeState) {
-          print("🏗️ Building UI with state: ${realTimeState.runtimeType}");
+        builder: (context, state) {
           final realTimeCubit = context.read<RealTimeChatCubit>();
           final personalCubit = context.read<PersonalChatCubit>();
           final List<MessageModel> messages = realTimeCubit.messages;
-          print("📊 Current messages count: ${messages.length}");
           final filteredMessages = _getFilteredMessages(messages);
           final groupedMessages = _groupMessagesByDate(filteredMessages);
           List<String> sortedDates = groupedMessages.keys.toList()
@@ -123,8 +152,7 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
           return Expanded(
             child: Column(
               children: [
-                if (realTimeState is ConnectionStatusChanged &&
-                    !realTimeState.isConnected)
+                if (state is ConnectionStatusChanged && !state.isConnected)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
@@ -137,7 +165,7 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
                       ),
                     ),
                   ),
-                if (realTimeState is RealTimeChatLoading)
+                if (state is RealTimeChatLoading)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
@@ -165,7 +193,7 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
                       ],
                     ),
                   ),
-                if (realTimeState is MessageAddedState)
+                if (state is MessageAddedState)
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: double.infinity,
@@ -184,9 +212,25 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
                     controller: realTimeCubit.scrollController,
                     reverse: true,
                     cacheExtent: 2000.0,
-                    itemCount: sortedDates.length,
-                    itemBuilder: (context, groupIndex) {
-                      String date = sortedDates[groupIndex];
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: sortedDates.length + (_isLoadingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (_isLoadingMore && index == sortedDates.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      String date = sortedDates[index];
                       List<MessageModel> messagesForDate =
                           groupedMessages[date]!;
                       messagesForDate.sort((a, b) => DateTime.parse(a.sentAt)
@@ -248,8 +292,8 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
                                 color: isHighlighted
                                     ? context.theme.blue100_2.withOpacity(0.1)
                                     : Colors.transparent,
-                                border: (realTimeState is MessageAddedState &&
-                                        realTimeState.message.id == message.id)
+                                border: (state is MessageAddedState &&
+                                        state.message.id == message.id)
                                     ? Border.all(
                                         color: Colors.green.withOpacity(0.5),
                                         width: 2)

@@ -52,12 +52,9 @@ void main() async {
   languageCubit.changeToEnglish();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(
-        secureStorage: secureStorage,
-        initialLanguageCubit: languageCubit,
-      ),
+    MyApp(
+      secureStorage: secureStorage,
+      initialLanguageCubit: languageCubit,
     ),
   );
 }
@@ -149,7 +146,11 @@ class MyApp extends StatelessWidget {
           create: (context) => PersonalChatCubit(),
         ),
         BlocProvider(
-          create: (context) => RealTimeChatCubit(),
+          create: (context) => RealTimeChatCubit(
+            MessageCubit(
+              dioConsumer: DioConsumer(dio: dio),
+            ),
+          ),
         ),
         BlocProvider(
           create: (context) => ReportCubit(),
