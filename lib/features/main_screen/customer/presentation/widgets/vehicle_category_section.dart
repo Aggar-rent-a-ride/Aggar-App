@@ -59,7 +59,6 @@ class VehicleCategorySection extends StatelessWidget {
                 pricePerHour: vehicle.pricePerDay,
                 assetImagePath: vehicle.mainImagePath,
                 vehicleId: vehicle.id.toString(),
-                isFavorite: vehicle.isFavourite,
                 rating: vehicle.rate,
               );
             },

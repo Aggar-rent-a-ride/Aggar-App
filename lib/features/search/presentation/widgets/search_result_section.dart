@@ -86,7 +86,6 @@ class SearchResultSection extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final vehicle = vehicles[index];
                       return PopularVehiclesCarCard(
-                        isFavorite: vehicle.isFavourite,
                         vehicleId: vehicle.id.toString(),
                         carName: "${vehicle.brand} ${vehicle.model}",
                         carType: vehicle.transmission,
