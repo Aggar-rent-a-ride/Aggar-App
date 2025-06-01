@@ -231,7 +231,7 @@ class MainCubit extends Cubit<MainState> {
     print("Fetching data with token: ${accessToken.substring(0, 10)}...");
     _vehicleBrandCubit.fetchVehicleBrands(accessToken);
     _vehicleTypeCubit.fetchVehicleTypes(accessToken);
-    _vehicleCubit.fetchAllVehicles(accessToken);
+    _vehicleCubit.fetchPopularVehicles(accessToken);
   }
 
   void handleTokenRefreshSuccess(String accessToken) {

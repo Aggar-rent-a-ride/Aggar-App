@@ -37,7 +37,6 @@ class VehicleBrandScreen extends StatelessWidget {
                   children: List.generate(
                     state.vehicles!.data.length,
                     (index) => PopularVehiclesCarCard(
-                      isFavorite: state.vehicles!.data[index].isFavourite,
                       vehicleId: state.vehicles!.data[index].id.toString(),
                       carName:
                           "${state.vehicles!.data[index].brand} ${state.vehicles!.data[index].model}",

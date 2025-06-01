@@ -4,6 +4,7 @@ import 'package:aggar/features/messages/views/messages_status/data/model/list_ch
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +19,7 @@ class AllMessagesView extends StatefulWidget {
 class _AllMessagesViewState extends State<AllMessagesView>
     with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   late MessageCubit _messageCubit;
-  bool _isViewActive = true; // Track if AllMessagesView is the active view
+  bool _isViewActive = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -32,7 +33,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
   }
 
   Future<void> _startPollingWithToken() async {
-    if (!_isViewActive) return; // Only start polling if view is active
+    if (!_isViewActive) return;
     final tokenCubit = context.read<TokenRefreshCubit>();
     final token = await tokenCubit.getAccessToken();
     if (token != null) {
@@ -44,7 +45,6 @@ class _AllMessagesViewState extends State<AllMessagesView>
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed && _isViewActive) {
-      // Only resume polling if AllMessagesView is active
       _startPollingWithToken();
     } else if (state == AppLifecycleState.paused) {
       _messageCubit.stopPolling();
@@ -98,11 +98,10 @@ class _AllMessagesViewState extends State<AllMessagesView>
           stream: _messageCubit.chatStream,
           initialData: _messageCubit.initialChats,
           builder: (context, snapshot) {
-            if (snapshot.data == null && state is ChatsLoading) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                (snapshot.data == null && state is ChatsLoading)) {
               return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.blue,
-                ),
+                child: CircularProgressIndicator(color: Colors.blue),
               );
             }
             if (snapshot.hasError) {
@@ -110,6 +109,24 @@ class _AllMessagesViewState extends State<AllMessagesView>
             }
             if (snapshot.hasData && snapshot.data != null) {
               final chats = snapshot.data!;
+              if (chats.data.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("No chats available"),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final tokenCubit = context.read<TokenRefreshCubit>();
+                          final token = await tokenCubit.getAccessToken();
+                          if (token != null) _messageCubit.getMyChat(token);
+                        },
+                        child: const Text("Refresh"),
+                      ),
+                    ],
+                  ),
+                );
+              }
               return RefreshIndicator(
                 onRefresh: () async {
                   final tokenCubit = context.read<TokenRefreshCubit>();
@@ -129,11 +146,21 @@ class _AllMessagesViewState extends State<AllMessagesView>
                         messageTime.hour % 12 == 0 ? 12 : messageTime.hour % 12;
                     String hoursAndMinutes =
                         "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
+                    final messageContent = chatData.lastMessage.content ??
+                        chatData.lastMessage.filePath ??
+                        "No message";
+                    if (messageContent == "No message" &&
+                        chatData.unseenMessageIds.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
                     return ChatPerson(
                       onTap: () async {
+                        final personalChatCubit =
+                            context.read<PersonalChatCubit>();
                         final tokenCubit = context.read<TokenRefreshCubit>();
                         final token = await tokenCubit.getAccessToken();
                         if (token != null) {
+                          await _messageCubit.getMyChat(token);
                           _messageCubit.stopPolling();
                           _isViewActive = false;
                           await _messageCubit.getMessages(
@@ -145,14 +172,15 @@ class _AllMessagesViewState extends State<AllMessagesView>
                             accessToken: token,
                             receiverName: chatData.user.name,
                           );
+                          await personalChatCubit.markAsSeen(
+                            token,
+                            chatData.unseenMessageIds,
+                          );
                         }
                       },
                       name: chatData.user.name,
-                      msg: chatData.lastMessage.content ??
-                          chatData.lastMessage.filePath ??
-                          "No message",
-                      isMsg:
-                          chatData.lastMessage.content != null ? true : false,
+                      msg: messageContent,
+                      isMsg: chatData.lastMessage.content != null,
                       time: hoursAndMinutes,
                       numberMsg: chatData.unseenMessageIds.length,
                       image: chatData.user.imagePath,

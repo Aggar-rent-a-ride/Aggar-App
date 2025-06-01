@@ -10,12 +10,14 @@ final class MessageSuccess extends MessageState {
   final int? userId;
   final String receiverName;
   final String? reciverImg;
+  final List<int>? unSeenList;
 
   MessageSuccess(
       {this.messages,
       this.userId,
       required this.receiverName,
-      this.reciverImg});
+      this.reciverImg,
+      this.unSeenList});
 }
 
 final class ChatSuccess extends MessageState {

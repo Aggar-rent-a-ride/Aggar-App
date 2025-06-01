@@ -52,12 +52,9 @@ void main() async {
   languageCubit.changeToEnglish();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(
-        secureStorage: secureStorage,
-        initialLanguageCubit: languageCubit,
-      ),
+    MyApp(
+      secureStorage: secureStorage,
+      initialLanguageCubit: languageCubit,
     ),
   );
 }

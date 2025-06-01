@@ -59,7 +59,6 @@ class PopularVehicleBody extends StatelessWidget {
                   assetImagePath: vehicle.mainImagePath,
                   carName: "${vehicle.brand} ${vehicle.type}",
                   carType: vehicle.transmission,
-                  isFavorite: vehicle.isFavourite,
                   pricePerHour: vehicle.pricePerDay,
                   vehicleId: vehicle.id.toString(),
                   rating: vehicle.rate,
