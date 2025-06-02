@@ -79,7 +79,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
               const Gap(24),
 
               CustomElevatedButton(
-                text: 'Send conform to Renter',
+                text: 'Booking',
                 onPressed: sendConfirmToRenter,
               ),
 
