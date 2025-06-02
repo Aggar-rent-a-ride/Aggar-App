@@ -1,4 +1,5 @@
 import 'package:aggar/features/Splash/data/splash_state.dart';
+import 'package:aggar/features/main_screen/admin/presentation/views/admin_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/views/customer_bottom_navigation_bar_views.dart';
 import 'package:aggar/features/main_screen/renter/presentation/views/renter_bottom_navigation_bar_view.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +73,8 @@ class SplashCubit extends Cubit<SplashState> {
           destination = const CustomerBottomNavigationBarViews();
         } else if (userType == "Renter") {
           destination = const RenterBottomNavigationBarView();
+        } else if (userType == "User") {
+          destination = const AdminBottomNavigationBar();
         } else {
           destination = const SignInView();
         }
