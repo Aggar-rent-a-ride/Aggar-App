@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/booking/presentation/views/booking_view.dart';
 
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_rental_price.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_book_button.dart';
@@ -32,7 +33,14 @@ class BottomNavigationBarSection extends StatelessWidget {
           children: [
             BottomNavigationBarRentalPrice(price: price),
             const Gap(15),
-            BottomNavigationBarBookButton(onPressed: onPressed),
+            BottomNavigationBarBookButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BookVehicleScreen(),
+                ),
+              ),
+            ),
           ],
         ),
       ),

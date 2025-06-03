@@ -9,6 +9,12 @@ class EndPoint {
   static String refreshToken = "/api/auth/refresh";
   static String logout = "/api/auth/logout";
 
+  // Booking endpoints
+  static String createBooking = "/api/booking";
+  static String getBookingById = "/api/booking";
+  static String getBookingsByStatus = "/api/booking/bookings-by-status";
+  static String getBookingsCount = "/api/booking/count-bookings-by-status";
+
   // Vehicle endpoints
   static String vehicle = "/api/vehicle/";
   static String vehicleType = "$baseUrl/api/vehicletype/";
