@@ -12,6 +12,7 @@ import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
+import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
@@ -165,6 +166,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => FilterCubit(),
+        ),
+        BlocProvider(
+          create: (context) => BookingCubit(
+            dioConsumer: DioConsumer(dio: dio),
+            tokenRefreshCubit: context.read<TokenRefreshCubit>(),
+          ),
         ),
         BlocProvider(
           create: (context) => EditVehicleCubit(

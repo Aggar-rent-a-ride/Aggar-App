@@ -1,9 +1,12 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/main_screen.dart';
 import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
 import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/widgets/custom_bottom_navigation_bar.dart'
     show CustomBottomNavigationBar;
 import '../../../../messages/views/messages_status/presentation/views/messages_view.dart';
@@ -16,8 +19,41 @@ class AdminBottomNavigationBar extends StatefulWidget {
       _AdminBottomNavigationBarState();
 }
 
-class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar> {
+class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar>
+    with WidgetsBindingObserver {
   int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeTokenRefresh();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _refreshTokenIfNeeded();
+    }
+  }
+
+  void _initializeTokenRefresh() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshTokenIfNeeded();
+    });
+  }
+
+  void _refreshTokenIfNeeded() {
+    final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+    tokenRefreshCubit.ensureValidToken();
+  }
 
   void onTapped(int index) {
     setState(() {
@@ -33,21 +69,36 @@ class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar> {
       const SettingsScreen(),
       const ProfileScreen(),
     ];
-    return Scaffold(
-      backgroundColor: context.theme.white100_1,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
+
+    return BlocListener<TokenRefreshCubit, TokenRefreshState>(
+      listener: (context, state) {
+        if (state is TokenRefreshFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Session expired. Please login again.'),
+              backgroundColor: Colors.red,
+            ),
           );
-        },
-        child: screens[selectedIndex],
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: selectedIndex,
-        onTapped: onTapped,
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const SignInView()));
+        }
+      },
+      child: Scaffold(
+        backgroundColor: context.theme.white100_1,
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          child: screens[selectedIndex],
+        ),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          selectedIndex: selectedIndex,
+          onTapped: onTapped,
+        ),
       ),
     );
   }

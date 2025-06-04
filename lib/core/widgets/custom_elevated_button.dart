@@ -21,7 +21,6 @@ class CustomElevatedButton extends StatelessWidget {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.85,
       height: 60,
-      // TODO: MAKE IT DYNAMIC HIEHT PLZ
       decoration: BoxDecoration(
         color: context.theme.blue100_1,
         borderRadius: BorderRadius.circular(10),
@@ -46,7 +45,6 @@ class CustomElevatedButton extends StatelessWidget {
             ? SizedBox(
                 height: 24,
                 width: 24,
-                // TODO: USE SPINKIT FOR LOADING
                 child: CircularProgressIndicator(
                   color: AppConstants.myWhite100_1,
                   strokeWidth: 3,
