@@ -16,7 +16,7 @@ class BookVehicleScreen extends StatefulWidget {
     required this.vehicleId,
   });
 
-  final String vehicleId;
+  final int vehicleId;
 
   @override
   _BookVehicleScreenState createState() => _BookVehicleScreenState();
@@ -250,7 +250,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
     }
 
     // Create booking using cubit
-    final vehicleIdInt = int.tryParse(widget.vehicleId);
+    final vehicleIdInt = widget.vehicleId;
     if (vehicleIdInt == null) {
       _showErrorSnackBar("Invalid vehicle ID");
       return;

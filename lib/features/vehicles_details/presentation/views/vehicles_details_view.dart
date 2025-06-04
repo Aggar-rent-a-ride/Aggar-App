@@ -1,6 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/booking/presentation/views/booking_view.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_cubit.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_state.dart';
@@ -34,6 +33,7 @@ class VehiclesDetailsView extends StatelessWidget {
     this.pfpImage,
     required this.renterName,
   });
+
   final int vehicleId;
   final int yearOfManufaction;
   final String vehicleModel;
@@ -119,62 +119,49 @@ class VehiclesDetailsView extends StatelessWidget {
                   .copyWith(color: context.theme.black100),
             ),
           ),
-        ),
-        backgroundColor: context.theme.white100_1,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomImageCar(
-                      mainImage: mainImage,
-                    ),
-                    CarNameWithTypeAndYearOfManifiction(
-                      carName: '$vehicleBrand $vehicleModel',
-                      manifactionYear: yearOfManufaction,
-                      transmissionType: transmissionMode,
-                    ),
-                    TabBarSection(
-                      vehilceType: vehicleType,
-                      pfpImage: pfpImage,
-                      renterName: renterName,
-                      vehicleColor: vehicleColor,
-                      vehicleOverView: vehicleOverView,
-                      vehiceSeatsNo: vehiceSeatsNo,
-                      images: images,
-                      mainImage: mainImage,
-                      vehicleHealth: vehicleHealth,
-                      vehicleStatus: vehicleStatus,
-                      vehicleAddress: vehicleAddress,
-                      vehicleLongitude: vehicleLongitude,
-                      vehicleLatitude: vehicleLatitude,
-                    ),
-                  ],
-                )
-              ],
+          backgroundColor: context.theme.white100_1,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Column(
+                    spacing: 10,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomImageCar(
+                        mainImage: mainImage,
+                      ),
+                      CarNameWithTypeAndYearOfManifiction(
+                        carName: '$vehicleBrand $vehicleModel',
+                        manifactionYear: yearOfManufaction,
+                        transmissionType: transmissionMode,
+                      ),
+                      TabBarSection(
+                        vehilceType: vehicleType,
+                        pfpImage: pfpImage,
+                        renterName: renterName,
+                        vehicleColor: vehicleColor,
+                        vehicleOverView: vehicleOverView,
+                        vehiceSeatsNo: vehiceSeatsNo,
+                        images: images,
+                        mainImage: mainImage,
+                        vehicleHealth: vehicleHealth,
+                        vehicleStatus: vehicleStatus,
+                        vehicleAddress: vehicleAddress,
+                        vehicleLongitude: vehicleLongitude,
+                        vehicleLatitude: vehicleLatitude,
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
           bottomNavigationBar: BottomNavigationBarSection(
             price: vehicleRentPrice,
             onPressed: () {},
           ),
-        ),
-        bottomNavigationBar: BottomNavigationBarSection(
-          price: vehicleRentPrice, 
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BookVehicleScreen(
-                  vehicleId: vehicleId,
-                ),
-              ),
-            );
-          }
         ),
       ),
     );
