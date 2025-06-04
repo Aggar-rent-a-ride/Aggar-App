@@ -73,7 +73,7 @@ class VehicleCubit extends Cubit<VehicleState> {
 
         final response = await dioConsumer.get(
           EndPoint.getVehicles,
-          queryParameters: {"pageNo": targetPage, "pageSize": 5},
+          queryParameters: {"pageNo": targetPage, "pageSize": 8},
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
 
@@ -137,7 +137,7 @@ class VehicleCubit extends Cubit<VehicleState> {
 
         final response = await dioConsumer.get(
           EndPoint.getPopularVehicles,
-          queryParameters: {"pageNo": targetPage, "pageSize": 5},
+          queryParameters: {"pageNo": targetPage, "pageSize": 8},
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
 
@@ -198,7 +198,7 @@ class VehicleCubit extends Cubit<VehicleState> {
 
         final response = await dioConsumer.get(
           EndPoint.mostRentedVehicles,
-          queryParameters: {"pageNo": targetPage, "pageSize": 5},
+          queryParameters: {"pageNo": targetPage, "pageSize": 8},
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
 
@@ -236,79 +236,6 @@ class VehicleCubit extends Cubit<VehicleState> {
         }
       }
     }
-  }
-
-  Future<void> toggleFavorite(
-      String accessToken, String vehicleId, bool currentValue) async {
-    try {
-      emit(VehicleFavoriteLoading(
-        vehicleId: vehicleId,
-        vehicles:
-            ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
-      ));
-      _updateVehicleFavoriteStatus(vehicleId, !currentValue);
-      emit(VehicleLoaded(
-        vehicles: ListVehicleModel(
-          data: _allVehicles,
-          totalPages: totalPagesAll,
-        ),
-      ));
-      await dioConsumer.put(
-        EndPoint.putFavourite,
-        data: {"vehicleId": vehicleId, "isFavourite": !currentValue},
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-      );
-    } catch (error) {
-      _updateVehicleFavoriteStatus(vehicleId, currentValue);
-      emit(VehicleLoaded(
-        vehicles: ListVehicleModel(
-          data: _allVehicles,
-          totalPages: totalPagesAll,
-        ),
-      ));
-
-      emit(VehicleError(message: 'Failed to toggle favorite: $error'));
-    }
-  }
-
-  void _updateVehicleFavoriteStatus(String vehicleId, bool isFavorite) {
-    _allVehicles = _allVehicles.map((vehicle) {
-      if (vehicle.id == vehicleId) {
-        return _copyVehicleWithFavoriteStatus(vehicle, isFavorite);
-      }
-      return vehicle;
-    }).toList();
-
-    _popularVehicles = _popularVehicles.map((vehicle) {
-      if (vehicle.id == vehicleId) {
-        return _copyVehicleWithFavoriteStatus(vehicle, isFavorite);
-      }
-      return vehicle;
-    }).toList();
-
-    _mostRentedVehicles = _mostRentedVehicles.map((vehicle) {
-      if (vehicle.id == vehicleId) {
-        return _copyVehicleWithFavoriteStatus(vehicle, isFavorite);
-      }
-      return vehicle;
-    }).toList();
-  }
-
-  VehicleModel _copyVehicleWithFavoriteStatus(
-      VehicleModel vehicle, bool isFavorite) {
-    return VehicleModel(
-      distance: vehicle.distance,
-      type: vehicle.type,
-      year: vehicle.year,
-      rate: vehicle.rate,
-      id: vehicle.id,
-      model: vehicle.model,
-      brand: vehicle.brand,
-      transmission: vehicle.transmission,
-      pricePerDay: vehicle.pricePerDay,
-      mainImagePath: vehicle.mainImagePath,
-      isFavourite: isFavorite,
-    );
   }
 
   void loadMoreVehicles(String accessToken) {

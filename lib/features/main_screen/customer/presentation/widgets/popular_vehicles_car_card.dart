@@ -63,6 +63,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => VehiclesDetailsView(
+                        isFavorite: vehicle.isFavorite,
                         vehicleId: vehicle.id,
                         vehiceSeatsNo: vehicle.numOfPassengers.toString(),
                         renterName: vehicle.renter!.name,

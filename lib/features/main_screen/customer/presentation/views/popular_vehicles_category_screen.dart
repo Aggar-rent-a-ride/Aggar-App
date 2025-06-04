@@ -120,9 +120,7 @@ class _PopularVehiclesCategoryScreenState
                     );
                   }
 
-                  if (state is VehicleLoaded ||
-                      state is VehicleLoadingMore ||
-                      state is VehicleFavoriteLoading) {
+                  if (state is VehicleLoaded || state is VehicleLoadingMore) {
                     final vehicles = cubit.popularVehicles;
                     final canLoadMore = cubit.canLoadMorePopular;
                     final isLoadingMore = state is VehicleLoadingMore;

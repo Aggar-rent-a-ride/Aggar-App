@@ -1,43 +1,39 @@
-import 'dart:convert';
+import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 
 class VehicleFavoriteCubit extends Cubit<VehicleFavoriteState> {
-  VehicleFavoriteCubit() : super(const VehicleFavoriteInitial());
+  final DioConsumer dioConsumer = DioConsumer(dio: Dio());
+
+  VehicleFavoriteCubit({bool initialFavorite = false})
+      : super(VehicleFavoriteInitial(isFavorite: initialFavorite));
 
   Future<void> toggleFavorite(
       int vehicleId, bool isFavorite, String token) async {
-    emit(XVehicleFavoriteLoading(isFavorite: isFavorite));
+    emit(VehicleFavoriteLoading(isFavorite: isFavorite));
     try {
-      final response = await http.put(
-        Uri.parse(EndPoint.putFavourite),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({
+      final response = await dioConsumer.put(
+        EndPoint.putFavourite,
+        data: {
           'vehicleId': vehicleId,
-          'isFavourite': isFavorite,
-        }),
+          'isFavourite': !isFavorite,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        ),
       );
-      print(response.body);
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        emit(VehicleFavoriteSuccess(
-          jsonResponse,
-          isFavorite: isFavorite,
-        ));
-      } else {
-        emit(VehicleFavoriteFailure(
-          'Failed to update favorite status',
-          isFavorite: isFavorite,
-        ));
-      }
+      emit(VehicleFavoriteSuccess(
+        response: response,
+        isFavorite: !isFavorite,
+      ));
     } catch (e) {
       emit(VehicleFavoriteFailure(
-        'Error: $e',
+        e.toString(),
         isFavorite: isFavorite,
       ));
     }
