@@ -24,29 +24,30 @@ class VehicleDataModel {
   final VehicleBrand vehicleBrand;
   final List<String?> vehicleImages;
   final List<dynamic>? discounts;
+  final bool isFavorite;
 
-  VehicleDataModel({
-    required this.id,
-    this.renter,
-    required this.numOfPassengers,
-    this.rate,
-    required this.year,
-    required this.model,
-    required this.color,
-    required this.mainImagePath,
-    required this.status,
-    required this.physicalStatus,
-    required this.transmission,
-    required this.pricePerDay,
-    this.requirements,
-    this.extraDetails,
-    required this.address,
-    required this.location,
-    required this.vehicleType,
-    required this.vehicleBrand,
-    required this.vehicleImages,
-    this.discounts,
-  });
+  VehicleDataModel(
+      {required this.id,
+      this.renter,
+      required this.numOfPassengers,
+      this.rate,
+      required this.year,
+      required this.model,
+      required this.color,
+      required this.mainImagePath,
+      required this.status,
+      required this.physicalStatus,
+      required this.transmission,
+      required this.pricePerDay,
+      this.requirements,
+      this.extraDetails,
+      required this.address,
+      required this.location,
+      required this.vehicleType,
+      required this.vehicleBrand,
+      required this.vehicleImages,
+      this.discounts,
+      required this.isFavorite});
 
   factory VehicleDataModel.fromJson(Map<String, dynamic> json) {
     // Safely handle nested data structure
@@ -84,6 +85,7 @@ class VehicleDataModel {
               .map((image) => image is String ? image : image.toString()))
           : [],
       discounts: data['discounts'] ?? [],
+      isFavorite: data["isFavourite"],
     );
   }
 }

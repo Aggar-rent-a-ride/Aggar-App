@@ -40,7 +40,7 @@ SnackBar customSnackBar(
     content: Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(3),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -64,7 +64,7 @@ SnackBar customSnackBar(
             size: 16,
           ),
         ),
-        const Gap(12),
+        const Gap(10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,13 +72,13 @@ SnackBar customSnackBar(
             children: [
               Text(
                 title,
-                style: AppStyles.medium18(context).copyWith(
+                style: AppStyles.medium16(context).copyWith(
                   color: context.theme.black100,
                 ),
               ),
               Text(
                 subtitle,
-                style: AppStyles.regular15(context).copyWith(
+                style: AppStyles.regular13(context).copyWith(
                   color: context.theme.black100,
                 ),
               ),
@@ -100,6 +100,6 @@ SnackBar customSnackBar(
       ],
     ),
     backgroundColor: snackBarBackgroundColor,
-    duration: const Duration(seconds: 5),
+    duration: const Duration(seconds: 4),
   );
 }

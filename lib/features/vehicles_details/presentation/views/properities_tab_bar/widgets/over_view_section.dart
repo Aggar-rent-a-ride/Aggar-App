@@ -1,5 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/vehicle_health_with_status_container.dart';
 import 'package:flutter/material.dart';
 
 class OverViewSection extends StatelessWidget {
@@ -47,22 +49,35 @@ class OverViewSection extends StatelessWidget {
           ],
         ),
         Text(
-          "Experience our $vehicleType with $color color and its modern design. seating for $seatsno persons. With $carHealth physical status and currently it is $carStatus .",
+          "Experience our $vehicleType with $color color and its modern design. seating for $seatsno persons. With $carHealth physical status and currently it is $carStatus .\n$overviewText",
           style: AppStyles.medium15(context).copyWith(
             color: context.theme.black50,
           ),
         ),
-        /*VehicleHealthWithStatusContainer(
+        VehicleHealthWithStatusContainer(
           carHealth: carHealth,
-          carHealthTextColor:
-              carHealthTextColor ?? AppLightColors.myYellow100_1,
-          carHealthContainerColor:
-              carHealthContainerColor ?? AppLightColors.myYellow10_1,
+          carHealthTextColor: carHealth == "excellent"
+              ? AppConstants.myGreen100_1
+              : carHealth == "good"
+                  ? AppConstants.myBlue100_1
+                  : carHealth == "not bad"
+                      ? AppConstants.myYellow100_1
+                      : AppConstants.myRed100_1,
+          carHealthContainerColor: carHealth == "excellent"
+              ? AppConstants.myGreen10_1
+              : carHealth == "good"
+                  ? AppConstants.myBlue100_1
+                  : carHealth == "not bad"
+                      ? AppConstants.myYellow10_1
+                      : AppConstants.myRed10_1,
           carStatus: carStatus,
-          carStatusTextColor: carStatusTextColor ?? AppLightColors.myRed100_1,
-          carStatusContainerColor:
-              carStatusContainerColor ?? AppLightColors.myRed10_1,
-        ),*/
+          carStatusTextColor: carStatus == "active"
+              ? AppConstants.myGreen100_1
+              : AppConstants.myRed100_1,
+          carStatusContainerColor: carStatus == "active"
+              ? AppConstants.myGreen10_1
+              : AppConstants.myRed10_1,
+        ),
       ],
     );
   }

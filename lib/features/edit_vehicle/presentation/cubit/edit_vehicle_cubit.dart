@@ -269,6 +269,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       }
       try {
         final vehicle = VehicleDataModel(
+          isFavorite: data["isFavourite"],
           id: data['id'],
           model: data['model'],
           pricePerDay: data['pricePerDay'],

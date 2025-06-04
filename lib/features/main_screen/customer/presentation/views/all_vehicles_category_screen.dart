@@ -117,9 +117,7 @@ class _AllVehiclesCategoryScreenState extends State<AllVehiclesCategoryScreen> {
                       child: LoadingAllVehicle(),
                     );
                   }
-                  if (state is VehicleLoaded ||
-                      state is VehicleLoadingMore ||
-                      state is VehicleFavoriteLoading) {
+                  if (state is VehicleLoaded || state is VehicleLoadingMore) {
                     final vehicles = cubit.allVehicles;
                     final canLoadMore = cubit.canLoadMoreAll;
                     final isLoadingMore = state is VehicleLoadingMore;

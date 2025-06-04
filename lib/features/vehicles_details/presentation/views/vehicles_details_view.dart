@@ -1,6 +1,7 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_cubit.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_state.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
@@ -32,6 +33,7 @@ class VehiclesDetailsView extends StatelessWidget {
     required this.vehicleLatitude,
     this.pfpImage,
     required this.renterName,
+    required this.isFavorite,
   });
 
   final int vehicleId;
@@ -53,11 +55,12 @@ class VehiclesDetailsView extends StatelessWidget {
   final double vehicleLatitude;
   final String? pfpImage;
   final String renterName;
+  final bool isFavorite;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => VehicleFavoriteCubit(),
+      create: (context) => VehicleFavoriteCubit(initialFavorite: isFavorite),
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -72,34 +75,55 @@ class VehiclesDetailsView extends StatelessWidget {
                 listener: (context, state) {
                   if (state is VehicleFavoriteSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text(state.response['message'] ?? 'Success')),
+                      customSnackBar(
+                        context,
+                        "Success",
+                        state.response['message'],
+                        SnackBarType.success,
+                      ),
                     );
                   } else if (state is VehicleFavoriteFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.errorMessage)),
+                      customSnackBar(
+                        context,
+                        "Error",
+                        state.errorMessage,
+                        SnackBarType.error,
+                      ),
                     );
                   }
                 },
                 builder: (context, state) {
-                  return IconButton(
-                    onPressed: state is XVehicleFavoriteLoading
-                        ? null
-                        : () {
-                            context.read<VehicleFavoriteCubit>().toggleFavorite(
-                                vehicleId,
-                                !state.isFavorite,
-                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMiIsImp0aSI6ImE5NGU4NTIzLWFkNDMtNGQ0MC1hOWEwLWVkYmY0MTVhZmMyNSIsInVzZXJuYW1lIjoiQ3VzdG9tZXIiLCJ1aWQiOiIyMiIsInJvbGVzIjpbIlVzZXIiLCJDdXN0b21lciJdLCJleHAiOjE3NDg5ODU2ODcsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.SevWYP3lZyP9pgbXI5VKixkBo4L8tPsXELwbSa4bDSM");
-                          },
-                    icon: state is XVehicleFavoriteLoading
-                        ? const CircularProgressIndicator()
-                        : Icon(
-                            state.isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: state.isFavorite ? Colors.red : null,
-                          ),
+                  bool isFav = state.isFavorite;
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                      onPressed: state is VehicleFavoriteLoading
+                          ? null
+                          : () async {
+                              final tokenCubit =
+                                  context.read<TokenRefreshCubit>();
+                              final vehicleFavorite =
+                                  context.read<VehicleFavoriteCubit>();
+                              final token = await tokenCubit.getAccessToken();
+                              if (token != null) {
+                                vehicleFavorite.toggleFavorite(
+                                    vehicleId, isFav, token);
+                              }
+                            },
+                      icon: state is VehicleFavoriteLoading
+                          ? Icon(
+                              Icons.favorite_border,
+                              color: context.theme.black100,
+                            )
+                          : Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav
+                                  ? context.theme.red100_1
+                                  : context.theme.black100,
+                            ),
+                    ),
                   );
                 },
               ),

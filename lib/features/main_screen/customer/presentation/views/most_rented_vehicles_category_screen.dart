@@ -121,9 +121,7 @@ class _MostRentedVehiclesCategoryScreenState
                     );
                   }
 
-                  if (state is VehicleLoaded ||
-                      state is VehicleLoadingMore ||
-                      state is VehicleFavoriteLoading) {
+                  if (state is VehicleLoaded || state is VehicleLoadingMore) {
                     final vehicles = cubit.mostRentedVehicles;
                     final canLoadMore = cubit.canLoadMoreMostRented;
                     final isLoadingMore = state is VehicleLoadingMore;

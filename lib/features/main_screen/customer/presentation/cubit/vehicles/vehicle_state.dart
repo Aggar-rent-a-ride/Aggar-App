@@ -31,17 +31,6 @@ class VehicleLoaded extends VehicleState {
   List<Object> get props => [vehicles];
 }
 
-class VehicleFavoriteLoading extends VehicleState {
-  final String vehicleId;
-  final ListVehicleModel vehicles;
-
-  const VehicleFavoriteLoading(
-      {required this.vehicleId, required this.vehicles});
-
-  @override
-  List<Object> get props => [vehicleId, vehicles];
-}
-
 class VehicleError extends VehicleState {
   final String message;
 

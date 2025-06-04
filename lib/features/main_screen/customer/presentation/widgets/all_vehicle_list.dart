@@ -37,9 +37,6 @@ class AllVehicleList extends StatelessWidget {
                   VehicleCategorySection(
                     title: 'Most Rented Vehicles',
                     vehicles: cubit.mostRentedVehicles,
-                    onFavoriteToggle: (vehicleId, isFavorite) {
-                      cubit.toggleFavorite(accessToken, vehicleId, isFavorite);
-                    },
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
@@ -55,9 +52,6 @@ class AllVehicleList extends StatelessWidget {
                   VehicleCategorySection(
                     title: 'Popular Vehicles',
                     vehicles: cubit.popularVehicles,
-                    onFavoriteToggle: (vehicleId, isFavorite) {
-                      cubit.toggleFavorite(accessToken, vehicleId, isFavorite);
-                    },
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
@@ -72,9 +66,6 @@ class AllVehicleList extends StatelessWidget {
                   VehicleCategorySection(
                     title: 'All Vehicles',
                     vehicles: cubit.allVehicles,
-                    onFavoriteToggle: (vehicleId, isFavorite) {
-                      cubit.toggleFavorite(accessToken, vehicleId, isFavorite);
-                    },
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,

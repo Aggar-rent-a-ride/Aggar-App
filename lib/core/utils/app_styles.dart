@@ -74,6 +74,11 @@ class AppStyles {
         color: const Color(0xFF000000),
       );
 
+  static TextStyle regular13(BuildContext context) => regular.copyWith(
+        fontSize: getFontSize(context, 13),
+        color: const Color(0xFF000000),
+      );
+
 // TextStyle for font size 12
   static TextStyle regular12(BuildContext context) => regular.copyWith(
         fontSize: getFontSize(context, 12),
