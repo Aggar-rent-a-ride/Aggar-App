@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/booking/presentation/views/booking_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 class VehiclesDetailsView extends StatelessWidget {
   const VehiclesDetailsView({
     super.key,
+    required this.vehicleId,
     required this.yearOfManufaction,
     required this.vehicleModel,
     required this.vehicleRentPrice,
@@ -28,6 +30,8 @@ class VehiclesDetailsView extends StatelessWidget {
     this.pfpImage,
     required this.renterName,
   });
+  
+  final String vehicleId; // Add this line
   final int yearOfManufaction;
   final String vehicleModel;
   final double vehicleRentPrice;
@@ -46,6 +50,7 @@ class VehiclesDetailsView extends StatelessWidget {
   final double vehicleLatitude;
   final String? pfpImage;
   final String renterName;
+  
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -83,7 +88,6 @@ class VehiclesDetailsView extends StatelessWidget {
         backgroundColor: context.theme.white100_1,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
-          // TODO: sub screens with no space
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -121,7 +125,19 @@ class VehiclesDetailsView extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: BottomNavigationBarSection(
-            price: vehicleRentPrice, onPressed: () {}),
+          price: vehicleRentPrice, 
+          onPressed: () {
+            // Navigate to BookVehicleScreen with vehicleId
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BookVehicleScreen(
+                  vehicleId: vehicleId,
+                ),
+              ),
+            );
+          }
+        ),
       ),
     );
   }

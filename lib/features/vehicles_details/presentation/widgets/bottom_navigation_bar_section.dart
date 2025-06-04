@@ -33,14 +33,7 @@ class BottomNavigationBarSection extends StatelessWidget {
           children: [
             BottomNavigationBarRentalPrice(price: price),
             const Gap(15),
-            BottomNavigationBarBookButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const BookVehicleScreen(),
-                ),
-              ),
-            ),
+            BottomNavigationBarBookButton(onPressed: onPressed),
           ],
         ),
       ),
