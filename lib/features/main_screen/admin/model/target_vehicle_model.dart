@@ -6,7 +6,7 @@ class TargetVehicleModel {
   final num pricePerDay;
   final bool isFavourite;
   final String transmission;
-  final double rate;
+  final double? rate;
   final String mainImagePath;
 
   TargetVehicleModel({
@@ -17,7 +17,7 @@ class TargetVehicleModel {
     required this.pricePerDay,
     required this.isFavourite,
     required this.transmission,
-    required this.rate,
+    this.rate,
     required this.mainImagePath,
   });
 
@@ -30,7 +30,7 @@ class TargetVehicleModel {
       pricePerDay: json['pricePerDay'],
       isFavourite: json['isFavourite'],
       transmission: json['transmission'],
-      rate: (json['rate'] as num).toDouble(),
+      rate: (json['rate'] as num).toDouble() ?? 0.0,
       mainImagePath: json['mainImagePath'],
     );
   }

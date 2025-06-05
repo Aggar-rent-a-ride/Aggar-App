@@ -1,5 +1,4 @@
 import 'package:aggar/features/main_screen/admin/model/list_report_model.dart';
-import 'package:aggar/features/main_screen/admin/model/report_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ReportState extends Equatable {
@@ -32,15 +31,6 @@ class ReportsLoadingMore extends ReportState {
 }
 
 class ReportsLoading extends ReportState {}
-
-class ReportByIdLoaded extends ReportState {
-  final ReportModel report;
-
-  const ReportByIdLoaded({required this.report});
-
-  @override
-  List<Object?> get props => [report];
-}
 
 class ReportUpdateStatus extends ReportState {}
 

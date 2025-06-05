@@ -155,28 +155,6 @@ class ReportCubit extends Cubit<ReportState> {
     }
   }
 
-  Future<void> fetchReportById(String accessToken, int id) async {
-    try {
-      emit(ReportLoading());
-      final response = await dioConsumer.get(
-        EndPoint.getReportById,
-        queryParameters: {
-          "reportId": id,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
-      );
-      final report = ReportModel.fromJson(response);
-      emit(ReportByIdLoaded(report: report));
-    } catch (error) {
-      String errorMessage = handleError(error);
-      emit(ReportError(message: 'An unexpected error occurred: $errorMessage'));
-    }
-  }
-
   void clearReports() {
     currentPage = 1;
     totalPages = 0;

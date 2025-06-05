@@ -41,6 +41,7 @@ class AllReportSection extends StatelessWidget {
                     DateTime datetime =
                         DateTime.parse(state.reports.data[index].createdAt);
                     return ReportTypeCard(
+                      reportId: state.reports.data[index].id,
                       date: getFormattedDate(datetime),
                       reportDescription: state.reports.data[index].description,
                       reportType: state.reports.data[index].targetType,

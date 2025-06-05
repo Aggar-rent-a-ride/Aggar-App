@@ -1,6 +1,4 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/features/booking/presentation/views/booking_view.dart';
-
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_rental_price.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_book_button.dart';
 import 'package:flutter/material.dart';

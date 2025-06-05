@@ -7,6 +7,7 @@ import 'package:aggar/features/main_screen/customer/presentation/cubit/main_scre
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicle_car_card_price.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_car_type.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card_name_with_rating.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/vehicles_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +57,9 @@ class PopularVehiclesCarCard extends StatelessWidget {
                     .getData(vehicleId, state.accessToken);
                 Navigator.of(context).pop();
                 final vehicleData = context.read<AddVehicleCubit>().vehicleData;
-
+                await context
+                    .read<ReviewCubit>()
+                    .getVehicleReviews(vehicleId, state.accessToken);
                 if (vehicleData != null) {
                   final vehicle = vehicleData;
                   Navigator.push(

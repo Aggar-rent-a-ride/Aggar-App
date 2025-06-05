@@ -1,4 +1,3 @@
-import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -8,6 +7,7 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navi
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_section.dart';
+import 'package:aggar/features/vehicles_details/presentation/widgets/vehicle_details_menu_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -95,36 +95,8 @@ class VehiclesDetailsView extends StatelessWidget {
                 },
                 builder: (context, state) {
                   bool isFav = state.isFavorite;
-
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      onPressed: state is VehicleFavoriteLoading
-                          ? null
-                          : () async {
-                              final tokenCubit =
-                                  context.read<TokenRefreshCubit>();
-                              final vehicleFavorite =
-                                  context.read<VehicleFavoriteCubit>();
-                              final token = await tokenCubit.getAccessToken();
-                              if (token != null) {
-                                vehicleFavorite.toggleFavorite(
-                                    vehicleId, isFav, token);
-                              }
-                            },
-                      icon: state is VehicleFavoriteLoading
-                          ? Icon(
-                              Icons.favorite_border,
-                              color: context.theme.black100,
-                            )
-                          : Icon(
-                              isFav ? Icons.favorite : Icons.favorite_border,
-                              color: isFav
-                                  ? context.theme.red100_1
-                                  : context.theme.black100,
-                            ),
-                    ),
-                  );
+                  return VehicleDetailsMenuIcon(
+                      isFav: isFav, vehicleId: vehicleId);
                 },
               ),
             ],

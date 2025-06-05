@@ -21,7 +21,7 @@ class ReviewModel {
       id: json[ApiKey.getVehicleReviewId],
       reviewer: UserModel.fromJson(json[ApiKey.getVehicleReviewer]),
       createdAt: json[ApiKey.getVehicleCreatedAt],
-      rate: json[ApiKey.getVehicleRate],
+      rate: json[ApiKey.getVehicleRate].toDouble(),
       comments: json[ApiKey.getVehicleComments],
     );
   }

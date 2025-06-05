@@ -21,7 +21,6 @@ class ReviewCubit extends Cubit<ReviewState> {
           },
         ),
       );
-      print("API Response: $response");
       if (response == null) {
         emit(ReviewFailure("error in server"));
         return;
