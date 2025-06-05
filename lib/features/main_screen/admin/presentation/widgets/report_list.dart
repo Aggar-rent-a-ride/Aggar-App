@@ -7,6 +7,7 @@ import 'package:aggar/features/main_screen/admin/presentation/cubit/report_cubit
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ReportList extends StatefulWidget {
@@ -90,7 +91,7 @@ class _ReportListState extends State<ReportList> {
                       size: 64,
                       color: context.theme.gray100_1,
                     ),
-                    const SizedBox(height: 16),
+                    const Gap(16),
                     Text(
                       'No reports found',
                       style: TextStyle(
@@ -99,7 +100,7 @@ class _ReportListState extends State<ReportList> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const Gap(8),
                     Text(
                       'Try adjusting your filters',
                       style: TextStyle(
@@ -139,6 +140,7 @@ class _ReportListState extends State<ReportList> {
                         DateTime datetime =
                             DateTime.parse(reports[index].createdAt);
                         return ReportTypeCard(
+                          reportId: reports[index].id,
                           date: getFormattedDate(datetime),
                           reportDescription: reports[index].description,
                           reportType: reports[index].targetType,

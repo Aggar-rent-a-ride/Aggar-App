@@ -147,6 +147,10 @@ class AppStyles {
         fontSize: getFontSize(context, 14),
         color: const Color(0xFF000000),
       );
+  static TextStyle medium13(BuildContext context) => medium.copyWith(
+        fontSize: getFontSize(context, 13),
+        color: const Color(0xFF000000),
+      );
 
 // TextStyle for font size 12
   static TextStyle medium12(BuildContext context) => medium.copyWith(

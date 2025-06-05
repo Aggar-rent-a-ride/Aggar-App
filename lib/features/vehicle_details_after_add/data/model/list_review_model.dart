@@ -9,7 +9,7 @@ class ListReviewModel {
 
   factory ListReviewModel.fromJson(Map<String, dynamic> json) {
     return ListReviewModel(
-      data: (json['data'] as List<dynamic>)
+      data: (json['data']['data'] as List<dynamic>)
           .map((item) => ReviewModel.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
@@ -17,7 +17,9 @@ class ListReviewModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'data': data.map((review) => review.toJson()).toList(),
+      'data': {
+        'data': data.map((review) => review.toJson()).toList(),
+      },
     };
   }
 }

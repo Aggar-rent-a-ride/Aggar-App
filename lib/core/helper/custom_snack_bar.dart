@@ -85,18 +85,6 @@ SnackBar customSnackBar(
             ],
           ),
         ),
-        IconButton(
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-          icon: Icon(
-            Icons.close,
-            color: context.theme.black100,
-            size: 20,
-          ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-        ),
       ],
     ),
     backgroundColor: snackBarBackgroundColor,
