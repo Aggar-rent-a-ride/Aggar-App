@@ -6,8 +6,8 @@ import 'package:aggar/features/main_screen/admin/model/report_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ReportBuIdCubit extends Cubit<ReportByIdState> {
-  ReportBuIdCubit() : super(ReportByIdInitial());
+class ReportByIdCubit extends Cubit<ReportByIdState> {
+  ReportByIdCubit() : super(ReportByIdInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
 
   Future<void> fetchReportById(String accessToken, int id) async {
@@ -24,7 +24,8 @@ class ReportBuIdCubit extends Cubit<ReportByIdState> {
           },
         ),
       );
-      final report = ReportModel.fromJson(response);
+      final report = ReportModel.fromJson(response["data"]);
+      print("dddddddd");
       emit(ReportByIdLoaded(report: report));
     } catch (error) {
       String errorMessage = handleError(error);

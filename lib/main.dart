@@ -3,7 +3,7 @@ import 'package:aggar/core/cache/cache_helper.dart';
 import 'package:aggar/core/cubit/language/language_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/report/report_creation_cubit.dart';
-import 'package:aggar/core/cubit/reportId/report_bu_id_cubit.dart';
+import 'package:aggar/core/cubit/reportId/report_by_id_cubit.dart';
 import 'package:aggar/core/cubit/theme/theme_cubit.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
@@ -167,7 +167,7 @@ class MyApp extends StatelessWidget {
           create: (context) => CredentialsCubit(),
         ),
         BlocProvider(
-          create: (context) => ReportBuIdCubit(),
+          create: (context) => ReportByIdCubit(),
         ),
         BlocProvider(
           create: (context) => FilterCubit(),
