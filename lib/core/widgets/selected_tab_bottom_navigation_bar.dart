@@ -1,4 +1,5 @@
 import 'package:aggar/core/themes/app_light_colors.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class SelectedTabBottomNavigationBar extends StatelessWidget {
@@ -37,14 +38,14 @@ class SelectedTabBottomNavigationBar extends StatelessWidget {
               image: AssetImage(
                 iconImage,
               ),
-              height: 22,
-              width: 22,
+              height: 21,
+              width: 21,
             ),
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               child: SizedBox(
-                width: isSelected ? 8.0 : 0,
+                width: isSelected ? 7.0 : 0,
               ),
             ),
             AnimatedSize(
@@ -53,10 +54,8 @@ class SelectedTabBottomNavigationBar extends StatelessWidget {
               child: isSelected
                   ? Text(
                       label,
-                      style: TextStyle(
+                      style: AppStyles.medium14(context).copyWith(
                         color: AppLightColors.myBlue100_1,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14.0,
                       ),
                     )
                   : const SizedBox.shrink(),

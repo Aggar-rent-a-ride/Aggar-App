@@ -4,7 +4,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/main_screen.dart';
 import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
-import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/view/vehicle_brand_with_type_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/widgets/custom_bottom_navigation_bar.dart'
@@ -65,8 +65,8 @@ class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar>
   Widget build(BuildContext context) {
     List<Widget> screens = [
       const MainScreen(),
+      const VehicleBrandWithTypeScreen(),
       const MessagesView(),
-      const SettingsScreen(),
       const ProfileScreen(),
     ];
 
