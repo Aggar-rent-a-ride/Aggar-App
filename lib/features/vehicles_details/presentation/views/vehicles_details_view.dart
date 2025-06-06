@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/booking/presentation/views/booking_view.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_cubit.dart';
 import 'package:aggar/features/vehicles_details/presentation/cubit/vehicle_favorite_state.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/bottom_navigation_bar_section.dart';
@@ -156,7 +157,16 @@ class VehiclesDetailsView extends StatelessWidget {
           ),
           bottomNavigationBar: BottomNavigationBarSection(
             price: vehicleRentPrice,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BookVehicleScreen(
+                    vehicleId: vehicleId,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
