@@ -1,14 +1,12 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/utils/app_constants.dart';
+
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/report_status_container.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/report_details_body.dart';
+
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class ReportDetailsScreen extends StatelessWidget {
-  const ReportDetailsScreen({
-    super.key,
-  });
+  const ReportDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,96 +48,7 @@ class ReportDetailsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Vehicle Report",
-                        style: AppStyles.bold24(context).copyWith(
-                          color: context.theme.black100,
-                        ),
-                      ),
-                      const Spacer(),
-                      ReportStatusContainer(
-                        statusText: "Pending",
-                        containerColor: AppConstants.myYellow10_1,
-                        textColor: AppConstants.myYellow100_1,
-                      )
-                    ],
-                  ),
-                  const Gap(5),
-                  Text(
-                    "desception of the vehicle reportdesception of the vehicle reportdesception of the vehicle reportdesception of the vehicle reportdesception of the vehicle report",
-                    style: AppStyles.medium15(context).copyWith(
-                      color: context.theme.black100,
-                    ),
-                  ),
-                  const Gap(15),
-                  Container(
-                    height: 500,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 2,
-                          color: Colors.black26,
-                          offset: Offset(0, 0),
-                        )
-                      ],
-                      color: context.theme.blue10_2,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Column(
-                      children: [],
-                    ),
-                  ),
-                  const Gap(15),
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Reporter",
-                            style: AppStyles.medium13(context).copyWith(
-                              color: context.theme.black50,
-                            ),
-                          ),
-                          Text(
-                            "Esraa Ehab",
-                            style: AppStyles.bold15(context).copyWith(
-                              color: context.theme.black100,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Created At",
-                            style: AppStyles.medium13(context).copyWith(
-                              color: context.theme.black50,
-                            ),
-                          ),
-                          Text(
-                            "05:00 Am in 20-5-2025",
-                            style: AppStyles.bold15(context).copyWith(
-                              color: context.theme.black100,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              ),
-            )
+            const ReportDetailsBody()
           ],
         ),
       ),

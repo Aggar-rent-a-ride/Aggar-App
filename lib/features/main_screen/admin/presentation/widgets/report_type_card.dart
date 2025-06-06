@@ -1,4 +1,5 @@
-import 'package:aggar/core/cubit/reportId/report_bu_id_cubit.dart';
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/cubit/reportId/report_by_id_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/report_details_screen.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/line_colored.dart';
@@ -35,20 +36,17 @@ class ReportTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // Navigate with BlocProvider to ensure the cubit is available
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => ReportBuIdCubit()
-                ..fetchReportById(
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImp0aSI6IjNmOGQxZjJlLWE5ODEtNGIxNy1hMTc2LThiNjIwMjhlZTBlYyIsInVzZXJuYW1lIjoibmFydSIsInVpZCI6IjExIiwicm9sZXMiOlsiQWRtaW4iLCJVc2VyIl0sImV4cCI6MTc0OTE1NTkzNiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.mYsoogvt9TtH009jHVRgMtNLxiXkwVrgdoHD1y7r7YE",
-                  reportId, // Use the actual report ID
-                ),
-              child: const ReportDetailsScreen(),
+        final tokenCubit = context.read<TokenRefreshCubit>();
+        final token = await tokenCubit.getAccessToken();
+        if (token != null) {
+          context.read<ReportByIdCubit>().fetchReportById(token, reportId);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReportDetailsScreen(),
             ),
-          ),
-        );
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
