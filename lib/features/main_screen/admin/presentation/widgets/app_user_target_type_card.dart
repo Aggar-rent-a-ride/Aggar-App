@@ -21,8 +21,7 @@ class AppUserTargetTypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+    return Container(
       decoration: BoxDecoration(
         color: context.theme.blue10_2,
         borderRadius: BorderRadius.circular(12),
