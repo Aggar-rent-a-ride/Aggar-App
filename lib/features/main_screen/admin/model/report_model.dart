@@ -2,6 +2,7 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/main_screen/admin/model/reporter_model.dart';
 import 'package:aggar/features/main_screen/admin/model/target_app_user_model.dart';
 import 'package:aggar/features/main_screen/admin/model/target_customer_review_model.dart';
+import 'package:aggar/features/main_screen/admin/model/target_file_model.dart';
 import 'package:aggar/features/main_screen/admin/model/target_message_model.dart';
 import 'package:aggar/features/main_screen/admin/model/target_renter_review_model.dart';
 import 'package:aggar/features/main_screen/admin/model/target_vehicle_model.dart';
@@ -18,6 +19,7 @@ class ReportModel {
   final TargetRenterReviewModel? targetRenterReview;
   final TargetCustomerReviewModel? targetCustomerReview;
   final TargetMessageModel? targetMessage;
+  final TargetFileModel? targetFile;
   const ReportModel(
       {required this.id,
       required this.description,
@@ -29,7 +31,8 @@ class ReportModel {
       this.targetvehicle,
       this.targetCustomerReview,
       this.targetMessage,
-      this.targetRenterReview});
+      this.targetRenterReview,
+      this.targetFile});
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
     return ReportModel(
@@ -56,9 +59,11 @@ class ReportModel {
           ? TargetRenterReviewModel.fromJson(
               json[ApiKey.getFilterReportTargetRenterReview])
           : null,
-      targetMessage: json[ApiKey.getFilterReportTargetMessage] != null
-          ? TargetMessageModel.fromJson(
-              json[ApiKey.getFilterReportTargetMessage])
+      targetMessage: json["targetContentMessage"] != null
+          ? TargetMessageModel.fromJson(json["targetContentMessage"])
+          : null,
+      targetFile: json["targetFileMessage"] != null
+          ? TargetFileModel.fromJson(json["targetFileMessage"])
           : null,
     );
   }
@@ -76,7 +81,8 @@ class ReportModel {
       ApiKey.getFilterReportTargetCustomerReview:
           targetCustomerReview?.toJson(),
       ApiKey.getFilterReportTargetRenterReview: targetRenterReview?.toJson(),
-      ApiKey.getFilterReportTargetMessage: targetMessage?.toJson(),
+      ApiKey.getFilterReportTargetMessageContent: targetMessage?.toJson(),
+      "targetFileMessage": targetFile?.toJson()
     };
   }
 }

@@ -3,6 +3,7 @@ import 'package:aggar/core/cubit/reportId/report_by_id_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/app_user_target_type.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/message_target_type.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_type_with_status.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/vehicle_target_type.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,9 @@ class ReportDetailsBody extends StatelessWidget {
                       ? VehicleTargetType(state: state)
                       : state.report.targetType == "AppUser"
                           ? AppUserTargetType(state: state)
-                          : const SizedBox(),
+                          : state.report.targetType == "Message"
+                              ? MessageTargetType(state: state)
+                              : const Gap(16),
                   const Gap(16),
                   Row(
                     children: [
@@ -111,7 +114,6 @@ class ReportDetailsBody extends StatelessWidget {
               ),
             ),
           );
-          //Loading here
         } else {
           return Center(
             child: Column(

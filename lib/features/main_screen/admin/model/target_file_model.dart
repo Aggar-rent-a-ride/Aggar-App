@@ -1,12 +1,13 @@
-class TargetMessageModel {
-  final String? content;
+class TargetFileModel {
+  final String? filePath;
   final int id;
   final int senderId;
   final int receiverId;
   final String sentAt;
   final bool isSeen;
-  TargetMessageModel({
-    this.content,
+
+  TargetFileModel({
+    this.filePath,
     required this.id,
     required this.senderId,
     required this.receiverId,
@@ -14,9 +15,9 @@ class TargetMessageModel {
     required this.isSeen,
   });
 
-  factory TargetMessageModel.fromJson(Map<String, dynamic> json) {
-    return TargetMessageModel(
-      content: json['content'],
+  factory TargetFileModel.fromJson(Map<String, dynamic> json) {
+    return TargetFileModel(
+      filePath: json["filePath"],
       id: json['id'],
       senderId: json['senderId'],
       receiverId: json['receiverId'],
@@ -27,7 +28,7 @@ class TargetMessageModel {
 
   Map<String, dynamic> toJson() {
     return {
-      if (content != null) "content": content,
+      if (filePath != null) "filePath": filePath,
       'id': id,
       'senderId': senderId,
       'receiverId': receiverId,

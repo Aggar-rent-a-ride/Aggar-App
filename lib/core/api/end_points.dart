@@ -226,7 +226,8 @@ class ApiKey {
   static String getFilterReportTargetCustomerReviewComments = "comments";
   static String getFilterReportTargetCustomerReviewCare = "care";
   //////////////////////////////////////////////////////
-  static String getFilterReportTargetMessage = "targetFileMessage";
+  static String getFilterReportTargetMessageFile = "targetFileMessage";
+  static String getFilterReportTargetMessagecontent = "targetContentMessage";
   static String getFilterReportTargetMessageFilePath = "filePath";
   static String getFilterReportTargetMessageContent = "content";
   static String getFilterReportTargetMessageId = "id";

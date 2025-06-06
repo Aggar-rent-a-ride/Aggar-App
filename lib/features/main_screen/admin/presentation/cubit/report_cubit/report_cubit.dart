@@ -19,17 +19,6 @@ class ReportCubit extends Cubit<ReportState> {
   String? _lastStatus;
   String? _lastDate;
   String? _lastSortingDirection;
-
-  final List<String> reportTypes = [
-    'Message',
-    'CustomerReview',
-    'RenterReview',
-    'AppUser',
-    'Vehicle',
-    'Booking',
-    'Rental'
-  ];
-
   bool _filtersChanged(String? targetType, String? status, String? date,
       String? sortingDirection) {
     return _lastTargetType != targetType ||
