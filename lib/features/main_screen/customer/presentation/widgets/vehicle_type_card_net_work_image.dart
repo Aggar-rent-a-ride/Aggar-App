@@ -29,8 +29,9 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               iconPrv == "null"
                   ? const SizedBox(

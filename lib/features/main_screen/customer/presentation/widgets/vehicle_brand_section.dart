@@ -79,7 +79,6 @@ class BrandsSection extends StatelessWidget {
                               }
                             }
                           },
-                          numOfBrands: 30,
                           imgPrv: context
                               .read<VehicleBrandCubit>()
                               .vehicleBrandLogoPaths[index],
