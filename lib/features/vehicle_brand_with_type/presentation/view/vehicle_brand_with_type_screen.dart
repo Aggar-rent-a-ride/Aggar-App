@@ -1,55 +1,61 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/vehicle_settings_body.dart';
+
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VehicleBrandWithTypeScreen extends StatelessWidget {
   const VehicleBrandWithTypeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        shadowColor: Colors.grey[900],
-        surfaceTintColor: Colors.transparent,
-        centerTitle: false,
+    return RefreshIndicator(
+      onRefresh: () async {
+        final tokenCubit = context.read<TokenRefreshCubit>();
+        final token = await tokenCubit.getAccessToken();
+        if (token != null) {
+          await context.read<AdminVehicleTypeCubit>().fetchVehicleTypes(token);
+        }
+      },
+      child: Scaffold(
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: context.theme.blue100_8,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(
+                      left: 25, right: 25, top: 65, bottom: 16),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Vehicle Settings",
+                        style: AppStyles.bold20(context).copyWith(
+                          color: context.theme.white100_1,
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+                const VehicleSettingsBody(),
+              ],
+            ),
+          ),
+        ),
         backgroundColor: context.theme.white100_1,
-        title: Text(
-          'Vehilce Settings',
-          style: AppStyles.semiBold24(context).copyWith(
-            color: context.theme.black100,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () async {},
-            icon: Icon(
-              Icons.search,
-              color: context.theme.black50,
-            ),
-          ),
-          const Gap(20),
-        ],
-      ),
-      backgroundColor: context.theme.white100_1,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Select a Vehicle Brand',
-              style: AppStyles.medium16(context).copyWith(
-                color: context.theme.black100,
-              ),
-            ),
-            const Gap(16),
-            const Wrap(
-              spacing: 10, // Horizontal spacing between items
-              runSpacing: 10, // Vertical spacing between lines
-            ),
-          ],
-        ),
       ),
     );
   }

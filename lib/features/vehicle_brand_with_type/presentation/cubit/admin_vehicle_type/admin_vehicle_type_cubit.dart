@@ -5,11 +5,15 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/vehicle_brand_with_type/data/model/list_vehicle_type_model.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_state.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
   AdminVehicleTypeCubit() : super(AdminVehicleTypeInitial());
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
+  TextEditingController vehicleTypeNameController = TextEditingController();
+  File? image;
+  String? imageUrl;
 
   Future<void> fetchVehicleTypes(String accessToken) async {
     try {
@@ -22,8 +26,8 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
           },
         ),
       );
-      final vehilceTypeList = ListVehicleTypeModel.fromJson(response);
-      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehilceTypeList));
+      final vehicleTypeList = ListVehicleTypeModel.fromJson(response);
+      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehicleTypeList));
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
@@ -33,35 +37,58 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
       String accessToken, String name, File image) async {
     try {
       emit(AdminVehicleTypeLoading());
+      FormData formData = FormData.fromMap({
+        ApiKey.vehicleTypeName: name,
+        'image': await MultipartFile.fromFile(
+          image.path,
+          filename: image.path.split('/').last,
+        ),
+      });
+
       final response = await dioConsumer.post(
         EndPoint.vehicleType,
+        data: formData,
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'multipart/form-data',
           },
         ),
       );
-      final vehilceTypeList = ListVehicleTypeModel.fromJson(response);
-      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehilceTypeList));
+      final vehicleTypeList = ListVehicleTypeModel.fromJson(response);
+      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehicleTypeList));
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
   }
 
-  Future<void> updateVehicleType(
-      String accessToken, int id, String name, File image) async {
+  Future<void> updateVehicleType(String accessToken, int id, String name,
+      File? image, String? imageUrl) async {
     try {
       emit(AdminVehicleTypeLoading());
+      FormData formData = FormData.fromMap({
+        ApiKey.vehicleTypeName: name,
+        'id': id,
+        if (image != null && image.path.isNotEmpty)
+          'image': await MultipartFile.fromFile(
+            image.path,
+            filename: image.path.split('/').last,
+          ),
+        if (image == null && imageUrl != null) 'imageUrl': imageUrl,
+      });
+
       final response = await dioConsumer.put(
         EndPoint.vehicleType,
+        data: formData,
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'multipart/form-data',
           },
         ),
       );
-      final vehilceTypeList = ListVehicleTypeModel.fromJson(response);
-      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehilceTypeList));
+      final vehicleTypeList = ListVehicleTypeModel.fromJson(response);
+      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehicleTypeList));
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
@@ -87,5 +114,11 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
+  }
+
+  void resetFields() {
+    vehicleTypeNameController.clear();
+    image = null;
+    imageUrl = null;
   }
 }
