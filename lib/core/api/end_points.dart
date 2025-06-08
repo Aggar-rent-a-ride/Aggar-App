@@ -65,6 +65,7 @@ class EndPoint {
   static String getTotalUserCount = "$baseUrl/api/user/count-all";
   static String getSearchUsers = "$baseUrl/api/user/search";
   static String deleteUser = "$baseUrl/api/user/";
+  static String getUser = "$baseUrl/api/user/";
   static String punishUser = "$baseUrl/api/user/punish";
 }
 

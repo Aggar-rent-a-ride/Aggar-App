@@ -38,6 +38,7 @@ class ReportTypeCard extends StatelessWidget {
       onTap: () async {
         final tokenCubit = context.read<TokenRefreshCubit>();
         final token = await tokenCubit.getAccessToken();
+
         if (token != null) {
           context.read<ReportByIdCubit>().fetchReportById(token, reportId);
           Navigator.push(

@@ -203,6 +203,24 @@ class UserCubit extends Cubit<UserState> {
     emit(UserNoSearch());
   }
 
+  Future<Map<String, dynamic>> getUserById(String accessToken, int id) async {
+    try {
+      emit(UserLoading());
+      final response = await dioConsumer.get(
+        "${EndPoint.getUser}$id",
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+      emit(UserLoaded(
+          users: ListUserModel(data: [UserModel.fromJson(response['data'])])));
+      print(response);
+      return response;
+    } catch (error) {
+      String errorMessage = handleError(error);
+      emit(UserError(message: 'Failed to fetch user by ID: $errorMessage'));
+      rethrow;
+    }
+  }
+
   @override
   Future<void> close() {
     _debounceTimer?.cancel();
