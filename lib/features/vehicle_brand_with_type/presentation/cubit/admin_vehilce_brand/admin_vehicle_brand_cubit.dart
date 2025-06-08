@@ -70,6 +70,7 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
       );
       if (response["statusCode"] == 201) {
         emit(AdminVehicleBrandAdded());
+        await fetchVehicleBrands(accessToken);
       }
     } catch (error) {
       emit(AdminVehicleBrandError(message: error.toString()));
@@ -103,6 +104,7 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
       );
       final vehicleBrandList = VehicleBrandModel.fromJson(response["data"]);
       emit(AdminVehicleBrandUpdated(vehicleBrandModel: vehicleBrandList));
+      await fetchVehicleBrands(accessToken);
     } catch (error) {
       emit(AdminVehicleBrandError(message: error.toString()));
     }
@@ -135,6 +137,7 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
     vehicleBrandNameController.clear();
     vehicleBrandCountryController.clear();
     image = null;
+    imageUrl = null;
     emit(const AdminVehicleBrandImageUpdated(image: null, imageUrl: null));
   }
 }

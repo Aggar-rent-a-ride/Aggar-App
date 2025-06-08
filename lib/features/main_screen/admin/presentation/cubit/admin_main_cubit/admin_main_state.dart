@@ -1,10 +1,5 @@
-import 'package:equatable/equatable.dart';
-
-abstract class AdminMainState extends Equatable {
+abstract class AdminMainState {
   const AdminMainState();
-
-  @override
-  List<Object?> get props => [];
 }
 
 class AdminMainInitial extends AdminMainState {}
@@ -16,6 +11,8 @@ class AdminMainConnected extends AdminMainState {
   final bool isStatisticsLoaded;
   final bool isReportsLoaded;
   final bool isUserStatisticsLoaded;
+  final bool isVehicleTypesLoaded;
+  final bool isVehicleBrandsLoaded;
   final bool isSignalRConnected;
 
   const AdminMainConnected({
@@ -23,17 +20,42 @@ class AdminMainConnected extends AdminMainState {
     required this.isStatisticsLoaded,
     required this.isReportsLoaded,
     required this.isUserStatisticsLoaded,
-    this.isSignalRConnected = false,
+    required this.isVehicleTypesLoaded,
+    required this.isVehicleBrandsLoaded,
+    required this.isSignalRConnected,
   });
 
+  // Helper method to check if all data is loaded
+  bool get isAllDataLoaded =>
+      isStatisticsLoaded &&
+      isReportsLoaded &&
+      isUserStatisticsLoaded &&
+      isVehicleTypesLoaded &&
+      isVehicleBrandsLoaded;
+
   @override
-  List<Object?> get props => [
-        accessToken,
-        isStatisticsLoaded,
-        isReportsLoaded,
-        isUserStatisticsLoaded,
-        isSignalRConnected,
-      ];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is AdminMainConnected &&
+        other.accessToken == accessToken &&
+        other.isStatisticsLoaded == isStatisticsLoaded &&
+        other.isReportsLoaded == isReportsLoaded &&
+        other.isUserStatisticsLoaded == isUserStatisticsLoaded &&
+        other.isVehicleTypesLoaded == isVehicleTypesLoaded &&
+        other.isVehicleBrandsLoaded == isVehicleBrandsLoaded &&
+        other.isSignalRConnected == isSignalRConnected;
+  }
+
+  @override
+  int get hashCode {
+    return accessToken.hashCode ^
+        isStatisticsLoaded.hashCode ^
+        isReportsLoaded.hashCode ^
+        isUserStatisticsLoaded.hashCode ^
+        isVehicleTypesLoaded.hashCode ^
+        isVehicleBrandsLoaded.hashCode ^
+        isSignalRConnected.hashCode;
+  }
 }
 
 class AdminMainDisconnected extends AdminMainState {}
@@ -44,5 +66,11 @@ class AdminMainAuthError extends AdminMainState {
   const AdminMainAuthError(this.message);
 
   @override
-  List<Object?> get props => [message];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is AdminMainAuthError && other.message == message;
+  }
+
+  @override
+  int get hashCode => message.hashCode;
 }

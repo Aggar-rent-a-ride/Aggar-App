@@ -41,6 +41,7 @@ import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -55,12 +56,13 @@ void main() async {
   final languageCubit = LanguageCubit();
   languageCubit.changeToEnglish();
 
-  runApp(
-    MyApp(
+  runApp(DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (context) => MyApp(
       secureStorage: secureStorage,
       initialLanguageCubit: languageCubit,
     ),
-  );
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -219,6 +221,8 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AdminMainCubit(
+            vehicleBrandCubit: context.read<AdminVehicleBrandCubit>(),
+            vehicleTypeCubit: context.read<AdminVehicleTypeCubit>(),
             userStatisticsCubit: context.read<UserStatisticsCubit>(),
             tokenRefreshCubit: context.read<TokenRefreshCubit>(),
             reportCubit: context.read<ReportCubit>(),
@@ -231,13 +235,15 @@ class MyApp extends StatelessWidget {
           return BlocBuilder<LanguageCubit, LanguageState>(
             builder: (context, languageState) {
               return MaterialApp(
+                  locale: DevicePreview.locale(context),
+                  builder: DevicePreview.appBuilder,
                   themeMode: context.themeCubit.themeMode,
                   darkTheme: darkTheme,
                   theme: lightTheme,
                   debugShowCheckedModeBanner: false,
-                  locale: languageState is LanguageChanged
+                  /* locale: languageState is LanguageChanged
                       ? languageState.locale
-                      : DevicePreview.locale(context),
+                      : DevicePreview.locale(context),*/
                   supportedLocales: const [
                     Locale('en', 'US'),
                     Locale('ar', 'SA'),
@@ -248,7 +254,7 @@ class MyApp extends StatelessWidget {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
-                  builder: DevicePreview.appBuilder,
+                  // builder: DevicePreview.appBuilder,
                   home: const SplashView());
             },
           );

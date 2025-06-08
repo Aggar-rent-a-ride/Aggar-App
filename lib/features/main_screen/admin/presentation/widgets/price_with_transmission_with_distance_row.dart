@@ -17,22 +17,22 @@ class PriceWithTransmissionWithDistanceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 30,
+      spacing: 5,
       children: [
         Row(
           children: [
             Icon(
               Icons.monetization_on_outlined,
-              size: 20,
-              color: context.theme.blue100_2,
+              size: 16,
+              color: context.theme.black50,
             ),
             const Gap(4),
             Text(
               "$pricePerDay/day",
               style: AppStyles.semiBold16(context)
-                  .copyWith(color: context.theme.blue100_2),
+                  .copyWith(color: context.theme.black50),
             ),
           ],
         ),
@@ -40,30 +40,32 @@ class PriceWithTransmissionWithDistanceRow extends StatelessWidget {
           children: [
             Icon(
               Icons.speed_outlined,
-              size: 20,
-              color: context.theme.blue100_2,
+              size: 16,
+              color: context.theme.black50,
             ),
             const Gap(4),
             Text(
-              transmission,
-              style: AppStyles.regular16(context).copyWith(
-                color: context.theme.blue100_2,
+              "$transmission Transmission",
+              style: AppStyles.semiBold16(context).copyWith(
+                color: context.theme.black50,
               ),
             ),
           ],
         ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.location_on_outlined,
-              size: 20,
-              color: context.theme.blue100_2,
+              size: 16,
+              color: context.theme.black50,
             ),
             const Gap(4),
             Text(
               "Distance: ${distance.toString()} km",
-              style: AppStyles.regular16(context)
-                  .copyWith(color: context.theme.blue100_2),
+              style: AppStyles.semiBold16(context)
+                  .copyWith(color: context.theme.black50),
             ),
           ],
         )

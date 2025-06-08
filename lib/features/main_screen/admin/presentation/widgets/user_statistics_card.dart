@@ -14,7 +14,6 @@ class UserStatisticsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminMainCubit, AdminMainState>(
       builder: (context, state) {
-        print('UserStatisticsCard state: $state'); // Debug log
         if (state is AdminMainConnected && state.isUserStatisticsLoaded) {
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 8),

@@ -10,10 +10,6 @@ class FilterCubit extends Cubit<FilterState> {
   String? selectedStatus;
   String? selectedDate;
   String? selectedSortingDirection;
-  bool isTypeFilterSelected = false;
-  bool isStatusFilterSelected = false;
-  bool isDateFilterSelected = false;
-  bool isSortingDirectionFilterSelected = false;
 
   final List<String> reportTypes = [
     'Message',
@@ -21,8 +17,6 @@ class FilterCubit extends Cubit<FilterState> {
     'RenterReview',
     'AppUser',
     'Vehicle',
-    'Booking',
-    'Rental'
   ];
 
   void resetFilters() {
@@ -30,12 +24,7 @@ class FilterCubit extends Cubit<FilterState> {
     selectedStatus = null;
     selectedDate = null;
     selectedSortingDirection = null;
-
-    isTypeFilterSelected = false;
-    isStatusFilterSelected = false;
-    isDateFilterSelected = false;
-    isSortingDirectionFilterSelected = false;
-    emit(FilterReset());
+    emit(FilterVehicleReset());
   }
 
   void toggleFilterVisibility() {
@@ -45,73 +34,58 @@ class FilterCubit extends Cubit<FilterState> {
 
   void selectType(String? type) {
     selectedType = type;
-    isTypeFilterSelected = type != null;
-    emit(FilterTypeSelected(selectedType));
+    emit(FilterTypeSelected(type));
   }
 
   void clearTypeFilter() {
     if (selectedType != null) {
       selectedType = null;
-      isTypeFilterSelected = false;
       emit(FilterTypeSelected(null));
     }
   }
 
-  bool isTypeSelected(String type) {
-    return selectedType == type;
-  }
+  bool isTypeSelected(String type) => selectedType == type;
 
   void selectStatus(String? status) {
     selectedStatus = status;
-    isStatusFilterSelected = status != null;
-    emit(FilterStatusSelected(selectedStatus));
+    emit(FilterStatusSelected(status));
   }
 
   void clearStatusFilter() {
     if (selectedStatus != null) {
       selectedStatus = null;
-      isStatusFilterSelected = false;
       emit(FilterStatusSelected(null));
     }
   }
 
-  bool isStatusSelected(String status) {
-    return selectedStatus == status;
-  }
+  bool isStatusSelected(String status) => selectedStatus == status;
 
   void selectDate(String? date) {
     selectedDate = date;
-    isDateFilterSelected = date != null;
-    emit(FilterDateSelected(selectedDate));
+    emit(FilterDateSelected(date));
   }
 
   void clearDateFilter() {
     if (selectedDate != null) {
       selectedDate = null;
-      isDateFilterSelected = false;
       emit(FilterDateSelected(null));
     }
   }
 
-  bool isDateSelected(String date) {
-    return selectedDate == date;
-  }
+  bool isDateSelected(String date) => selectedDate == date;
 
   void selectSortingDirection(String? sortingDirection) {
     selectedSortingDirection = sortingDirection;
-    isSortingDirectionFilterSelected = sortingDirection != null;
-    emit(FilterSortingDirectionSelected(selectedSortingDirection));
+    emit(FilterSortingDirectionSelected(sortingDirection));
   }
 
   void clearSortingDirectionFilter() {
     if (selectedSortingDirection != null) {
       selectedSortingDirection = null;
-      isSortingDirectionFilterSelected = false;
       emit(FilterSortingDirectionSelected(null));
     }
   }
 
-  bool isSortingDirectionSelected(String sortingDirection) {
-    return selectedSortingDirection == sortingDirection;
-  }
+  bool isSortingDirectionSelected(String sortingDirection) =>
+      selectedSortingDirection == sortingDirection;
 }

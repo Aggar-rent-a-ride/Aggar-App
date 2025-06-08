@@ -38,7 +38,6 @@ class _UserStatisticsBodyState extends State<UserStatisticsBody> {
   Widget build(BuildContext context) {
     return BlocBuilder<UserStatisticsCubit, UserStatisticsState>(
       builder: (context, state) {
-        print('UserStatisticsBody state: $state'); // Debug log
         Map<String, int> totalUsersByRole = {
           "Admin": 0,
           "Renter": 0,

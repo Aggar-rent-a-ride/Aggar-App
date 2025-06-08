@@ -1,5 +1,9 @@
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_state.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_state.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -18,11 +22,15 @@ class AdminMainCubit extends Cubit<AdminMainState> {
   final ReportCubit _reportCubit;
   final UserStatisticsCubit _userStatisticsCubit;
   final StatisticsCubit _statisticsCubit;
+  final AdminVehicleTypeCubit _vehicleTypeCubit;
+  final AdminVehicleBrandCubit _vehicleBrandCubit;
   final SignalRService _signalRService = SignalRService();
 
   bool _isStatisticsLoaded = false;
   bool _isReportsLoaded = false;
   bool _isStatisticsUsersLoaded = false;
+  bool _isVehicleTypesLoaded = false;
+  bool _isVehicleBrandsLoaded = false;
   bool _isSignalRConnected = false;
   bool _isInitializing = false;
 
@@ -31,10 +39,14 @@ class AdminMainCubit extends Cubit<AdminMainState> {
     required ReportCubit reportCubit,
     required UserStatisticsCubit userStatisticsCubit,
     required StatisticsCubit statisticsCubit,
+    required AdminVehicleTypeCubit vehicleTypeCubit,
+    required AdminVehicleBrandCubit vehicleBrandCubit,
   })  : _tokenRefreshCubit = tokenRefreshCubit,
         _reportCubit = reportCubit,
         _userStatisticsCubit = userStatisticsCubit,
         _statisticsCubit = statisticsCubit,
+        _vehicleTypeCubit = vehicleTypeCubit,
+        _vehicleBrandCubit = vehicleBrandCubit,
         super(AdminMainInitial()) {
     _setupInternetChecker();
     _observeDataStates();
@@ -74,6 +86,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         }
       }
     });
+
     _reportCubit.stream.listen((reportState) {
       if (state is AdminMainConnected) {
         if (reportState is ReportsLoaded) {
@@ -101,6 +114,38 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         }
       }
     });
+
+    // Add vehicle type cubit stream listener
+    _vehicleTypeCubit.stream.listen((vehicleTypeState) {
+      if (state is AdminMainConnected) {
+        if (vehicleTypeState is AdminVehicleTypeLoaded) {
+          _isVehicleTypesLoaded = true;
+          _updateConnectedState();
+        } else if (vehicleTypeState is AdminVehicleTypeLoading) {
+          _isVehicleTypesLoaded = false;
+          _updateConnectedState();
+        } else if (vehicleTypeState is AdminVehicleTypeError) {
+          _handleAuthError(
+              'Vehicle types fetch failed: ${vehicleTypeState.message}');
+        }
+      }
+    });
+
+    // Add vehicle brand cubit stream listener
+    _vehicleBrandCubit.stream.listen((vehicleBrandState) {
+      if (state is AdminMainConnected) {
+        if (vehicleBrandState is AdminVehicleBrandLoaded) {
+          _isVehicleBrandsLoaded = true;
+          _updateConnectedState();
+        } else if (vehicleBrandState is AdminVehicleBrandLoading) {
+          _isVehicleBrandsLoaded = false;
+          _updateConnectedState();
+        } else if (vehicleBrandState is AdminVehicleBrandError) {
+          _handleAuthError(
+              'Vehicle brands fetch failed: ${vehicleBrandState.message}');
+        }
+      }
+    });
   }
 
   void _updateConnectedState() {
@@ -111,6 +156,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         isStatisticsLoaded: _isStatisticsLoaded,
         isReportsLoaded: _isReportsLoaded,
         isUserStatisticsLoaded: _isStatisticsUsersLoaded,
+        isVehicleTypesLoaded: _isVehicleTypesLoaded,
+        isVehicleBrandsLoaded: _isVehicleBrandsLoaded,
         isSignalRConnected: _isSignalRConnected,
       ));
     }
@@ -178,12 +225,16 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         _isStatisticsLoaded = false;
         _isReportsLoaded = false;
         _isStatisticsUsersLoaded = false;
+        _isVehicleTypesLoaded = false;
+        _isVehicleBrandsLoaded = false;
         _isSignalRConnected = false;
         emit(AdminMainConnected(
           accessToken: token,
           isStatisticsLoaded: false,
           isReportsLoaded: false,
           isUserStatisticsLoaded: false,
+          isVehicleTypesLoaded: false,
+          isVehicleBrandsLoaded: false,
           isSignalRConnected: false,
         ));
 
@@ -237,6 +288,9 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       null,
     );
     _userStatisticsCubit.fetchUserTotals(accessToken);
+    // Add vehicle types and brands fetching
+    _vehicleTypeCubit.fetchVehicleTypes(accessToken);
+    _vehicleBrandCubit.fetchVehicleBrands(accessToken);
   }
 
   void handleTokenRefreshSuccess(String accessToken) {
@@ -245,6 +299,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       isStatisticsLoaded: false,
       isReportsLoaded: false,
       isUserStatisticsLoaded: false,
+      isVehicleTypesLoaded: false,
+      isVehicleBrandsLoaded: false,
       isSignalRConnected: _isSignalRConnected,
     ));
     _fetchData(accessToken);
@@ -278,6 +334,9 @@ class AdminMainCubit extends Cubit<AdminMainState> {
           }
         });
       }
-    } else {}
+    }
   }
+
+  AdminVehicleTypeCubit get vehicleTypeCubit => _vehicleTypeCubit;
+  AdminVehicleBrandCubit get vehicleBrandCubit => _vehicleBrandCubit;
 }

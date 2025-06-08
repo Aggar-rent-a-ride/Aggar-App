@@ -8,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddVehicleBrandScreen extends StatelessWidget {
-  const AddVehicleBrandScreen({
-    super.key,
-  });
+  const AddVehicleBrandScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +57,14 @@ class AddVehicleBrandScreen extends StatelessWidget {
                           color: context.theme.white100_1,
                         ),
                       ),
-                      onPressed: () {},
-                    )
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ],
                 ),
               ),
-              const AddVehicleBrandBody()
+              const AddVehicleBrandBody(),
             ],
           ),
         ),

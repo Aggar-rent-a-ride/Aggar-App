@@ -14,9 +14,11 @@ class PersonImageWithName extends StatelessWidget {
   const PersonImageWithName({
     super.key,
     required this.id,
+    required this.type,
   });
 
   final int id;
+  final String type;
 
   Future<Map<String, dynamic>> _fetchUserData(BuildContext context) async {
     final tokenCubit = context.read<TokenRefreshCubit>();
@@ -48,10 +50,10 @@ class PersonImageWithName extends StatelessWidget {
                     borderRadius: BorderRadius.circular(40),
                   ),
                 ),
-                const Gap(8),
+                const Gap(5),
                 Container(
-                  height: 25,
-                  width: 120,
+                  height: 20,
+                  width: 90,
                   decoration: BoxDecoration(
                     color: context.theme.white100_1,
                     borderRadius: BorderRadius.circular(4),
@@ -66,9 +68,9 @@ class PersonImageWithName extends StatelessWidget {
             !snapshot.hasData ||
             snapshot.data!['StatusCode'] != 200) {
           return Row(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(50),
@@ -79,17 +81,36 @@ class PersonImageWithName extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const Gap(8),
-              Flexible(
-                child: Text(
-                  snapshot.data!["data"]["name"],
-                  style: AppStyles.medium14(context).copyWith(
-                    color: context.theme.black100,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+              const Gap(5),
+              Expanded(
+                flex: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      snapshot.data!["data"]["name"],
+                      style: AppStyles.semiBold16(context).copyWith(
+                        color: context.theme.black100,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      type,
+                      style: AppStyles.medium12(context).copyWith(
+                        color: context.theme.black50,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
                 ),
               ),
-              const Gap(30),
+              const Spacer(
+                flex: 1,
+              ),
               OptionsButton(
                   user: UserModel(
                       id: id,

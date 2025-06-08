@@ -24,6 +24,9 @@ class EditVehicleBrandScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Reset the image field in the Cubit when the screen is built
+    context.read<AdminVehicleBrandCubit>().setImageFile(null);
+
     return Scaffold(
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
@@ -45,8 +48,15 @@ class EditVehicleBrandScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     IconButton(
-                      onPressed: () {
-                        context.read<AdminVehicleBrandCubit>().resetFields();
+                      onPressed: () async {
+                        final cubit = context.read<AdminVehicleBrandCubit>();
+                        final tokenRefreshCubit =
+                            context.read<TokenRefreshCubit>();
+                        final token = await tokenRefreshCubit.getAccessToken();
+                        if (token != null) {
+                          cubit.fetchVehicleBrands(token);
+                        }
+                        cubit.resetFields();
                         Navigator.pop(context);
                       },
                       icon: Icon(
@@ -69,7 +79,6 @@ class EditVehicleBrandScreen extends StatelessWidget {
                           color: context.theme.white100_1,
                         ),
                       ),
-                      // not handle yet
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -79,9 +88,10 @@ class EditVehicleBrandScreen extends StatelessWidget {
                             subtitle:
                                 "are you sure you want to delete $brandName ?",
                             onPressed: () async {
-                              final tokenCubit =
+                              final tokenRefreshCubit =
                                   context.read<TokenRefreshCubit>();
-                              final token = await tokenCubit.getAccessToken();
+                              final token =
+                                  await tokenRefreshCubit.getAccessToken();
                               if (token != null) {
                                 context
                                     .read<AdminVehicleBrandCubit>()

@@ -75,8 +75,6 @@ class _ReportStatisticsBodyState extends State<ReportStatisticsBody> {
             },
             {'type': 'AppUser', 'title': 'AppUser Report', 'index': 3},
             {'type': 'Vehicle', 'title': 'Vehicle Report', 'index': 4},
-            {'type': 'Booking', 'title': 'Booking Report', 'index': 5},
-            {'type': 'Rental', 'title': 'Rental Report', 'index': 6},
           ];
 
           return Padding(
@@ -101,13 +99,6 @@ class _ReportStatisticsBodyState extends State<ReportStatisticsBody> {
                       children: [
                         ChartItem(
                           title:
-                              "${reportTypes[6]['title']} (${totalReportsByType[reportTypes[6]['type']] ?? 0})",
-                          color: AppConstants.myBlue100_7,
-                          onTap: () => _onChartItemTap(6),
-                          isSelected: selectedIndex == 6,
-                        ),
-                        ChartItem(
-                          title:
                               "${reportTypes[1]['title']} (${totalReportsByType[reportTypes[1]['type']] ?? 0})",
                           color: AppConstants.myBlue100_2,
                           onTap: () => _onChartItemTap(1),
@@ -115,17 +106,17 @@ class _ReportStatisticsBodyState extends State<ReportStatisticsBody> {
                         ),
                         ChartItem(
                           title:
-                              "${reportTypes[5]['title']} (${totalReportsByType[reportTypes[5]['type']] ?? 0})",
-                          color: AppConstants.myBlue100_6,
-                          onTap: () => _onChartItemTap(5),
-                          isSelected: selectedIndex == 5,
-                        ),
-                        ChartItem(
-                          title:
                               "${reportTypes[3]['title']} (${totalReportsByType[reportTypes[3]['type']] ?? 0})",
                           color: AppConstants.myBlue100_4,
                           onTap: () => _onChartItemTap(3),
                           isSelected: selectedIndex == 3,
+                        ),
+                        ChartItem(
+                          title:
+                              "${reportTypes[0]['title']} (${totalReportsByType[reportTypes[0]['type']] ?? 0})",
+                          color: AppConstants.myBlue100_1,
+                          onTap: () => _onChartItemTap(0),
+                          isSelected: selectedIndex == 0,
                         ),
                       ],
                     ),
@@ -146,13 +137,6 @@ class _ReportStatisticsBodyState extends State<ReportStatisticsBody> {
                           color: AppConstants.myBlue100_3,
                           onTap: () => _onChartItemTap(2),
                           isSelected: selectedIndex == 2,
-                        ),
-                        ChartItem(
-                          title:
-                              "${reportTypes[0]['title']} (${totalReportsByType[reportTypes[0]['type']] ?? 0})",
-                          color: AppConstants.myBlue100_1,
-                          onTap: () => _onChartItemTap(0),
-                          isSelected: selectedIndex == 0,
                         ),
                       ],
                     ),

@@ -8,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddVehicleTypeScreen extends StatelessWidget {
-  const AddVehicleTypeScreen({
-    super.key,
-  });
+  const AddVehicleTypeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
