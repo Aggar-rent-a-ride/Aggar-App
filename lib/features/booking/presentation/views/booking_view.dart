@@ -1,5 +1,6 @@
 import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
+import 'package:aggar/features/booking/presentation/views/booking_details_view.dart';
 import 'package:aggar/features/booking/presentation/widgets/custom_app_bar.dart';
 import 'package:aggar/features/booking/presentation/widgets/date_time_row.dart';
 import 'package:aggar/features/booking/presentation/widgets/important_reminder.dart';
@@ -47,8 +48,15 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                     backgroundColor: Colors.green,
                   ),
                 );
-                // Navigate back or to success screen
-                Navigator.pop(context);
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookingDetailsScreen(
+                      booking: state.booking,
+                    ),
+                  ),
+                );
               } else if (state is BookingCreateError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -251,10 +259,6 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
 
     // Create booking using cubit
     final vehicleIdInt = widget.vehicleId;
-    if (vehicleIdInt == null) {
-      _showErrorSnackBar("Invalid vehicle ID");
-      return;
-    }
 
     context.read<BookingCubit>().createBooking(
           vehicleId: vehicleIdInt,
