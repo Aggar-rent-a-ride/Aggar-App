@@ -83,7 +83,7 @@ class TypeAndBrandLogoPicker extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                             child: Image.file(image, fit: BoxFit.contain),
                           )
-                        : (imageUrl != null && imageUrl.isNotEmpty)
+                        : imageUrl != null && imageUrl.isNotEmpty
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.network(

@@ -68,7 +68,7 @@ class MessageTargetTypeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Gap(10),
+            const Gap(5),
             Text(
               isFile ? "File content" : "Message content",
               style: AppStyles.medium15(context).copyWith(
@@ -134,6 +134,7 @@ class MessageTargetTypeCard extends StatelessWidget {
                           color: context.theme.black100,
                         ),
                         overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                   ],
@@ -141,10 +142,19 @@ class MessageTargetTypeCard extends StatelessWidget {
               ),
             const Gap(16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PersonImageWithName(id: senderId),
-                PersonImageWithName(id: receiverId),
+                Expanded(
+                  child: PersonImageWithName(
+                    id: senderId,
+                    type: "Sender",
+                  ),
+                ),
+                Expanded(
+                  child: PersonImageWithName(
+                    id: receiverId,
+                    type: "Receiver",
+                  ),
+                ),
               ],
             ),
             const Gap(8),

@@ -34,4 +34,4 @@ class FilterSortingDirectionSelected extends FilterState {
   FilterSortingDirectionSelected(this.sortingDirection);
 }
 
-class FilterReset extends FilterState {}
+class FilterVehicleReset extends FilterState {}

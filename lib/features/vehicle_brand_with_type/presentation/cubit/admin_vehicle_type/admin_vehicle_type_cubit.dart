@@ -68,6 +68,7 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
       );
       if (response["statusCode"] == 201) {
         emit(AdminVehicleTypeAdded());
+        await fetchVehicleTypes(accessToken);
       }
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
@@ -101,6 +102,7 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
       );
       final vehicleTypeList = VehicleTypeModel.fromJson(response["data"]);
       emit(AdminVehicleTypeUpdated(vehicletypeModel: vehicleTypeList));
+      await fetchVehicleTypes(accessToken);
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
@@ -131,6 +133,7 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
   void resetFields() {
     vehicleTypeNameController.clear();
     image = null;
+    imageUrl = null;
     emit(AdminVehicleTypeInitial());
   }
 }

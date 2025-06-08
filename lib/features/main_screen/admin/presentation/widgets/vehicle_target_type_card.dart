@@ -1,7 +1,8 @@
+import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/price_with_transmission_with_distance_row.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/vehilce_image_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -41,47 +42,68 @@ class VehicleTargetTypeCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 2,
-                      offset: Offset(0, 0),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "$model ($year)",
+                      style: AppStyles.bold20(context).copyWith(
+                        color: context.theme.black100,
+                      ),
                     ),
+                    const Gap(5),
+                    PriceWithTransmissionWithDistanceRow(
+                      pricePerDay: pricePerDay,
+                      transmission: transmission,
+                      distance: distance,
+                    ),
+                    const Gap(8),
                   ],
                 ),
-                child: VehilceImageSection(imagePath: imagePath, id: id),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Column(
-                spacing: 5,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "$model ($year)",
-                    style: AppStyles.bold24(context).copyWith(
-                      color: context.theme.blue100_1,
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 2,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.network(
+                      EndPoint.baseUrl + imagePath,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          AppAssets.assetsImagesCar,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        );
+                      },
                     ),
                   ),
-                  PriceWithTransmissionWithDistanceRow(
-                    pricePerDay: pricePerDay,
-                    transmission: transmission,
-                    distance: distance,
-                  ),
-                  const Gap(8),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

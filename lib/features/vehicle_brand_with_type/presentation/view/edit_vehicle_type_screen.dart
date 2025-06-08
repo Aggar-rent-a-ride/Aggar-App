@@ -9,16 +9,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditVehicleTypeScreen extends StatelessWidget {
-  const EditVehicleTypeScreen(
-      {super.key,
-      required this.typeName,
-      required this.typeImageUrl,
-      required this.typeId});
+  const EditVehicleTypeScreen({
+    super.key,
+    required this.typeName,
+    required this.typeImageUrl,
+    required this.typeId,
+  });
+
   final String typeName;
   final String typeImageUrl;
   final int typeId;
+
   @override
   Widget build(BuildContext context) {
+    // Reset the image field in the Cubit when the screen is built
+    context.read<AdminVehicleTypeCubit>().setImageFile(null);
+
     return Scaffold(
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
@@ -40,8 +46,15 @@ class EditVehicleTypeScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     IconButton(
-                      onPressed: () {
-                        context.read<AdminVehicleTypeCubit>().resetFields();
+                      onPressed: () async {
+                        final cubit = context.read<AdminVehicleTypeCubit>();
+                        final tokenRefreshCubit =
+                            context.read<TokenRefreshCubit>();
+                        final token = await tokenRefreshCubit.getAccessToken();
+                        if (token != null) {
+                          cubit.fetchVehicleTypes(token);
+                        }
+                        cubit.resetFields();
                         Navigator.pop(context);
                       },
                       icon: Icon(
@@ -64,7 +77,6 @@ class EditVehicleTypeScreen extends StatelessWidget {
                           color: context.theme.white100_1,
                         ),
                       ),
-                      // not handle yet
                       onPressed: () {
                         showDialog(
                           context: context,

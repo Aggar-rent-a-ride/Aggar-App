@@ -1,7 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_state.dart';
-import 'package:aggar/features/main_screen/admin/presentation/views/role_user_screen.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/user_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
