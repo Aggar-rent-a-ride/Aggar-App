@@ -17,10 +17,6 @@ class MessageTargetTypeCard extends StatelessWidget {
   final int senderId;
   final int receiverId;
   final DateTime sentAt;
-  final String? senderName;
-  final String? senderImagePath;
-  final String? receiverImagePath;
-  final String? receiverName;
 
   const MessageTargetTypeCard({
     super.key,
@@ -29,11 +25,7 @@ class MessageTargetTypeCard extends StatelessWidget {
     required this.senderId,
     required this.receiverId,
     required this.sentAt,
-    this.senderName,
-    this.senderImagePath,
     this.filePath,
-    this.receiverName,
-    this.receiverImagePath,
   });
 
   IconData getFileIcon(String filePath) {
@@ -151,16 +143,8 @@ class MessageTargetTypeCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PersonImageWithName(
-                  imagePath: senderImagePath,
-                  name: senderName,
-                  id: senderId,
-                ),
-                PersonImageWithName(
-                  imagePath: receiverImagePath,
-                  name: receiverName,
-                  id: receiverId,
-                ),
+                PersonImageWithName(id: senderId),
+                PersonImageWithName(id: receiverId),
               ],
             ),
             const Gap(8),
