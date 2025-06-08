@@ -221,6 +221,40 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
+  // NEW: Cancel booking functionality
+  Future<void> cancelBooking(int bookingId) async {
+    emit(BookingCancelLoading());
+
+    try {
+      final response = await _makeAuthenticatedRequest(() async => 
+        dioConsumer.put(
+          EndPoint.cancelBooking, 
+          queryParameters: {'id': bookingId},
+          options: await _getAuthOptions(),
+        )
+      );
+
+      final responseData = response as Map<String, dynamic>;
+      final statusCode = responseData['statusCode'] ??
+          (responseData.containsKey('status') ? responseData['status'] : 200);
+
+      if (statusCode == 200) {
+        final message = responseData['message']?.toString() ?? 'Booking canceled successfully';
+        emit(BookingCancelSuccess(message: message, bookingId: bookingId));
+      } else {
+        emit(BookingCancelError(
+          message: responseData['message']?.toString() ?? 'Failed to cancel booking',
+        ));
+      }
+    } catch (e) {
+      if (e is DioException && e.response?.statusCode == 401) {
+        emit(const BookingCancelError(message: 'Authentication failed. Please login again.'));
+      } else {
+        emit(BookingCancelError(message: e.toString()));
+      }
+    }
+  }
+
   /// Helper method to get authorization options
   Future<Options> _getAuthOptions() async {
     final token = await tokenRefreshCubit.getAccessToken();
