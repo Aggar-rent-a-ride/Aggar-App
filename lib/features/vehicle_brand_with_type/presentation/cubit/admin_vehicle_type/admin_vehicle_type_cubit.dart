@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/vehicle_brand_with_type/data/model/list_vehicle_type_model.dart';
+import 'package:aggar/features/vehicle_brand_with_type/data/model/vehicle_type_model.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,17 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
   TextEditingController vehicleTypeNameController = TextEditingController();
   File? image;
   String? imageUrl;
+  final XformKey = GlobalKey<FormState>();
+
+  void setImageFile(File? file) {
+    image = file;
+    emit(AdminVehicleTypeImageUpdated(image: image, imageUrl: imageUrl));
+  }
+
+  void setImageUrl(String? url) {
+    imageUrl = url;
+    emit(AdminVehicleTypeImageUpdated(image: image, imageUrl: imageUrl));
+  }
 
   Future<void> fetchVehicleTypes(String accessToken) async {
     try {
@@ -27,24 +38,24 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
         ),
       );
       final vehicleTypeList = ListVehicleTypeModel.fromJson(response);
-      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehicleTypeList));
+      emit(AdminVehicleTypeLoaded(vehicleTypeList));
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
   }
 
   Future<void> createVehicleType(
-      String accessToken, String name, File image) async {
+      String accessToken, String name, File? image) async {
     try {
       emit(AdminVehicleTypeLoading());
       FormData formData = FormData.fromMap({
         ApiKey.vehicleTypeName: name,
-        'image': await MultipartFile.fromFile(
-          image.path,
-          filename: image.path.split('/').last,
-        ),
+        if (image != null)
+          "slogan": await MultipartFile.fromFile(
+            image.path,
+            filename: image.path.split('/').last,
+          ),
       });
-
       final response = await dioConsumer.post(
         EndPoint.vehicleType,
         data: formData,
@@ -55,8 +66,9 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
           },
         ),
       );
-      final vehicleTypeList = ListVehicleTypeModel.fromJson(response);
-      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehicleTypeList));
+      if (response["statusCode"] == 201) {
+        emit(AdminVehicleTypeAdded());
+      }
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
@@ -70,11 +82,11 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
         ApiKey.vehicleTypeName: name,
         'id': id,
         if (image != null && image.path.isNotEmpty)
-          'image': await MultipartFile.fromFile(
+          "slogan": await MultipartFile.fromFile(
             image.path,
             filename: image.path.split('/').last,
           ),
-        if (image == null && imageUrl != null) 'imageUrl': imageUrl,
+        if (image == null && imageUrl != null) 'slogan': imageUrl,
       });
 
       final response = await dioConsumer.put(
@@ -87,8 +99,8 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
           },
         ),
       );
-      final vehicleTypeList = ListVehicleTypeModel.fromJson(response);
-      emit(AdminVehicleTypeLoaded(listVehicleTypeModel: vehicleTypeList));
+      final vehicleTypeList = VehicleTypeModel.fromJson(response["data"]);
+      emit(AdminVehicleTypeUpdated(vehicletypeModel: vehicleTypeList));
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }
@@ -109,7 +121,7 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
       if (response["statusCode"] == 200) {
         emit(AdminVehicleTypeDeleted());
       } else {
-        emit(AdminVehicleTypeError(message: "error"));
+        emit(const AdminVehicleTypeError(message: "error"));
       }
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
@@ -119,6 +131,6 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
   void resetFields() {
     vehicleTypeNameController.clear();
     image = null;
-    imageUrl = null;
+    emit(AdminVehicleTypeInitial());
   }
 }

@@ -1,24 +1,20 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/core/widgets/custom_dialog.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
-import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/edit_vehicle_type_body.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/add_vehicle_type_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EditVehicleTypeScreen extends StatelessWidget {
-  const EditVehicleTypeScreen(
-      {super.key,
-      required this.typeName,
-      required this.typeImageUrl,
-      required this.typeId});
-  final String typeName;
-  final String typeImageUrl;
-  final int typeId;
+class AddVehicleTypeScreen extends StatelessWidget {
+  const AddVehicleTypeScreen({
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context) {
+    context.read<AdminVehicleTypeCubit>().resetFields();
     return Scaffold(
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
@@ -41,7 +37,6 @@ class EditVehicleTypeScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        context.read<AdminVehicleTypeCubit>().resetFields();
                         Navigator.pop(context);
                       },
                       icon: Icon(
@@ -51,7 +46,7 @@ class EditVehicleTypeScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Edit Vehicle Type",
+                      "Vehicle Type",
                       style: AppStyles.bold20(context).copyWith(
                         color: context.theme.white100_1,
                       ),
@@ -59,41 +54,19 @@ class EditVehicleTypeScreen extends StatelessWidget {
                     const Spacer(),
                     TextButton(
                       child: Text(
-                        "Delete",
+                        "Cancel",
                         style: AppStyles.semiBold16(context).copyWith(
                           color: context.theme.white100_1,
                         ),
                       ),
-                      // not handle yet
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => CustomDialog(
-                            title: "Delete Vehicle Type",
-                            actionTitle: "Delete",
-                            subtitle:
-                                "are you sure you want to delete $typeName ?",
-                            onPressed: () async {
-                              final tokenCubit =
-                                  context.read<TokenRefreshCubit>();
-                              final token = await tokenCubit.getAccessToken();
-                              if (token != null) {
-                                context
-                                    .read<AdminVehicleTypeCubit>()
-                                    .deleteVehicleType(token, typeId);
-                              }
-                            },
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                     ),
                   ],
                 ),
               ),
-              EditVehicleTypeBody(
-                typeImageUrl: typeImageUrl,
-                typeName: typeName,
-              ),
+              const CreateVehicleTypeBody(),
             ],
           ),
         ),
@@ -101,19 +74,17 @@ class EditVehicleTypeScreen extends StatelessWidget {
       backgroundColor: context.theme.white100_1,
       bottomNavigationBar: BottomNavigationBarContent(
         color: context.theme.blue100_1,
-        title: "Save Changes",
+        title: "Create Type",
         onPressed: () async {
           final cubit = context.read<AdminVehicleTypeCubit>();
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
           final token = await tokenRefreshCubit.getAccessToken();
           if (token != null) {
             if (cubit.XformKey.currentState!.validate()) {
-              cubit.updateVehicleType(
+              cubit.createVehicleType(
                 token,
-                typeId,
                 cubit.vehicleTypeNameController.text,
                 cubit.image,
-                typeImageUrl,
               );
             }
           }
