@@ -7,9 +7,11 @@ class BottomNavigationBarContent extends StatelessWidget {
     super.key,
     this.onPressed,
     required this.title,
+    this.color,
   });
   final void Function()? onPressed;
   final String title;
+  final Color? color;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,7 +26,8 @@ class BottomNavigationBarContent extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        padding:
+            const EdgeInsets.only(top: 15, right: 20, left: 20, bottom: 25),
         child: ElevatedButton(
           style: ButtonStyle(
             elevation: const WidgetStatePropertyAll(0),
@@ -40,7 +43,7 @@ class BottomNavigationBarContent extends StatelessWidget {
               context.theme.white50_1,
             ),
             backgroundColor: WidgetStatePropertyAll(
-              context.theme.blue100_2,
+              color ?? context.theme.blue100_2,
             ),
           ),
           onPressed: onPressed,

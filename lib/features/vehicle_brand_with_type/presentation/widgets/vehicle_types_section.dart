@@ -3,6 +3,8 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/vehicle_type_card_net_work_image.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_state.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/view/add_vehicle_type_screen.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/view/edit_vehicle_type_screen.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/add_vehicle_type_or_brand_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,6 +65,18 @@ class _VehicleTypesSectionState extends State<VehicleTypesSection> {
                 children: [
                   ...displayTypes.map((vehicleType) {
                     return VehicleTypeCardNetWorkImage(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditVehicleTypeScreen(
+                              typeImageUrl: vehicleType.slogenPath ?? "null",
+                              typeName: vehicleType.name,
+                              typeId: vehicleType.id,
+                            ),
+                          ),
+                        );
+                      },
                       iconPrv: "null",
                       label: vehicleType.name,
                     );
@@ -79,8 +93,16 @@ class _VehicleTypesSectionState extends State<VehicleTypesSection> {
                     ),
                 ],
               ),
-              const AddVehicleTypeOrBrandButton(
+              AddVehicleTypeOrBrandButton(
                 text: "Add Vehicle Type",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddVehicleTypeScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           );

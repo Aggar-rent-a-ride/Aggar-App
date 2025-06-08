@@ -1,8 +1,10 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/vehicle_brand_card_net_work_image.dart';
-import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
-import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_state.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_state.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/view/add_vehicle_brand_screen.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/view/edit_vehicle_brand_screen.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/add_vehicle_type_or_brand_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,9 +29,9 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AdminVehicleTypeCubit, AdminVehicleTypeState>(
+    return BlocBuilder<AdminVehicleBrandCubit, AdminVehicleBrandState>(
       builder: (context, state) {
-        if (state is AdminVehicleTypeLoading) {
+        if (state is AdminVehicleBrandLoading) {
           return Container(
             height: 200,
             alignment: Alignment.center,
@@ -51,8 +53,8 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
               ],
             ),
           );
-        } else if (state is AdminVehicleTypeLoaded) {
-          final vehicleTypes = state.listVehicleTypeModel.data;
+        } else if (state is AdminVehicleBrandLoaded) {
+          final vehicleTypes = state.listVehicleBrandModel.data;
           if (vehicleTypes.isEmpty) {
             return Text(
               "No vehicle brands available",
@@ -82,10 +84,23 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
               Wrap(
                 runSpacing: 5,
                 children: [
-                  ...displayTypes.map((vehicleType) {
+                  ...displayTypes.map((vehicleBrand) {
                     return VehicleBrandCardNetWorkImage(
-                      imgPrv: "null",
-                      label: vehicleType.name,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditVehicleBrandScreen(
+                              brandCountry: vehicleBrand.country,
+                              brandImageUrl: vehicleBrand.logoPath ?? "null",
+                              brandName: vehicleBrand.name,
+                              brandId: vehicleBrand.id,
+                            ),
+                          ),
+                        );
+                      },
+                      imgPrv: vehicleBrand.logoPath ?? "null",
+                      label: vehicleBrand.name,
                     );
                   }),
                   if (showSeeAllButton)
@@ -100,12 +115,20 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
                     ),
                 ],
               ),
-              const AddVehicleTypeOrBrandButton(
+              AddVehicleTypeOrBrandButton(
                 text: "Add Vehicle Brand",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddVehicleBrandScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           );
-        } else if (state is AdminVehicleTypeError) {
+        } else if (state is AdminVehicleBrandError) {
           return Text(
             state.message,
             style: AppStyles.regular16(context).copyWith(

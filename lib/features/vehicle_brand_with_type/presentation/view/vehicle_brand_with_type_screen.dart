@@ -2,6 +2,7 @@ import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/vehicle_settings_body.dart';
 
 import 'package:flutter/material.dart';
@@ -14,10 +15,14 @@ class VehicleBrandWithTypeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
+        context.read<AdminVehicleBrandCubit>().resetFields();
         final tokenCubit = context.read<TokenRefreshCubit>();
         final token = await tokenCubit.getAccessToken();
         if (token != null) {
           await context.read<AdminVehicleTypeCubit>().fetchVehicleTypes(token);
+          await context
+              .read<AdminVehicleBrandCubit>()
+              .fetchVehicleBrands(token);
         }
       },
       child: Scaffold(
