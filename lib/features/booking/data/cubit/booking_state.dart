@@ -157,3 +157,30 @@ class BookingMultipleOperationState extends BookingState {
         errorMessage,
       ];
 }
+
+// Cancel booking states
+class BookingCancelLoading extends BookingState {
+  const BookingCancelLoading();
+}
+
+class BookingCancelSuccess extends BookingState {
+  final String message;
+  final int bookingId;
+
+  const BookingCancelSuccess({
+    required this.message,
+    required this.bookingId,
+  });
+
+  @override
+  List<Object> get props => [message, bookingId];
+}
+
+class BookingCancelError extends BookingState {
+  final String message;
+
+  const BookingCancelError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

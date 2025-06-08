@@ -10,6 +10,7 @@ class EndPoint {
   static String logout = "/api/auth/logout";
 
   // Booking endpoints
+  static const String cancelBooking = '/api/booking/cancel';
   static String createBooking = "/api/booking";
   static String getBookingById = "/api/booking";
   static String getBookingsByStatus = "/api/booking/bookings-by-status";
