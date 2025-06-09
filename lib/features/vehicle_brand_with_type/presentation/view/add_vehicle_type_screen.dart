@@ -12,81 +12,116 @@ class AddVehicleTypeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<AdminVehicleTypeCubit>().resetFields();
-    return Scaffold(
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: context.theme.blue100_8,
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-                  ),
-                ),
-                padding: const EdgeInsets.only(
-                    left: 15, right: 15, top: 65, bottom: 16),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: context.theme.white100_1,
-                        size: 20,
-                      ),
-                    ),
-                    Text(
-                      "Vehicle Type",
-                      style: AppStyles.bold20(context).copyWith(
-                        color: context.theme.white100_1,
-                      ),
-                    ),
-                    const Spacer(),
-                    TextButton(
-                      child: Text(
-                        "Cancel",
-                        style: AppStyles.semiBold16(context).copyWith(
-                          color: context.theme.white100_1,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const CreateVehicleTypeBody(),
-            ],
-          ),
-        ),
-      ),
-      backgroundColor: context.theme.white100_1,
-      bottomNavigationBar: BottomNavigationBarContent(
-        color: context.theme.blue100_1,
-        title: "Create Type",
-        onPressed: () async {
-          final cubit = context.read<AdminVehicleTypeCubit>();
+    final cubit = context.read<AdminVehicleTypeCubit>();
+    cubit.resetFields();
+    return PopScope(
+      onPopInvoked: (didPop) async {
+        if (didPop) {
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
           final token = await tokenRefreshCubit.getAccessToken();
           if (token != null) {
-            if (cubit.XformKey.currentState!.validate()) {
-              cubit.createVehicleType(
-                token,
-                cubit.vehicleTypeNameController.text,
-                cubit.image,
-              );
-            }
+            await cubit.fetchVehicleTypes(token);
           }
-        },
+          cubit.resetFields();
+        }
+      },
+      child: Scaffold(
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: context.theme.blue100_8,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(
+                      left: 15, right: 15, top: 65, bottom: 16),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          final tokenRefreshCubit =
+                              context.read<TokenRefreshCubit>();
+                          final token =
+                              await tokenRefreshCubit.getAccessToken();
+                          if (token != null) {
+                            await cubit
+                                .fetchVehicleTypes(token); // Refresh brands
+                          }
+                          cubit.resetFields(); // Reset fields
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: context.theme.white100_1,
+                          size: 20,
+                        ),
+                      ),
+                      Text(
+                        "Vehicle Type",
+                        style: AppStyles.bold20(context).copyWith(
+                          color: context.theme.white100_1,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        child: Text(
+                          "Cancel",
+                          style: AppStyles.semiBold16(context).copyWith(
+                            color: context.theme.white100_1,
+                          ),
+                        ),
+                        onPressed: () async {
+                          final tokenRefreshCubit =
+                              context.read<TokenRefreshCubit>();
+                          final token =
+                              await tokenRefreshCubit.getAccessToken();
+                          if (token != null) {
+                            await cubit
+                                .fetchVehicleTypes(token); // Refresh brands
+                          }
+                          cubit.resetFields(); // Reset fields
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const CreateVehicleTypeBody(),
+              ],
+            ),
+          ),
+        ),
+        backgroundColor: context.theme.white100_1,
+        bottomNavigationBar: BottomNavigationBarContent(
+          color: context.theme.blue100_1,
+          title: "Create Type",
+          onPressed: () async {
+            final cubit = context.read<AdminVehicleTypeCubit>();
+            final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+            final token = await tokenRefreshCubit.getAccessToken();
+            if (token != null) {
+              if (cubit.XformKey.currentState!.validate()) {
+                cubit.createVehicleType(
+                  token,
+                  cubit.vehicleTypeNameController.text,
+                  cubit.image,
+                );
+              }
+            }
+          },
+        ),
       ),
     );
   }

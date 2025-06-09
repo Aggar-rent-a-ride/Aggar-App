@@ -157,7 +157,9 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            _showAll ? "See Less" : "See All",
+                            _showAll
+                                ? "See Less (${vehicleTypes.length - _initialDisplayCount} hidden)"
+                                : "See All (${vehicleTypes.length - _initialDisplayCount} more)",
                             style: AppStyles.medium14(context).copyWith(
                               color: context.theme.blue100_1,
                             ),

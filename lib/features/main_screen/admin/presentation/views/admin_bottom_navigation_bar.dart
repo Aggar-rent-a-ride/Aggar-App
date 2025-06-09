@@ -3,12 +3,11 @@ import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/main_screen.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/custom_bottom_navigation_bar_admin.dart';
 import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/view/vehicle_brand_with_type_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/widgets/custom_bottom_navigation_bar.dart'
-    show CustomBottomNavigationBar;
 import '../../../../messages/views/messages_status/presentation/views/messages_view.dart';
 
 class AdminBottomNavigationBar extends StatefulWidget {
@@ -95,7 +94,7 @@ class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar>
           },
           child: screens[selectedIndex],
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(
+        bottomNavigationBar: CustomBottomNavigationBarAdmin(
           selectedIndex: selectedIndex,
           onTapped: onTapped,
         ),

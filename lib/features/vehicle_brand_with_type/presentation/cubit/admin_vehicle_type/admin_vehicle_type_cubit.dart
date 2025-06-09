@@ -122,11 +122,13 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
       );
       if (response["statusCode"] == 200) {
         emit(AdminVehicleTypeDeleted());
+        await fetchVehicleTypes(accessToken);
       } else {
         emit(const AdminVehicleTypeError(message: "error"));
       }
     } catch (error) {
-      emit(AdminVehicleTypeError(message: error.toString()));
+      emit(const AdminVehicleTypeError(
+          message: "Vehicle type with that id wasn't found"));
     }
   }
 
@@ -134,6 +136,11 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
     vehicleTypeNameController.clear();
     image = null;
     imageUrl = null;
-    emit(AdminVehicleTypeInitial());
+    if (state is AdminVehicleTypeLoaded) {
+      emit(AdminVehicleTypeLoaded(
+          (state as AdminVehicleTypeLoaded).listVehicleTypeModel));
+    } else {
+      emit(const AdminVehicleTypeImageUpdated(image: null, imageUrl: null));
+    }
   }
 }
