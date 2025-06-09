@@ -4,6 +4,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_icon_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_image_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_name_section.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
 import 'package:flutter/material.dart';
 
 class RentPartnerSection extends StatelessWidget {
@@ -11,9 +12,13 @@ class RentPartnerSection extends StatelessWidget {
     super.key,
     this.pfpImage,
     required this.renterName,
+    required this.renterId,
   });
+
   final String? pfpImage;
   final String renterName;
+  final int renterId;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,10 +43,26 @@ class RentPartnerSection extends StatelessWidget {
                   renterName: renterName,
                 ),
                 const Spacer(),
-                const CustomIconButton(
-                  imageIcon: AppAssets.assetsIconsChat,
-                  flag: false,
-                )
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PersonalChatView(
+                          messageList: const [],
+                          receiverId: renterId,
+                          receiverName: renterName,
+                          reciverImg: pfpImage,
+                          onMessagesUpdated: () {},
+                        ),
+                      ),
+                    );
+                  },
+                  child: const CustomIconButton(
+                    imageIcon: AppAssets.assetsIconsChat,
+                    flag: false,
+                  ),
+                ),
               ],
             ),
           )

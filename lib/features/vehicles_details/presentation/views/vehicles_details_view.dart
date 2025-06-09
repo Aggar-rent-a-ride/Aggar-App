@@ -35,6 +35,7 @@ class VehiclesDetailsView extends StatelessWidget {
     this.pfpImage,
     required this.renterName,
     required this.isFavorite,
+    required this.renterId,
   });
 
   final int vehicleId;
@@ -57,6 +58,7 @@ class VehiclesDetailsView extends StatelessWidget {
   final String? pfpImage;
   final String renterName;
   final bool isFavorite;
+  final int renterId;
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +140,7 @@ class VehiclesDetailsView extends StatelessWidget {
                         vehilceType: vehicleType,
                         pfpImage: pfpImage,
                         renterName: renterName,
+                        renterId: renterId, 
                         vehicleColor: vehicleColor,
                         vehicleOverView: vehicleOverView,
                         vehiceSeatsNo: vehiceSeatsNo,
