@@ -86,7 +86,6 @@ class SignalRService {
     } catch (e) {
       _isConnected = false;
       _connectionStatusController.add(false);
-      print('Error establishing SignalR connection: $e');
       throw Exception('Failed to connect to chat server: $e');
     }
   }
@@ -101,19 +100,16 @@ class SignalRService {
     _hubConnection!.onreconnecting(({error}) {
       _isConnected = false;
       _connectionStatusController.add(false);
-      print('SignalR reconnecting: $error');
     });
 
     _hubConnection!.onreconnected(({connectionId}) {
       _isConnected = true;
       _connectionStatusController.add(true);
-      print('SignalR reconnected with ID: $connectionId');
     });
 
     _hubConnection!.onclose(({error}) {
       _isConnected = false;
       _connectionStatusController.add(false);
-      print('SignalR connection closed: $error');
     });
   }
 
@@ -124,16 +120,12 @@ class SignalRService {
       await _hubConnection!.stop();
       _isConnected = false;
       _connectionStatusController.add(false);
-      print('SignalR connection closed');
-    } catch (e) {
-      print('Error closing SignalR connection: $e');
-    }
+    } catch (e) {}
   }
 
   Future<T?> _invokeMethod<T>(String methodName, Map<String, dynamic> args,
       {T Function(dynamic)? resultConverter}) async {
     if (!_isConnected || _hubConnection == null) {
-      print('Cannot invoke method: SignalR not connected');
       throw Exception('SignalR not connected');
     }
 
@@ -144,7 +136,6 @@ class SignalRService {
       }
       return result as T?;
     } catch (e) {
-      print('Error invoking method $methodName: $e');
       throw Exception('Failed to invoke method $methodName: $e');
     }
   }
@@ -158,7 +149,6 @@ class SignalRService {
       'receiverId': receiverId,
       'content': content,
     });
-    print('Message sent successfully');
   }
 
   Future<UploadInitiationResponse> initiateFileUpload({
@@ -193,11 +183,6 @@ class SignalRService {
         throw Exception('File name cannot be empty after removing extension');
       }
 
-      print('Initiating file upload with parameters:');
-      print('ClientMessageId: $clientMessageId');
-      print('FileName: $cleanFileName');
-      print('FileExtension: $extensionWithDot');
-
       if (!_isConnected || _hubConnection == null) {
         await initialize(userId: _currentUserId);
         if (!_isConnected) {
@@ -205,15 +190,11 @@ class SignalRService {
         }
       }
 
-      print('Using SignalR connection ID: ${_hubConnection!.connectionId}');
-
       final args = {
         'clientMessageId': clientMessageId,
         'name': cleanFileName,
         'extension': extensionWithDot,
       };
-
-      print('Invoking InitiateUploadingAsync with args: $args');
 
       final completer = Completer<UploadInitiationResponse>();
 
@@ -240,8 +221,6 @@ class SignalRService {
         args: [args],
       );
 
-      print('Hub method invocation result: $result');
-
       if (result != null) {
         try {
           final Map<String, dynamic> responseData = result is String
@@ -252,9 +231,7 @@ class SignalRService {
               responseData['statusCode'] == 500) {
             throw Exception(responseData['message'] ?? 'Server error occurred');
           }
-        } catch (e) {
-          print('Error parsing immediate response: $e');
-        }
+        } catch (e) {}
       }
 
       final response = await completer.future;
@@ -265,7 +242,6 @@ class SignalRService {
 
       return response;
     } catch (e) {
-      print('Error initiating file upload: $e');
       rethrow;
     }
   }
@@ -277,12 +253,6 @@ class SignalRService {
     required String bytesBase64,
     required int totalBytes,
   }) async {
-    print('Uploading chunk:');
-    print('ClientMessageId: $clientMessageId');
-    print('ReceiverId: $receiverId');
-    print('FilePath: $filePath');
-    print('BytesBase64 length: ${bytesBase64.length}');
-
     if (bytesBase64.length > _maxChunkSize) {
       throw Exception(
           'Chunk size (${bytesBase64.length} bytes) exceeds maximum allowed size of $_maxChunkSize bytes');
@@ -302,9 +272,7 @@ class SignalRService {
         onTimeout: () => throw Exception(
             'Chunk upload timed out after ${_uploadTimeout.inSeconds} seconds'),
       );
-      print('Chunk upload result: $result');
     } catch (e) {
-      print('Error uploading chunk: $e');
       rethrow;
     }
   }
@@ -318,7 +286,6 @@ class SignalRService {
     try {
       final hash = sha256.convert(fileBytes);
       final checksumBase64 = base64.encode(hash.bytes);
-      print('Calculated checksum (base64): $checksumBase64');
 
       final completer = Completer<ChatMessage>();
 
@@ -383,7 +350,6 @@ class SignalRService {
 
       return await completer.future;
     } catch (e) {
-      print('Error finishing file upload: $e');
       rethrow;
     }
   }
@@ -393,7 +359,6 @@ class SignalRService {
 
     try {
       final rawResponse = parameters[0];
-      print('Received message: $rawResponse');
 
       Map<String, dynamic> responseData;
 
@@ -406,8 +371,6 @@ class SignalRService {
         try {
           responseData = jsonDecode(rawResponse);
         } catch (jsonError) {
-          print('Failed to parse as JSON string, trying custom parsing...');
-
           // If JSON parsing fails, try the regex approach as fallback
           String responseStr = rawResponse;
 
@@ -425,21 +388,17 @@ class SignalRService {
         responseData = jsonDecode(responseStr);
       }
 
-      print('Parsed message data: $responseData');
-
       // Check for error response
       if (responseData['statusCode'] != null &&
           responseData['statusCode'] != 200 &&
           responseData['statusCode'] != 201) {
         final errorMessage =
             responseData['message'] ?? 'Unknown error occurred';
-        print('Error response received: $errorMessage');
         _messageController.addError(errorMessage);
         return;
       }
 
       if (responseData['data'] == null) {
-        print('Received message with null data');
         return;
       }
 
@@ -496,9 +455,6 @@ class SignalRService {
         print('Invalid data format in message: $data');
       }
     } catch (e) {
-      print('Error handling received message: $e');
-      print('Raw response was: ${parameters[0]}');
-      print('Response type: ${parameters[0].runtimeType}');
       _messageController.addError('Failed to process message: $e');
     }
   }
@@ -512,10 +468,7 @@ class SignalRService {
         userId: userId,
         isConnected: true,
       ));
-      print('User connected: $userId');
-    } catch (e) {
-      print('Error handling user connected: $e');
-    }
+    } catch (e) {}
   }
 
   void _handleUserDisconnected(List<Object?>? parameters) {
@@ -527,10 +480,7 @@ class SignalRService {
         userId: userId,
         isConnected: false,
       ));
-      print('User disconnected: $userId');
-    } catch (e) {
-      print('Error handling user disconnected: $e');
-    }
+    } catch (e) {}
   }
 
   void _handleUploadInitiation(List<Object?>? parameters) {
@@ -538,7 +488,6 @@ class SignalRService {
 
     try {
       final rawResponse = parameters[0];
-      print('Received upload initiation response: $rawResponse');
 
       Map<String, dynamic> responseData;
 
@@ -549,8 +498,6 @@ class SignalRService {
         try {
           responseData = jsonDecode(rawResponse);
         } catch (jsonError) {
-          print('Failed to parse as JSON string, trying custom parsing...');
-
           String responseStr = rawResponse;
           responseStr = responseStr.replaceAllMapped(
             RegExp(r'\b(\w+)(?=\s*:)(?![^{]*})'),
@@ -564,12 +511,9 @@ class SignalRService {
         responseData = jsonDecode(responseStr);
       }
 
-      print('Parsed response data: $responseData');
-
       if (responseData.containsKey('statusCode') &&
           responseData['statusCode'] == 500) {
         final errorMessage = responseData['message'] ?? 'Server error occurred';
-        print('Server error: $errorMessage');
         _uploadInitiationController.addError(errorMessage);
         return;
       }
@@ -592,7 +536,6 @@ class SignalRService {
       }
 
       if (filePath.isEmpty) {
-        print('Error: Server returned empty file path');
         _uploadInitiationController.addError('Server returned empty file path');
         return;
       }
@@ -602,11 +545,8 @@ class SignalRService {
         clientMessageId: clientMessageId,
       );
 
-      print('Emitting upload initiation response: $response');
       _uploadInitiationController.add(response);
     } catch (e) {
-      print('Error handling upload initiation: $e');
-      print('Raw response was: ${parameters[0]}');
       _uploadInitiationController
           .addError('Failed to parse server response: $e');
     }
@@ -617,7 +557,6 @@ class SignalRService {
 
     try {
       final rawResponse = parameters[0];
-      print('Received upload progress: $rawResponse');
 
       Map<String, dynamic> responseData;
 
@@ -628,8 +567,6 @@ class SignalRService {
         try {
           responseData = jsonDecode(rawResponse);
         } catch (jsonError) {
-          print('Failed to parse as JSON string, trying custom parsing...');
-
           String responseStr = rawResponse;
           responseStr = responseStr.replaceAllMapped(
             RegExp(r'\b(\w+)(?=\s*:)(?![^{]*})'),
@@ -642,8 +579,6 @@ class SignalRService {
         String responseStr = rawResponse.toString();
         responseData = jsonDecode(responseStr);
       }
-
-      print('Parsed progress data: $responseData');
 
       Map<String, dynamic>? data;
       if (responseData.containsKey('data')) {
@@ -681,8 +616,6 @@ class SignalRService {
         _uploadProgressController.add(uploadProgress);
       }
     } catch (e) {
-      print('Error handling upload progress: $e');
-      print('Raw response was: ${parameters![0]}');
       _uploadProgressController
           .addError('Failed to process upload progress: $e');
     }

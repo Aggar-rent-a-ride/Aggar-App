@@ -80,6 +80,9 @@ dependencies:
   hive: ^2.2.3
   hive_generator: ^2.0.1
   cached_network_image: ^3.4.1
+  flutter_local_notifications: ^17.0.0
+  app_settings: ^5.1.1
+  timezone: ^0.9.4
   get_it: ^7.6.7  # For dependency injection
   equatable: ^2.0.5  # For value equality
   dartz: ^0.10.1  # For functional programming
