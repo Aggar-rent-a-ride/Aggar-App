@@ -27,7 +27,7 @@ class AddImageButton extends StatelessWidget {
         child: MaterialButton(
           padding: EdgeInsets.zero,
           elevation: 0,
-          color: context.theme.blue100_2,
+          color: context.theme.blue100_1,
           splashColor: context.theme.white50_1,
           highlightColor: context.theme.white50_1,
           shape: const CircleBorder(),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'main_image_state.dart';
@@ -15,6 +14,8 @@ class MainImageCubit extends Cubit<MainImageState> {
   }
 
   void reset() {
+    image = null;
+    imageUrl = null;
     emit(MainImageInitial());
   }
 
@@ -24,14 +25,18 @@ class MainImageCubit extends Cubit<MainImageState> {
   }
 
   Future<void> pickImage(Function(File) onImagePicked) async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-      onImagePicked(image!);
-      emit(MainImageLoaded(imageFile: image!));
-    } else {
-      emit(const MainImageFaliure('Failed to pick imaggggggggge'));
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        image = File(pickedFile.path);
+        onImagePicked(image!);
+        emit(MainImageLoaded(imageFile: image!));
+      } else {
+        emit(const MainImageFaliure('Failed to pick image'));
+      }
+    } catch (e) {
+      emit(MainImageFaliure('Failed to pick image: $e'));
     }
   }
 }

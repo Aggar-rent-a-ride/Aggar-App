@@ -6,12 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ConfirmLocationWithPickCurrentLocation extends StatelessWidget {
-  const ConfirmLocationWithPickCurrentLocation({super.key});
+  final String? uniqueId;
+
+  // Static counters to ensure unique hero tags
+  static int _pickLocationCounter = 0;
+  static int _confirmLocationCounter = 0;
+
+  const ConfirmLocationWithPickCurrentLocation({
+    super.key,
+    this.uniqueId,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MapLocationCubit, MapLocationState>(
       builder: (context, state) {
+        final pickLocationTag = 'pick_location_${_pickLocationCounter++}';
+        final confirmLocationTag =
+            'confirm_location_${_confirmLocationCounter++}';
+
         return Positioned(
           right: 25,
           bottom: MediaQuery.sizeOf(context).height * 0.21,
@@ -24,7 +37,7 @@ class ConfirmLocationWithPickCurrentLocation extends StatelessWidget {
                     50,
                   ),
                 ),
-                heroTag: 'pickCurrentLocation',
+                heroTag: pickLocationTag,
                 backgroundColor: context.theme.blue100_1,
                 onPressed: () =>
                     context.read<MapLocationCubit>().getCurrentLocation(),
@@ -40,7 +53,7 @@ class ConfirmLocationWithPickCurrentLocation extends StatelessWidget {
                     50,
                   ),
                 ),
-                heroTag: 'confirmLocation',
+                heroTag: confirmLocationTag,
                 backgroundColor: context.theme.blue100_1,
                 onPressed: () {
                   final locationData = context

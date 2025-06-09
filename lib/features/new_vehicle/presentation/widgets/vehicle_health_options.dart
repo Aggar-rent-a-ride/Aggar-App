@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-class VehicleHealthOptions extends StatelessWidget {
+class VehicleHealthOptions extends StatefulWidget {
   final bool isEditing;
   final String? initialVehicleHealth;
 
@@ -18,32 +18,23 @@ class VehicleHealthOptions extends StatelessWidget {
     this.isEditing = false,
     this.initialVehicleHealth,
   });
+
   @override
-  Widget build(BuildContext context) {
-    if (isEditing &&
-        initialVehicleHealth != null &&
+  State<VehicleHealthOptions> createState() => _VehicleHealthOptionsState();
+}
+
+class _VehicleHealthOptionsState extends State<VehicleHealthOptions> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEditing &&
+        widget.initialVehicleHealth != null &&
         context.read<EditVehicleCubit>().selectedVehicleHealthValue == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final healthValue = _mapHealthValueToUI(initialVehicleHealth!);
+        final healthValue = _mapHealthValueToUI(widget.initialVehicleHealth!);
         context.read<EditVehicleCubit>().setVehicleHealth(healthValue);
       });
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Vehicle Health",
-          style: AppStyles.medium18(context).copyWith(
-            color: context.theme.blue100_1,
-          ),
-        ),
-        const Gap(10),
-        if (isEditing)
-          _buildEditingMode(context)
-        else
-          _buildAddingMode(context),
-      ],
-    );
   }
 
   String _mapHealthValueToUI(String apiValue) {
@@ -59,6 +50,26 @@ class VehicleHealthOptions extends StatelessWidget {
       default:
         return "";
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Vehicle Health",
+          style: AppStyles.medium18(context).copyWith(
+            color: context.theme.blue100_1,
+          ),
+        ),
+        const Gap(10),
+        if (widget.isEditing)
+          _buildEditingMode(context)
+        else
+          _buildAddingMode(context),
+      ],
+    );
   }
 
   Widget _buildEditingMode(BuildContext context) {
@@ -85,13 +96,14 @@ class VehicleHealthOptions extends StatelessWidget {
                           text: 'Excellent',
                           isSelected: selectedValue == 'Excellent',
                           onPressed: (value) {
-                            if (isEditing == true) {
+                            if (widget.isEditing) {
                               cubit.setVehicleHealth(value);
                             } else {
                               context
                                   .read<AddVehicleCubit>()
                                   .setVehicleHealth(value);
                             }
+                            setState(() {});
                           },
                         ),
                         const SizedBox(height: 25),
@@ -99,13 +111,14 @@ class VehicleHealthOptions extends StatelessWidget {
                           text: 'Minor dents',
                           isSelected: selectedValue == 'Minor dents',
                           onPressed: (value) {
-                            if (isEditing == true) {
+                            if (widget.isEditing) {
                               cubit.setVehicleHealth(value);
                             } else {
                               context
                                   .read<AddVehicleCubit>()
                                   .setVehicleHealth(value);
                             }
+                            setState(() {});
                           },
                         ),
                       ],
@@ -119,13 +132,14 @@ class VehicleHealthOptions extends StatelessWidget {
                           text: 'Good',
                           isSelected: selectedValue == 'Good',
                           onPressed: (value) {
-                            if (isEditing == true) {
+                            if (widget.isEditing) {
                               cubit.setVehicleHealth(value);
                             } else {
                               context
                                   .read<AddVehicleCubit>()
                                   .setVehicleHealth(value);
                             }
+                            setState(() {});
                           },
                         ),
                         const SizedBox(height: 25),
@@ -133,13 +147,14 @@ class VehicleHealthOptions extends StatelessWidget {
                           text: 'Not bad',
                           isSelected: selectedValue == 'Not bad',
                           onPressed: (value) {
-                            if (isEditing == true) {
+                            if (widget.isEditing) {
                               cubit.setVehicleHealth(value);
                             } else {
                               context
                                   .read<AddVehicleCubit>()
                                   .setVehicleHealth(value);
                             }
+                            setState(() {});
                           },
                         ),
                       ],
@@ -188,13 +203,21 @@ class VehicleHealthOptions extends StatelessWidget {
                         VehicleHealthButton(
                           text: 'Excellent',
                           isSelected: selectedValue == 'Excellent',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            cubit.setVehicleHealth(value);
+                            field.didChange(value);
+                            setState(() {});
+                          },
                         ),
                         const SizedBox(height: 25),
                         VehicleHealthButton(
                           text: 'Minor dents',
                           isSelected: selectedValue == 'Minor dents',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            cubit.setVehicleHealth(value);
+                            field.didChange(value);
+                            setState(() {});
+                          },
                         ),
                       ],
                     ),
@@ -206,13 +229,21 @@ class VehicleHealthOptions extends StatelessWidget {
                         VehicleHealthButton(
                           text: 'Good',
                           isSelected: selectedValue == 'Good',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            cubit.setVehicleHealth(value);
+                            field.didChange(value);
+                            setState(() {});
+                          },
                         ),
                         const SizedBox(height: 25),
                         VehicleHealthButton(
                           text: 'Not bad',
                           isSelected: selectedValue == 'Not bad',
-                          onPressed: (value) => cubit.setVehicleHealth(value),
+                          onPressed: (value) {
+                            cubit.setVehicleHealth(value);
+                            field.didChange(value);
+                            setState(() {});
+                          },
                         ),
                       ],
                     ),

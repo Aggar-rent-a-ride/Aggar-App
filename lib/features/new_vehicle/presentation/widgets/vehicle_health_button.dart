@@ -49,7 +49,7 @@ class VehicleHealthButton extends StatelessWidget {
             context.theme.white50_1,
           ),
           backgroundColor: WidgetStatePropertyAll(
-            isSelected ? context.theme.white100_1 : context.theme.blue100_2,
+            isSelected ? context.theme.white100_1 : context.theme.blue100_1,
           ),
         ),
         onPressed: () => onPressed(text),

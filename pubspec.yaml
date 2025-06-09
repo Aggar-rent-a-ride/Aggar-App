@@ -88,6 +88,7 @@ dependencies:
   dartz: ^0.10.1  # For functional programming
   table_calendar: ^3.1.3
   webview_flutter: ^4.13.0
+  uuid: ^4.3.3  # For generating unique identifiers
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:

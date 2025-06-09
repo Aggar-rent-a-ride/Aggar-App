@@ -109,13 +109,18 @@ class _PickMainImageButtonContentState
       return GestureDetector(
         onTap: () => _pickImage(field, context),
         child: state.imageFile != null
-            ? MainImageCard(image: state.imageFile!)
+            ? MainImageCard(
+                image: state.imageFile!,
+                onRemove: () {
+                  context.read<MainImageCubit>().reset();
+                  field.didChange(null);
+                },
+              )
             : state.imageUrl != null && state.imageUrl!.isNotEmpty
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(5),
                     child: Image.network(
                       state.imageUrl!.startsWith('http')
-                          //TODO : endpoint for image url
                           ? state.imageUrl!
                           : "https://aggarapi.runasp.net${state.imageUrl!}",
                       fit: BoxFit.cover,
@@ -144,7 +149,28 @@ class _PickMainImageButtonContentState
                   ),
       );
     } else if (state is MainImageFaliure) {
-      return Center(child: Text(state.message));
+      return PickMainImageButtonStyle(
+        onPressed: () {
+          context.read<MainImageCubit>().reset();
+          _pickImage(field, context);
+        },
+        widget: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image(
+              image: const AssetImage(AppAssets.assetsIconsPickimage),
+              height: MediaQuery.of(context).size.width * 0.1,
+            ),
+            Text(
+              "click here to pick \nmain image ",
+              textAlign: TextAlign.center,
+              style: AppStyles.regular16(context).copyWith(
+                color: context.theme.blue100_1,
+              ),
+            )
+          ],
+        ),
+      );
     }
     return Container();
   }

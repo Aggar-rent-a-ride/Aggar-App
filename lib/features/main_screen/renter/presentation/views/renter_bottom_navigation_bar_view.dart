@@ -5,6 +5,11 @@ import 'package:aggar/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/renter/presentation/views/main_screen.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
+import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
 import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,13 +64,20 @@ class _RenterBottomNavigationBarViewState
     });
   }
 
+  void _resetVehicleForm() {
+    context.read<AddVehicleCubit>().reset();
+    context.read<MainImageCubit>().reset();
+    context.read<AdditionalImageCubit>().reset();
+    context.read<MapLocationCubit>().reset();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> screens = [
       const MainScreen(),
       const MessagesView(),
       const SettingsScreen(),
-      const MainScreen(), // You might want to replace this with a different screen
+      const MainScreen(),
     ];
 
     return BlocListener<TokenRefreshCubit, TokenRefreshState>(
@@ -82,6 +94,27 @@ class _RenterBottomNavigationBarViewState
         }
       },
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          heroTag: "Dddd",
+          onPressed: () {
+            _resetVehicleForm();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddVehicleScreen(),
+              ),
+            );
+          },
+          backgroundColor: context.theme.blue100_1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: Icon(
+            Icons.add,
+            color: context.theme.white100_1,
+            size: 30,
+          ),
+        ),
         backgroundColor: context.theme.white100_1,
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
