@@ -70,6 +70,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
                         vehicleId: vehicle.id,
                         vehiceSeatsNo: vehicle.numOfPassengers.toString(),
                         renterName: vehicle.renter!.name,
+                        renterId: vehicle.renter!.id,
                         yearOfManufaction: vehicle.year,
                         vehicleModel: vehicle.model,
                         vehicleRentPrice: vehicle.pricePerDay,
