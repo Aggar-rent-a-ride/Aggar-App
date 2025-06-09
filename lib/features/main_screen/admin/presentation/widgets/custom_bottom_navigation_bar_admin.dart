@@ -3,16 +3,11 @@ import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/widgets/selected_tab_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
+class CustomBottomNavigationBarAdmin extends StatelessWidget {
+  const CustomBottomNavigationBarAdmin(
+      {super.key, required this.selectedIndex, required this.onTapped});
   final int selectedIndex;
   final Function(int) onTapped;
-
-  const CustomBottomNavigationBar({
-    super.key,
-    required this.selectedIndex,
-    required this.onTapped,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,16 +35,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 selectedIndex: selectedIndex,
               ),
               SelectedTabBottomNavigationBar(
-                iconImage: AppAssets.assetsIconsChats,
+                iconImage: AppAssets.assetsIconsCarIcon,
                 index: 1,
-                label: 'Messages',
+                label: 'Vehilces',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
               ),
               SelectedTabBottomNavigationBar(
-                iconImage: AppAssets.assetsIconsSettings,
+                iconImage: AppAssets.assetsIconsChats,
                 index: 2,
-                label: 'Settings',
+                label: 'Messages',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
               ),

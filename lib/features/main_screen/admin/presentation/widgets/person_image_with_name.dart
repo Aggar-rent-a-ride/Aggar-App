@@ -1,10 +1,10 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/options_button.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,14 +72,9 @@ class PersonImageWithName extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  AppAssets.assetsImagesDafaultPfp,
-                  height: 40,
-                  width: 40,
-                  fit: BoxFit.cover,
-                ),
+              AvatarChatView(
+                image: snapshot.data!["data"]["imagePath"],
+                size: 40,
               ),
               const Gap(5),
               Expanded(

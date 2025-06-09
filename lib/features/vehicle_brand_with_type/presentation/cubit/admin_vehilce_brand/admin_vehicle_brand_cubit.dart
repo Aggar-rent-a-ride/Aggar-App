@@ -125,11 +125,13 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
 
       if (response["statusCode"] == 200) {
         emit(AdminVehicleBrandDeleted());
+        await fetchVehicleBrands(accessToken);
       } else {
         emit(const AdminVehicleBrandError(message: "error"));
       }
     } catch (error) {
-      emit(AdminVehicleBrandError(message: error.toString()));
+      emit(const AdminVehicleBrandError(
+          message: "Vehicle brand with that id wasn't found"));
     }
   }
 
@@ -138,6 +140,12 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
     vehicleBrandCountryController.clear();
     image = null;
     imageUrl = null;
-    emit(const AdminVehicleBrandImageUpdated(image: null, imageUrl: null));
+    if (state is AdminVehicleBrandLoaded) {
+      emit(AdminVehicleBrandLoaded(
+          listVehicleBrandModel:
+              (state as AdminVehicleBrandLoaded).listVehicleBrandModel));
+    } else {
+      emit(const AdminVehicleBrandImageUpdated(image: null, imageUrl: null));
+    }
   }
 }

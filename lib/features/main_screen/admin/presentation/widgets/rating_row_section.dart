@@ -33,7 +33,7 @@ class RatingRowSection extends StatelessWidget {
                 return Icon(
                   index < behavior ? Icons.star : Icons.star_border,
                   color: index < behavior ? Colors.amber : Colors.grey,
-                  size: 20,
+                  size: MediaQuery.sizeOf(context).width * 0.04,
                 );
               }),
             ),
@@ -53,7 +53,7 @@ class RatingRowSection extends StatelessWidget {
                 return Icon(
                   index < punctuality ? Icons.star : Icons.star_border,
                   color: index < punctuality ? Colors.amber : Colors.grey,
-                  size: 20,
+                  size: MediaQuery.sizeOf(context).width * 0.04,
                 );
               }),
             ),
@@ -74,7 +74,7 @@ class RatingRowSection extends StatelessWidget {
                   index < careOrtruthfulness ? Icons.star : Icons.star_border,
                   color:
                       index < careOrtruthfulness ? Colors.amber : Colors.grey,
-                  size: 20,
+                  size: MediaQuery.sizeOf(context).width * 0.04,
                 );
               }),
             ),
