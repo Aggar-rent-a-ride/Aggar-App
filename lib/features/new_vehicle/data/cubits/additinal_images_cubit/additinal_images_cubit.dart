@@ -57,4 +57,9 @@ class AdditionalImageCubit extends Cubit<AdditionalImageState> {
       emit(AdditionalImagesLoaded(images));
     }
   }
+
+  void reset() {
+    images = [];
+    emit(AdditionalImagesInitial());
+  }
 }

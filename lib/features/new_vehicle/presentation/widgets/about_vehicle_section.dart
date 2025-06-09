@@ -113,6 +113,11 @@ class AboutVehicleSection extends StatelessWidget {
                 if (value!.isEmpty) {
                   return "required";
                 }
+                final year = int.tryParse(value);
+                final currentYear = DateTime.now().year;
+                if (year == null || year < 1900 || year > currentYear) {
+                  return "from 1900 to $currentYear";
+                }
                 return null;
               },
               controller: yearOfManufactureController,

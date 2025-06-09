@@ -2,22 +2,31 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+
 import 'map_screen.dart';
 
 class SelectedLocationMapContent extends StatelessWidget {
   final LatLng location;
   final String address;
   final Function(LatLng, String) onEditLocation;
+  final String uniqueId;
+
+  // Static counter to ensure unique hero tags
+  static int _editLocationCounter = 0;
 
   const SelectedLocationMapContent({
     super.key,
     required this.location,
     required this.address,
     required this.onEditLocation,
+    required this.uniqueId,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Generate a unique tag using the counter
+    final String buttonTag = 'edit_location_${_editLocationCounter++}';
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -71,12 +80,15 @@ class SelectedLocationMapContent extends StatelessWidget {
               bottom: 8,
               right: 8,
               child: FloatingActionButton.small(
+                heroTag: buttonTag,
                 onPressed: () async {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          MapScreen(initialLocation: location),
+                      builder: (context) => MapScreen(
+                        initialLocation: location,
+                        screenId: buttonTag,
+                      ),
                     ),
                   );
 

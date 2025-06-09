@@ -27,7 +27,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       this.additionalImageCubit, this.mapLocationCubit)
       : super(AddVehicleInitial()) {
     selectedTransmissionModeValue = 0; // Default to Automatic
-    emit(TransmissionModeUpdated(selectedTransmissionModeValue));
+    emit(TransmissionModeUpdated(selectedTransmissionModeValue!));
     emit(VehicleStatusUpdated(selectedVehicleStatusValue));
 
     _dio = Dio(BaseOptions(
@@ -58,7 +58,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
 
   void setTransmissionMode(int value) {
     selectedTransmissionModeValue = value;
-    emit(TransmissionModeUpdated(selectedTransmissionModeValue));
+    emit(TransmissionModeUpdated(selectedTransmissionModeValue!));
   }
 
   void setVehicleBrnd(String value, int id) {
@@ -159,7 +159,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
     try {
       emit(AddVehicleLoading());
       if (mainImageFile == null) {
-        emit(AddVehicleFailure('Main image file is required'));
+        emit(const AddVehicleFailure('Main image file is required'));
         return;
       }
 
@@ -295,7 +295,7 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
       responseData = response.data;
 
       if (response.data == null || response.data['data'] == null) {
-        emit(AddVehicleFailure('No vehicle data found'));
+        emit(const AddVehicleFailure('No vehicle data found'));
         return;
       }
 
@@ -317,9 +317,38 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
   }
 
   void reset() {
+    // Reset data
     vehicleData = null;
     vehicleId = null;
     responseData = null;
+
+    // Reset form controllers
+    vehicleModelController.clear();
+    vehicleRentalPrice.clear();
+    vehicleYearOfManufactureController.clear();
+    vehicleColorController.clear();
+    vehicleSeatsNoController.clear();
+    vehicleProperitesOverviewController.clear();
+    vehicleBrandController.clear();
+    vehicleTypeController.clear();
+    vehicleStatusController.clear();
+    vehicleAddressController.clear();
+
+    // Reset state values
+    selectedTransmissionModeValue = 0;
+    selectedVehicleBrandValue = null;
+    selectedVehicleTypeValue = null;
+    selectedVehicleStatusValue = null;
+    selectedVehicleBrandId = null;
+    selectedVehicleTypeId = null;
+    selectedVehicleHealthValue = null;
+
+    // Emit initial states
     emit(AddVehicleInitial());
+    emit(TransmissionModeUpdated(selectedTransmissionModeValue ?? 0));
+    emit(VehicleStatusUpdated(selectedVehicleStatusValue));
+    emit(VehicleHealthUpdated(selectedVehicleHealthValue));
+    emit(VehicleBrandUpdated(selectedVehicleBrandValue));
+    emit(VehicleTypeUpdated(selectedVehicleTypeValue));
   }
 }

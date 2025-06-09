@@ -3,6 +3,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 
 class PickLocationOnMapButton extends StatelessWidget {
   const PickLocationOnMapButton({
@@ -13,6 +14,8 @@ class PickLocationOnMapButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String uniqueId = const Uuid().v4();
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -31,7 +34,7 @@ class PickLocationOnMapButton extends StatelessWidget {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const MapScreen(),
+              builder: (context) => MapScreen(screenId: uniqueId),
             ),
           );
 

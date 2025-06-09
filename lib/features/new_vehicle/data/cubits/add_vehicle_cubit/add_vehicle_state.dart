@@ -1,9 +1,10 @@
-import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AddVehicleState extends Equatable {
+  const AddVehicleState();
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddVehicleInitial extends AddVehicleState {}
@@ -11,56 +12,61 @@ class AddVehicleInitial extends AddVehicleState {}
 class AddVehicleLoading extends AddVehicleState {}
 
 class AddVehicleSuccess extends AddVehicleState {
-  final VehicleDataModel vehicleData;
+  final Map<String, dynamic> responseData;
 
-  AddVehicleSuccess(Map<String, dynamic> responseData)
-      : vehicleData = VehicleDataModel.fromJson(responseData);
+  const AddVehicleSuccess(this.responseData);
+
+  @override
+  List<Object?> get props => [responseData];
 }
 
 class VehicleHealthSelected extends AddVehicleState {
   final String? selectedVehicleHealthValue;
 
-  VehicleHealthSelected({this.selectedVehicleHealthValue});
+  const VehicleHealthSelected({this.selectedVehicleHealthValue});
 }
 
 class TransmissionModeUpdated extends AddVehicleState {
-  final int? transmissionMode;
+  final int value;
 
-  TransmissionModeUpdated(this.transmissionMode);
+  const TransmissionModeUpdated(this.value);
 
   @override
-  List<Object> get props => [transmissionMode ?? -1];
+  List<Object?> get props => [value];
 }
 
 class VehicleHealthUpdated extends AddVehicleState {
   final String? selectedVehicleHealthValue;
 
-  VehicleHealthUpdated(this.selectedVehicleHealthValue);
+  const VehicleHealthUpdated(this.selectedVehicleHealthValue);
 }
 
 class VehicleStatusUpdated extends AddVehicleState {
-  final String? selectedVehicleStatusValue;
+  final String? value;
 
-  VehicleStatusUpdated(this.selectedVehicleStatusValue);
+  const VehicleStatusUpdated(this.value);
+
+  @override
+  List<Object?> get props => [value];
 }
 
 class VehicleBrandUpdated extends AddVehicleState {
   final String? selectedVehicleBrandValue;
 
-  VehicleBrandUpdated(this.selectedVehicleBrandValue);
+  const VehicleBrandUpdated(this.selectedVehicleBrandValue);
 }
 
 class VehicleTypeUpdated extends AddVehicleState {
   final String? selectedVehicleTypeValue;
 
-  VehicleTypeUpdated(this.selectedVehicleTypeValue);
+  const VehicleTypeUpdated(this.selectedVehicleTypeValue);
 }
 
 class AddVehicleFailure extends AddVehicleState {
-  final String errorMessage;
+  final String message;
 
-  AddVehicleFailure(this.errorMessage);
+  const AddVehicleFailure(this.message);
 
   @override
-  List<Object> get props => [errorMessage];
+  List<Object?> get props => [message];
 }

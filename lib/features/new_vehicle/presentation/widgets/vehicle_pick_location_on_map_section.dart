@@ -5,6 +5,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/selected_locatio
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 
 class VehiclePickLocationOnMapSection extends StatefulWidget {
   final LatLng? initialLocation;
@@ -24,6 +25,8 @@ class _VehiclePickLocationOnMapSectionState
   LatLng? selectedLocation;
   final GlobalKey<FormFieldState> _formFieldKey = GlobalKey<FormFieldState>();
   String address = '';
+  final String uniqueId = const Uuid().v4();
+
   @override
   void initState() {
     super.initState();
@@ -79,15 +82,15 @@ class _VehiclePickLocationOnMapSectionState
                     _formFieldKey.currentState?.validate();
                     widget.onLocationSelected?.call(location, locationAddress);
                   },
+                  uniqueId: uniqueId,
                 ),
               if (field.hasError)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 8.0, left: 4.0),
                   child: Text(
                     field.errorText!,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 12,
+                    style: AppStyles.regular14(context).copyWith(
+                      color: context.theme.red100_1,
                     ),
                   ),
                 ),

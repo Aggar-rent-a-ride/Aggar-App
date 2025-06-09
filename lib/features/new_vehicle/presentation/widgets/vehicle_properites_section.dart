@@ -5,6 +5,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/properites_over_
 import 'package:aggar/features/new_vehicle/presentation/widgets/transmission_mode_options.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_health_options.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class VehicleProperitesSection extends StatelessWidget {
   final TextEditingController vehicleColorController;
@@ -33,8 +34,10 @@ class VehicleProperitesSection extends StatelessWidget {
             color: context.theme.blue100_2,
           ),
         ),
+        const Gap(10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
           children: [
             PickColorAndSeatsNumFields(
               vehicleColorController: vehicleColorController,

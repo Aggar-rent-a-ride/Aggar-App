@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
@@ -31,11 +33,52 @@ class AddVehicleScreen extends StatefulWidget {
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   String? _accessToken;
   bool isLoading = true;
+  bool _isFirstBuild = true;
 
   @override
   void initState() {
     super.initState();
+    if (_isFirstBuild) {
+      _resetAllState();
+      _isFirstBuild = false;
+    }
     _loadToken();
+  }
+
+  void _resetAllState() {
+    // Reset AddVehicleCubit state
+    final addVehicleCubit = context.read<AddVehicleCubit>();
+    addVehicleCubit.reset();
+
+    // Reset form controllers
+    addVehicleCubit.vehicleModelController.clear();
+    addVehicleCubit.vehicleRentalPrice.clear();
+    addVehicleCubit.vehicleYearOfManufactureController.clear();
+    addVehicleCubit.vehicleColorController.clear();
+    addVehicleCubit.vehicleSeatsNoController.clear();
+    addVehicleCubit.vehicleProperitesOverviewController.clear();
+    addVehicleCubit.vehicleBrandController.clear();
+    addVehicleCubit.vehicleTypeController.clear();
+    addVehicleCubit.vehicleStatusController.clear();
+    addVehicleCubit.vehicleAddressController.clear();
+
+    // Reset other state values
+    addVehicleCubit.selectedTransmissionModeValue = 0;
+    addVehicleCubit.selectedVehicleBrandValue = null;
+    addVehicleCubit.selectedVehicleTypeValue = null;
+    addVehicleCubit.selectedVehicleStatusValue = null;
+    addVehicleCubit.selectedVehicleBrandId = null;
+    addVehicleCubit.selectedVehicleTypeId = null;
+    addVehicleCubit.selectedVehicleHealthValue = null;
+
+    // Reset MapLocationCubit
+    context.read<MapLocationCubit>().reset();
+
+    // Reset MainImageCubit
+    context.read<MainImageCubit>().reset();
+
+    // Reset AdditionalImageCubit
+    context.read<AdditionalImageCubit>().reset();
   }
 
   Future<void> _loadToken() async {
@@ -47,7 +90,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         _accessToken = token;
         isLoading = false;
       });
-
       await _fetchInitialData(token);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -87,7 +129,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             customSnackBar(
               context,
               "Error",
-              "Failed to add vehicle!",
+              state.message,
               SnackBarType.error,
             ),
           );
@@ -96,6 +138,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       builder: (context, state) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBarContent(
+            color: context.theme.blue100_1,
             title: "Add Vehicle",
             onPressed: () async {
               if (_accessToken == null) {
@@ -173,6 +216,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     key: context.read<AddVehicleCubit>().addVehicleFormKey,
                     child: Column(
                       children: [
+                        const Gap(25),
                         AboutVehicleSection(
                           modelController: context
                               .read<AddVehicleCubit>()
@@ -228,13 +272,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                               .read<AddVehicleCubit>()
                               .vehicleStatusController,
                         ),
-                        const Gap(25),
+                        const Gap(35),
                       ],
                     ),
                   ),
                 ),
               ),
-              // Loading indicator
               if (state is AddVehicleLoading)
                 Container(
                   color: Colors.black.withOpacity(0.3),

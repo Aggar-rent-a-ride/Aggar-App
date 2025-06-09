@@ -239,4 +239,9 @@ class MapLocationCubit extends Cubit<MapLocationState> {
           : selectedAddress,
     };
   }
+
+  void reset() {
+    selectedLocation = null;
+    emit(MapLocationInitial());
+  }
 }
