@@ -11,12 +11,16 @@ class AboutTabBarView extends StatelessWidget {
     required this.vehicleLatitude,
     this.pfpImage,
     required this.renterName,
+    required this.renterId,
   });
+  
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
   final String? pfpImage;
   final String renterName;
+  final int renterId; 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -24,6 +28,7 @@ class AboutTabBarView extends StatelessWidget {
         RentPartnerSection(
           pfpImage: pfpImage,
           renterName: renterName,
+          renterId: renterId, 
         ),
         LocationSection(
           vehicleAddress: vehicleAddress,

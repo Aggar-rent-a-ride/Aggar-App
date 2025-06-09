@@ -22,7 +22,9 @@ class TabBarSection extends StatefulWidget {
     this.pfpImage,
     required this.renterName,
     required this.vehilceType,
+    required this.renterId,
   });
+  
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
@@ -36,6 +38,8 @@ class TabBarSection extends StatefulWidget {
   final double vehicleLatitude;
   final String? pfpImage;
   final String renterName;
+  final int renterId;
+
   @override
   // ignore: library_private_types_in_public_api
   _TabBarSectionState createState() => _TabBarSectionState();
@@ -101,6 +105,7 @@ class _TabBarSectionState extends State<TabBarSection>
               vehicleLatitude: widget.vehicleLatitude,
               pfpImage: widget.pfpImage,
               renterName: widget.renterName,
+              renterId: widget.renterId,
             ),
             ProperitiesTabBarView(
               vehicleType: widget.vehilceType,
