@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import 'loading_vehicle_type_section.dart';
+
 class VehicleTypesSection extends StatefulWidget {
   const VehicleTypesSection({super.key});
 
@@ -32,7 +34,7 @@ class _VehicleTypesSectionState extends State<VehicleTypesSection> {
     return BlocBuilder<AdminVehicleTypeCubit, AdminVehicleTypeState>(
       builder: (context, state) {
         if (state is AdminVehicleTypeLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const LoadingVehicleTypeSection();
         } else if (state is AdminVehicleTypeLoaded) {
           final vehicleTypes = state.listVehicleTypeModel.data;
           if (vehicleTypes.isEmpty) {
@@ -106,7 +108,7 @@ class _VehicleTypesSectionState extends State<VehicleTypesSection> {
                           ),
                         );
                       },
-                      iconPrv: "null",
+                      iconPrv: vehicleType.slogenPath ?? "bull",
                       label: vehicleType.name,
                     );
                   }),

@@ -1,8 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_details_body.dart';
-
 import 'package:flutter/material.dart';
 
 class ReportDetailsScreen extends StatelessWidget {
@@ -48,7 +46,7 @@ class ReportDetailsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const ReportDetailsBody()
+            const ReportDetailsBody(),
           ],
         ),
       ),
