@@ -39,6 +39,8 @@ import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_brand/edit_vehicle_brand_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_type/edit_vehicle_type_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -97,6 +99,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AdminVehicleBrandCubit(),
+        ),
+        BlocProvider(
+          create: (context) => EditVehicleTypeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => EditVehicleBrandCubit(),
         ),
         BlocProvider(
           create: (context) => AdminVehicleTypeCubit(),

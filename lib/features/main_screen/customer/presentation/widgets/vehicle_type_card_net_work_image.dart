@@ -33,7 +33,7 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              iconPrv == "null"
+              /*  iconPrv == "null"
                   ? const SizedBox(
                       height: 35,
                       width: 35,
@@ -45,7 +45,7 @@ class VehicleTypeCardNetWorkImage extends StatelessWidget {
                         color: context.theme.black50,
                         "${EndPoint.baseUrl}/$iconPrv",
                       ),
-                    ),
+                    ),*/
               const Gap(10),
               Text(
                 label,

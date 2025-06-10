@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/vehicle_brand_with_type/data/model/list_vehicle_type_model.dart';
-import 'package:aggar/features/vehicle_brand_with_type/data/model/vehicle_type_model.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
   TextEditingController vehicleTypeNameController = TextEditingController();
   File? image;
   String? imageUrl;
-  final XformKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   void setImageFile(File? file) {
     image = file;
@@ -70,39 +69,6 @@ class AdminVehicleTypeCubit extends Cubit<AdminVehicleTypeState> {
         emit(AdminVehicleTypeAdded());
         await fetchVehicleTypes(accessToken);
       }
-    } catch (error) {
-      emit(AdminVehicleTypeError(message: error.toString()));
-    }
-  }
-
-  Future<void> updateVehicleType(String accessToken, int id, String name,
-      File? image, String? imageUrl) async {
-    try {
-      emit(AdminVehicleTypeLoading());
-      FormData formData = FormData.fromMap({
-        ApiKey.vehicleTypeName: name,
-        'id': id,
-        if (image != null && image.path.isNotEmpty)
-          "slogan": await MultipartFile.fromFile(
-            image.path,
-            filename: image.path.split('/').last,
-          ),
-        if (image == null && imageUrl != null) 'slogan': imageUrl,
-      });
-
-      final response = await dioConsumer.put(
-        EndPoint.vehicleType,
-        data: formData,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
-      );
-      final vehicleTypeList = VehicleTypeModel.fromJson(response["data"]);
-      emit(AdminVehicleTypeUpdated(vehicletypeModel: vehicleTypeList));
-      await fetchVehicleTypes(accessToken);
     } catch (error) {
       emit(AdminVehicleTypeError(message: error.toString()));
     }

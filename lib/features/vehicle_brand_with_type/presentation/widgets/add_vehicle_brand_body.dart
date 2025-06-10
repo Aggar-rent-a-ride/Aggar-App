@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_state.dart';
@@ -22,10 +20,10 @@ class AddVehicleBrandBody extends StatelessWidget {
             customSnackBar(context, "Success",
                 "Vehicle Brand Added Successfully", SnackBarType.success),
           );
-          Navigator.pop(context);
         } else if (state is AdminVehicleBrandError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            customSnackBar(context, "Error", "Error:$e", SnackBarType.error),
+            customSnackBar(context, "Error", "Error: ${state.message}",
+                SnackBarType.error),
           );
         }
       },
@@ -33,7 +31,7 @@ class AddVehicleBrandBody extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: context.read<AdminVehicleBrandCubit>().YformKey,
+            key: context.read<AdminVehicleBrandCubit>().formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,9 +40,21 @@ class AddVehicleBrandBody extends StatelessWidget {
                       .read<AdminVehicleBrandCubit>()
                       .vehicleBrandNameController,
                   label: "Vehicle Brand Name",
+                  validator: (value) {
+                    if (value == null) {
+                      return "Please enter a field";
+                    }
+                    return null;
+                  },
                 ),
                 const Gap(25),
                 TextWithTextFieldTypeAndBrand(
+                  validator: (value) {
+                    if (value == null) {
+                      return "Please enter a field";
+                    }
+                    return null;
+                  },
                   controller: context
                       .read<AdminVehicleBrandCubit>()
                       .vehicleBrandCountryController,
@@ -52,6 +62,7 @@ class AddVehicleBrandBody extends StatelessWidget {
                 ),
                 const Gap(25),
                 const TypeAndBrandLogoPicker(
+                  isEditing: false,
                   logoType: "Brand",
                 ),
                 const Gap(10),

@@ -6,6 +6,8 @@ import 'package:aggar/core/widgets/custom_dialog.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_state.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_brand/edit_vehicle_brand_cubit.dart';
+import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_brand/edit_vehicle_brand_state.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/widgets/edit_vehicle_brand_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,11 +28,15 @@ class EditVehicleBrandScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<AdminVehicleBrandCubit>();
-    cubit.setImageFile(null);
-    cubit.vehicleBrandNameController.text = brandName;
-    cubit.vehicleBrandCountryController.text = brandCountry;
-    cubit.imageUrl = brandImageUrl;
+    final editCubit = context.read<EditVehicleBrandCubit>();
+    final adminCubit = context.read<AdminVehicleBrandCubit>();
+    // Initialize fields only once
+    if (editCubit.vehicleBrandNameController.text.isEmpty) {
+      editCubit.vehicleBrandNameController.text = brandName;
+      editCubit.vehicleBrandCountryController.text = brandCountry;
+      editCubit.imageUrl = brandImageUrl;
+      editCubit.setImageFile(null);
+    }
 
     return PopScope(
       onPopInvoked: (didPop) async {
@@ -38,28 +44,64 @@ class EditVehicleBrandScreen extends StatelessWidget {
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
           final token = await tokenRefreshCubit.getAccessToken();
           if (token != null) {
-            await cubit.fetchVehicleBrands(token);
+            await adminCubit.fetchVehicleBrands(token);
           }
-          cubit.resetFields();
+          // Only reset fields if not saving changes
+          editCubit.resetFields();
         }
       },
-      child: BlocListener<AdminVehicleBrandCubit, AdminVehicleBrandState>(
-        listener: (context, state) {
-          if (state is AdminVehicleBrandDeleted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              customSnackBar(context, "Success",
-                  "Vehicle Brand Deleted Successfully", SnackBarType.success),
-            );
-            if (context.mounted) {
-              Navigator.pop(context);
-            }
-          } else if (state is AdminVehicleBrandError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              customSnackBar(context, "Error", "Error: ${state.message}",
-                  SnackBarType.error),
-            );
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<AdminVehicleBrandCubit, AdminVehicleBrandState>(
+            listener: (context, state) {
+              if (state is AdminVehicleBrandDeleted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(
+                      context,
+                      "Success",
+                      "Vehicle Brand Deleted Successfully",
+                      SnackBarType.success),
+                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              } else if (state is AdminVehicleBrandError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(context, "Error", "Error: ${state.message}",
+                      SnackBarType.error),
+                );
+              }
+            },
+          ),
+          BlocListener<EditVehicleBrandCubit, EditVehicleBrandState>(
+            listener: (context, state) {
+              if (state is EditVehicleBrandUpdated) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(
+                      context,
+                      "Success",
+                      "Vehicle Brand Updated Successfully",
+                      SnackBarType.success),
+                );
+                final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+                tokenRefreshCubit.getAccessToken().then((token) {
+                  if (token != null) {
+                    adminCubit.fetchVehicleBrands(token);
+                  }
+                });
+                editCubit.resetFields(); // Reset after successful update
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              } else if (state is EditVehicleBrandError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(context, "Error", "Error: ${state.message}",
+                      SnackBarType.error),
+                );
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           body: SizedBox(
             height: MediaQuery.of(context).size.height,
@@ -87,9 +129,9 @@ class EditVehicleBrandScreen extends StatelessWidget {
                             final token =
                                 await tokenRefreshCubit.getAccessToken();
                             if (token != null) {
-                              await cubit.fetchVehicleBrands(token);
+                              await adminCubit.fetchVehicleBrands(token);
                             }
-                            cubit.resetFields();
+                            editCubit.resetFields();
                             if (context.mounted) {
                               Navigator.pop(context);
                             }
@@ -128,7 +170,7 @@ class EditVehicleBrandScreen extends StatelessWidget {
                                   final token =
                                       await tokenRefreshCubit.getAccessToken();
                                   if (token != null) {
-                                    await cubit.deleteVehicleBrand(
+                                    await adminCubit.deleteVehicleBrand(
                                         token, brandId);
                                   }
                                   if (context.mounted) {
@@ -158,17 +200,15 @@ class EditVehicleBrandScreen extends StatelessWidget {
             onPressed: () async {
               final tokenRefreshCubit = context.read<TokenRefreshCubit>();
               final token = await tokenRefreshCubit.getAccessToken();
-              if (token != null) {
-                if (cubit.YformKey.currentState!.validate()) {
-                  cubit.updateVehicleBrand(
-                    token,
-                    brandId,
-                    cubit.vehicleBrandNameController.text,
-                    cubit.image,
-                    brandImageUrl,
-                    cubit.vehicleBrandCountryController.text,
-                  );
-                }
+              if (token != null && editCubit.formKey.currentState!.validate()) {
+                await editCubit.updateVehicleBrand(
+                  token,
+                  brandId,
+                  editCubit.vehicleBrandNameController.text,
+                  editCubit.image,
+                  brandImageUrl,
+                  editCubit.vehicleBrandCountryController.text,
+                );
               }
             },
           ),

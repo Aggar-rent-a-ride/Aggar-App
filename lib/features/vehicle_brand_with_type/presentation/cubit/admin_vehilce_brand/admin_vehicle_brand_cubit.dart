@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/features/vehicle_brand_with_type/data/model/list_vehicle_brand_model.dart';
-import 'package:aggar/features/vehicle_brand_with_type/data/model/vehicle_brand_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +14,7 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
   TextEditingController vehicleBrandCountryController = TextEditingController();
   File? image;
   String? imageUrl;
-  final YformKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   void setImageFile(File? file) {
     image = file;
@@ -72,39 +71,6 @@ class AdminVehicleBrandCubit extends Cubit<AdminVehicleBrandState> {
         emit(AdminVehicleBrandAdded());
         await fetchVehicleBrands(accessToken);
       }
-    } catch (error) {
-      emit(AdminVehicleBrandError(message: error.toString()));
-    }
-  }
-
-  Future<void> updateVehicleBrand(String accessToken, int id, String name,
-      File? image, String? imageUrl, String country) async {
-    try {
-      emit(AdminVehicleBrandLoading());
-      FormData formData = FormData.fromMap({
-        ApiKey.vehicleBrandName: name,
-        ApiKey.vehicleBrandCountry: country,
-        ApiKey.vehicleBrandId: id,
-        if (image != null && image.path.isNotEmpty)
-          "logo": await MultipartFile.fromFile(
-            image.path,
-            filename: image.path.split('/').last,
-          ),
-        if (image == null && imageUrl != null) "logo": imageUrl,
-      });
-      final response = await dioConsumer.put(
-        EndPoint.vehicleBrand,
-        data: formData,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
-      );
-      final vehicleBrandList = VehicleBrandModel.fromJson(response["data"]);
-      emit(AdminVehicleBrandUpdated(vehicleBrandModel: vehicleBrandList));
-      await fetchVehicleBrands(accessToken);
     } catch (error) {
       emit(AdminVehicleBrandError(message: error.toString()));
     }
