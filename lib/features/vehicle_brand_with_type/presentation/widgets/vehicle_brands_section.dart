@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../view/add_vehicle_brand_screen.dart';
+import 'loading_vehicle_brand_section.dart';
 
 class VehicleBrandsSection extends StatefulWidget {
   const VehicleBrandsSection({super.key});
@@ -33,27 +34,7 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
     return BlocBuilder<AdminVehicleBrandCubit, AdminVehicleBrandState>(
       builder: (context, state) {
         if (state is AdminVehicleBrandLoading) {
-          return Container(
-            height: 200,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    context.theme.blue100_1,
-                  ),
-                ),
-                const Gap(10),
-                Text(
-                  "Loading brands...",
-                  style: AppStyles.regular14(context).copyWith(
-                    color: context.theme.blue100_1,
-                  ),
-                ),
-              ],
-            ),
-          );
+          return const LoadingVehicleBrandSection();
         } else if (state is AdminVehicleBrandLoaded) {
           final vehicleTypes = state.listVehicleBrandModel.data;
           if (vehicleTypes.isEmpty) {
@@ -97,7 +78,7 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
                     ),
                     const Spacer(),
                     AddVehicleTypeOrBrandButton(
-                      text: "Add Type",
+                      text: "Add Brand",
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -164,7 +145,7 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
                               color: context.theme.blue100_1,
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          const Gap(4),
                           Icon(
                             _showAll
                                 ? Icons.keyboard_arrow_up_rounded

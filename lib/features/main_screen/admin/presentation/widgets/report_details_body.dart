@@ -6,6 +6,7 @@ import 'package:aggar/features/main_screen/admin/presentation/widgets/app_user_t
 import 'package:aggar/features/main_screen/admin/presentation/widgets/customer_review_target_type.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/message_target_type.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/renter_review_target_type.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/report_status_button.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/report_type_with_status.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/reporter_with_created_at_section.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/vehicle_target_type.dart';
@@ -37,19 +38,18 @@ class ReportDetailsBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ReportTypewithStatus(
-                    status: state.report.status,
                     targetType: state.report.targetType,
                   ),
                   const Gap(8),
-                  Text(
-                    state.report.description,
-                    style: AppStyles.regular16(context).copyWith(
-                      color: context.theme.black100,
-                    ),
-                    semanticsLabel:
-                        "Report description: ${state.report.description}",
-                  ),
-                  const Gap(16),
+                  state.report.description != ""
+                      ? Text(
+                          state.report.description,
+                          style: AppStyles.regular16(context).copyWith(
+                            color: context.theme.black100,
+                          ),
+                        )
+                      : const SizedBox(),
+                  const Gap(10),
                   state.report.targetType == "Vehicle"
                       ? VehicleTargetType(state: state)
                       : state.report.targetType == "AppUser"
@@ -66,6 +66,11 @@ class ReportDetailsBody extends StatelessWidget {
                     formattedDate: formattedDate,
                     state: state,
                   ),
+                  const Gap(25),
+                  ReportStatusButton(
+                    reportIds: [state.report.id],
+                    status: state.report.status,
+                  )
                 ],
               ),
             ),

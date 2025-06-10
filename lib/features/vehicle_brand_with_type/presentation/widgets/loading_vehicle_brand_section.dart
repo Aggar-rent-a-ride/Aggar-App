@@ -56,22 +56,36 @@ class LoadingVehicleBrandSection extends StatelessWidget {
             ],
           ),
         ),
-        Wrap(
-          children: List.generate(5, (index) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.27,
-                height: MediaQuery.sizeOf(context).width * 0.27,
-                margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
+        SizedBox(
+          height: MediaQuery.sizeOf(context).width * 0.6,
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 0,
+              mainAxisSpacing: 0,
+              childAspectRatio: 0.9,
+            ),
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width * 0.27,
+                  height: MediaQuery.sizeOf(context).width * 0.27,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            },
+          ),
         ),
       ],
     );
