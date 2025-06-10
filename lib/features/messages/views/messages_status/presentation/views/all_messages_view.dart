@@ -75,12 +75,26 @@ class _AllMessagesViewState extends State<AllMessagesView>
                   messageList: state.messages!.data,
                   receiverId: state.userId!,
                   receiverName: state.receiverName,
+                  onMessagesUpdated: () async {
+                    final tokenCubit = context.read<TokenRefreshCubit>();
+                    final token = await tokenCubit.getAccessToken();
+                    if (token != null) {
+                      await _messageCubit.getMyChat(token);
+                    }
+                  },
                 ),
               ),
             ),
-          ).then((_) {
+          ).then((_) async {
             _isViewActive = true;
-            _startPollingWithToken();
+            _messageCubit.stopPolling();
+            await Future.delayed(const Duration(milliseconds: 100));
+            final tokenCubit = context.read<TokenRefreshCubit>();
+            final token = await tokenCubit.getAccessToken();
+            if (token != null) {
+              await _messageCubit.getMyChat(token);
+              _startPollingWithToken();
+            }
           });
         } else if (state is MessageFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -98,8 +112,8 @@ class _AllMessagesViewState extends State<AllMessagesView>
           stream: _messageCubit.chatStream,
           initialData: _messageCubit.initialChats,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                (snapshot.data == null && state is ChatsLoading)) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                snapshot.data == null) {
               return const Center(
                 child: CircularProgressIndicator(color: Colors.blue),
               );
@@ -119,7 +133,9 @@ class _AllMessagesViewState extends State<AllMessagesView>
                         onPressed: () async {
                           final tokenCubit = context.read<TokenRefreshCubit>();
                           final token = await tokenCubit.getAccessToken();
-                          if (token != null) _messageCubit.getMyChat(token);
+                          if (token != null) {
+                            await _messageCubit.getMyChat(token);
+                          }
                         },
                         child: const Text("Refresh"),
                       ),
@@ -131,7 +147,9 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 onRefresh: () async {
                   final tokenCubit = context.read<TokenRefreshCubit>();
                   final token = await tokenCubit.getAccessToken();
-                  if (token != null) await _messageCubit.getMyChat(token);
+                  if (token != null) {
+                    await _messageCubit.getMyChat(token);
+                  }
                 },
                 child: ListView.builder(
                   padding: const EdgeInsets.only(top: 10),
@@ -198,7 +216,9 @@ class _AllMessagesViewState extends State<AllMessagesView>
                     onPressed: () async {
                       final tokenCubit = context.read<TokenRefreshCubit>();
                       final token = await tokenCubit.getAccessToken();
-                      if (token != null) _messageCubit.getMyChat(token);
+                      if (token != null) {
+                        await _messageCubit.getMyChat(token);
+                      }
                     },
                     child: const Text("Refresh"),
                   ),
