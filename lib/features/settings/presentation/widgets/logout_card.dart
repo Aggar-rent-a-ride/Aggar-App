@@ -59,7 +59,7 @@ class LogoutCard extends StatelessWidget {
             onPressed: state is! LogoutLoading
                 ? () {
                     context.read<LogoutCubit>().logout();
-                    context.read<MessageCubit>().clearCache();
+                    //context.read<MessageCubit>().clearCache();
                   }
                 : null,
             backgroundColor: context.theme.blue100_7,

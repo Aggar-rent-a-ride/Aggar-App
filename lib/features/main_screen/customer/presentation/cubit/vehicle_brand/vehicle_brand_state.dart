@@ -17,6 +17,12 @@ class VehicleLoadedBrand extends VehicleBrandState {
   VehicleLoadedBrand({this.vehicles});
 }
 
+class VehicleBrandLoadingMore extends VehicleBrandState {
+  final ListVehicleModel? vehicles;
+
+  VehicleBrandLoadingMore({this.vehicles});
+}
+
 class VehicleBrandError extends VehicleBrandState {
   final String message;
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_brand/vehicle_brand_state.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as dio;
 import '../../../../../../core/api/end_points.dart';
 import '../../../data/model/list_vehicle_model.dart';
+import '../../../data/model/vehicle_model.dart';
 
 class VehicleBrandCubit extends Cubit<VehicleBrandState> {
   VehicleBrandCubit() : super(VehicleBrandInitial());
@@ -14,6 +14,24 @@ class VehicleBrandCubit extends Cubit<VehicleBrandState> {
   final List<String> vehicleBrands = [];
   final List<int> vehicleBrandIds = [];
   final List<String> vehicleBrandLogoPaths = [];
+  bool isLoadingMoreAll = false;
+  int currentPageAll = 1;
+  int totalPagesAll = 1;
+  List<VehicleModel> _allVehicles = [];
+  List<VehicleModel> get allVehicles => List.unmodifiable(_allVehicles);
+
+  void resetAllVehicles() {
+    _allVehicles.clear();
+    currentPageAll = 1;
+    totalPagesAll = 1;
+    isLoadingMoreAll = false;
+  }
+
+  void loadMoreVehicles(String accessToken, int brand) async {
+    if (isLoadingMoreAll || currentPageAll >= totalPagesAll) return;
+    fetchVehicleBrand(accessToken, brand, isLoadMore: true);
+  }
+
   Future<void> fetchVehicleBrands(String accessToken) async {
     try {
       emit(VehicleBrandLoading());
@@ -44,42 +62,69 @@ class VehicleBrandCubit extends Cubit<VehicleBrandState> {
     }
   }
 
-  Future<void> fetchVehicleBrand(String accessToken, String brand) async {
-    try {
-      emit(VehicleBrandLoading());
-      final response = await dioConsumer.get(
-        EndPoint.getVehicles,
-        queryParameters: {"brandId": brand, "pageNo": 1, "pageSize": 10},
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
-      );
-      final vehiclesBrand = ListVehicleModel.fromJson(response);
+  Future<void> fetchVehicleBrand(String accessToken, int brand,
+      {bool isLoadMore = false, int? page}) async {
+    final targetPage = page ?? (isLoadMore ? currentPageAll + 1 : 1);
+    if (isLoadMore && isLoadingMoreAll) return;
+    if (isLoadMore && targetPage > totalPagesAll) return;
 
-      emit(VehicleLoadedBrand(vehicles: vehiclesBrand));
-    } catch (error) {
-      if (error is DioException) {
-        if (error.response?.statusCode == 403) {
-          emit(VehicleBrandError(
-              message: 'Access forbidden: Invalid or expired token.'));
-        } else if (error.type == DioExceptionType.connectionTimeout ||
-            error.type == DioExceptionType.receiveTimeout ||
-            error.type == DioExceptionType.sendTimeout) {
-          emit(
-              VehicleBrandError(message: 'Network timeout. Please try again.'));
-        } else if (error.type == DioExceptionType.connectionError) {
-          emit(VehicleBrandError(
-              message: 'No internet connection. Please check your network.'));
+    for (int attempt = 1; attempt <= 3; attempt++) {
+      try {
+        if (!isLoadMore) {
+          emit(VehicleBrandLoading());
+          resetAllVehicles();
         } else {
+          isLoadingMoreAll = true;
+          emit(VehicleBrandLoadingMore(
+            vehicles:
+                ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
+          ));
+        }
+
+        final response = await dioConsumer.get(
+          EndPoint.getVehicles,
+          queryParameters: {
+            "brandId": brand,
+            "pageNo": targetPage,
+            "pageSize": 10
+          },
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        );
+
+        final vehicles = ListVehicleModel.fromJson(response);
+
+        if (isLoadMore) {
+          _allVehicles.addAll(vehicles.data);
+        } else {
+          _allVehicles = List.from(vehicles.data);
+        }
+
+        if (_allVehicles.length > 50) {
+          _allVehicles.removeRange(0, _allVehicles.length - 50);
+        }
+
+        currentPageAll = targetPage;
+        totalPagesAll = vehicles.totalPages ?? 1;
+
+        emit(VehicleLoadedBrand(
+          vehicles: ListVehicleModel(
+            data: _allVehicles,
+            totalPages: totalPagesAll,
+          ),
+        ));
+        return;
+      } catch (error) {
+        if (attempt == 3) {
           emit(VehicleBrandError(
               message:
-                  'Server error: ${error.response?.statusCode ?? 'Unknown'}'));
+                  'Failed to fetch vehicles after $attempt attempts: $error'));
+        } else {
+          await Future.delayed(Duration(milliseconds: 500 * attempt));
         }
-      } else {
-        emit(
-            VehicleBrandError(message: 'An unexpected error occurred: $error'));
+      } finally {
+        if (isLoadMore) {
+          isLoadingMoreAll = false;
+        }
       }
     }
   }

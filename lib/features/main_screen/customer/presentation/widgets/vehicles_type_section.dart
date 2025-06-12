@@ -57,16 +57,23 @@ class VehiclesTypeSection extends StatelessWidget {
                             final accessToken = mainState.accessToken;
                             final typeIds =
                                 context.read<VehicleTypeCubit>().vehicleTypeIds;
+                            print(typeIds);
+                            print(vehicleTypesList);
+                            print(typeIds);
+                            print(vehicleTypesList[index]);
+                            print(typeIds);
+                            print(typeIds[index]);
                             if (index < typeIds.length) {
                               context.read<VehicleTypeCubit>().fetchVehicleType(
                                     accessToken,
-                                    typeIds[index].toString(),
+                                    typeIds[index],
                                   );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => VehicleTypeScreen(
-                                    selectedType: vehicleTypesList[index],
+                                    selectedTypeId: typeIds[index],
+                                    selectedTypeString: vehicleTypesList[index],
                                   ),
                                 ),
                               );
