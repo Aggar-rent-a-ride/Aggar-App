@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aggar/core/api/dio_consumer.dart';
+import 'package:aggar/features/main_screen/customer/data/model/vehicle_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as dio;
@@ -13,6 +14,24 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
   final List<String> vehicleTypes = [];
   final List<int> vehicleTypeIds = [];
   final List<String> vehicleTypeSlogenPaths = [];
+  bool isLoadingMoreAll = false;
+  int currentPageAll = 1;
+  int totalPagesAll = 1;
+  List<VehicleModel> _allVehicles = [];
+  List<VehicleModel> get allVehicles => List.unmodifiable(_allVehicles);
+
+  void resetAllVehicles() {
+    _allVehicles.clear();
+    currentPageAll = 1;
+    totalPagesAll = 1;
+    isLoadingMoreAll = false;
+  }
+
+  void loadMoreVehicles(String accessToken, int type) async {
+    if (isLoadingMoreAll || currentPageAll >= totalPagesAll) return;
+    fetchVehicleType(accessToken, type, isLoadMore: true);
+  }
+
   Future<void> fetchVehicleTypes(String accessToken) async {
     try {
       emit(VehicleTypeLoading());
@@ -43,7 +62,71 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
     }
   }
 
-  Future<void> fetchVehicleType(String accessToken, String type) async {
+  Future<void> fetchVehicleType(String accessToken, int type,
+      {bool isLoadMore = false, int? page}) async {
+    final targetPage = page ?? (isLoadMore ? currentPageAll + 1 : 1);
+    if (isLoadMore && isLoadingMoreAll) return;
+    if (isLoadMore && targetPage > totalPagesAll) return;
+
+    for (int attempt = 1; attempt <= 3; attempt++) {
+      try {
+        if (!isLoadMore) {
+          emit(VehicleTypeLoading());
+          resetAllVehicles();
+        } else {
+          isLoadingMoreAll = true;
+          emit(VehicleTypeLoadingMore(
+            vehicles:
+                ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
+          ));
+        }
+
+        final response = await dioConsumer.get(
+          EndPoint.getVehicles,
+          queryParameters: {
+            "pageNo": targetPage,
+            "pageSize": 10,
+            "typeId": type
+          },
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        );
+
+        final vehicles = ListVehicleModel.fromJson(response);
+
+        if (isLoadMore) {
+          _allVehicles.addAll(vehicles.data);
+        } else {
+          _allVehicles = List.from(vehicles.data);
+        }
+
+        if (_allVehicles.length > 50) {
+          _allVehicles.removeRange(0, _allVehicles.length - 50);
+        }
+
+        currentPageAll = targetPage;
+        totalPagesAll = vehicles.totalPages ?? 1;
+
+        emit(VehicleLoadedType(
+          vehicles: ListVehicleModel(
+            data: _allVehicles,
+            totalPages: totalPagesAll,
+          ),
+        ));
+        return;
+      } catch (error) {
+        if (attempt == 3) {
+          emit(VehicleTypeError(
+              message:
+                  'Failed to fetch vehicles after $attempt attempts: $error'));
+        } else {
+          await Future.delayed(Duration(milliseconds: 500 * attempt));
+        }
+      } finally {
+        if (isLoadMore) {
+          isLoadingMoreAll = false;
+        }
+      }
+    }
     try {
       emit(VehicleTypeLoading());
       final response = await dioConsumer.get(
@@ -62,25 +145,7 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
       final vehiclesType = ListVehicleModel.fromJson(response);
       emit(VehicleLoadedType(vehicles: vehiclesType));
     } catch (error) {
-      if (error is DioException) {
-        if (error.response?.statusCode == 403) {
-          emit(VehicleTypeError(
-              message: 'Access forbidden: Invalid or expired token.'));
-        } else if (error.type == DioExceptionType.connectionTimeout ||
-            error.type == DioExceptionType.receiveTimeout ||
-            error.type == DioExceptionType.sendTimeout) {
-          emit(VehicleTypeError(message: 'Network timeout. Please try again.'));
-        } else if (error.type == DioExceptionType.connectionError) {
-          emit(VehicleTypeError(
-              message: 'No internet connection. Please check your network.'));
-        } else {
-          emit(VehicleTypeError(
-              message:
-                  'Server error: ${error.response?.statusCode ?? 'Unknown'}'));
-        }
-      } else {
-        emit(VehicleTypeError(message: 'An unexpected error occurred: $error'));
-      }
+      emit(VehicleTypeError(message: 'An unexpected error occurred: $error'));
     }
   }
 }

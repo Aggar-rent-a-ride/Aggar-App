@@ -17,6 +17,12 @@ class VehicleLoadedType extends VehicleTypeState {
   VehicleLoadedType({this.vehicles});
 }
 
+class VehicleTypeLoadingMore extends VehicleTypeState {
+  final ListVehicleModel? vehicles;
+
+  VehicleTypeLoadingMore({this.vehicles});
+}
+
 class VehicleTypeError extends VehicleTypeState {
   final String message;
 

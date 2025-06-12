@@ -65,14 +65,15 @@ class BrandsSection extends StatelessWidget {
                                 context
                                     .read<VehicleBrandCubit>()
                                     .fetchVehicleBrand(
-                                      accessToken,
-                                      typeIds[index].toString(),
-                                    );
+                                        accessToken, typeIds[index]);
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => VehicleBrandScreen(
-                                      selectedBrand: vehicleBrandsList[index],
+                                      selectedBrandId: typeIds[index],
+                                      selectedBrandString:
+                                          vehicleBrandsList[index],
                                     ),
                                   ),
                                 );
