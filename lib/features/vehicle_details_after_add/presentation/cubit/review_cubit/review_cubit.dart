@@ -21,10 +21,6 @@ class ReviewCubit extends Cubit<ReviewState> {
           },
         ),
       );
-      if (response == null) {
-        emit(ReviewFailure("error in server"));
-        return;
-      }
       final ListReviewModel reviews = ListReviewModel.fromJson(response);
       await Future.delayed(const Duration(seconds: 2));
       emit(

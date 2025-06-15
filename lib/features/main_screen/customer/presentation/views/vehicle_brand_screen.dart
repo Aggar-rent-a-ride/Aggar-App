@@ -8,6 +8,7 @@ import 'package:aggar/features/main_screen/customer/presentation/widgets/brand_m
 import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_type_brand_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class VehicleBrandScreen extends StatefulWidget {
   const VehicleBrandScreen({
@@ -85,15 +86,19 @@ class _VehicleBrandScreenState extends State<VehicleBrandScreen> {
                   ),
                 ),
                 padding: const EdgeInsets.only(
-                    left: 25, right: 25, top: 65, bottom: 16),
+                    left: 20, right: 25, top: 50, bottom: 16),
                 child: Row(
                   children: [
                     IconButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      icon: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: context.theme.white100_1,
+                      ),
                     ),
+                    const Gap(5),
                     Text(
                       widget.selectedBrandString,
                       style: AppStyles.bold20(context).copyWith(

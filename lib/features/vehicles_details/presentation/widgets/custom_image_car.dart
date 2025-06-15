@@ -1,7 +1,7 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_assets.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class CustomImageCar extends StatelessWidget {
   const CustomImageCar({
@@ -36,17 +36,9 @@ class CustomImageCar extends StatelessWidget {
           "${EndPoint.baseUrl}$mainImage",
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            return Shimmer.fromColors(
-              baseColor: context.theme.gray100_1,
-              highlightColor: context.theme.white100_1,
-              child: Container(
-                height: MediaQuery.sizeOf(context).height * 0.35,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: context.theme.white100_1,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
+            return Image.asset(
+              AppAssets.assetsImagesCar,
+              fit: BoxFit.cover,
             );
           },
         ),

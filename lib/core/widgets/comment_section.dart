@@ -5,18 +5,23 @@ import 'package:aggar/core/widgets/name_and_rate_section.dart';
 import 'package:flutter/material.dart';
 
 class CommentSection extends StatelessWidget {
-  const CommentSection(
-      {super.key,
-      required this.name,
-      required this.date,
-      required this.commentText,
-      required this.rate,
-      required this.imageUrl});
+  const CommentSection({
+    super.key,
+    required this.name,
+    required this.date,
+    required this.commentText,
+    required this.rate,
+    required this.imageUrl,
+    required this.id,
+    required this.typeOfReport,
+  });
   final String name;
   final String date;
   final String commentText;
   final double rate;
   final String imageUrl;
+  final int id;
+  final String typeOfReport;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,9 +33,8 @@ class CommentSection extends StatelessWidget {
           boxShadow: const [
             BoxShadow(
               offset: Offset(0, 0),
-              color: Colors.black12,
-              spreadRadius: 0,
-              blurRadius: 4,
+              color: Colors.black26,
+              blurRadius: 2,
             )
           ],
         ),
@@ -40,11 +44,12 @@ class CommentSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NameAndRateSection(
-                imageUrl: imageUrl,
-                name: name,
-                rate: rate,
-                date: date,
-              ),
+                  imageUrl: imageUrl,
+                  name: name,
+                  rate: rate,
+                  date: date,
+                  reviewId: id,
+                  typeOfReport: typeOfReport),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

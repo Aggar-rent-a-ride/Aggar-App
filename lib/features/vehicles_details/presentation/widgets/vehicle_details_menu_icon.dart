@@ -104,7 +104,8 @@ class VehicleDetailsMenuIcon extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) => CustomDescriptionDialog(
-                        vehicleId: vehicleId,
+                        type: "Vehicle",
+                        id: vehicleId,
                         token: token,
                       ),
                     );

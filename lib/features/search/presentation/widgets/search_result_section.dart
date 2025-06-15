@@ -7,10 +7,39 @@ import 'package:aggar/features/search/presentation/cubit/search_field/search_sta
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gap/gap.dart';
 
-class SearchResultSection extends StatelessWidget {
+class SearchResultSection extends StatefulWidget {
   const SearchResultSection({super.key});
+
+  @override
+  _SearchResultSectionState createState() => _SearchResultSectionState();
+}
+
+class _SearchResultSectionState extends State<SearchResultSection> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 900 &&
+          !(context.read<SearchCubit>().isLoadingMore) &&
+          (context.read<SearchCubit>().state is SearchCubitLoaded &&
+              (context.read<SearchCubit>().state as SearchCubitLoaded)
+                  .canLoadMore)) {
+        context.read<SearchCubit>().loadMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +48,12 @@ class SearchResultSection extends StatelessWidget {
         final searchCubit = context.read<SearchCubit>();
 
         if (state is SearchCubitLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: SpinKitThreeBounce(
+              color: context.theme.blue100_1,
+              size: 30.0,
+            ),
+          );
         }
 
         if (state is SearchCubitError) {
@@ -35,6 +69,11 @@ class SearchResultSection extends StatelessWidget {
                       AppStyles.medium16(context).copyWith(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
+                const Gap(16),
+                ElevatedButton(
+                  onPressed: () => searchCubit.fetchSearch(pageNo: 1),
+                  child: const Text('Retry'),
+                ),
               ],
             ),
           );
@@ -42,10 +81,6 @@ class SearchResultSection extends StatelessWidget {
 
         if (state is SearchCubitLoaded) {
           final vehicles = state.vehicles.data;
-          final int displayCount = searchCubit.isStatusFilterSelected &&
-                  searchCubit.statusCount != null
-              ? searchCubit.statusCount!
-              : vehicles.length;
 
           if (vehicles.isEmpty) {
             return Center(
@@ -65,25 +100,27 @@ class SearchResultSection extends StatelessWidget {
           }
 
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  searchCubit.isStatusFilterSelected &&
-                          searchCubit.selectedStatus != null
-                      ? 'Status: ${searchCubit.selectedStatus} ($displayCount vehicles)'
-                      : 'Search Results (${vehicles.length} vehicles)',
-                  style: AppStyles.medium18(context).copyWith(
-                    color: context.theme.black100,
-                  ),
-                ),
-                const Gap(16),
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     padding: const EdgeInsets.symmetric(vertical: 0),
-                    itemCount: vehicles.length,
+                    itemCount: vehicles.length + (state.canLoadMore ? 1 : 0),
                     itemBuilder: (context, index) {
+                      if (index == vehicles.length && state.canLoadMore) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: SpinKitThreeBounce(
+                              color: context.theme.blue100_1,
+                              size: 20.0,
+                            ),
+                          ),
+                        );
+                      }
                       final vehicle = vehicles[index];
                       return PopularVehiclesCarCard(
                         vehicleId: vehicle.id.toString(),

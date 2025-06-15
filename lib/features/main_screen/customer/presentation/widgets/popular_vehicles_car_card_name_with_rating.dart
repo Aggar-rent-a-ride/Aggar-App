@@ -35,7 +35,7 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
             color: context.theme.blue100_2,
           ),
           Text(
-            rating!.toString(),
+            rating!.toStringAsFixed(rating! % 1 == 0 ? 0 : 1),
             style: AppStyles.semiBold12(context).copyWith(
               color: context.theme.blue100_2,
             ),

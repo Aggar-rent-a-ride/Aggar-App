@@ -1,40 +1,34 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_four_stars.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import '../../../../../../core/utils/app_styles.dart' show AppStyles;
 
 class RatingNumberSection extends StatelessWidget {
-  const RatingNumberSection(
-      {super.key, required this.rating, required this.totalRaring});
-  final double rating;
-  final String totalRaring;
+  const RatingNumberSection({super.key, this.rating});
+  final double? rating;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          rating.toString(),
-          style: AppStyles.medium65(context).copyWith(
-            color: context.theme.black100,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            rating != null
+                ? rating!.toStringAsFixed(rating! % 1 == 0 ? 0 : 1)
+                : '',
+            style: AppStyles.medium65(context).copyWith(
+              color: context.theme.black100,
+            ),
           ),
-        ),
-        RatingFourStars(
-          rating: rating,
-          color: context.theme.blue100_2,
-        ),
-        const Gap(5),
-        /* Text(
-          totalRaring,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w400,
-            color: AppColors.myGray100_2,
+          RatingFourStars(
+            rating: rating,
+            color: context.theme.blue100_2,
           ),
-        )*/
-      ],
+        ],
+      ),
     );
   }
 }

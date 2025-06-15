@@ -9,12 +9,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CustomDescriptionDialog extends StatelessWidget {
   const CustomDescriptionDialog({
     super.key,
-    required this.vehicleId,
+    required this.id,
     required this.token,
+    required this.type,
   });
 
-  final int vehicleId;
+  final int id;
   final String token;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +95,7 @@ class CustomDescriptionDialog extends StatelessWidget {
             if (formKey.currentState!.validate()) {
               final description = reportController.text.trim();
               final reportVehicle = context.read<ReportCreationCubit>();
-              await reportVehicle.createReport(
-                  token, vehicleId, "Vehicle", description);
+              await reportVehicle.createReport(token, id, type, description);
               Navigator.pop(context);
             }
           },

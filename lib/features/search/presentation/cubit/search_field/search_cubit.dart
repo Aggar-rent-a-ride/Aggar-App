@@ -2,17 +2,17 @@ import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/handle_error.dart';
 import 'package:aggar/features/main_screen/customer/data/model/list_vehicle_model.dart';
+import 'package:aggar/features/search/presentation/cubit/search_field/search_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:aggar/features/search/presentation/cubit/search_field/search_state.dart';
 
 class SearchCubit extends Cubit<SearchCubitState> {
   final TextEditingController textController = TextEditingController();
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
 
   String query = '';
-  String? accessToken; // Store access token
+  String? accessToken;
   bool isFilterVisible = true;
   int? selectedBrand;
   int? selectedType;
@@ -31,12 +31,14 @@ class SearchCubit extends Cubit<SearchCubitState> {
   bool isRateFilterSelected = false;
   bool isNearestFilterSelected = false;
   bool isStatusFilterSelected = false;
+  int currentPage = 1;
+  int totalPages = 1;
+  bool isLoadingMore = false;
 
   SearchCubit({this.accessToken}) : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
   }
 
-  // Method to set access token after authentication
   void setAccessToken(String token) {
     accessToken = token;
   }
@@ -49,16 +51,19 @@ class SearchCubit extends Cubit<SearchCubitState> {
 
   void updateQuery(String newQuery) {
     query = newQuery;
+    currentPage = 1; // Reset to first page on new query
     if (query.isEmpty) {
       emit(SearchCubitEmpty());
       return;
     }
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearSearch() {
     textController.clear();
     query = '';
+    currentPage = 1;
+    totalPages = 1;
     resetFilters();
     emit(SearchCubitEmpty());
   }
@@ -70,12 +75,17 @@ class SearchCubit extends Cubit<SearchCubitState> {
     selectedYear = null;
     minPrice = null;
     maxPrice = null;
+    selectedRate = null;
     statusCount = null;
+    currentPage = 1;
+    totalPages = 1;
     isBrandFilterSelected = false;
     isTypeFilterSelected = false;
     isTransmissionFilterSelected = false;
     isYearFilterSelected = false;
     isPriceFilterSelected = false;
+    isRateFilterSelected = false;
+    isNearestFilterSelected = false;
   }
 
   void toggleFilterVisibility() {
@@ -86,16 +96,18 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void selectBrand(int? brand) {
     selectedBrand = brand;
     isBrandFilterSelected = brand != null;
+    currentPage = 1;
     emit(SearchCubitBrandSelected(selectedBrand));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearBrandFilter() {
     if (selectedBrand != null) {
       selectedBrand = null;
       isBrandFilterSelected = false;
+      currentPage = 1;
       emit(SearchCubitBrandSelected(null));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
@@ -106,16 +118,18 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void selectType(int? type) {
     selectedType = type;
     isTypeFilterSelected = type != null;
+    currentPage = 1;
     emit(SearchCubitTypeSelected(selectedType));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearTypeFilter() {
     if (selectedType != null) {
       selectedType = null;
       isTypeFilterSelected = false;
+      currentPage = 1;
       emit(SearchCubitTypeSelected(null));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
@@ -126,16 +140,18 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void selectTransmission(String? transmission) {
     selectedTransmission = transmission;
     isTransmissionFilterSelected = transmission != null;
+    currentPage = 1;
     emit(SearchCubitTransmissionSelected(selectedTransmission));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearTransmissionFilter() {
     if (selectedTransmission != null) {
       selectedTransmission = null;
       isTransmissionFilterSelected = false;
+      currentPage = 1;
       emit(SearchCubitTransmissionSelected(null));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
@@ -146,15 +162,17 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void selectYear(String? year) {
     selectedYear = year;
     isYearFilterSelected = year != null;
+    currentPage = 1;
     emit(SearchCubitYearSelected(selectedYear));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearYearFilter() {
     selectedYear = null;
     isYearFilterSelected = false;
+    currentPage = 1;
     emit(SearchCubitYearSelected(null));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   bool isYearSelected(String year) {
@@ -164,16 +182,18 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void selectRate(double? rate) {
     selectedRate = rate;
     isRateFilterSelected = rate != null;
+    currentPage = 1;
     emit(SearchCubitRatingSelected(selectedRate));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearRateFilter() {
     if (selectedRate != null) {
       selectedRate = null;
       isRateFilterSelected = false;
+      currentPage = 1;
       emit(SearchCubitRatingSelected(null));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
@@ -185,8 +205,9 @@ class SearchCubit extends Cubit<SearchCubitState> {
     minPrice = min;
     maxPrice = max;
     isPriceFilterSelected = min != null || max != null;
+    currentPage = 1;
     emit(SearchCubitPriceRangeSelected(minPrice, maxPrice));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearPricingFilter() {
@@ -194,22 +215,25 @@ class SearchCubit extends Cubit<SearchCubitState> {
       maxPrice = null;
       minPrice = null;
       isPriceFilterSelected = false;
+      currentPage = 1;
       emit(SearchCubitPriceRangeSelected(null, null));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
   void toggleNearestFilter() {
     isNearestFilterSelected = !isNearestFilterSelected;
+    currentPage = 1;
     emit(SearchCubitNearestSelected(isNearestFilterSelected));
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearNearestFilter() {
     if (isNearestFilterSelected) {
       isNearestFilterSelected = false;
+      currentPage = 1;
       emit(SearchCubitNearestSelected(false));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
@@ -232,26 +256,28 @@ class SearchCubit extends Cubit<SearchCubitState> {
     isNearestFilterSelected = false;
     selectedStatus = status;
     isStatusFilterSelected = status != null;
+    currentPage = 1;
+    totalPages = 1;
     emit(SearchCubitFiltersReset());
     emit(SearchCubitStatusSelected(selectedStatus));
 
-    // Fetch status count when status is selected
     if (selectedStatus != null) {
       fetchStatusCount();
     } else {
-      statusCount = null; // Reset status count
+      statusCount = null;
     }
 
-    fetchSearch();
+    fetchSearch(pageNo: 1);
   }
 
   void clearStatusFilter() {
     if (selectedStatus != null) {
       selectedStatus = null;
       isStatusFilterSelected = false;
-      statusCount = null; // Reset status count
+      statusCount = null;
+      currentPage = 1;
       emit(SearchCubitStatusSelected(null));
-      fetchSearch();
+      fetchSearch(pageNo: 1);
     }
   }
 
@@ -259,7 +285,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
     return selectedStatus == status;
   }
 
-  Future<void> fetchSearch() async {
+  Future<void> fetchSearch({required int pageNo}) async {
     if (accessToken == null) {
       emit(
           SearchCubitError(message: 'Access token is missing. Please log in.'));
@@ -267,10 +293,19 @@ class SearchCubit extends Cubit<SearchCubitState> {
     }
 
     try {
-      emit(SearchCubitLoading());
+      emit(pageNo == 1
+          ? SearchCubitLoading()
+          : SearchCubitLoaded(
+              vehicles: ListVehicleModel(data: [], totalPages: totalPages),
+              statusCount: statusCount,
+              canLoadMore: currentPage < totalPages,
+              currentPage: currentPage,
+              totalPages: totalPages,
+            ));
+
       final queryParams = {
         "pageSize": 10,
-        "pageNo": 1,
+        "pageNo": pageNo,
         if (query.isNotEmpty) "query": query,
         if (selectedBrand != null) "brandId": selectedBrand,
         if (selectedType != null) "typeId": selectedType,
@@ -283,7 +318,6 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (isNearestFilterSelected) "byNearest": isNearestFilterSelected,
         if (isNearestFilterSelected) "latitude": "30.510187246065026",
         if (isNearestFilterSelected) "longitude": "31.352178770683253",
-        // TODO: Replace with the real location of the user
       };
 
       final endpoint = selectedStatus != null
@@ -301,13 +335,83 @@ class SearchCubit extends Cubit<SearchCubitState> {
       final responseData = response as Map<String, dynamic>;
       final vehicles = ListVehicleModel.fromJson(responseData);
 
+      currentPage = pageNo;
+      totalPages = vehicles.totalPages ?? 1;
+
       emit(SearchCubitLoaded(
         vehicles: vehicles,
         statusCount: statusCount,
+        canLoadMore: currentPage < totalPages,
+        currentPage: currentPage,
+        totalPages: totalPages,
       ));
     } catch (error) {
       String errorMessage = handleError(error);
       emit(SearchCubitError(message: errorMessage));
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (isLoadingMore || currentPage >= totalPages) return;
+
+    isLoadingMore = true;
+    try {
+      final queryParams = {
+        "pageSize": 10,
+        "pageNo": currentPage + 1,
+        if (query.isNotEmpty) "query": query,
+        if (selectedBrand != null) "brandId": selectedBrand,
+        if (selectedType != null) "typeId": selectedType,
+        if (selectedYear != null) "year": selectedYear,
+        if (selectedTransmission != null) "transmission": selectedTransmission,
+        if (minPrice != null) "minPrice": minPrice,
+        if (maxPrice != null) "maxPrice": maxPrice,
+        if (query.isNotEmpty) "searchKey": query,
+        if (selectedStatus != null) "status": selectedStatus,
+        if (isNearestFilterSelected) "byNearest": isNearestFilterSelected,
+        if (isNearestFilterSelected) "latitude": "30.510187246065026",
+        if (isNearestFilterSelected) "longitude": "31.352178770683253",
+      };
+
+      final endpoint = selectedStatus != null
+          ? EndPoint.getVehiclesByStatus
+          : EndPoint.getVehicles;
+
+      final response = await dioConsumer.get(
+        endpoint,
+        queryParameters: queryParams,
+        options: Options(headers: {
+          'Authorization': 'Bearer $accessToken',
+        }),
+      );
+
+      final responseData = response as Map<String, dynamic>;
+      final newVehicles = ListVehicleModel.fromJson(responseData);
+
+      // Merge new vehicles with existing ones
+      final currentVehicles = (state is SearchCubitLoaded)
+          ? (state as SearchCubitLoaded).vehicles
+          : ListVehicleModel(data: [], totalPages: totalPages);
+      final updatedVehicles = ListVehicleModel(
+        data: [...currentVehicles.data, ...newVehicles.data],
+        totalPages: newVehicles.totalPages,
+      );
+
+      currentPage += 1;
+      totalPages = newVehicles.totalPages ?? totalPages;
+
+      emit(SearchCubitLoaded(
+        vehicles: updatedVehicles,
+        statusCount: statusCount,
+        canLoadMore: currentPage < totalPages,
+        currentPage: currentPage,
+        totalPages: totalPages,
+      ));
+    } catch (error) {
+      String errorMessage = handleError(error);
+      emit(SearchCubitError(message: errorMessage));
+    } finally {
+      isLoadingMore = false;
     }
   }
 
@@ -333,11 +437,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
       );
 
       final responseData = response as Map<String, dynamic>;
-
-      // Update status count
       statusCount = responseData['data'] as int?;
-
-      // Emit status count state
       emit(SearchCubitStatusCount(statusCount));
     } catch (error) {
       String errorMessage = handleError(error);

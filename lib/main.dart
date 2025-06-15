@@ -41,6 +41,7 @@ import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_brand/edit_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_type/edit_vehicle_type_cubit.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -186,6 +187,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ReportByIdCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ReviewCountCubit(),
         ),
         BlocProvider(
           create: (context) => FilterCubit(),

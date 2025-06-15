@@ -36,6 +36,7 @@ class VehiclesDetailsView extends StatelessWidget {
     required this.renterName,
     required this.isFavorite,
     required this.renterId,
+    this.vehicleRate,
   });
 
   final int vehicleId;
@@ -59,6 +60,7 @@ class VehiclesDetailsView extends StatelessWidget {
   final String renterName;
   final bool isFavorite;
   final int renterId;
+  final double? vehicleRate;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +142,7 @@ class VehiclesDetailsView extends StatelessWidget {
                         vehilceType: vehicleType,
                         pfpImage: pfpImage,
                         renterName: renterName,
-                        renterId: renterId, 
+                        renterId: renterId,
                         vehicleColor: vehicleColor,
                         vehicleOverView: vehicleOverView,
                         vehiceSeatsNo: vehiceSeatsNo,
@@ -151,6 +153,7 @@ class VehiclesDetailsView extends StatelessWidget {
                         vehicleAddress: vehicleAddress,
                         vehicleLongitude: vehicleLongitude,
                         vehicleLatitude: vehicleLatitude,
+                        vehicleRate: vehicleRate,
                       ),
                     ],
                   )

@@ -85,7 +85,7 @@ class ReviewsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: const [
-        CommentSection(
+        /*CommentSection(
           name: "Scarlett  Johansson",
           commentText: "Was a good deal, nice person but bad car , fix it mf",
           date: "11/8/2024",
@@ -98,7 +98,7 @@ class ReviewsTab extends StatelessWidget {
           date: "11/8/2024",
           rate: 3,
           imageUrl: AppAssets.assetsImagesNotificationPic2,
-        ),
+        ),*/
       ],
     );
   }
