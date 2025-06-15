@@ -25,25 +25,28 @@ class ProperitiesTabBarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GallarySection(
-          images: images,
-          mainImage: mainImage,
-        ),
-        OverViewSection(
-          vehicleType: vehicleType,
-          color: vehicleColor,
-          carHealth: vehicleHealth,
-          carStatus: vehicleStatus,
-          overviewText: vehicleOverView,
-          seatsno: vehiceSeatsNo,
-        ),
-        const Gap(25)
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GallarySection(
+            images: images,
+            mainImage: mainImage,
+          ),
+          OverViewSection(
+            vehicleType: vehicleType,
+            color: vehicleColor,
+            carHealth: vehicleHealth,
+            carStatus: vehicleStatus,
+            overviewText: vehicleOverView,
+            seatsno: vehiceSeatsNo,
+          ),
+          const Gap(25)
+        ],
+      ),
     );
   }
 }

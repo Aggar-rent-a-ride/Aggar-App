@@ -8,6 +8,7 @@ import 'package:aggar/features/main_screen/customer/presentation/widgets/type_li
 import 'package:aggar/features/main_screen/customer/presentation/widgets/type_more_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class VehicleTypeScreen extends StatefulWidget {
   const VehicleTypeScreen({
@@ -86,15 +87,19 @@ class _VehicleTypeScreenState extends State<VehicleTypeScreen> {
                   ),
                 ),
                 padding: const EdgeInsets.only(
-                    left: 25, right: 25, top: 65, bottom: 16),
+                    left: 20, right: 25, top: 50, bottom: 16),
                 child: Row(
                   children: [
                     IconButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      icon: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: context.theme.white100_1,
+                      ),
                     ),
+                    const Gap(5),
                     Text(
                       widget.selectedTypeString,
                       style: AppStyles.bold20(context).copyWith(

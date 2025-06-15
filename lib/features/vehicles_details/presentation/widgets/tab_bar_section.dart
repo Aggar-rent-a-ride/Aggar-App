@@ -23,8 +23,9 @@ class TabBarSection extends StatefulWidget {
     required this.renterName,
     required this.vehilceType,
     required this.renterId,
+    this.vehicleRate,
   });
-  
+
   final String vehicleColor;
   final String vehicleOverView;
   final String vehiceSeatsNo;
@@ -39,6 +40,7 @@ class TabBarSection extends StatefulWidget {
   final String? pfpImage;
   final String renterName;
   final int renterId;
+  final double? vehicleRate;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -117,7 +119,9 @@ class _TabBarSectionState extends State<TabBarSection>
               images: widget.images,
               mainImage: widget.mainImage,
             ),
-            const ReviewTabBarView(),
+            ReviewTabBarView(
+              vehicleRate: widget.vehicleRate,
+            ),
           ],
         ),
       ],

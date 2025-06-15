@@ -67,85 +67,50 @@ class VehicleTypeCubit extends Cubit<VehicleTypeState> {
     final targetPage = page ?? (isLoadMore ? currentPageAll + 1 : 1);
     if (isLoadMore && isLoadingMoreAll) return;
     if (isLoadMore && targetPage > totalPagesAll) return;
-
-    for (int attempt = 1; attempt <= 3; attempt++) {
-      try {
-        if (!isLoadMore) {
-          emit(VehicleTypeLoading());
-          resetAllVehicles();
-        } else {
-          isLoadingMoreAll = true;
-          emit(VehicleTypeLoadingMore(
-            vehicles:
-                ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
-          ));
-        }
-
-        final response = await dioConsumer.get(
-          EndPoint.getVehicles,
-          queryParameters: {
-            "pageNo": targetPage,
-            "pageSize": 10,
-            "typeId": type
-          },
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-        );
-
-        final vehicles = ListVehicleModel.fromJson(response);
-
-        if (isLoadMore) {
-          _allVehicles.addAll(vehicles.data);
-        } else {
-          _allVehicles = List.from(vehicles.data);
-        }
-
-        if (_allVehicles.length > 50) {
-          _allVehicles.removeRange(0, _allVehicles.length - 50);
-        }
-
-        currentPageAll = targetPage;
-        totalPagesAll = vehicles.totalPages ?? 1;
-
-        emit(VehicleLoadedType(
-          vehicles: ListVehicleModel(
-            data: _allVehicles,
-            totalPages: totalPagesAll,
-          ),
-        ));
-        return;
-      } catch (error) {
-        if (attempt == 3) {
-          emit(VehicleTypeError(
-              message:
-                  'Failed to fetch vehicles after $attempt attempts: $error'));
-        } else {
-          await Future.delayed(Duration(milliseconds: 500 * attempt));
-        }
-      } finally {
-        if (isLoadMore) {
-          isLoadingMoreAll = false;
-        }
-      }
-    }
     try {
-      emit(VehicleTypeLoading());
+      if (!isLoadMore) {
+        emit(VehicleTypeLoading());
+        resetAllVehicles();
+      } else {
+        isLoadingMoreAll = true;
+        emit(VehicleTypeLoadingMore(
+          vehicles:
+              ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
+        ));
+      }
+
       final response = await dioConsumer.get(
         EndPoint.getVehicles,
-        queryParameters: {
-          "typeId": type,
-          "pageNo": 1,
-          "pageSize": 10,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        queryParameters: {"pageNo": targetPage, "pageSize": 10, "typeId": type},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
-      final vehiclesType = ListVehicleModel.fromJson(response);
-      emit(VehicleLoadedType(vehicles: vehiclesType));
-    } catch (error) {
-      emit(VehicleTypeError(message: 'An unexpected error occurred: $error'));
+
+      final vehicles = ListVehicleModel.fromJson(response);
+
+      if (isLoadMore) {
+        _allVehicles.addAll(vehicles.data);
+      } else {
+        _allVehicles = List.from(vehicles.data);
+      }
+
+      if (_allVehicles.length > 50) {
+        _allVehicles.removeRange(0, _allVehicles.length - 50);
+      }
+
+      currentPageAll = targetPage;
+      totalPagesAll = vehicles.totalPages ?? 1;
+
+      emit(VehicleLoadedType(
+        vehicles: ListVehicleModel(
+          data: _allVehicles,
+          totalPages: totalPagesAll,
+        ),
+      ));
+      return;
+    } finally {
+      if (isLoadMore) {
+        isLoadingMoreAll = false;
+      }
     }
   }
 }

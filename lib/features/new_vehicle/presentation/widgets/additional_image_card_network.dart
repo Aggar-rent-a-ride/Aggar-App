@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 
 class AdditionalImageCardNetwork extends StatelessWidget {
@@ -8,6 +9,7 @@ class AdditionalImageCardNetwork extends StatelessWidget {
     required this.image,
   });
   final String image;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,21 +32,11 @@ class AdditionalImageCardNetwork extends StatelessWidget {
           height: MediaQuery.sizeOf(context).height * 0.03 + 50,
           width: MediaQuery.sizeOf(context).height * 0.03 + 50,
           errorBuilder: (context, error, stackTrace) {
-            return Row(
-              spacing: 15,
-              children: List.generate(
-                1,
-                (index) {
-                  return Container(
-                    height: MediaQuery.sizeOf(context).height * 0.03 + 50,
-                    width: MediaQuery.sizeOf(context).height * 0.03 + 50,
-                    decoration: BoxDecoration(
-                      color: context.theme.white100_1,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  );
-                },
-              ),
+            return Image.asset(
+              AppAssets.assetsImagesCar,
+              fit: BoxFit.cover,
+              height: MediaQuery.sizeOf(context).height * 0.02 + 50,
+              width: MediaQuery.sizeOf(context).height * 0.03 + 50,
             );
           },
         ),

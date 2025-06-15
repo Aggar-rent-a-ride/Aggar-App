@@ -13,30 +13,33 @@ class AboutTabBarView extends StatelessWidget {
     required this.renterName,
     required this.renterId,
   });
-  
+
   final String vehicleAddress;
   final double vehicleLongitude;
   final double vehicleLatitude;
   final String? pfpImage;
   final String renterName;
-  final int renterId; 
+  final int renterId;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RentPartnerSection(
-          pfpImage: pfpImage,
-          renterName: renterName,
-          renterId: renterId, 
-        ),
-        LocationSection(
-          vehicleAddress: vehicleAddress,
-          vehicleLongitude: vehicleLongitude,
-          vehicleLatitude: vehicleLatitude,
-        ),
-        const Gap(25),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          RentPartnerSection(
+            pfpImage: pfpImage,
+            renterName: renterName,
+            renterId: renterId,
+          ),
+          LocationSection(
+            vehicleAddress: vehicleAddress,
+            vehicleLongitude: vehicleLongitude,
+            vehicleLatitude: vehicleLatitude,
+          ),
+          const Gap(25),
+        ],
+      ),
     );
   }
 }

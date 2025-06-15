@@ -59,14 +59,14 @@ class OverViewSection extends StatelessWidget {
           carHealthTextColor: carHealth == "excellent"
               ? AppConstants.myGreen100_1
               : carHealth == "good"
-                  ? AppConstants.myBlue100_1
+                  ? AppConstants.myBlue100_1_1
                   : carHealth == "not bad"
                       ? AppConstants.myYellow100_1
                       : AppConstants.myRed100_1,
           carHealthContainerColor: carHealth == "excellent"
               ? AppConstants.myGreen10_1
               : carHealth == "good"
-                  ? AppConstants.myBlue100_1
+                  ? AppConstants.myBlue10_1_1
                   : carHealth == "not bad"
                       ? AppConstants.myYellow10_1
                       : AppConstants.myRed10_1,
