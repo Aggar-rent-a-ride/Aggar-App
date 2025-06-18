@@ -68,6 +68,12 @@ class EndPoint {
   static String deleteUser = "$baseUrl/api/user/";
   static String getUser = "$baseUrl/api/user/";
   static String punishUser = "$baseUrl/api/user/punish";
+
+  //Payment Endpoint
+  static String connectedAccount = "$baseUrl/api/payment/connected-account";
+  static String getPlatformBalance = "$baseUrl/api/payment/balance";
+  static String renterpayoutDetails = "$baseUrl/api/payment/renter-payout";
+  static String webHooks = "$baseUrl/api/payment/webhook";
 }
 
 class ApiKey {
@@ -255,4 +261,18 @@ class ApiKey {
   static String getSearchUsersUsername = "username";
   static String getSearchUsersImage = "imagePath";
   static String getSearchUsersrate = "rate";
+
+  //////////////////Payment////////////////////////////////
+  static String paymentStripeAccountId = "stripeAccountId";
+  static String paymentBankAccountId = "bankAccountId";
+  static String paymentIsVerified = "isVerified";
+  static String paymentAvailableBalance = "availableBalanc";
+  static String paymentPendingBalance = "pendingBalance";
+  static String paymentConnectReserved = "connectReserved";
+  static String paymentTotalBalance = "totalBalance";
+  static String paymentCurrency = "currency";
+  static String paymentLast4 = "last4";
+  static String paymentRoutingNumber = "routingNumber";
+  static String paymentCurrentAmount = "currentAmount";
+  static String paymentUpcomingAmount = "upcomingAmount";
 }
