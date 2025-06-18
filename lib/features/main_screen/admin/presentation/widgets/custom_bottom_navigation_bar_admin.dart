@@ -49,8 +49,15 @@ class CustomBottomNavigationBarAdmin extends StatelessWidget {
                 selectedIndex: selectedIndex,
               ),
               SelectedTabBottomNavigationBar(
-                iconImage: AppAssets.assetsIconsProfile,
+                iconImage: AppAssets.assetsIconsChats,
                 index: 3,
+                label: 'Messages',
+                onTapped: onTapped,
+                selectedIndex: selectedIndex,
+              ),
+              SelectedTabBottomNavigationBar(
+                iconImage: AppAssets.assetsIconsProfile,
+                index: 4,
                 label: 'Profile',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,

@@ -74,23 +74,27 @@ class PopularVehiclesCarCard extends StatelessWidget {
                       },
                     );
                     try {
+                      // Fetch vehicle data for the specific vehicleId
                       await context
                           .read<AddVehicleCubit>()
                           .getData(vehicleId, state.accessToken)
                           .timeout(const Duration(seconds: 5));
-                      context
-                          .read<ReviewCubit>()
-                          .getVehicleReviews(vehicleId, state.accessToken);
-                      context
-                          .read<ReviewCountCubit>()
-                          .getReviewsNumber(vehicleId, state.accessToken);
+
                       if (context.mounted) {
                         Navigator.of(context).pop();
                       }
                       final vehicleData =
                           context.read<AddVehicleCubit>().vehicleData;
 
-                      if (vehicleData != null && context.mounted) {
+                      if (vehicleData != null &&
+                          vehicleData.id == vehicleId &&
+                          context.mounted) {
+                        context
+                            .read<ReviewCubit>()
+                            .getVehicleReviews(vehicleId, state.accessToken);
+                        context
+                            .read<ReviewCountCubit>()
+                            .getReviewsNumber(vehicleId, state.accessToken);
                         final vehicle = vehicleData;
                         await Navigator.push(
                           context,
@@ -140,11 +144,23 @@ class PopularVehiclesCarCard extends StatelessWidget {
                             customSnackBar(
                               context,
                               "Error",
-                              "Failed to load vehicle details",
+                              "Vehicle data not found",
                               SnackBarType.error,
                             ),
                           );
                         }
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          customSnackBar(
+                            context,
+                            "Error",
+                            "Failed to load vehicle details",
+                            SnackBarType.error,
+                          ),
+                        );
                       }
                     } finally {
                       isLoading = false;
