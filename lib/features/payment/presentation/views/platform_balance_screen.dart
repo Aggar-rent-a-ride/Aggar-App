@@ -1,8 +1,12 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_cubit.dart';
+import 'package:aggar/features/payment/presentation/cubit/payment_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+
+import '../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 
 class PlatformBalanceScreen extends StatefulWidget {
   const PlatformBalanceScreen({super.key});
@@ -15,16 +19,15 @@ class _PlatformBalanceScreenState extends State<PlatformBalanceScreen> {
   @override
   void initState() {
     super.initState();
+    fetchePlatformBalance();
+  }
 
-    context.read<PaymentCubit>().getPlatformBalance(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDgxIiwianRpIjoiNmIwOGU5OGMtNzU2OC00OWE2LWJkNDItMzk1MzEzMWZiZDc3IiwidXNlcm5hbWUiOiJCbHVlIiwidWlkIjoiMjA4MSIsInJvbGVzIjpbIkFkbWluIiwiVXNlciJdLCJleHAiOjE3NTAyNjI5NzMsImlzcyI6IkFnZ2FyQXBpIiwiYXVkIjoiRmx1dHRlciJ9.5HPKPquO9s8C_6f4UTsaXRQgPJ7GPlLQ_WGCNWUGPLU");
-    context.read<PaymentCubit>().createConnectedAccount(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDg3IiwianRpIjoiZWYyYjg1ZjEtMTllNS00YjI4LWE0MDItYWI5YTU3MTU1ZGJiIiwidXNlcm5hbWUiOiJSZW50ZXIzIiwidWlkIjoiMjA4NyIsInJvbGVzIjpbIlVzZXIiLCJSZW50ZXIiXSwiZXhwIjoxNzUwMjYzNDM2LCJpc3MiOiJBZ2dhckFwaSIsImF1ZCI6IkZsdXR0ZXIifQ.Tv-ttMISwiFvQKuXYGWEKafERTg1a51xz8fM5nYYgoo",
-        "+18005551234",
-        "000123456789",
-        "110000000");
-    context.read<PaymentCubit>().getRenterPayoutDetails(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjRmMjU5NGYxLWYzMTktNDMyMy1iMzEwLTY4MWNmNWJmZjUzMiIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MDI2MTYxNywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.CjS9-yMX4C2QBtlTwYaULJDjx7ZtpijoyRdjGtDHtbs");
+  Future<void> fetchePlatformBalance() async {
+    final tokenCubit = context.read<TokenRefreshCubit>();
+    final token = await tokenCubit.getAccessToken();
+    if (token != null) {
+      context.read<PaymentCubit>().getPlatformBalance(token);
+    }
   }
 
   @override
@@ -59,12 +62,202 @@ class _PlatformBalanceScreenState extends State<PlatformBalanceScreen> {
                   ],
                 ),
               ),
-              const Text("fff"),
+              const PlatformBalanceBody(),
             ],
           ),
         ),
       ),
       backgroundColor: context.theme.white100_1,
+    );
+  }
+}
+
+class PlatformBalanceBody extends StatelessWidget {
+  const PlatformBalanceBody({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PaymentCubit, PaymentState>(
+      builder: (context, state) {
+        if (state is PaymentLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is PaymentPlatformBalanceSuccess) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("Account Balance"),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: context.theme.white100_2,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 0),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Total Balance",
+                        style: AppStyles.medium20(context).copyWith(
+                          color: context.theme.black50,
+                        ),
+                      ),
+                      Text(
+                        r"$" "${state.balanceModel.totalBalance}",
+                        style: AppStyles.bold36(context).copyWith(
+                          color: context.theme.black100,
+                        ),
+                      ),
+                      Text(state.balanceModel.currency)
+                    ],
+                  ),
+                ),
+                const Gap(10),
+                const Text("Balance Details"),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: context.theme.white100_2,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 0),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 15,
+                            width: 15,
+                            decoration: BoxDecoration(
+                              color: context.theme.green100_1,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          const Column(
+                            children: [
+                              Text("Available Balance"),
+                              Text(" available for use"),
+                            ],
+                          ),
+                          const Spacer(),
+                          Text(r"$" "${state.balanceModel.availableBalance}")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                const Gap(10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: context.theme.white100_2,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 0),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 15,
+                            width: 15,
+                            decoration: BoxDecoration(
+                              color: context.theme.green100_1,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          const Column(
+                            children: [
+                              Text("Pending Balance"),
+                              Text("processing transactions"),
+                            ],
+                          ),
+                          const Spacer(),
+                          Text(r"$" "${state.balanceModel.pendingBalance}")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                const Gap(10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: context.theme.white100_2,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 0),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 15,
+                            width: 15,
+                            decoration: BoxDecoration(
+                              color: context.theme.green100_1,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          const Column(
+                            children: [
+                              Text("Connect Reserved"),
+                              Text("reserved for connections"),
+                            ],
+                          ),
+                          const Spacer(),
+                          Text(r"$" "${state.balanceModel.connectReserved}")
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 }
