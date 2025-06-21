@@ -1,118 +1,90 @@
-import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/core/widgets/custom_icon.dart';
-import 'package:aggar/features/profile/data/car_model.dart';
-import 'package:aggar/features/profile/data/profile_model.dart';
-import 'package:aggar/features/profile/presentation/widgets/profile_tabs.dart';
-import 'package:aggar/features/profile/presentation/widgets/profile_widget.dart';
-import 'package:aggar/features/profile/presentation/widgets/tab_button.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
+import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
+import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_settings_buttons.dart';
+import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
+import 'package:aggar/features/profile/presentation/widgets/profile_tab_bar_section.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  ProfileScreenState createState() => ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class ProfileScreenState extends State<ProfileScreen> {
-  final Profile profile = Profile(
-    name: "Adele Famous",
-    role: "Renter",
-    avatarAsset: AppAssets.assetsImagesProfile,
-    description:
-        "renter and should be different from the user or not? i don’t know lets ask the backend? well no need i already know the answer but it just words :)",
-  );
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    refreshProfile();
+    super.initState();
+  }
 
-  final List<Car> cars = [
-    Car(
-        name: "Tesla Model S",
-        pricePerHour: 120,
-        rating: 4.8,
-        distance: 450,
-        assetImage: AppAssets.assetsImagesCar),
-    Car(
-        name: "Tesla Model X",
-        pricePerHour: 150,
-        rating: 4.9,
-        distance: 500,
-        assetImage: AppAssets.assetsImagesCar),
-  ];
-  int selectedTabIndex = 0;
+  Future<void> refreshProfile() async {
+    final tokenCubit = context.read<TokenRefreshCubit>();
+    final token = await tokenCubit.getAccessToken();
+    if (token != null) {
+      context.read<ProfileCubit>().getCustomerFavouriteVehicles(token);
+      context.read<ReviewCubit>().getUSerReviews("20", token);
+      context.read<ProfileCubit>().getUserInfo("2087", token);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: Text(
-          "Profile Account",
-          style: AppStyles.bold24(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const CustomIcon(
-              hight: 30,
-              width: 30,
-              flag: false,
-              imageIcon: AppAssets.assetsIconsMenu,
-            ),
-            onPressed: () {},
-          ),
-          const Gap(25)
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 25,
-        ),
+      backgroundColor: context.theme.white100_1,
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            ProfileWidget(profile: profile),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
-                return TabButton(
-                  index: index,
-                  title: ['Cars', 'Favorite', 'Statics', 'Reviews'][index],
-                  selectedIndex: selectedTabIndex,
-                  onTabSelected: (i) {
-                    setState(() {
-                      selectedTabIndex = i;
-                    });
-                  },
-                );
-              }),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                    color: context.theme.blue100_1,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.13,
+                  left: 0,
+                  right: 0,
+                  child: CircleAvatar(
+                    backgroundColor: context.theme.white100_1,
+                    radius: 50,
+                    child: const AvatarChatView(
+                      image:
+                          "https://i.pinimg.com/736x/b0/01/79/b00179610a20e41403e43fbee5381fda.jpg",
+                      size: 90,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const Divider(
-              indent: 7,
-              endIndent: 7,
-            ),
-            Expanded(
-              child: buildTabContent(),
-            ),
+            const Gap(50),
+            const NameWithUserName(),
+            const EditProfileWithSettingsButtons(),
+            const ProfileTabBarSection(), // No const to allow state updates
           ],
         ),
       ),
     );
-  }
-
-  Widget buildTabContent() {
-    switch (selectedTabIndex) {
-      case 0:
-        return const CarsTab();
-      case 1:
-        return const FavoriteTab();
-      case 2:
-        return const StaticsTab();
-      case 3:
-        return const ReviewsTab();
-      default:
-        return const SizedBox.shrink();
-    }
   }
 }

@@ -286,31 +286,14 @@ class AddVehicleCubit extends Cubit<AddVehicleState> {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
           },
-          validateStatus: (status) {
-            return status! < 500;
-          },
         ),
       );
 
       responseData = response.data;
-
-      if (response.data == null || response.data['data'] == null) {
-        emit(const AddVehicleFailure('No vehicle data found'));
-        return;
-      }
-
-      print('Raw Vehicle JSON: ${response.data["data"]}');
-
-      try {
-        vehicleData = VehicleDataModel.fromJson(response.data["data"]);
-        vehicleId = response.data["data"]["id"];
-        emit(AddVehicleSuccess(response.data));
-      } catch (parseError) {
-        emit(AddVehicleFailure('Failed to parse vehicle data: $parseError'));
-      }
-    } on DioException catch (e) {
-      String errorMessage = e.toString();
-      emit(AddVehicleFailure(errorMessage));
+      print("Response data: ${response.data}");
+      vehicleData = VehicleDataModel.fromJson(response.data["data"]);
+      vehicleId = response.data["data"]["id"];
+      emit(AddVehicleSuccess(response.data));
     } catch (e) {
       emit(AddVehicleFailure("Unexpected error: $e"));
     }

@@ -13,7 +13,7 @@ class AvatarChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(150),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
@@ -33,7 +33,8 @@ class AvatarChatView extends StatelessWidget {
                 width: size ?? 50,
               )
             : Image.network(
-                "${EndPoint.baseUrl}$image",
+                image!,
+                //"${EndPoint.baseUrl}$image",
                 height: size ?? 50,
                 width: size ?? 50,
                 errorBuilder: (context, error, stackTrace) {
