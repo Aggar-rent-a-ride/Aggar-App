@@ -25,6 +25,7 @@ import 'package:aggar/features/main_screen/admin/presentation/cubit/user_cubit/u
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_cubit.dart';
+import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
@@ -195,6 +196,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => PaymentCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ProfileCubit(),
         ),
         BlocProvider(
           create: (context) => FilterCubit(),

@@ -14,7 +14,6 @@ class ListVehicleModel {
   });
 
   factory ListVehicleModel.fromJson(Map<String, dynamic> json) {
-    print('ListVehicleModel fromJson: Input JSON: $json');
     List<VehicleModel> vehicles = [];
     if (json.containsKey('data') && json['data'] is Map<String, dynamic>) {
       var nestedData = json['data'] as Map<String, dynamic>;
@@ -30,8 +29,7 @@ class ListVehicleModel {
               VehicleModel.fromJson(vehicleJson as Map<String, dynamic>))
           .toList();
     }
-    print(
-        'ListVehicleModel fromJson: Parsed vehicles count: ${vehicles.length}');
+
     return ListVehicleModel(
       data: vehicles,
       totalPages: json['data']?['totalPages'] as int?,

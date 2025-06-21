@@ -1,6 +1,5 @@
-part of 'review_cubit.dart';
+import '../../../data/model/list_review_model.dart';
 
-@immutable
 sealed class ReviewState {}
 
 final class ReviewInitial extends ReviewState {}

@@ -15,8 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gap/gap.dart';
 import '../../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
-import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart'
-    show ReviewCountCubit;
+import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
 
 class PopularVehiclesCarCard extends StatelessWidget {
   final String carName;
@@ -42,99 +41,102 @@ class PopularVehiclesCarCard extends StatelessWidget {
 
     return BlocBuilder<MainCubit, MainState>(
       builder: (context, state) {
-        if (state is MainConnected) {
-          return GestureDetector(
-            onTap: isLoading
-                ? null
-                : () async {
-                    if (isLoading) return;
-                    isLoading = true;
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SpinKitThreeBounce(
+        if (state is! MainConnected) {
+          return Container();
+        }
+
+        return GestureDetector(
+          onTap: isLoading
+              ? null
+              : () async {
+                  if (isLoading) return;
+                  isLoading = true;
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SpinKitThreeBounce(
+                              color: context.theme.white100_1,
+                              size: 30.0,
+                            ),
+                            const Gap(10),
+                            Text(
+                              "Loading vehicle details...",
+                              style: AppStyles.medium16(context).copyWith(
                                 color: context.theme.white100_1,
-                                size: 30.0,
                               ),
-                              const Gap(10),
-                              Text(
-                                "Loading vehicle details...",
-                                style: AppStyles.medium16(context).copyWith(
-                                  color: context.theme.white100_1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                    try {
-                      // Fetch vehicle data for the specific vehicleId
-                      await context
-                          .read<AddVehicleCubit>()
-                          .getData(vehicleId, state.accessToken)
-                          .timeout(const Duration(seconds: 5));
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
 
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                      final vehicleData =
-                          context.read<AddVehicleCubit>().vehicleData;
+                  try {
+                    await context
+                        .read<AddVehicleCubit>()
+                        .getData(vehicleId, state.accessToken)
+                        .timeout(const Duration(seconds: 5));
 
-                      if (vehicleData != null &&
-                          vehicleData.id == vehicleId &&
-                          context.mounted) {
+                    if (!context.mounted) return;
+                    Navigator.of(context).pop();
+
+                    final vehicleData =
+                        context.read<AddVehicleCubit>().vehicleData;
+                    if (vehicleData != null) {
+                      if (vehicleData.id.toString() == vehicleId.toString()) {
                         context
                             .read<ReviewCubit>()
                             .getVehicleReviews(vehicleId, state.accessToken);
                         context
                             .read<ReviewCountCubit>()
                             .getReviewsNumber(vehicleId, state.accessToken);
-                        final vehicle = vehicleData;
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => VehiclesDetailsView(
-                              vehicleRate: vehicle.rate,
-                              isFavorite: vehicle.isFavorite,
-                              vehicleId: vehicle.id,
-                              vehiceSeatsNo: vehicle.numOfPassengers.toString(),
-                              renterName: vehicle.renter!.name,
-                              renterId: vehicle.renter!.id,
-                              yearOfManufaction: vehicle.year,
-                              vehicleModel: vehicle.model,
-                              vehicleRentPrice: vehicle.pricePerDay,
-                              vehicleColor: vehicle.color,
-                              vehicleOverView: vehicle.extraDetails ?? "",
-                              images: vehicle.vehicleImages,
-                              mainImage: vehicle.mainImagePath,
-                              vehicleHealth: vehicle.physicalStatus ==
-                                      "Excellent"
-                                  ? "excellent"
-                                  : vehicle.physicalStatus == "Good"
-                                      ? "good"
-                                      : vehicle.physicalStatus == "Scratched"
-                                          ? "minor dents"
-                                          : "not bad",
-                              vehicleStatus: vehicle.status == "OutOfService"
-                                  ? "out of stock"
-                                  : "active",
+                              vehicleRate: vehicleData.rate,
+                              isFavorite: vehicleData.isFavorite,
+                              vehicleId: vehicleData.id,
+                              vehiceSeatsNo:
+                                  vehicleData.numOfPassengers.toString(),
+                              renterName: vehicleData.renter?.name ?? "Unknown",
+                              renterId: vehicleData.renter!.id,
+                              yearOfManufaction: vehicleData.year,
+                              vehicleModel: vehicleData.model,
+                              vehicleRentPrice: vehicleData.pricePerDay,
+                              vehicleColor: vehicleData.color,
+                              vehicleOverView: vehicleData.extraDetails ?? "",
+                              images: vehicleData.vehicleImages,
+                              mainImage: vehicleData.mainImagePath,
+                              vehicleHealth:
+                                  vehicleData.physicalStatus == "Excellent"
+                                      ? "excellent"
+                                      : vehicleData.physicalStatus == "Good"
+                                          ? "good"
+                                          : vehicleData.physicalStatus ==
+                                                  "Scratched"
+                                              ? "minor dents"
+                                              : "not bad",
+                              vehicleStatus:
+                                  vehicleData.status == "OutOfService"
+                                      ? "out of stock"
+                                      : "active",
                               transmissionMode:
-                                  vehicle.transmission == "Automatic"
+                                  vehicleData.transmission == "Automatic"
                                       ? 1
-                                      : vehicle.transmission == "None"
+                                      : vehicleData.transmission == "None"
                                           ? 0
                                           : 2,
-                              vehicleType: vehicle.vehicleType.name,
-                              vehicleBrand: vehicle.vehicleBrand.name,
-                              vehicleAddress: vehicle.address,
-                              vehicleLongitude: vehicle.location.longitude,
-                              vehicleLatitude: vehicle.location.latitude,
+                              vehicleType: vehicleData.vehicleType.name,
+                              vehicleBrand: vehicleData.vehicleBrand.name,
+                              vehicleAddress: vehicleData.address,
+                              vehicleLongitude: vehicleData.location.longitude,
+                              vehicleLatitude: vehicleData.location.latitude,
                             ),
                           ),
                         );
@@ -150,85 +152,81 @@ class PopularVehiclesCarCard extends StatelessWidget {
                           );
                         }
                       }
-                    } catch (e) {
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          customSnackBar(
-                            context,
-                            "Error",
-                            "Failed to load vehicle details",
-                            SnackBarType.error,
-                          ),
-                        );
-                      }
-                    } finally {
-                      isLoading = false;
                     }
-                  },
-            child: Stack(
+                  } catch (e) {
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        customSnackBar(
+                          context,
+                          "Error",
+                          "Failed to load vehicle details: $e",
+                          SnackBarType.error,
+                        ),
+                      );
+                    }
+                  } finally {
+                    isLoading = false;
+                  }
+                },
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(
+              color: context.theme.white100_2,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: context.theme.white100_2,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4,
-                        offset: Offset(0, 0),
-                      ),
-                    ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PopularVehiclesCarCardNameWithRating(
+                          carName: carName,
+                          rating: rating,
+                        ),
+                        PopularVehiclesCarCardCarType(carType: carType),
+                        const Gap(10),
+                        PopularVehicleCarCardPrice(
+                          pricePerHour: pricePerHour.toString(),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PopularVehiclesCarCardNameWithRating(
-                                  carName: carName, rating: rating),
-                              PopularVehiclesCarCardCarType(carType: carType),
-                              const Gap(10),
-                              PopularVehicleCarCardPrice(
-                                  pricePerHour: pricePerHour.toString()),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Gap(5),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Image.network(
-                          "${EndPoint.baseUrl}$assetImagePath",
-                          height: 100,
-                          width: 150,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              AppAssets.assetsImagesCar,
-                              height: 100,
-                              width: 150,
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                ),
+                const Gap(5),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    "${EndPoint.baseUrl}$assetImagePath",
+                    height: 100,
+                    width: 150,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        AppAssets.assetsImagesCar,
+                        height: 100,
+                        width: 150,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-          );
-        } else {
-          return Container();
-        }
+          ),
+        );
       },
     );
   }

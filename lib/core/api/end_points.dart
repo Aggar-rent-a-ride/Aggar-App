@@ -29,6 +29,8 @@ class EndPoint {
   static String mostRentedVehicles =
       "$baseUrl/api/vehicle/most-rented-vehicles";
   static String putFavourite = "$baseUrl/api/vehicle/favourite";
+  static String getFavouriteVehicles = "$baseUrl/api/vehicle/get-favourites";
+  static String getRenterVehicles = "$baseUrl/api/vehicle/renter";
 
   // Chat endpoints
   static String chatHub = "/Chat";
@@ -68,6 +70,7 @@ class EndPoint {
   static String deleteUser = "$baseUrl/api/user/";
   static String getUser = "$baseUrl/api/user/";
   static String punishUser = "$baseUrl/api/user/punish";
+  static String getUserInfo = "$baseUrl/api/user/profile";
 
   //Payment Endpoint
   static String connectedAccount = "$baseUrl/api/payment/connected-account";
