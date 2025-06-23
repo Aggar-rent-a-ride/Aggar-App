@@ -58,59 +58,49 @@ class VehicleCubit extends Cubit<VehicleState> {
     if (isLoadMore && isLoadingMoreAll) return;
     if (isLoadMore && targetPage > totalPagesAll) return;
 
-    for (int attempt = 1; attempt <= 3; attempt++) {
-      try {
-        if (!isLoadMore) {
-          emit(VehicleLoading());
-          resetAllVehicles();
-        } else {
-          isLoadingMoreAll = true;
-          emit(VehicleLoadingMore(
-            vehicles:
-                ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
-          ));
-        }
-
-        final response = await dioConsumer.get(
-          EndPoint.getVehicles,
-          queryParameters: {"pageNo": targetPage, "pageSize": 8},
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-        );
-
-        final vehicles = ListVehicleModel.fromJson(response);
-
-        if (isLoadMore) {
-          _allVehicles.addAll(vehicles.data);
-        } else {
-          _allVehicles = List.from(vehicles.data);
-        }
-
-        if (_allVehicles.length > 50) {
-          _allVehicles.removeRange(0, _allVehicles.length - 50);
-        }
-
-        currentPageAll = targetPage;
-        totalPagesAll = vehicles.totalPages ?? 1;
-
-        emit(VehicleLoaded(
-          vehicles: ListVehicleModel(
-            data: _allVehicles,
-            totalPages: totalPagesAll,
-          ),
+    try {
+      if (!isLoadMore) {
+        emit(VehicleLoading());
+        resetAllVehicles();
+      } else {
+        isLoadingMoreAll = true;
+        emit(VehicleLoadingMore(
+          vehicles:
+              ListVehicleModel(data: _allVehicles, totalPages: totalPagesAll),
         ));
-        return;
-      } catch (error) {
-        if (attempt == 3) {
-          emit(VehicleError(
-              message:
-                  'Failed to fetch vehicles after $attempt attempts: $error'));
-        } else {
-          await Future.delayed(Duration(milliseconds: 500 * attempt));
-        }
-      } finally {
-        if (isLoadMore) {
-          isLoadingMoreAll = false;
-        }
+      }
+
+      final response = await dioConsumer.get(
+        EndPoint.getVehicles,
+        queryParameters: {"pageNo": targetPage, "pageSize": 8},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+
+      final vehicles = ListVehicleModel.fromJson(response);
+
+      if (isLoadMore) {
+        _allVehicles.addAll(vehicles.data);
+      } else {
+        _allVehicles = List.from(vehicles.data);
+      }
+
+      if (_allVehicles.length > 50) {
+        _allVehicles.removeRange(0, _allVehicles.length - 50);
+      }
+
+      currentPageAll = targetPage;
+      totalPagesAll = vehicles.totalPages ?? 1;
+
+      emit(VehicleLoaded(
+        vehicles: ListVehicleModel(
+          data: _allVehicles,
+          totalPages: totalPagesAll,
+        ),
+      ));
+      return;
+    } finally {
+      if (isLoadMore) {
+        isLoadingMoreAll = false;
       }
     }
   }
@@ -121,58 +111,47 @@ class VehicleCubit extends Cubit<VehicleState> {
 
     if (isLoadMore && isLoadingMorePopular) return;
     if (isLoadMore && targetPage > totalPagesPopular) return;
-
-    for (int attempt = 1; attempt <= 3; attempt++) {
-      try {
-        if (!isLoadMore) {
-          emit(VehicleLoading());
-          resetPopularVehicles();
-        } else {
-          isLoadingMorePopular = true;
-          emit(VehicleLoadingMore(
-            vehicles: ListVehicleModel(
-                data: _popularVehicles, totalPages: totalPagesPopular),
-          ));
-        }
-
-        final response = await dioConsumer.get(
-          EndPoint.getPopularVehicles,
-          queryParameters: {"pageNo": targetPage, "pageSize": 8},
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-        );
-
-        final vehicles = ListVehicleModel.fromJson(response);
-
-        if (isLoadMore) {
-          _popularVehicles.addAll(vehicles.data);
-        } else {
-          _popularVehicles = List.from(vehicles.data);
-        }
-        if (_popularVehicles.length > 50) {
-          _popularVehicles.removeRange(0, _popularVehicles.length - 50);
-        }
-        currentPagePopular = targetPage;
-        totalPagesPopular = vehicles.totalPages ?? 1;
-
-        emit(VehicleLoaded(
+    try {
+      if (!isLoadMore) {
+        emit(VehicleLoading());
+        resetPopularVehicles();
+      } else {
+        isLoadingMorePopular = true;
+        emit(VehicleLoadingMore(
           vehicles: ListVehicleModel(
-            data: _popularVehicles,
-            totalPages: totalPagesPopular,
-          ),
+              data: _popularVehicles, totalPages: totalPagesPopular),
         ));
-        return;
-      } catch (error) {
-        if (attempt == 3) {
-          emit(VehicleError(
-              message:
-                  'Failed to fetch popular vehicles after $attempt attempts: $error'));
-        } else {
-          await Future.delayed(Duration(milliseconds: 500 * attempt));
-        }
-      } finally {
-        if (isLoadMore) {
-          isLoadingMorePopular = false;
-        }
+      }
+
+      final response = await dioConsumer.get(
+        EndPoint.getPopularVehicles,
+        queryParameters: {"pageNo": targetPage, "pageSize": 8},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+
+      final vehicles = ListVehicleModel.fromJson(response);
+
+      if (isLoadMore) {
+        _popularVehicles.addAll(vehicles.data);
+      } else {
+        _popularVehicles = List.from(vehicles.data);
+      }
+      if (_popularVehicles.length > 50) {
+        _popularVehicles.removeRange(0, _popularVehicles.length - 50);
+      }
+      currentPagePopular = targetPage;
+      totalPagesPopular = vehicles.totalPages ?? 1;
+
+      emit(VehicleLoaded(
+        vehicles: ListVehicleModel(
+          data: _popularVehicles,
+          totalPages: totalPagesPopular,
+        ),
+      ));
+      return;
+    } finally {
+      if (isLoadMore) {
+        isLoadingMorePopular = false;
       }
     }
   }
@@ -182,58 +161,47 @@ class VehicleCubit extends Cubit<VehicleState> {
     final targetPage = page ?? (isLoadMore ? currentPageMostRented + 1 : 1);
     if (isLoadMore && isLoadingMoreMostRented) return;
     if (isLoadMore && targetPage > totalPagesMostRented) return;
-
-    for (int attempt = 1; attempt <= 3; attempt++) {
-      try {
-        if (!isLoadMore) {
-          emit(VehicleLoading());
-          resetMostRentedVehicles();
-        } else {
-          isLoadingMoreMostRented = true;
-          emit(VehicleLoadingMore(
-            vehicles: ListVehicleModel(
-                data: _mostRentedVehicles, totalPages: totalPagesMostRented),
-          ));
-        }
-
-        final response = await dioConsumer.get(
-          EndPoint.mostRentedVehicles,
-          queryParameters: {"pageNo": targetPage, "pageSize": 8},
-          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
-        );
-
-        final vehicles = ListVehicleModel.fromJson(response);
-
-        if (isLoadMore) {
-          _mostRentedVehicles.addAll(vehicles.data);
-        } else {
-          _mostRentedVehicles = List.from(vehicles.data);
-        }
-        if (_mostRentedVehicles.length > 50) {
-          _mostRentedVehicles.removeRange(0, _mostRentedVehicles.length - 50);
-        }
-        currentPageMostRented = targetPage;
-        totalPagesMostRented = vehicles.totalPages ?? 1;
-
-        emit(VehicleLoaded(
+    try {
+      if (!isLoadMore) {
+        emit(VehicleLoading());
+        resetMostRentedVehicles();
+      } else {
+        isLoadingMoreMostRented = true;
+        emit(VehicleLoadingMore(
           vehicles: ListVehicleModel(
-            data: _mostRentedVehicles,
-            totalPages: totalPagesMostRented,
-          ),
+              data: _mostRentedVehicles, totalPages: totalPagesMostRented),
         ));
-        return;
-      } catch (error) {
-        if (attempt == 3) {
-          emit(VehicleError(
-              message:
-                  'Failed to fetch most rented vehicles after $attempt attempts: $error'));
-        } else {
-          await Future.delayed(Duration(milliseconds: 500 * attempt));
-        }
-      } finally {
-        if (isLoadMore) {
-          isLoadingMoreMostRented = false;
-        }
+      }
+
+      final response = await dioConsumer.get(
+        EndPoint.mostRentedVehicles,
+        queryParameters: {"pageNo": targetPage, "pageSize": 8},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+      );
+
+      final vehicles = ListVehicleModel.fromJson(response);
+
+      if (isLoadMore) {
+        _mostRentedVehicles.addAll(vehicles.data);
+      } else {
+        _mostRentedVehicles = List.from(vehicles.data);
+      }
+      if (_mostRentedVehicles.length > 50) {
+        _mostRentedVehicles.removeRange(0, _mostRentedVehicles.length - 50);
+      }
+      currentPageMostRented = targetPage;
+      totalPagesMostRented = vehicles.totalPages ?? 1;
+
+      emit(VehicleLoaded(
+        vehicles: ListVehicleModel(
+          data: _mostRentedVehicles,
+          totalPages: totalPagesMostRented,
+        ),
+      ));
+      return;
+    } finally {
+      if (isLoadMore) {
+        isLoadingMoreMostRented = false;
       }
     }
   }

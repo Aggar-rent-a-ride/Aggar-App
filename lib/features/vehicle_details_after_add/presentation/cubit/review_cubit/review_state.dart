@@ -4,17 +4,19 @@ sealed class ReviewState {}
 
 final class ReviewInitial extends ReviewState {}
 
-final class ReviewSuccess extends ReviewState {}
-
-final class ReviewVehicleSuccess extends ReviewState {
+final class ReviewSuccess extends ReviewState {
   final ListReviewModel? review;
-  ReviewVehicleSuccess({this.review});
+  ReviewSuccess({this.review});
 }
 
 final class ReviewLoading extends ReviewState {}
 
+final class ReviewLoadingMore extends ReviewState {
+  final ListReviewModel reviewModel;
+  ReviewLoadingMore({required this.reviewModel});
+}
+
 final class ReviewFailure extends ReviewState {
   final String errorMsg;
-
   ReviewFailure(this.errorMsg);
 }

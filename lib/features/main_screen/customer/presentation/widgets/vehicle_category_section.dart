@@ -54,7 +54,7 @@ class VehicleCategorySection extends StatelessWidget {
             itemBuilder: (context, index) {
               final vehicle = vehicles[index];
               return PopularVehiclesCarCard(
-                carName: '${vehicle.brand} ${vehicle.type}',
+                carName: '${vehicle.brand} ${vehicle.model}',
                 carType: vehicle.transmission,
                 pricePerHour: vehicle.pricePerDay,
                 assetImagePath: vehicle.mainImagePath,

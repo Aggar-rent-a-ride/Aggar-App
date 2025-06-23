@@ -1,8 +1,8 @@
 // Vehicle Data Model
 
 class LocationModel {
-  final double longitude;
-  final double latitude;
+  final num longitude;
+  final num latitude;
 
   LocationModel({
     required this.longitude,
@@ -11,8 +11,8 @@ class LocationModel {
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
     return LocationModel(
-      longitude: json['longitude'],
-      latitude: json['latitude'],
+      longitude: (json['longitude'] as num).toDouble(),
+      latitude: (json['latitude'] as num).toDouble(),
     );
   }
 }

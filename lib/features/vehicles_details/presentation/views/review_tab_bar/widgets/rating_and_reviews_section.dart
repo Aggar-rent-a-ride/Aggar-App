@@ -17,7 +17,7 @@ class RatingAndReviewsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReviewCubit, ReviewState>(
       builder: (context, state) {
-        if (state is ReviewVehicleSuccess) {
+        if (state is ReviewSuccess) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Column(

@@ -56,8 +56,7 @@ class AllVehicleScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SearchScreen(
-                                    accesstoken: state.accessToken),
+                                builder: (context) => const SearchScreen(),
                               ),
                             );
                           },

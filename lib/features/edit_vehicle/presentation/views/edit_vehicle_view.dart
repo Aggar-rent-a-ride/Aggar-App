@@ -258,8 +258,10 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                               VehicleLocationSection(
                                 initialLocation: state is EditVehicleDataLoaded
                                     ? LatLng(
-                                        state.vehicleData.location.latitude,
-                                        state.vehicleData.location.longitude,
+                                        state.vehicleData.location.latitude
+                                            as double,
+                                        state.vehicleData.location.longitude
+                                            as double,
                                       )
                                     : null,
                                 vehicleAddressController: context

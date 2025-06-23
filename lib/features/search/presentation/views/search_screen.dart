@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_state.dart';
@@ -16,15 +17,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key, required this.accesstoken});
-  final String accesstoken;
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  @override
+  void initState() {
+    _initializeCubit();
+    super.initState();
+  }
+
+  Future<void> _initializeCubit() async {
+    final tokenCubit = context.read<TokenRefreshCubit>();
+    final token = await tokenCubit.getAccessToken();
+    if (token != null) {
+      context.read<SearchCubit>().setAccessToken(token);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to retrieve access token.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SearchCubit>();
     return BlocBuilder<SearchCubit, SearchCubitState>(
       builder: (context, state) {
-        cubit.setAccessToken(accesstoken);
         return Scaffold(
           backgroundColor: context.theme.white100_1,
           body: Column(

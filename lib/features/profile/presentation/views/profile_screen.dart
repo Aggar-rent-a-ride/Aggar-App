@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
 import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_settings_buttons.dart';
@@ -29,9 +30,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final tokenCubit = context.read<TokenRefreshCubit>();
     final token = await tokenCubit.getAccessToken();
     if (token != null) {
-      context.read<ProfileCubit>().getCustomerFavouriteVehicles(token);
-      context.read<ReviewCubit>().getUSerReviews("20", token);
-      context.read<ProfileCubit>().getUserInfo("2087", token);
+      context.read<ProfileCubit>().fetchFavoriteVehicles(token);
+      context.read<ReviewCubit>().getUserReviews("20", token);
     }
   }
 
@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.15,
                   decoration: BoxDecoration(
                     boxShadow: const [
                       BoxShadow(
@@ -61,9 +61,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       bottomRight: Radius.circular(25),
                     ),
                   ),
+                  child: Center(
+                    child: Text(
+                      "Profile Account",
+                      style: AppStyles.bold20(context).copyWith(
+                        color: context.theme.white100_1,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.13,
+                  top: MediaQuery.of(context).size.height * 0.1,
                   left: 0,
                   right: 0,
                   child: CircleAvatar(
@@ -81,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Gap(50),
             const NameWithUserName(),
             const EditProfileWithSettingsButtons(),
-            const ProfileTabBarSection(), // No const to allow state updates
+            const ProfileTabBarSection(),
           ],
         ),
       ),

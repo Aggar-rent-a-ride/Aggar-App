@@ -27,7 +27,7 @@ class ReviewTabBarView extends StatelessWidget {
       builder: (context, state) {
         if (state is ReviewLoading) {
           return const LoadingReviewAndRating();
-        } else if (state is ReviewVehicleSuccess) {
+        } else if (state is ReviewSuccess) {
           final reviews = state.review!.data;
           return Padding(
             padding: const EdgeInsets.all(8.0),

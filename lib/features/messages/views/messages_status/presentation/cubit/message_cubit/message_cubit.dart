@@ -21,6 +21,11 @@ class MessageCubit extends Cubit<MessageState> {
   ListChatModel? _cachedChats;
   DateTime? _lastCacheUpdate;
 
+  int _currentPage = 1;
+  final int _pageSize = 20;
+  bool _hasMoreChats = true;
+  bool _isLoadingMore = false;
+
   MessageCubit({required this.dioConsumer}) : super(MessageInitial()) {
     _loadCachedChats();
   }
@@ -102,8 +107,6 @@ class MessageCubit extends Cubit<MessageState> {
       if (response == null) return;
 
       final newChats = ListChatModel.fromJson(response);
-
-      // Only update if there are actual changes
       if (_cachedChats == null || _hasNewMessages(_cachedChats!, newChats)) {
         _cachedChats = newChats;
         await _cacheChats(newChats);
@@ -115,11 +118,22 @@ class MessageCubit extends Cubit<MessageState> {
     }
   }
 
-  Future<void> getMyChat(String accessToken) async {
+  Future<void> getMyChat(String accessToken, {bool loadMore = false}) async {
+    if (_isLoadingMore || (!loadMore && !_hasMoreChats)) return;
+
     try {
-      // Always fetch fresh data when explicitly requested
+      if (loadMore) {
+        _isLoadingMore = true;
+        _currentPage++;
+        emit(ChatsLoading());
+      } else {
+        _currentPage = 1;
+        _hasMoreChats = true;
+        emit(ChatsLoading());
+      }
+
       final response = await dioConsumer.get(
-        EndPoint.getMyChat,
+        "${EndPoint.getMyChat}?page=$_currentPage&pageSize=$_pageSize",
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',
@@ -128,22 +142,43 @@ class MessageCubit extends Cubit<MessageState> {
       );
 
       if (response == null) {
-        if (_cachedChats == null) {
+        if (_cachedChats == null && !loadMore) {
           emit(MessageFailure("No response received from server."));
         }
+        if (loadMore) _isLoadingMore = false;
         return;
       }
 
-      final chats = ListChatModel.fromJson(response);
-      _cachedChats = chats;
-      await _cacheChats(chats);
+      final newChats = ListChatModel.fromJson(response);
 
-      // Always emit new data when explicitly requested
-      emit(ChatSuccess(chats: chats));
-      _chatStreamController.add(chats);
+      // Check if we have more pages to load
+      _hasMoreChats = newChats.data.length == _pageSize;
+
+      if (loadMore) {
+        // Append new chats to existing ones
+        final updatedChats = ListChatModel(
+          data: [...(_cachedChats?.data ?? []), ...newChats.data],
+        );
+        _cachedChats = updatedChats;
+        await _cacheChats(updatedChats);
+        emit(ChatSuccess(chats: updatedChats));
+        emit(ChatsLoaded());
+        _chatStreamController.add(updatedChats);
+        _isLoadingMore = false;
+      } else {
+        _cachedChats = newChats;
+        await _cacheChats(newChats);
+        emit(ChatSuccess(chats: newChats));
+        emit(ChatsLoaded());
+        _chatStreamController.add(newChats);
+      }
     } catch (e) {
-      if (_cachedChats == null) {
+      if (_cachedChats == null && !loadMore) {
         emit(MessageFailure("Failed to fetch chats: $e"));
+      } else if (loadMore) {
+        _currentPage--; // Revert page increment on error
+        _isLoadingMore = false;
+        emit(MessageFailure("Failed to load more chats: $e"));
       }
     }
   }
@@ -155,7 +190,7 @@ class MessageCubit extends Cubit<MessageState> {
 
       if (cachedChats != null) {
         _cachedChats = ListChatModel.fromJson(jsonDecode(cachedChats));
-        emit(ChatSuccess(chats: _cachedChats!));
+        emit(ChatSuccess(chats: _cachedChats));
         _chatStreamController.add(_cachedChats);
       }
     } catch (e) {
@@ -216,6 +251,8 @@ class MessageCubit extends Cubit<MessageState> {
       await prefs.remove('last_cache_update');
       _cachedChats = null;
       _lastCacheUpdate = null;
+      _currentPage = 1;
+      _hasMoreChats = true;
       emit(MessageInitial());
       _chatStreamController.add(null);
     } catch (e) {
