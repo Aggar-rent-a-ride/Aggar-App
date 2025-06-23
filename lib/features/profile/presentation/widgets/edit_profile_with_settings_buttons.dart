@@ -3,6 +3,8 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../settings/presentation/views/settings_screen.dart';
+
 class EditProfileWithSettingsButtons extends StatelessWidget {
   const EditProfileWithSettingsButtons({
     super.key,
@@ -36,7 +38,14 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
         ),
         const Gap(5),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SettingsScreen(),
+              ),
+            );
+          },
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.zero,
             minimumSize: const Size(0, 0),

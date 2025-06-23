@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class MainHeader extends StatelessWidget {
-  const MainHeader({super.key, this.onPressed, required this.accesstoken});
+  const MainHeader({super.key, this.onPressed});
   final void Function()? onPressed;
-  final String accesstoken;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -33,9 +32,7 @@ class MainHeader extends StatelessWidget {
           ],
         ),
         const Gap(20),
-        MainScreenSearchFieldWithFilterIcon(
-          accesstoken: accesstoken,
-        )
+        const MainScreenSearchFieldWithFilterIcon()
       ],
     );
   }

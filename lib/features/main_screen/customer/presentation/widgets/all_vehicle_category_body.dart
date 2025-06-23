@@ -59,7 +59,7 @@ class AllVehicleCategoryBody extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 5),
                     child: PopularVehiclesCarCard(
                       assetImagePath: vehicle.mainImagePath,
-                      carName: "${vehicle.brand} ${vehicle.type}",
+                      carName: "${vehicle.brand} ${vehicle.model}",
                       carType: vehicle.transmission,
                       pricePerHour: vehicle.pricePerDay,
                       vehicleId: vehicle.id.toString(),

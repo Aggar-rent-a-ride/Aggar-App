@@ -8,7 +8,6 @@ class MainScreenSearchField extends StatelessWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final FocusNode? focusNode;
-  final String accesstoken;
 
   const MainScreenSearchField({
     super.key,
@@ -16,7 +15,6 @@ class MainScreenSearchField extends StatelessWidget {
     this.controller,
     this.onChanged,
     this.focusNode,
-    required this.accesstoken,
   });
 
   @override
@@ -39,16 +37,11 @@ class MainScreenSearchField extends StatelessWidget {
         focusNode: focusNode,
         onTap: onTap == null
             ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SearchScreen(
-                        accesstoken: accesstoken,
-                      );
-                    },
-                  ),
-                );
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const SearchScreen();
+                  },
+                ));
               }
             : null,
         decoration: InputDecoration(

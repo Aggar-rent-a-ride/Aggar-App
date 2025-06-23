@@ -20,7 +20,7 @@ class PopularVehiclesCarCardNameWithRating extends StatelessWidget {
         Expanded(
           child: Text(
             carName,
-            style: AppStyles.semiBold24(context).copyWith(
+            style: AppStyles.semiBold20(context).copyWith(
               color: context.theme.black100,
             ),
             maxLines: 2,

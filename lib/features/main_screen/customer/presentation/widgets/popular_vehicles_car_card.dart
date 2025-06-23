@@ -135,8 +135,10 @@ class PopularVehiclesCarCard extends StatelessWidget {
                               vehicleType: vehicleData.vehicleType.name,
                               vehicleBrand: vehicleData.vehicleBrand.name,
                               vehicleAddress: vehicleData.address,
-                              vehicleLongitude: vehicleData.location.longitude,
-                              vehicleLatitude: vehicleData.location.latitude,
+                              vehicleLongitude:
+                                  vehicleData.location.longitude as double,
+                              vehicleLatitude:
+                                  vehicleData.location.latitude as double,
                             ),
                           ),
                         );
@@ -184,6 +186,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
               ],
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Padding(
@@ -197,7 +200,6 @@ class PopularVehiclesCarCard extends StatelessWidget {
                           rating: rating,
                         ),
                         PopularVehiclesCarCardCarType(carType: carType),
-                        const Gap(10),
                         PopularVehicleCarCardPrice(
                           pricePerHour: pricePerHour.toString(),
                         ),
@@ -210,7 +212,7 @@ class PopularVehiclesCarCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                   child: Image.network(
                     "${EndPoint.baseUrl}$assetImagePath",
-                    height: 100,
+                    height: 110,
                     width: 150,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {

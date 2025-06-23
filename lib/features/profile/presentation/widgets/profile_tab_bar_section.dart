@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/profile/presentation/widgets/review_user_section.dart';
 import 'package:aggar/features/profile/presentation/widgets/saved_vehicle_section.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         setState(() {
@@ -39,6 +40,7 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
     return Column(
       children: [
         TabBar(
+          overlayColor: WidgetStateProperty.all(Colors.transparent),
           controller: _tabController,
           padding: EdgeInsets.zero,
           indicatorPadding: EdgeInsets.zero,
@@ -54,15 +56,11 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
           tabs: const [
             Tab(text: 'Saved'),
             Tab(text: 'Reviews'),
-            Tab(text: 'Booking'),
           ],
         ),
-        // Conditionally display tab content based on selected index
         _selectedTabIndex == 0
             ? const SavedVehicleSection()
-            : _selectedTabIndex == 1
-                ? const Center(child: Text('Reviews'))
-                : const Center(child: Text('Booking History')),
+            : const ReviewUserSection()
       ],
     );
   }

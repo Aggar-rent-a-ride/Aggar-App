@@ -26,6 +26,7 @@ import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statist
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
+import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
@@ -39,7 +40,6 @@ import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_ima
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
-import 'package:aggar/features/settings/presentation/widgets/payment_card.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_brand/edit_vehicle_brand_cubit.dart';
@@ -201,6 +201,9 @@ class MyApp extends StatelessWidget {
           create: (context) => ProfileCubit(),
         ),
         BlocProvider(
+          create: (context) => UserInfoCubit(),
+        ),
+        BlocProvider(
           create: (context) => FilterCubit(),
         ),
         BlocProvider(
@@ -232,6 +235,7 @@ class MyApp extends StatelessWidget {
             vehicleBrandCubit: context.read<VehicleBrandCubit>(),
             vehicleTypeCubit: context.read<VehicleTypeCubit>(),
             vehicleCubit: context.read<VehicleCubit>(),
+            userInfoCubit: context.read<UserInfoCubit>(),
           ),
         ),
         BlocProvider(

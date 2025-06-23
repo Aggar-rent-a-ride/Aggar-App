@@ -94,8 +94,8 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
     setVehicleHealth(getVehicleHealthValue(vehicle.physicalStatus));
 
     // Set location
-    selectedLocation =
-        LatLng(vehicle.location.latitude, vehicle.location.longitude);
+    selectedLocation = LatLng(vehicle.location.latitude as double,
+        vehicle.location.longitude as double);
     mapLocationCubit.updateSelectedLocation(selectedLocation!);
 
     // Set image URLs

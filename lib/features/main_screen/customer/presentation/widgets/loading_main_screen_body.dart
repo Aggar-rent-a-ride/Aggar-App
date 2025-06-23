@@ -25,9 +25,7 @@ class LoadingMainScreenBody extends StatelessWidget {
             ),
             padding:
                 const EdgeInsets.only(left: 20, right: 20, top: 55, bottom: 20),
-            child: const MainHeader(
-              accesstoken: "",
-            ),
+            child: const MainHeader(),
           ),
           const Gap(15),
           const Padding(

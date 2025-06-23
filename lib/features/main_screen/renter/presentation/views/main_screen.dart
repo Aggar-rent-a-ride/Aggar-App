@@ -14,7 +14,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  String _currentAccessToken = '';
   bool _isLoadingToken = true;
 
   @override
@@ -54,7 +53,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
       if (mounted) {
         setState(() {
-          _currentAccessToken = token ?? '';
           _isLoadingToken = false;
         });
 
@@ -68,7 +66,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       print('Error initializing token: $e');
       if (mounted) {
         setState(() {
-          _currentAccessToken = '';
           _isLoadingToken = false;
         });
       }
@@ -78,7 +75,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void _handleTokenRefreshSuccess(String accessToken) {
     if (mounted) {
       setState(() {
-        _currentAccessToken = accessToken;
         _isLoadingToken = false;
       });
       print('Token updated from BLoC: ${accessToken.substring(0, 10)}...');
@@ -88,7 +84,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void _handleTokenRefreshFailure(String errorMessage) {
     if (mounted) {
       setState(() {
-        _currentAccessToken = '';
         _isLoadingToken = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -118,7 +113,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           : Scaffold(
               backgroundColor: Colors.grey[50],
               body: MainScreenBody(
-                accessToken: _currentAccessToken,
                 onRefresh: _initializeToken,
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/helper/handle_error.dart';
 import 'package:aggar/features/main_screen/customer/data/model/list_vehicle_model.dart';
+import 'package:aggar/features/new_vehicle/data/model/location_model.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   int currentPage = 1;
   int totalPages = 1;
   bool isLoadingMore = false;
+  LocationModel? currentLocation;
 
   SearchCubit({this.accessToken}) : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
@@ -41,6 +43,15 @@ class SearchCubit extends Cubit<SearchCubitState> {
 
   void setAccessToken(String token) {
     accessToken = token;
+  }
+
+  void setLocation(LocationModel? location) {
+    currentLocation = location;
+    print(
+        "Current Location: ${currentLocation!.latitude}, ${currentLocation!.longitude}");
+    if (isNearestFilterSelected) {
+      fetchSearch(pageNo: 1);
+    }
   }
 
   void onTextChanged() {
@@ -86,6 +97,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
     isPriceFilterSelected = false;
     isRateFilterSelected = false;
     isNearestFilterSelected = false;
+    isStatusFilterSelected = false;
   }
 
   void toggleFilterVisibility() {
@@ -316,8 +328,10 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (query.isNotEmpty) "searchKey": query,
         if (selectedStatus != null) "status": selectedStatus,
         if (isNearestFilterSelected) "byNearest": isNearestFilterSelected,
-        if (isNearestFilterSelected) "latitude": "30.510187246065026",
-        if (isNearestFilterSelected) "longitude": "31.352178770683253",
+        if (isNearestFilterSelected && currentLocation != null)
+          "latitude": currentLocation!.latitude,
+        if (isNearestFilterSelected && currentLocation != null)
+          "longitude": currentLocation!.longitude,
       };
 
       final endpoint = selectedStatus != null
@@ -369,8 +383,10 @@ class SearchCubit extends Cubit<SearchCubitState> {
         if (query.isNotEmpty) "searchKey": query,
         if (selectedStatus != null) "status": selectedStatus,
         if (isNearestFilterSelected) "byNearest": isNearestFilterSelected,
-        if (isNearestFilterSelected) "latitude": "30.510187246065026",
-        if (isNearestFilterSelected) "longitude": "31.352178770683253",
+        if (isNearestFilterSelected && currentLocation != null)
+          "latitude": currentLocation!.latitude,
+        if (isNearestFilterSelected && currentLocation != null)
+          "longitude": currentLocation!.longitude,
       };
 
       final endpoint = selectedStatus != null

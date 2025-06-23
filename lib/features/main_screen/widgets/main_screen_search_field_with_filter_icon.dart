@@ -8,18 +8,14 @@ import 'package:gap/gap.dart';
 class MainScreenSearchFieldWithFilterIcon extends StatelessWidget {
   const MainScreenSearchFieldWithFilterIcon({
     super.key,
-    required this.accesstoken,
   });
-  final String accesstoken;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: MainScreenSearchField(
-            accesstoken: accesstoken,
-          ),
+        const Expanded(
+          child: MainScreenSearchField(),
         ),
         const Gap(10),
         SizedBox(

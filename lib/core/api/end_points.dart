@@ -36,7 +36,7 @@ class EndPoint {
   static String chatHub = "/Chat";
   static String getMessageBetween = "$baseUrl/api/chat/messages";
   static String filterMessages = "$baseUrl/api/chat/filter";
-  static String getMyChat = "$baseUrl/api/chat/chat?pageNo=1&pageSize=30";
+  static String getMyChat = "$baseUrl/api/chat/chat";
   static String markAsSeen = "$baseUrl/api/chat/ack";
 
   // Chat SignalR methods
@@ -55,7 +55,7 @@ class EndPoint {
   static String getReview = "$baseUrl/api/review";
 
   //Rental Endpoint
-  static String rentalHistory = "/api/rental/history";
+  static String rentalHistory = "$baseUrl/api/rental/history";
 
   //Report Endpoint
   static String createReport = "$baseUrl/api/report/";

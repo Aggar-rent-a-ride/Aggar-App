@@ -2,8 +2,8 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/views/main_screen.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
+import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
-import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomerBottomNavigationBarViews extends StatefulWidget {
@@ -29,7 +29,7 @@ class _CustomerBottomNavigationBarViewsState
     List<Widget> screens = [
       const MainScreen(),
       const MessagesView(),
-      const SettingsScreen(),
+      const NotificationScreen(),
       const ProfileScreen(),
     ];
     return Scaffold(

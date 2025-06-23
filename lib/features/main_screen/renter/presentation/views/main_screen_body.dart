@@ -10,11 +10,9 @@ import 'package:gap/gap.dart';
 class MainScreenBody extends StatefulWidget {
   const MainScreenBody({
     super.key,
-    required this.accessToken,
     required this.onRefresh,
   });
 
-  final String accessToken;
   final VoidCallback onRefresh;
 
   @override
@@ -83,7 +81,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                     MaterialPageRoute(
                       builder: (context) => const NotificationScreen(),
                     )),
-                accesstoken: widget.accessToken,
               ),
             ),
 
