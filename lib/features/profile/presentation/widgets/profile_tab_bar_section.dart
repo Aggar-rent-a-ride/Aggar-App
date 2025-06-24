@@ -3,6 +3,10 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/profile/presentation/widgets/review_user_section.dart';
 import 'package:aggar/features/profile/presentation/widgets/saved_vehicle_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/cubit/user_cubit/user_info_cubit.dart';
+import '../../../../core/cubit/user_cubit/user_info_state.dart';
 
 class ProfileTabBarSection extends StatefulWidget {
   const ProfileTabBarSection({super.key});
@@ -37,31 +41,40 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TabBar(
-          overlayColor: WidgetStateProperty.all(Colors.transparent),
-          controller: _tabController,
-          padding: EdgeInsets.zero,
-          indicatorPadding: EdgeInsets.zero,
-          indicatorColor: context.theme.blue100_2,
-          dividerColor: context.theme.black25,
-          labelColor: context.theme.blue100_2,
-          unselectedLabelColor: context.theme.gray100_2,
-          labelStyle: AppStyles.bold18(context)
-              .copyWith(color: context.theme.blue100_2),
-          unselectedLabelStyle: AppStyles.bold18(context).copyWith(
-            color: context.theme.black25,
-          ),
-          tabs: const [
-            Tab(text: 'Saved'),
-            Tab(text: 'Reviews'),
+    return BlocBuilder<UserInfoCubit, UserInfoState>(
+      builder: (context, userState) {
+        String? userId;
+        if (userState is UserInfoSuccess) {
+          userId = userState.userInfoModel.id.toString();
+        }
+
+        return Column(
+          children: [
+            TabBar(
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              controller: _tabController,
+              padding: EdgeInsets.zero,
+              indicatorPadding: EdgeInsets.zero,
+              indicatorColor: context.theme.blue100_2,
+              dividerColor: context.theme.black25,
+              labelColor: context.theme.blue100_2,
+              unselectedLabelColor: context.theme.gray100_2,
+              labelStyle: AppStyles.bold18(context)
+                  .copyWith(color: context.theme.blue100_2),
+              unselectedLabelStyle: AppStyles.bold18(context).copyWith(
+                color: context.theme.black25,
+              ),
+              tabs: const [
+                Tab(text: 'Saved'),
+                Tab(text: 'Reviews'),
+              ],
+            ),
+            _selectedTabIndex == 0
+                ? const SavedVehicleSection()
+                : ReviewUserSection(userId: userId.toString())
           ],
-        ),
-        _selectedTabIndex == 0
-            ? const SavedVehicleSection()
-            : const ReviewUserSection()
-      ],
+        );
+      },
     );
   }
 }

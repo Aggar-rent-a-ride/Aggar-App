@@ -99,7 +99,7 @@ class SelectedLocationMapContent extends StatelessWidget {
                     onEditLocation(LatLng(latitude, longitude), newAddress);
                   }
                 },
-                backgroundColor: context.theme.blue100_2,
+                backgroundColor: context.theme.blue100_1,
                 child: Icon(
                   Icons.edit_location_alt_rounded,
                   color: context.theme.blue10_2,

@@ -1,10 +1,10 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
 import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_settings_buttons.dart';
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
 import 'package:aggar/features/profile/presentation/widgets/profile_tab_bar_section.dart';
+import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final token = await tokenCubit.getAccessToken();
     if (token != null) {
       context.read<ProfileCubit>().fetchFavoriteVehicles(token);
-      context.read<ReviewCubit>().getUserReviews("20", token);
+      context.read<ReviewCubit>().getUserReviews("22", token);
     }
   }
 
@@ -71,20 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.1,
-                  left: 0,
-                  right: 0,
-                  child: CircleAvatar(
-                    backgroundColor: context.theme.white100_1,
-                    radius: 50,
-                    child: const AvatarChatView(
-                      image:
-                          "https://i.pinimg.com/736x/b0/01/79/b00179610a20e41403e43fbee5381fda.jpg",
-                      size: 90,
-                    ),
-                  ),
-                ),
+                const UserPhoto(),
               ],
             ),
             const Gap(50),

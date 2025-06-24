@@ -15,6 +15,8 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     required this.obscureText,
     this.onSuffixIconPressed,
+    this.maxLines = 1,
+    this.onTap,
   });
 
   final String labelText;
@@ -27,6 +29,8 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool obscureText;
   final VoidCallback? onSuffixIconPressed;
+  final int maxLines;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +58,18 @@ class CustomTextField extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 4,
-                    offset: Offset(4, 4),
+                    offset: Offset(0, 0),
                   ),
                 ],
               ),
-              child: TextFormField(
+              child: TextField(
                 style: AppStyles.regular16(context).copyWith(
                   color: context.theme.black100,
                 ),
                 textAlign: TextAlign.start,
                 keyboardType: inputType,
-                initialValue: initialValue,
+                maxLines: obscureText ? 1 : maxLines,
+                onTap: onTap,
                 onChanged: (value) {
                   state.didChange(value);
                   onChanged?.call(value);
@@ -77,7 +82,7 @@ class CustomTextField extends StatelessWidget {
                     color: context.theme.black50,
                   ),
                   filled: true,
-                  fillColor: context.theme.gray100_1,
+                  fillColor: context.theme.black10,
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 14,
                     horizontal: 19,
@@ -86,8 +91,24 @@ class CustomTextField extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: BorderSide.none,
                   ),
-                  errorStyle:
-                      const TextStyle(height: 0, color: Colors.transparent),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: state.hasError
+                        ? BorderSide(
+                            color: context.theme.red10_1,
+                            width: 1.5,
+                          )
+                        : BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: state.hasError
+                        ? BorderSide(
+                            color: context.theme.red10_1,
+                            width: 2.0,
+                          )
+                        : BorderSide.none,
+                  ),
                   suffixIcon: suffixIcon != null
                       ? IconButton(
                           icon: suffixIcon!,
@@ -105,9 +126,11 @@ class CustomTextField extends StatelessWidget {
                   style: TextStyle(
                     color: context.theme.red10_1,
                     fontSize: 12,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
+            const SizedBox(height: 8),
           ],
         );
       },

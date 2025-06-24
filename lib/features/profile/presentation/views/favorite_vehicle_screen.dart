@@ -19,7 +19,7 @@ class FavoriteVehicleScreen extends StatefulWidget {
 
 class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
   late ScrollController _scrollController;
-  late ProfileCubit _cubit; // Changed to late to ensure initialization
+  late ProfileCubit _cubit;
   String? tokenr;
 
   @override
@@ -27,8 +27,8 @@ class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-    _cubit = context.read<ProfileCubit>(); // Initialize _cubit
-    _fetchInitialData(); // Fetch token and initial data
+    _cubit = context.read<ProfileCubit>();
+    _fetchInitialData();
   }
 
   @override
@@ -45,7 +45,7 @@ class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
       setState(() {
         tokenr = token;
       });
-      _cubit.fetchFavoriteVehicles(token); // Fetch initial favorite vehicles
+      _cubit.fetchFavoriteVehicles(token);
     }
   }
 

@@ -71,6 +71,7 @@ class EndPoint {
   static String getUser = "$baseUrl/api/user/";
   static String punishUser = "$baseUrl/api/user/punish";
   static String getUserInfo = "$baseUrl/api/user/profile";
+  static String editProfile = "$baseUrl/api/user/profile";
 
   //Payment Endpoint
   static String connectedAccount = "$baseUrl/api/payment/connected-account";
