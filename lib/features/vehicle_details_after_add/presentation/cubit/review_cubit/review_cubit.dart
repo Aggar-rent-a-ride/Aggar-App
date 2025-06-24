@@ -120,7 +120,7 @@ class ReviewCubit extends Cubit<ReviewState> {
         queryParameters: {
           'userId': userId,
           'pageNo': isLoadMore ? _pageUserReviews + 1 : 1,
-          'pageSize': 10,
+          'pageSize': 6,
         },
         options: Options(
           headers: {

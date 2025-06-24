@@ -1,5 +1,6 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cache/cache_helper.dart';
+import 'package:aggar/core/cubit/edit_user_info/edit_user_info_cubit.dart';
 import 'package:aggar/core/cubit/language/language_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/report/report_creation_cubit.dart';
@@ -202,6 +203,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => UserInfoCubit(),
+        ),
+        BlocProvider(
+          create: (context) => EditUserInfoCubit(),
         ),
         BlocProvider(
           create: (context) => FilterCubit(),

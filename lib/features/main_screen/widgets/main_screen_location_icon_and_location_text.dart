@@ -8,6 +8,7 @@ import 'package:aggar/features/search/presentation/cubit/search_field/search_cub
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:marquee/marquee.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../core/utils/app_constants.dart';
@@ -54,21 +55,51 @@ class MainScreenLocationIconAndLocationText extends StatelessWidget {
                         ),
                       )
                     : state is UserInfoSuccess
-                        ? Row(
-                            children: [
-                              Text(
-                                state.userInfoModel.address,
-                                style: AppStyles.medium18(context).copyWith(
-                                  color: AppConstants.myWhite100_1
-                                      .withOpacity(0.9),
-                                ),
-                              ),
-                            ],
+                        ? SizedBox(
+                            width: MediaQuery.sizeOf(context).width * 0.8,
+                            height: 20,
+                            child: _buildText(context, state.userInfoModel.address),
                           )
                         : const SizedBox.shrink(),
           ],
         );
       },
     );
+  }
+
+  Widget _buildText(BuildContext context, String text) {
+    final textStyle = AppStyles.medium18(context).copyWith(
+      color: AppConstants.myWhite100_1.withOpacity(0.9),
+    );
+
+    // Calculate text width to determine if scrolling is needed
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: textStyle),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final shouldScroll = textPainter.width > MediaQuery.sizeOf(context).width * 0.8;
+
+    return shouldScroll
+        ? Marquee(
+            text: text,
+            style: textStyle,
+            scrollAxis: Axis.horizontal,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            blankSpace: 20.0,
+            velocity: 50.0,
+            pauseAfterRound: const Duration(seconds: 1),
+            startPadding: 0.0,
+            accelerationDuration: const Duration(milliseconds: 500),
+            accelerationCurve: Curves.linear,
+            decelerationDuration: const Duration(milliseconds: 500),
+            decelerationCurve: Curves.linear,
+          )
+        : Text(
+            text,
+            style: textStyle,
+            overflow: TextOverflow.ellipsis,
+          );
   }
 }

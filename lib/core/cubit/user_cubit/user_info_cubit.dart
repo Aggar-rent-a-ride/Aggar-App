@@ -19,8 +19,42 @@ class UserInfoCubit extends Cubit<UserInfoState> {
       );
 
       final userInfo = UserInfoModel.fromJson(response["data"]);
-      print("User Info: $userInfo");
       emit(UserInfoSuccess(userInfoModel: userInfo));
+    } catch (e) {
+      emit(UserInfoError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> editProfile(
+      String userId,
+      String token,
+      String name,
+      String image,
+      String longitude,
+      String latitude,
+      String address,
+      String dateOfBirth,
+      String bio) async {
+    emit(UserInfoLoading());
+    try {
+      final formData = FormData.fromMap({
+        'name': name,
+        'image': await MultipartFile.fromFile(image, filename: 'profile.jpg'),
+        'Location.longitude': longitude,
+        'Location.latitude': latitude,
+        'address': address,
+        'DateOfBirth': dateOfBirth,
+        'bio': bio,
+      });
+
+      final response = await dio.put(
+        '${EndPoint.baseUrl}/api/user/profile',
+        data: formData,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      final updatedUserInfo = UserInfoModel.fromJson(response["data"]);
+      emit(UserInfoSuccess(userInfoModel: updatedUserInfo));
     } catch (e) {
       emit(UserInfoError(errorMessage: e.toString()));
     }

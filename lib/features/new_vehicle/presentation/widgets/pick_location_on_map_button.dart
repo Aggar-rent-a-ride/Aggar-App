@@ -9,8 +9,10 @@ class PickLocationOnMapButton extends StatelessWidget {
   const PickLocationOnMapButton({
     super.key,
     required this.onPickLocation,
+    this.color,
   });
   final Function(LatLng, String) onPickLocation;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class PickLocationOnMapButton extends StatelessWidget {
           elevation: WidgetStateProperty.all(0),
           overlayColor: WidgetStateProperty.all(context.theme.blue50_2),
           backgroundColor: WidgetStateProperty.all(
-            context.theme.blue10_2,
+            color ?? context.theme.blue10_2,
           ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
