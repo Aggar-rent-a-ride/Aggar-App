@@ -1,6 +1,6 @@
 import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
-import 'package:aggar/features/booking/presentation/views/booking_details_view.dart';
+import 'package:aggar/features/booking/presentation/views/booking_details_view_customer.dart';
 import 'package:aggar/features/booking/presentation/widgets/custom_app_bar.dart';
 import 'package:aggar/features/booking/presentation/widgets/date_time_row.dart';
 import 'package:aggar/features/booking/presentation/widgets/important_reminder.dart';
@@ -52,7 +52,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookingDetailsScreen(
+                    builder: (context) => BookingDetailsScreenCustomer(
                       booking: state.booking,
                     ),
                   ),
