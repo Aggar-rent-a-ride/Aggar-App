@@ -1,11 +1,17 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/booking/presentation/views/booking_details_view_renter.dart';
 import 'package:aggar/features/main_screen/renter/model/booking_item.dart';
 import 'package:aggar/features/main_screen/renter/presentation/widgets/booking_card.dart';
 import 'package:aggar/features/main_screen/widgets/main_header.dart';
 import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:gap/gap.dart';
+
+// Import your booking cubit here
+import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
+import 'package:aggar/features/booking/data/cubit/booking_state.dart';
 
 class MainScreenBody extends StatefulWidget {
   const MainScreenBody({
@@ -24,35 +30,20 @@ class _MainScreenBodyState extends State<MainScreenBody> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  final List<BookingItem> _bookings = [
-    BookingItem(
-      name: 'Mike Chen',
-      service: 'Hair Cut & Trim',
-      time: '2:15 PM',
-      date: 'Dec 10',
-      status: 'Pending',
-      color: const Color(0xFF6B73FF),
-      initial: 'M',
-    ),
-    BookingItem(
-      name: 'Emma Davis',
-      service: 'Color Treatment',
-      time: '4:00 PM',
-      date: 'Dec 10',
-      status: 'Pending',
-      color: const Color(0xFF8B5CF6),
-      initial: 'E',
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
     _selectedDay = DateTime.now();
+    _loadPendingBookings();
+  }
+
+  void _loadPendingBookings() {
+    context.read<BookingCubit>().getRenterPendingBookings();
   }
 
   Future<void> _onRefresh() async {
     widget.onRefresh();
+    _loadPendingBookings();
     await Future.delayed(const Duration(seconds: 1));
   }
 
@@ -196,7 +187,9 @@ class _MainScreenBodyState extends State<MainScreenBody> {
 
             const Gap(24),
 
+            // New Bookings Section with BlocBuilder
             Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -214,23 +207,198 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'New Bookings',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'New Bookings',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: _loadPendingBookings,
+                          icon: const Icon(
+                            Icons.refresh,
+                            color: Color(0xFF6B73FF),
+                          ),
+                        ),
+                      ],
                     ),
                     const Gap(5),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _bookings.length,
-                      separatorBuilder: (context, index) => const Gap(12),
-                      itemBuilder: (context, index) {
-                        final booking = _bookings[index];
-                        return BookingCard(booking: booking);
+
+                    // BlocBuilder for BookingCubit
+                    BlocBuilder<BookingCubit, BookingState>(
+                      builder: (context, state) {
+                        if (state is RenterPendingBookingsLoading) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF6B73FF),
+                              ),
+                            ),
+                          );
+                        }
+
+                        if (state is RenterPendingBookingsError) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    color: Colors.red[400],
+                                    size: 48,
+                                  ),
+                                  const Gap(12),
+                                  Text(
+                                    'Failed to load bookings',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red[700],
+                                    ),
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    state.message,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  const Gap(16),
+                                  ElevatedButton.icon(
+                                    onPressed: _loadPendingBookings,
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text('Retry'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF6B73FF),
+                                      foregroundColor: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        if (state is RenterPendingBookingsSuccess) {
+                          if (state.bookings.isEmpty) {
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.event_available,
+                                      color: Colors.grey[400],
+                                      size: 64,
+                                    ),
+                                    const Gap(16),
+                                    Text(
+                                      'No new bookings',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    const Gap(8),
+                                    Text(
+                                      'New booking requests will appear here',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[500],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                          // Convert BookingModel to BookingItem for display
+                          final bookingItems = state.bookings.map((booking) {
+                            // Create a display name from vehicle brand and model
+                            final vehicleName =
+                                '${booking.vehicleBrand ?? ''} ${booking.vehicleModel}'
+                                    .trim();
+                            final displayName = vehicleName.isNotEmpty
+                                ? vehicleName
+                                : 'Unknown Vehicle';
+
+                            return BookingItem(
+                              id: booking.id,
+                              name: displayName,
+                              service:
+                                  '${booking.totalDays} ${booking.totalDays == 1 ? 'Day' : 'Days'} Rental',
+                              time: _formatTime(booking.startDate),
+                              date: _formatDate(booking.startDate),
+                              status: booking.status,
+                              color: _getStatusColor(booking.status),
+                              initial: displayName.isNotEmpty
+                                  ? displayName[0].toUpperCase()
+                                  : 'V',
+                            );
+                          }).toList();
+
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: bookingItems.length,
+                            separatorBuilder: (context, index) => const Gap(12),
+                            itemBuilder: (context, index) {
+                              final bookingItem = bookingItems[index];
+                              final originalBooking = state.bookings[index];
+                              return BookingCard(
+                                booking: bookingItem,
+                                onTap: () =>
+                                    _navigateToBookingDetails(bookingItem),
+                              );
+                            },
+                          );
+                        }
+
+                        // Default empty state for initial load
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.event_available,
+                                  color: Colors.grey[400],
+                                  size: 64,
+                                ),
+                                const Gap(16),
+                                Text(
+                                  'No new bookings',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const Gap(8),
+                                Text(
+                                  'New booking requests will appear here',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -243,5 +411,65 @@ class _MainScreenBodyState extends State<MainScreenBody> {
         ),
       ),
     );
+  }
+
+  Future<void> _navigateToBookingDetails(BookingItem booking) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingDetailsScreenRenter(booking: booking),
+      ),
+    );
+
+    // Refresh bookings if action was taken
+    if (result != null && (result == 'accepted' || result == 'rejected')) {
+      _loadPendingBookings();
+    }
+  }
+
+  // Helper methods for formatting data
+  String _formatTime(DateTime? dateTime) {
+    if (dateTime == null) return 'TBD';
+    final hour = dateTime.hour;
+    final minute = dateTime.minute;
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    return '$displayHour:${minute.toString().padLeft(2, '0')} $period';
+  }
+
+  String _formatDate(DateTime? dateTime) {
+    if (dateTime == null) return 'TBD';
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    return '${months[dateTime.month - 1]} ${dateTime.day}';
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return const Color(0xFF6B73FF);
+      case 'confirmed':
+      case 'accepted':
+        return const Color(0xFF10B981);
+      case 'cancelled':
+      case 'canceled':
+        return const Color(0xFFEF4444);
+      case 'rejected':
+        return const Color(0xFFEF4444);
+      default:
+        return const Color(0xFF6B73FF);
+    }
   }
 }

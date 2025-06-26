@@ -5,10 +5,10 @@ import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
 import 'package:intl/intl.dart';
 
-class BookingDetailsScreen extends StatelessWidget {
+class BookingDetailsScreenCustomer extends StatelessWidget {
   final BookingModel booking;
 
-  const BookingDetailsScreen({
+  const BookingDetailsScreenCustomer({
     super.key,
     required this.booking,
   });

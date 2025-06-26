@@ -15,6 +15,7 @@ class EndPoint {
   static String getBookingById = "/api/booking";
   static String getBookingsByStatus = "/api/booking/bookings-by-status";
   static String getBookingsCount = "/api/booking/count-bookings-by-status";
+  static const String getRenterPendingBookings = "/api/booking/pending";
 
   // Vehicle endpoints
   static String vehicle = "/api/vehicle/";

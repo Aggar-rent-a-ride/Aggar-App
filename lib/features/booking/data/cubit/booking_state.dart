@@ -102,13 +102,44 @@ class BookingsCountError extends BookingState {
   List<Object?> get props => [message];
 }
 
+class RenterPendingBookingsLoading extends BookingState {}
+
+class RenterPendingBookingsSuccess extends BookingState {
+  final List<BookingModel> bookings;
+  final int totalPages;
+  final int currentPage;
+  final int pageSize;
+
+  const RenterPendingBookingsSuccess({
+    required this.bookings,
+    required this.totalPages,
+    required this.currentPage,
+    required this.pageSize,
+  });
+
+  @override
+  List<Object?> get props => [bookings, totalPages, currentPage, pageSize];
+}
+
+class RenterPendingBookingsError extends BookingState {
+  final String message;
+
+  const RenterPendingBookingsError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class BookingMultipleOperationState extends BookingState {
   final bool isCreating;
   final bool isGettingById;
   final bool isGettingByStatus;
   final bool isGettingCount;
+  final bool isGettingRenterPending; // NEW: Added for renter pending bookings
   final BookingModel? currentBooking;
   final List<BookingModel> bookings;
+  final List<BookingModel>
+      renterPendingBookings; // NEW: Added for renter pending bookings
   final int? totalCount;
   final String? errorMessage;
 
@@ -117,8 +148,10 @@ class BookingMultipleOperationState extends BookingState {
     this.isGettingById = false,
     this.isGettingByStatus = false,
     this.isGettingCount = false,
+    this.isGettingRenterPending = false, // NEW
     this.currentBooking,
     this.bookings = const [],
+    this.renterPendingBookings = const [], // NEW
     this.totalCount,
     this.errorMessage,
   });
@@ -128,8 +161,10 @@ class BookingMultipleOperationState extends BookingState {
     bool? isGettingById,
     bool? isGettingByStatus,
     bool? isGettingCount,
+    bool? isGettingRenterPending, // NEW
     BookingModel? currentBooking,
     List<BookingModel>? bookings,
+    List<BookingModel>? renterPendingBookings, // NEW
     int? totalCount,
     String? errorMessage,
   }) {
@@ -138,8 +173,12 @@ class BookingMultipleOperationState extends BookingState {
       isGettingById: isGettingById ?? this.isGettingById,
       isGettingByStatus: isGettingByStatus ?? this.isGettingByStatus,
       isGettingCount: isGettingCount ?? this.isGettingCount,
+      isGettingRenterPending:
+          isGettingRenterPending ?? this.isGettingRenterPending, // NEW
       currentBooking: currentBooking ?? this.currentBooking,
       bookings: bookings ?? this.bookings,
+      renterPendingBookings:
+          renterPendingBookings ?? this.renterPendingBookings, // NEW
       totalCount: totalCount ?? this.totalCount,
       errorMessage: errorMessage,
     );
@@ -151,8 +190,10 @@ class BookingMultipleOperationState extends BookingState {
         isGettingById,
         isGettingByStatus,
         isGettingCount,
+        isGettingRenterPending, // NEW
         currentBooking,
         bookings,
+        renterPendingBookings, // NEW
         totalCount,
         errorMessage,
       ];

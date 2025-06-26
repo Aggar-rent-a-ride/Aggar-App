@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BookingItem {
+  final int id; // Add this property
   final String name;
   final String service;
   final String time;
@@ -10,6 +11,7 @@ class BookingItem {
   final String initial;
 
   BookingItem({
+    required this.id, // Add this parameter
     required this.name,
     required this.service,
     required this.time,
