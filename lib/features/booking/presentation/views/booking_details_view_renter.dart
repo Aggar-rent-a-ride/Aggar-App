@@ -5,7 +5,6 @@ import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 
 class BookingDetailsScreenRenter extends StatefulWidget {
   final BookingItem booking;
@@ -20,10 +19,11 @@ class BookingDetailsScreenRenter extends StatefulWidget {
 }
 
 class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter> {
+  bool _isProcessingResponse = false;
+
   @override
   void initState() {
     super.initState();
-    // Fetch booking details when screen loads
     context.read<BookingCubit>().getBookingById(widget.booking.id);
   }
 
@@ -57,6 +57,39 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                 backgroundColor: Colors.red,
               ),
             );
+          }
+            if (state is BookingResponseSuccess) {
+            setState(() {
+              _isProcessingResponse = false;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: state.isAccepted ? Colors.green : Colors.orange,
+              ),
+            );
+            
+            Navigator.pop(context, state.isAccepted ? 'accepted' : 'rejected');
+          }
+          
+          if (state is BookingResponseError) {
+            setState(() {
+              _isProcessingResponse = false;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          
+          if (state is BookingResponseLoading) {
+            setState(() {
+              _isProcessingResponse = true;
+            });
           }
         },
         builder: (context, state) {
@@ -120,7 +153,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                // Main Details Card
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -140,7 +172,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header with status
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -176,7 +207,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
 
                         const Gap(24),
 
-                        // Customer Profile Section
                         const Text(
                           'Customer Profile',
                           style: TextStyle(
@@ -237,10 +267,7 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                             ),
                           ],
                         ),
-
                         const Gap(24),
-
-                        // Vehicle Information
                         const Text(
                           'Vehicle Information',
                           style: TextStyle(
@@ -319,7 +346,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
 
                         const Gap(24),
 
-                        // Booking Period
                         const Text(
                           'Booking Period',
                           style: TextStyle(
@@ -415,8 +441,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                         ),
 
                         const Gap(24),
-
-                        // Pricing Details
                         const Text(
                           'Pricing Details',
                           style: TextStyle(
@@ -427,7 +451,7 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                         ),
                         const Gap(12),
 
-                        _buildPriceRow('Base Price', '\$${bookingData?.price?.toStringAsFixed(2) ?? '0.00'}'),
+                        _buildPriceRow('Base Price', '\$${bookingData?.price.toStringAsFixed(2) ?? '0.00'}'),
                         if ((bookingData?.discount ?? 0) > 0)
                           _buildPriceRow('Discount', '-\$${((bookingData?.price ?? 0) * (bookingData?.discount ?? 0) / 100).toStringAsFixed(2)}'),
 
@@ -447,7 +471,7 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                               ),
                             ),
                             Text(
-                              '\$${bookingData?.finalPrice?.toStringAsFixed(2) ?? '0.00'}',
+                              '\$${bookingData?.finalPrice.toStringAsFixed(2) ?? '0.00'}',
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -463,53 +487,103 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
 
                 const Gap(24),
 
-                // Action Buttons
-                if ((bookingData?.status ?? widget.booking.status) == 'Pending') ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _handleRejectBooking(context, bookingData?.id ?? widget.booking.id),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.red,
-                            side: const BorderSide(color: Colors.red),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                if ((bookingData?.status ?? widget.booking.status).toLowerCase() == 'pending') ...[
+                  if (_isProcessingResponse) ...[
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          const CircularProgressIndicator(
+                            color: Color(0xFF6B73FF),
+                          ),
+                          const Gap(12),
+                          Text(
+                            'Processing your response...',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
                             ),
                           ),
-                          child: const Text(
-                            'Decline',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                        ],
+                      ),
+                    ),
+                  ] else ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => _showDeclineConfirmation(context, bookingData?.id ?? widget.booking.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.red,
+                              side: const BorderSide(color: Colors.red),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'Decline',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const Gap(12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _handleAcceptBooking(context, bookingData?.id ?? widget.booking.id),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF6B73FF),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        const Gap(12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => _showAcceptConfirmation(context, bookingData?.id ?? widget.booking.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6B73FF),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            'Accept Booking',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                            child: const Text(
+                              'Accept Booking',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                  ],
+                ] else ...[
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(bookingData?.status ?? widget.booking.status).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _getStatusColor(bookingData?.status ?? widget.booking.status).withOpacity(0.3),
                       ),
-                    ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          _getStatusIcon(bookingData?.status ?? widget.booking.status),
+                          color: _getStatusColor(bookingData?.status ?? widget.booking.status),
+                        ),
+                        const Gap(12),
+                        Expanded(
+                          child: Text(
+                            _getStatusMessage(bookingData?.status ?? widget.booking.status),
+                            style: TextStyle(
+                              color: _getStatusColor(bookingData?.status ?? widget.booking.status),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
 
@@ -565,80 +639,147 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
     }
   }
 
+  IconData _getStatusIcon(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return Icons.pending;
+      case 'confirmed':
+      case 'accepted':
+        return Icons.check_circle;
+      case 'rejected':
+      case 'cancelled':
+        return Icons.cancel;
+      case 'completed':
+        return Icons.done_all;
+      default:
+        return Icons.info;
+    }
+  }
+
+  String _getStatusMessage(String status) {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+      case 'accepted':
+        return 'You have accepted this booking request.';
+      case 'rejected':
+        return 'You have declined this booking request.';
+      case 'cancelled':
+        return 'This booking has been cancelled.';
+      case 'completed':
+        return 'This booking has been completed.';
+      default:
+        return 'Booking status: ${status.toUpperCase()}';
+    }
+  }
+
   String? _formatDate(DateTime? date) {
     if (date == null) return null;
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  Future<void> _handleAcceptBooking(BuildContext context, int bookingId) async {
-    try {
-      final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.ensureValidToken();
-
-      if (token != null && token.isNotEmpty) {
-        // TODO: Implement actual API call to accept booking
-        // You'll need to add acceptBooking method to BookingCubit
-        // await context.read<BookingCubit>().acceptBooking(bookingId, token);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Accepted booking #$bookingId'),
-            backgroundColor: Colors.green,
+  void _showAcceptConfirmation(BuildContext context, int bookingId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        );
-
-        Navigator.pop(context, 'accepted');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Session expired. Please login again.'),
-            backgroundColor: Colors.red,
+          title: const Text(
+            'Accept Booking',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          content: const Text(
+            'Are you sure you want to accept this booking request? This action cannot be undone.',
+            style: TextStyle(fontSize: 14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _handleAcceptBooking(context, bookingId);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6B73FF),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Accept'),
+            ),
+          ],
         );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error accepting booking: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+      },
+    );
   }
 
-  Future<void> _handleRejectBooking(BuildContext context, int bookingId) async {
-    try {
-      final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.ensureValidToken();
-
-      if (token != null && token.isNotEmpty) {
-        // TODO: Implement actual API call to reject booking
-        // You'll need to add rejectBooking method to BookingCubit
-        // await context.read<BookingCubit>().rejectBooking(bookingId, token);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Rejected booking #$bookingId'),
-            backgroundColor: Colors.red,
+  void _showDeclineConfirmation(BuildContext context, int bookingId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        );
-
-        Navigator.pop(context, 'rejected');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Session expired. Please login again.'),
-            backgroundColor: Colors.red,
+          title: const Text(
+            'Decline Booking',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          content: const Text(
+            'Are you sure you want to decline this booking request? This action cannot be undone.',
+            style: TextStyle(fontSize: 14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _handleRejectBooking(context, bookingId);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Decline'),
+            ),
+          ],
         );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error rejecting booking: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+      },
+    );
+  }
+
+  void _handleAcceptBooking(BuildContext context, int bookingId) {
+    context.read<BookingCubit>().acceptBooking(bookingId);
+  }
+
+  void _handleRejectBooking(BuildContext context, int bookingId) {
+    context.read<BookingCubit>().rejectBooking(bookingId);
   }
 }
