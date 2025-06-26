@@ -23,7 +23,6 @@ class BookingCubit extends Cubit<BookingState> {
     emit(BookingCreateLoading());
 
     try {
-      // Create FormData instead of JSON
       final formData = FormData.fromMap({
         'VehicleId': vehicleId.toString(),
         'StartDate': startDate.toIso8601String(),
@@ -38,7 +37,6 @@ class BookingCubit extends Cubit<BookingState> {
                 isFromData: true,
               ));
 
-      // Handle Dio response structure
       final responseData = response as Map<String, dynamic>;
       final statusCode = responseData['statusCode'] ??
           (response.containsKey('status') ? response['status'] : 200);
@@ -221,7 +219,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // NEW: Get Renter Pending Bookings
   Future<void> getRenterPendingBookings({
     int pageNo = 1,
     int pageSize = 10,
@@ -237,7 +234,7 @@ class BookingCubit extends Cubit<BookingState> {
       final response =
           await _makeAuthenticatedRequest(() async => dioConsumer.get(
                 EndPoint
-                    .getRenterPendingBookings, // You'll need to add this to your EndPoint class
+                    .getRenterPendingBookings, 
                 queryParameters: queryParams,
                 options: await _getAuthOptions(),
               ));
@@ -267,7 +264,6 @@ class BookingCubit extends Cubit<BookingState> {
             ));
           }
         } else if (bookingsData is List) {
-          // Handle case where response is directly a list
           final bookings = bookingsData
               .where((item) => item != null)
               .map((item) =>
@@ -301,7 +297,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Cancel booking functionality
   Future<void> cancelBooking(int bookingId) async {
     emit(const BookingCancelLoading());
 
@@ -337,7 +332,62 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  /// Helper method to get authorization options
+  Future<void> respondToBooking({
+    required int bookingId,
+    required bool isAccepted,
+  }) async {
+    emit(const BookingResponseLoading());
+
+    try {
+      final response =
+          await _makeAuthenticatedRequest(() async => dioConsumer.put(
+                EndPoint.bookingResponse, // You'll need to add this to your EndPoint class
+                queryParameters: {
+                  'id': bookingId,
+                  'isAccepted': isAccepted.toString(),
+                },
+                options: await _getAuthOptions(),
+              ));
+
+      final responseData = response as Map<String, dynamic>;
+      final statusCode = responseData['statusCode'] ??
+          (responseData.containsKey('status') ? responseData['status'] : 200);
+
+      if (statusCode == 200) {
+        final message = responseData['message']?.toString() ??
+            (isAccepted 
+                ? 'You accepted this booking successfully.' 
+                : 'You rejected this booking successfully.');
+        
+        emit(BookingResponseSuccess(
+          message: message,
+          bookingId: bookingId,
+          isAccepted: isAccepted,
+        ));
+      } else {
+        emit(BookingResponseError(
+          message: responseData['message']?.toString() ?? 
+              'Failed to respond to booking',
+        ));
+      }
+    } catch (e) {
+      if (e is DioException && e.response?.statusCode == 401) {
+        emit(const BookingResponseError(
+            message: 'Authentication failed. Please login again.'));
+      } else {
+        emit(BookingResponseError(message: e.toString()));
+      }
+    }
+  }
+
+  Future<void> acceptBooking(int bookingId) async {
+    await respondToBooking(bookingId: bookingId, isAccepted: true);
+  }
+
+  Future<void> rejectBooking(int bookingId) async {
+    await respondToBooking(bookingId: bookingId, isAccepted: false);
+  }
+
   Future<Options> _getAuthOptions() async {
     final token = await tokenRefreshCubit.getAccessToken();
     print("CURRENT TOKEN: $token"); // Debug log
@@ -349,26 +399,17 @@ class BookingCubit extends Cubit<BookingState> {
     );
   }
 
-  /// Helper method to handle API calls with automatic token refresh on 401
   Future<dynamic> _makeAuthenticatedRequest(
       Future<dynamic> Function() apiCall) async {
     try {
-      // Ensure we have a valid token before making the request
       await tokenRefreshCubit.ensureValidToken();
-
-      // Make the API call
       return await apiCall();
     } on DioException catch (e) {
-      // Handle 401 Unauthorized error
       if (e.response?.statusCode == 401) {
         try {
-          // Try to refresh the token
           await tokenRefreshCubit.refreshToken();
-
-          // Retry the original request with the new token
           return await apiCall();
         } catch (refreshError) {
-          // If token refresh fails, throw the original 401 error
           throw DioException(
             requestOptions: e.requestOptions,
             response: e.response,
@@ -377,7 +418,6 @@ class BookingCubit extends Cubit<BookingState> {
           );
         }
       }
-      // Re-throw other DioExceptions
       rethrow;
     }
   }
@@ -394,7 +434,6 @@ class BookingCubit extends Cubit<BookingState> {
     );
   }
 
-  // NEW: Refresh Renter Pending Bookings
   Future<void> refreshRenterPendingBookings({
     int pageNo = 1,
     int pageSize = 10,

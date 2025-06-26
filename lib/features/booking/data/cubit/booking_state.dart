@@ -225,3 +225,31 @@ class BookingCancelError extends BookingState {
   @override
   List<Object> get props => [message];
 }
+
+class BookingResponseLoading extends BookingState {
+  const BookingResponseLoading();
+}
+
+class BookingResponseSuccess extends BookingState {
+  final String message;
+  final int bookingId;
+  final bool isAccepted;
+
+  const BookingResponseSuccess({
+    required this.message,
+    required this.bookingId,
+    required this.isAccepted,
+  });
+
+  @override
+  List<Object> get props => [message, bookingId, isAccepted];
+}
+
+class BookingResponseError extends BookingState {
+  final String message;
+
+  const BookingResponseError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
