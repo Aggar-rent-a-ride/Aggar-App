@@ -1,6 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/features/settings/presentation/views/connected_account_page.dart';
+import 'package:aggar/features/payment/presentation/views/connected_account_page.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:flutter/material.dart';

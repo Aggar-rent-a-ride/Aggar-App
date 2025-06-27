@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/features/notification/data/cubit/notification_state.dart';
