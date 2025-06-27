@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../../core/helper/custom_snack_bar.dart';
+
 class BookingCard extends StatelessWidget {
   final BookingItem booking;
   final VoidCallback? onTap;
@@ -258,10 +260,11 @@ class BookingCard extends StatelessWidget {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Session expired. Please login again.'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
+          customSnackBar(
+            context,
+            "Error",
+            "'Session expired. Please login again.'",
+            SnackBarType.error,
           ),
         );
       }
@@ -334,10 +337,11 @@ class BookingCard extends StatelessWidget {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Session expired. Please login again.'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
+          customSnackBar(
+            context,
+            "Error",
+            "'Session expired. Please login again.'",
+            SnackBarType.error,
           ),
         );
       }

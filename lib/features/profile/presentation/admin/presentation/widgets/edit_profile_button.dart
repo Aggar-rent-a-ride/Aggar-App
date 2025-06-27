@@ -6,6 +6,8 @@ import 'package:aggar/features/profile/presentation/views/edit_profile_screen.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../authorization/data/cubit/Login/login_cubit.dart';
+
 class EditProfileButton extends StatelessWidget {
   const EditProfileButton({
     super.key,
@@ -18,12 +20,13 @@ class EditProfileButton extends StatelessWidget {
         final tokenCubit = context.read<TokenRefreshCubit>();
         final token = await tokenCubit.getAccessToken();
         if (token != null) {
-          context.read<EditUserInfoCubit>().fetchUserInfo("22", token);
+          String? userId = await context.read<LoginCubit>().getUserId();
+          context.read<EditUserInfoCubit>().fetchUserInfo(userId!, token);
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const EditProfileScreen(
-                  userId: "22",
+                builder: (context) => EditProfileScreen(
+                  userId: userId,
                 ),
               ));
         }

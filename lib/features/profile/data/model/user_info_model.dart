@@ -11,6 +11,7 @@ class UserInfoModel {
   final String? rate;
   final int age;
   final String? bio;
+  final String dateOfBirth;
 
   UserInfoModel({
     required this.id,
@@ -23,10 +24,12 @@ class UserInfoModel {
     this.rate,
     required this.age,
     this.bio,
+    required this.dateOfBirth,
   });
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     return UserInfoModel(
+        dateOfBirth: json["dateOfBirth"],
         bio: json['bio'],
         id: json['id'],
         name: json['name'],

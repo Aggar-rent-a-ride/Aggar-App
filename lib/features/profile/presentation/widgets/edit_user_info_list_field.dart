@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import '../../../authorization/data/cubit/Login/login_cubit.dart';
+
 class EditUserInfoListField extends StatelessWidget {
   const EditUserInfoListField({
     super.key,
@@ -18,29 +20,24 @@ class EditUserInfoListField extends StatelessWidget {
   });
 
   final EditUserInfoCubit cubit;
-
-  // Date validation method
   String? _validateDateFormat(String? value) {
-    if (value == null || value.trim().isEmpty) {
+    if (value == null) {
       return 'Date of birth is required';
     }
 
-    // Check if the format matches YYYY-MM-DD
     final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
     if (!dateRegex.hasMatch(value.trim())) {
       return 'Date format must be YYYY-MM-DD (e.g., 1990-06-24)';
     }
 
-    // Parse and validate the actual date
     try {
       final parts = value.trim().split('-');
       final year = int.parse(parts[0]);
       final month = int.parse(parts[1]);
       final day = int.parse(parts[2]);
 
-      // Basic date validation
-      if (year < 1900 || year > DateTime.now().year) {
-        return 'Please enter a valid year';
+      if (year < 1900 || year > 2025) {
+        return 'Please enter a valid year (1900-2025)';
       }
       if (month < 1 || month > 12) {
         return 'Month must be between 01 and 12';
@@ -48,19 +45,16 @@ class EditUserInfoListField extends StatelessWidget {
       if (day < 1 || day > 31) {
         return 'Day must be between 01 and 31';
       }
-
-      // Create DateTime to validate the date (this will throw if invalid)
       final date = DateTime(year, month, day);
 
-      // Check if the date is not in the future
-      if (date.isAfter(DateTime.now())) {
-        return 'Date of birth cannot be in the future';
+      final maxDate = DateTime(2025, 1, 13);
+      if (date.isAfter(maxDate)) {
+        return 'Date of birth cannot be after January 13, 2025';
       }
 
-      // Optional: Check minimum age (e.g., must be at least 13 years old)
-      final minDate = DateTime.now().subtract(const Duration(days: 365 * 13));
+      final minDate = maxDate.subtract(const Duration(days: 365 * 13));
       if (date.isAfter(minDate)) {
-        return 'You must be at least 13 years old';
+        return 'You must be at least 13 years old as of January 13, 2025';
       }
     } catch (e) {
       return 'Please enter a valid date';
@@ -146,9 +140,11 @@ class EditUserInfoListField extends StatelessWidget {
                   final token = await tokenCubit.getAccessToken();
                   if (token != null) {
                     await cubit.editProfile(token: token);
+                    String? userId =
+                        await context.read<LoginCubit>().getUserId();
                     await context
                         .read<UserInfoCubit>()
-                        .fetchUserInfo("22", token);
+                        .fetchUserInfo(userId!, token);
                     Navigator.pop(context);
                   }
                 } else {

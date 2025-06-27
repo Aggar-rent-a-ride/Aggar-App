@@ -2,6 +2,7 @@ import 'package:aggar/core/cubit/edit_user_info/edit_user_info_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,14 +26,16 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
             final tokenCubit = context.read<TokenRefreshCubit>();
             final token = await tokenCubit.getAccessToken();
             if (token != null) {
-              context.read<EditUserInfoCubit>().fetchUserInfo("22", token);
+              String? userId = await context.read<LoginCubit>().getUserId();
+              context.read<EditUserInfoCubit>().fetchUserInfo(userId!, token);
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EditProfileScreen(
-                      userId: "22",
-                    ),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfileScreen(
+                    userId: userId,
+                  ),
+                ),
+              );
             }
           },
           style: ElevatedButton.styleFrom(
