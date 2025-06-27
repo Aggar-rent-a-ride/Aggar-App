@@ -4,14 +4,11 @@ import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/notification/data/cubit/notification_state.dart';
-import 'package:aggar/features/notification/presentation/widgets/accept_or_feedback_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/connection_status_banner.dart';
-import 'package:aggar/features/notification/presentation/widgets/deny_button.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_card.dart';
 import 'package:aggar/features/notification/presentation/widgets/section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:aggar/core/services/notification_service.dart' as service;
 
 class NotificationScreen extends StatefulWidget {
@@ -103,7 +100,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       customSnackBar(
                         context,
                         "Error",
-                        "Notificaation Error: ${state.message}",
+                        "Notification Error: ${state.message}",
                         SnackBarType.error,
                       ),
                     );
@@ -287,63 +284,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final timeAgo = _getTimeAgo(notification.createdAt);
     final targetType = notification.additionalData?['targetType'] as String?;
     final targetId = notification.additionalData?['targetId'];
-    Widget? actionButtons;
-    bool hasButtons = false;
-
-    switch (targetType) {
-      case 'CustomerReview':
-        hasButtons = true;
-        actionButtons = AcceptOrFeedbackButton(
-          title: "View Review",
-          onPressed: () => _handleViewReview(notification, targetId),
-        );
-        break;
-      case 'Message':
-        hasButtons = true;
-        actionButtons = AcceptOrFeedbackButton(
-          title: "Open Chat",
-          onPressed: () => _handleOpenChat(notification, targetId),
-        );
-        break;
-      case 'Booking':
-        hasButtons = true;
-        actionButtons = Row(
-          children: [
-            AcceptOrFeedbackButton(
-              title: "Accept",
-              onPressed: () => _handleAcceptBooking(notification, targetId),
-            ),
-            const Gap(8),
-            DenyButton(
-              onPressed: () => _handleDenyBooking(notification, targetId),
-            ),
-          ],
-        );
-        break;
-      default:
-        // Handle other notification types or no specific action needed
-        if (notification.content.contains('request to start chat')) {
-          hasButtons = true;
-          actionButtons = Row(
-            children: [
-              AcceptOrFeedbackButton(
-                title: "Accept",
-                onPressed: () => _handleAccept(notification),
-              ),
-              const Gap(8),
-              DenyButton(
-                onPressed: () => _handleDeny(notification),
-              ),
-            ],
-          );
-        } else if (notification.content.contains('feedback')) {
-          hasButtons = true;
-          actionButtons = AcceptOrFeedbackButton(
-            title: "Send Feedback",
-            onPressed: () => _handleFeedback(notification),
-          );
-        }
-    }
 
     // Get avatar image
     final avatarImage =
@@ -351,10 +291,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     return GestureDetector(
       onTap: () {
+        // Mark as read when tapped
         if (!notification.isRead) {
           context.read<NotificationCubit>().markAsRead(notification.id);
         }
-        _handleNotificationTap(notification, targetType, targetId);
+        // Navigate to details view
+        _navigateToNotificationDetails(notification, targetType, targetId);
       },
       child: Container(
         color: notification.isRead
@@ -365,8 +307,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           name: notification.senderName ?? 'System',
           actionText: notification.content,
           timeAgo: timeAgo,
-          isfoundButton: hasButtons,
-          widget: actionButtons,
+          isfoundButton: false, // No buttons anymore
+          widget: null, // No action buttons
         ),
       ),
     );
@@ -385,63 +327,35 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-  void _handleNotificationTap(
+  void _navigateToNotificationDetails(
     service.Notification notification,
     String? targetType,
     dynamic targetId,
   ) {
-    if (targetType == null || targetId == null) return;
+    // Navigate to notification details screen
+    // You can pass the notification object and any additional data needed
+    Navigator.pushNamed(
+      context,
+      '/notification-details', // Define this route in your app
+      arguments: {
+        'notification': notification,
+        'targetType': targetType,
+        'targetId': targetId,
+      },
+    );
 
-    switch (targetType) {
-      case 'CustomerReview':
-        _handleViewReview(notification, targetId);
-        break;
-      case 'Message':
-        _handleOpenChat(notification, targetId);
-        break;
-      case 'Booking':
-        _handleViewBooking(notification, targetId);
-        break;
-      case 'Rental':
-        _handleViewRental(notification, targetId);
-        break;
-    }
-  }
-
-  void _handleViewReview(service.Notification notification, dynamic targetId) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleOpenChat(service.Notification notification, dynamic targetId) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleViewBooking(service.Notification notification, dynamic targetId) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleViewRental(service.Notification notification, dynamic targetId) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleAcceptBooking(
-      service.Notification notification, dynamic targetId) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleDenyBooking(service.Notification notification, dynamic targetId) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleAccept(service.Notification notification) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleDeny(service.Notification notification) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
-  }
-
-  void _handleFeedback(service.Notification notification) {
-    context.read<NotificationCubit>().markAsRead(notification.id);
+    // Alternative: If you prefer using a specific details screen widget
+    /*
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotificationDetailsScreen(
+          notification: notification,
+          targetType: targetType,
+          targetId: targetId,
+        ),
+      ),
+    );
+    */
   }
 }

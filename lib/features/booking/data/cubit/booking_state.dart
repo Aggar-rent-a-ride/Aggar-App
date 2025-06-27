@@ -226,6 +226,7 @@ class BookingCancelError extends BookingState {
   List<Object> get props => [message];
 }
 
+// Booking response states (accept/reject)
 class BookingResponseLoading extends BookingState {
   const BookingResponseLoading();
 }
@@ -249,6 +250,35 @@ class BookingResponseError extends BookingState {
   final String message;
 
   const BookingResponseError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+// Booking confirm states (for payment processing)
+class BookingConfirmLoading extends BookingState {
+  const BookingConfirmLoading();
+}
+
+class BookingConfirmSuccess extends BookingState {
+  final String message;
+  final int bookingId;
+  final String? clientSecret; // Stripe client secret for payment processing
+
+  const BookingConfirmSuccess({
+    required this.message,
+    required this.bookingId,
+    this.clientSecret,
+  });
+
+  @override
+  List<Object?> get props => [message, bookingId, clientSecret];
+}
+
+class BookingConfirmError extends BookingState {
+  final String message;
+
+  const BookingConfirmError({required this.message});
 
   @override
   List<Object> get props => [message];
