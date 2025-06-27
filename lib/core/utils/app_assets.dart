@@ -94,6 +94,10 @@ class AppAssets {
   /// assets/icons/notification_settings.png
   static const String assetsIconsNotificationSettings = "assets/icons/notification_settings.png";
 
+  /// Assets for assetsIconsNotifications
+  /// assets/icons/notifications.png
+  static const String assetsIconsNotifications = "assets/icons/notifications.png";
+
   /// Assets for assetsIconsOpenEyeIcon
   /// assets/icons/open_eye_icon.png
   static const String assetsIconsOpenEyeIcon = "assets/icons/open_eye_icon.png";
@@ -161,6 +165,10 @@ class AppAssets {
   /// Assets for assetsIconsUserOn
   /// assets/icons/user_on.png
   static const String assetsIconsUserOn = "assets/icons/user_on.png";
+
+  /// Assets for assetsIconsVehicleServices
+  /// assets/icons/vehicle_services.png
+  static const String assetsIconsVehicleServices = "assets/icons/vehicle_services.png";
 
   /// Assets for assetsImagesAvatar
   /// assets/images/avatar.png

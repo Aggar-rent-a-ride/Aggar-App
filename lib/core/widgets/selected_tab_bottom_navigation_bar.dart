@@ -9,12 +9,14 @@ class SelectedTabBottomNavigationBar extends StatelessWidget {
       required this.iconImage,
       required this.label,
       required this.selectedIndex,
-      required this.onTapped});
+      required this.onTapped,
+      this.size});
   final int index;
   final String iconImage;
   final String label;
   final int selectedIndex;
   final Function(int) onTapped;
+  final double? size;
   @override
   Widget build(BuildContext context) {
     final bool isSelected = selectedIndex == index;
@@ -38,8 +40,8 @@ class SelectedTabBottomNavigationBar extends StatelessWidget {
               image: AssetImage(
                 iconImage,
               ),
-              height: 21,
-              width: 21,
+              height: size ?? 21,
+              width: size ?? 21,
             ),
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
