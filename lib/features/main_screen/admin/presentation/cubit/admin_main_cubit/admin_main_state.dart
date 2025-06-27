@@ -14,6 +14,7 @@ class AdminMainConnected extends AdminMainState {
   final bool isVehicleTypesLoaded;
   final bool isVehicleBrandsLoaded;
   final bool isSignalRConnected;
+  final bool isUserInfoLoaded;
 
   const AdminMainConnected({
     required this.accessToken,
@@ -23,6 +24,7 @@ class AdminMainConnected extends AdminMainState {
     required this.isVehicleTypesLoaded,
     required this.isVehicleBrandsLoaded,
     required this.isSignalRConnected,
+    required this.isUserInfoLoaded,
   });
 
   // Helper method to check if all data is loaded

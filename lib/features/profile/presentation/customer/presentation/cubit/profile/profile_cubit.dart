@@ -2,8 +2,8 @@ import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../main_screen/customer/data/model/list_vehicle_model.dart';
-import '../../../../main_screen/customer/data/model/vehicle_model.dart';
+import '../../../../../../main_screen/customer/data/model/list_vehicle_model.dart';
+import '../../../../../../main_screen/customer/data/model/vehicle_model.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {

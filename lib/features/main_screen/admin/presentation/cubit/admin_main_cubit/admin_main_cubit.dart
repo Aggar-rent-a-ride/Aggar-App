@@ -1,3 +1,5 @@
+import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
+import 'package:aggar/core/cubit/user_cubit/user_info_state.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_cubit.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/user_statistics/user_statistics_state.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
@@ -24,6 +26,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
   final StatisticsCubit _statisticsCubit;
   final AdminVehicleTypeCubit _vehicleTypeCubit;
   final AdminVehicleBrandCubit _vehicleBrandCubit;
+  final UserInfoCubit _userInfoCubit;
   final SignalRService _signalRService = SignalRService();
 
   bool _isStatisticsLoaded = false;
@@ -31,6 +34,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
   bool _isStatisticsUsersLoaded = false;
   bool _isVehicleTypesLoaded = false;
   bool _isVehicleBrandsLoaded = false;
+  bool _isUserInfoLoaded = false;
   bool _isSignalRConnected = false;
   bool _isInitializing = false;
 
@@ -41,12 +45,14 @@ class AdminMainCubit extends Cubit<AdminMainState> {
     required StatisticsCubit statisticsCubit,
     required AdminVehicleTypeCubit vehicleTypeCubit,
     required AdminVehicleBrandCubit vehicleBrandCubit,
+    required UserInfoCubit userInfoCubit,
   })  : _tokenRefreshCubit = tokenRefreshCubit,
         _reportCubit = reportCubit,
         _userStatisticsCubit = userStatisticsCubit,
         _statisticsCubit = statisticsCubit,
         _vehicleTypeCubit = vehicleTypeCubit,
         _vehicleBrandCubit = vehicleBrandCubit,
+        _userInfoCubit = userInfoCubit,
         super(AdminMainInitial()) {
     _setupInternetChecker();
     _observeDataStates();
@@ -146,20 +152,34 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         }
       }
     });
+
+    _userInfoCubit.stream.listen((userInfoState) {
+      if (state is AdminMainConnected) {
+        if (userInfoState is UserInfoSuccess) {
+          _isVehicleBrandsLoaded = true;
+          _updateConnectedState();
+        } else if (userInfoState is UserInfoLoading) {
+          _isVehicleBrandsLoaded = false;
+          _updateConnectedState();
+        } else if (userInfoState is UserInfoError) {
+          _handleAuthError('user fetch failed: ${userInfoState.errorMessage}');
+        }
+      }
+    });
   }
 
   void _updateConnectedState() {
     if (state is AdminMainConnected) {
       final currentState = state as AdminMainConnected;
       emit(AdminMainConnected(
-        accessToken: currentState.accessToken,
-        isStatisticsLoaded: _isStatisticsLoaded,
-        isReportsLoaded: _isReportsLoaded,
-        isUserStatisticsLoaded: _isStatisticsUsersLoaded,
-        isVehicleTypesLoaded: _isVehicleTypesLoaded,
-        isVehicleBrandsLoaded: _isVehicleBrandsLoaded,
-        isSignalRConnected: _isSignalRConnected,
-      ));
+          accessToken: currentState.accessToken,
+          isStatisticsLoaded: _isStatisticsLoaded,
+          isReportsLoaded: _isReportsLoaded,
+          isUserStatisticsLoaded: _isStatisticsUsersLoaded,
+          isVehicleTypesLoaded: _isVehicleTypesLoaded,
+          isVehicleBrandsLoaded: _isVehicleBrandsLoaded,
+          isSignalRConnected: _isSignalRConnected,
+          isUserInfoLoaded: _isUserInfoLoaded));
     }
   }
 
@@ -228,15 +248,16 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         _isVehicleTypesLoaded = false;
         _isVehicleBrandsLoaded = false;
         _isSignalRConnected = false;
+        _isUserInfoLoaded = false;
         emit(AdminMainConnected(
-          accessToken: token,
-          isStatisticsLoaded: false,
-          isReportsLoaded: false,
-          isUserStatisticsLoaded: false,
-          isVehicleTypesLoaded: false,
-          isVehicleBrandsLoaded: false,
-          isSignalRConnected: false,
-        ));
+            accessToken: token,
+            isStatisticsLoaded: false,
+            isReportsLoaded: false,
+            isUserStatisticsLoaded: false,
+            isVehicleTypesLoaded: false,
+            isVehicleBrandsLoaded: false,
+            isSignalRConnected: false,
+            isUserInfoLoaded: false));
 
         _fetchData(token);
         if (userId != null) {
@@ -288,21 +309,22 @@ class AdminMainCubit extends Cubit<AdminMainState> {
       null,
     );
     _userStatisticsCubit.fetchUserTotals(accessToken);
-    // Add vehicle types and brands fetching
     _vehicleTypeCubit.fetchVehicleTypes(accessToken);
     _vehicleBrandCubit.fetchVehicleBrands(accessToken);
+
+    _userInfoCubit.fetchUserInfo("11", accessToken);
   }
 
   void handleTokenRefreshSuccess(String accessToken) {
     emit(AdminMainConnected(
-      accessToken: accessToken,
-      isStatisticsLoaded: false,
-      isReportsLoaded: false,
-      isUserStatisticsLoaded: false,
-      isVehicleTypesLoaded: false,
-      isVehicleBrandsLoaded: false,
-      isSignalRConnected: _isSignalRConnected,
-    ));
+        accessToken: accessToken,
+        isStatisticsLoaded: false,
+        isReportsLoaded: false,
+        isUserStatisticsLoaded: false,
+        isVehicleTypesLoaded: false,
+        isVehicleBrandsLoaded: false,
+        isSignalRConnected: _isSignalRConnected,
+        isUserInfoLoaded: false));
     _fetchData(accessToken);
 
     if (!_signalRService.isConnected) {

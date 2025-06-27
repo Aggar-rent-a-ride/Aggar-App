@@ -1,16 +1,16 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_settings_buttons.dart';
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
-import 'package:aggar/features/profile/presentation/widgets/profile_tab_bar_section.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/widgets/profile_tab_bar_section.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/cubit/refresh token/token_refresh_cubit.dart';
+import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
