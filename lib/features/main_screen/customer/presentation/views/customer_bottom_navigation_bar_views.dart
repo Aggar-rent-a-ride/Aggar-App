@@ -3,7 +3,7 @@ import 'package:aggar/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/views/main_screen.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/messages_view.dart';
 import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
-import 'package:aggar/features/profile/presentation/views/profile_screen.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/views/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomerBottomNavigationBarViews extends StatefulWidget {

@@ -37,7 +37,7 @@ class CustomBottomNavigationBarAdmin extends StatelessWidget {
               SelectedTabBottomNavigationBar(
                 iconImage: AppAssets.assetsIconsCarIcon,
                 index: 1,
-                label: 'Vehilces',
+                label: 'Services',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
               ),
@@ -51,7 +51,7 @@ class CustomBottomNavigationBarAdmin extends StatelessWidget {
               SelectedTabBottomNavigationBar(
                 iconImage: AppAssets.assetsIconsChats,
                 index: 3,
-                label: 'Messages',
+                label: 'Notifications',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
               ),

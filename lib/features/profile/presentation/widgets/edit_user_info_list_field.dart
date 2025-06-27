@@ -6,7 +6,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
-import 'package:aggar/features/profile/presentation/widgets/pick_user_location.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/widgets/pick_user_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';

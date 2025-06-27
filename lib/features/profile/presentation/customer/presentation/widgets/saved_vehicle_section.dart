@@ -2,9 +2,9 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/see_more_button.dart';
-import 'package:aggar/features/profile/presentation/cubit/profile/profile_cubit.dart';
-import 'package:aggar/features/profile/presentation/cubit/profile/profile_state.dart';
-import 'package:aggar/features/profile/presentation/views/favorite_vehicle_screen.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_state.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/views/favorite_vehicle_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
