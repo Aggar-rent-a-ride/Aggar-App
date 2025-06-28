@@ -1,12 +1,11 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/utils/app_constants.dart';
-import 'package:aggar/features/main_screen/admin/presentation/widgets/options_button.dart';
 import 'package:aggar/features/profile/presentation/widgets/location_tab_widget.dart';
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name_with_role.dart';
+import 'package:aggar/features/profile/presentation/widgets/sen_message_with_option_buttons.dart';
+import 'package:aggar/features/profile/presentation/widgets/show_profile_tab_bar.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_profile_with_image_path.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import '../../../../core/utils/app_styles.dart';
 import '../../../main_screen/admin/model/user_model.dart';
 import '../widgets/reviews_tab_widget.dart';
@@ -75,11 +74,18 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
                   ),
                   child: Center(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(
-                          width: 50,
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios_rounded,
+                            color: context.theme.white100_1,
+                            size: 26,
+                          ),
                         ),
                         Text(
                           "Profile Account",
@@ -88,9 +94,8 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        OptionsButton(
-                          user: widget.user,
-                          color: AppConstants.myWhite100_1,
+                        const SizedBox(
+                          width: 43,
                         )
                       ],
                     ),
@@ -102,25 +107,9 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
             const Gap(60),
             const NameWithUserNameWithRole(),
             const Gap(20),
-            TabBar(
-              overlayColor: WidgetStateProperty.all(Colors.transparent),
-              controller: _tabController,
-              padding: EdgeInsets.zero,
-              indicatorPadding: EdgeInsets.zero,
-              indicatorColor: context.theme.blue100_1,
-              dividerColor: context.theme.black10,
-              labelColor: context.theme.blue100_1,
-              unselectedLabelColor: context.theme.gray100_2,
-              labelStyle: AppStyles.bold18(context)
-                  .copyWith(color: context.theme.blue100_1),
-              unselectedLabelStyle: AppStyles.bold18(context).copyWith(
-                color: context.theme.black25,
-              ),
-              tabs: const [
-                Tab(text: 'Location'),
-                Tab(text: 'Reviews'),
-              ],
-            ),
+            SenMessageWithOptionButtons(user: widget.user),
+            const Gap(20),
+            ShowProfileTabBar(tabController: _tabController),
             const Gap(20),
             _selectedTabIndex == 0
                 ? LocationTabWidget(
@@ -128,7 +117,7 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
                   )
                 : ReviewsTabWidget(
                     user: widget.user,
-                    rate: 5,
+                    rate: widget.user.rate?.toDouble(),
                   ),
           ],
         ),

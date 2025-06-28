@@ -50,7 +50,7 @@ class EditUserInfoCubit extends Cubit<EditUserInfoState> {
       nameController.text = userInfo.name;
       bioController.text = userInfo.bio ?? '';
       dateOfBirthController.text = userInfo.dateOfBirth;
-      addressController.text = userInfo.address;
+      addressController.text = userInfo.address ?? "";
       selectedLocation = LatLng(
         double.parse((userInfo.location.latitude).toString()),
         double.parse((userInfo.location.longitude).toString()),

@@ -19,13 +19,13 @@ class SeeMoreButton extends StatelessWidget {
           Text(
             'see more',
             style: AppStyles.medium15(context).copyWith(
-              color: context.theme.blue100_2,
+              color: context.theme.blue100_1,
             ),
           ),
           const Gap(5),
           Icon(
             Icons.arrow_forward_ios,
-            color: context.theme.blue100_2,
+            color: context.theme.blue100_1,
             size: 12,
           ),
         ],

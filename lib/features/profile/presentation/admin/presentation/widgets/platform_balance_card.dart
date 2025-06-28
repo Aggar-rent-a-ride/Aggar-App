@@ -5,7 +5,11 @@ import 'package:aggar/features/payment/presentation/views/platform_balance_scree
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
+import '../../../../../payment/presentation/cubit/payment_cubit.dart';
 
 class PlatformBalanceCard extends StatelessWidget {
   const PlatformBalanceCard({
@@ -17,12 +21,18 @@ class PlatformBalanceCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 10,
-      onPressed: () {
-        Navigator.push(
+      onPressed: () async {
+        final tokenCubit = context.read<TokenRefreshCubit>();
+        final token = await tokenCubit.getAccessToken();
+        if (token != null) {
+          context.read<PaymentCubit>().getPlatformBalance(token);
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const PlatformBalanceScreen(),
-            ));
+            ),
+          );
+        }
       },
       backgroundColor: context.theme.blue100_7,
       child: Row(

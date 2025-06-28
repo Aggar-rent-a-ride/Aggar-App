@@ -58,7 +58,8 @@ class MainScreenLocationIconAndLocationText extends StatelessWidget {
                         ? SizedBox(
                             width: MediaQuery.sizeOf(context).width * 0.8,
                             height: 20,
-                            child: _buildText(context, state.userInfoModel.address),
+                            child: _buildText(
+                                context, state.userInfoModel.address ?? ""),
                           )
                         : const SizedBox.shrink(),
           ],
@@ -79,7 +80,8 @@ class MainScreenLocationIconAndLocationText extends StatelessWidget {
       textDirection: TextDirection.ltr,
     )..layout();
 
-    final shouldScroll = textPainter.width > MediaQuery.sizeOf(context).width * 0.8;
+    final shouldScroll =
+        textPainter.width > MediaQuery.sizeOf(context).width * 0.8;
 
     return shouldScroll
         ? Marquee(

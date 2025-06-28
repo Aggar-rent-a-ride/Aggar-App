@@ -23,13 +23,14 @@ class UsersList extends StatelessWidget {
             onPressed: () {
               context.read<UserCubit>().getUserWithRole(accessToken, "Admin");
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RoleUserScreen(
-                      accessToken: accessToken,
-                      role: "Admin",
-                    ),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RoleUserScreen(
+                    accessToken: accessToken,
+                    role: "Admin",
+                  ),
+                ),
+              );
             },
           ),
           UserListSection(
@@ -39,13 +40,14 @@ class UsersList extends StatelessWidget {
             onPressed: () {
               context.read<UserCubit>().getUserWithRole(accessToken, "Renter");
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RoleUserScreen(
-                      accessToken: accessToken,
-                      role: "Renter",
-                    ),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RoleUserScreen(
+                    accessToken: accessToken,
+                    role: "Renter",
+                  ),
+                ),
+              );
             },
           ),
           UserListSection(
@@ -57,13 +59,14 @@ class UsersList extends StatelessWidget {
                   .read<UserCubit>()
                   .getUserWithRole(accessToken, "Customer");
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RoleUserScreen(
-                      role: "Customer",
-                      accessToken: accessToken,
-                    ),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RoleUserScreen(
+                    role: "Customer",
+                    accessToken: accessToken,
+                  ),
+                ),
+              );
             },
           ),
         ],

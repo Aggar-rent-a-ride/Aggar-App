@@ -31,6 +31,7 @@ class ReviewList extends StatelessWidget {
             );
           }
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             spacing: 15,
             children: [
               const Gap(15),

@@ -4,7 +4,7 @@ class UserInfoModel {
   final int id;
   final String name;
   final String userName;
-  final String address;
+  final String? address;
   final String role;
   final String? imageUrl;
   final LocationModel location;
@@ -17,7 +17,7 @@ class UserInfoModel {
     required this.id,
     required this.name,
     required this.userName,
-    required this.address,
+    this.address,
     required this.role,
     this.imageUrl,
     required this.location,
@@ -34,7 +34,7 @@ class UserInfoModel {
         id: json['id'],
         name: json['name'],
         userName: json['userName'],
-        address: json['address'],
+        address: json['address'] ?? "",
         role: json['role'],
         location: LocationModel(
           latitude: json['location']['latitude'],
