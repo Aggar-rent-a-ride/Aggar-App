@@ -22,7 +22,7 @@ class LocationContentWidget extends StatelessWidget {
       state.userInfoModel.location.longitude.toDouble(),
     );
 
-    final addressComponents = _parseAddress(address);
+    final addressComponents = _parseAddress(address ?? "");
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -37,7 +37,7 @@ class LocationContentWidget extends StatelessWidget {
             const Gap(24),
             MapSectionWidget(
               userLocation: userLocation,
-              address: address,
+              address: address ?? "",
             ),
           ],
         ),

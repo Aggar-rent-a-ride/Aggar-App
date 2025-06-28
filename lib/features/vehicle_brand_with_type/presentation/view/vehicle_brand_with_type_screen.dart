@@ -46,7 +46,7 @@ class VehicleBrandWithTypeScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        "Vehicle Settings",
+                        "Vehicle Services",
                         style: AppStyles.bold20(context).copyWith(
                           color: context.theme.white100_1,
                         ),

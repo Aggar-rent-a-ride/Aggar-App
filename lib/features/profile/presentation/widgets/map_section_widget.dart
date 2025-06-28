@@ -3,6 +3,7 @@ import 'package:aggar/features/profile/presentation/widgets/location_icon_with_t
 import 'package:aggar/features/profile/presentation/widgets/see_in_google_map_button.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_profile_location.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapSectionWidget extends StatelessWidget {
@@ -44,7 +45,8 @@ class MapSectionWidget extends StatelessWidget {
             ),
           ),
         ),
-        SeeInGoogleMapButton(userLocation: userLocation, address: address)
+        SeeInGoogleMapButton(userLocation: userLocation, address: address),
+        const Gap(25),
       ],
     );
   }

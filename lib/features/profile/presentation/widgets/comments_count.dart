@@ -24,7 +24,7 @@ class CommentsCount extends StatelessWidget {
                 color: context.theme.blue100_2,
               ),
               Text(
-                'Comments(${state.review})',
+                'Comments (${state.review})',
                 style: AppStyles.semiBold16(context).copyWith(
                   color: context.theme.black100,
                 ),
@@ -41,7 +41,7 @@ class CommentsCount extends StatelessWidget {
                 color: context.theme.blue100_2,
               ),
               Text(
-                'Comments(0)',
+                'Comments (0)',
                 style: AppStyles.semiBold16(context).copyWith(
                   color: context.theme.black100,
                 ),

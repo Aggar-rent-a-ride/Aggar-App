@@ -19,6 +19,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
       );
 
       final userInfo = UserInfoModel.fromJson(response["data"]);
+      print(userInfo);
       emit(UserInfoSuccess(userInfoModel: userInfo));
     } catch (e) {
       emit(UserInfoError(errorMessage: e.toString()));

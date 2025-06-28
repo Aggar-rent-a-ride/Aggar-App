@@ -78,7 +78,7 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
                 width: 1,
               ),
             ),
-            fixedSize: const Size(40, 40),
+            fixedSize: const Size(44, 44),
           ),
           child: Icon(
             Icons.settings,
