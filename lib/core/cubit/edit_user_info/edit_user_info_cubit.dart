@@ -1,7 +1,6 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/cubit/edit_user_info/edit_user_info_state.dart';
-import 'package:aggar/core/helper/estimate_date_of_birth.dart';
 import 'package:aggar/features/profile/data/model/user_info_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +49,7 @@ class EditUserInfoCubit extends Cubit<EditUserInfoState> {
       final userInfo = UserInfoModel.fromJson(response["data"]);
       nameController.text = userInfo.name;
       bioController.text = userInfo.bio ?? '';
-      dateOfBirthController.text = estimateDateOfBirth(userInfo.age);
+      dateOfBirthController.text = userInfo.dateOfBirth;
       addressController.text = userInfo.address;
       selectedLocation = LatLng(
         double.parse((userInfo.location.latitude).toString()),

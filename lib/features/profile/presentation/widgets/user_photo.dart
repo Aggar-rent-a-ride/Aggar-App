@@ -31,7 +31,19 @@ class UserPhoto extends StatelessWidget {
           ),
         );
       } else {
-        return const Center(child: Text('Error loading user data'));
+        return Positioned(
+          top: MediaQuery.of(context).size.height * 0.1,
+          left: 0,
+          right: 0,
+          child: CircleAvatar(
+            backgroundColor: context.theme.white100_1,
+            radius: 50,
+            child: const AvatarChatView(
+              image: null,
+              size: 90,
+            ),
+          ),
+        );
       }
     });
   }

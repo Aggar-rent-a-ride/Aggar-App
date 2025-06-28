@@ -311,8 +311,12 @@ class AdminMainCubit extends Cubit<AdminMainState> {
     _userStatisticsCubit.fetchUserTotals(accessToken);
     _vehicleTypeCubit.fetchVehicleTypes(accessToken);
     _vehicleBrandCubit.fetchVehicleBrands(accessToken);
-
-    _userInfoCubit.fetchUserInfo("11", accessToken);
+    _secureStorage.read(key: 'userId').then((userIdStr) {
+      final userId = userIdStr != null ? int.tryParse(userIdStr) : null;
+      if (userId != null) {
+        _userInfoCubit.fetchUserInfo(userId.toString(), accessToken);
+      }
+    });
   }
 
   void handleTokenRefreshSuccess(String accessToken) {
@@ -326,7 +330,6 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         isSignalRConnected: _isSignalRConnected,
         isUserInfoLoaded: false));
     _fetchData(accessToken);
-
     if (!_signalRService.isConnected) {
       _secureStorage.read(key: 'userId').then((userIdStr) {
         final userId = userIdStr != null ? int.tryParse(userIdStr) : null;

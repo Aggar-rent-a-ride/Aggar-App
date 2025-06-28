@@ -37,6 +37,7 @@ class MapLocationShowOnlyAddressSection extends StatelessWidget {
           ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [

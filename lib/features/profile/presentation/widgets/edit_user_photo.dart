@@ -89,7 +89,39 @@ class EditUserPhoto extends StatelessWidget {
             },
           );
         } else {
-          return const Center(child: Text('Error loading user data'));
+          return Positioned(
+            top: MediaQuery.of(context).size.height * 0.1,
+            left: 0,
+            right: 0,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundColor: context.theme.white100_1,
+                  radius: 83,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(83),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(AppAssets.assetsImagesDafaultPfp),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         }
       },
     );

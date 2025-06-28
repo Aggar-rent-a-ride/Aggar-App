@@ -2,7 +2,6 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/profile/presentation/widgets/review_card.dart';
 import 'package:aggar/features/vehicle_details_after_add/data/model/review_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ReviewUserList extends StatelessWidget {
   const ReviewUserList({
@@ -50,11 +49,9 @@ class ReviewUserList extends StatelessWidget {
                   imageUrl: review.reviewer.imagePath ?? "",
                   name: review.reviewer.name,
                   commentText: review.comments,
-                  date: DateFormat('dd/MM/yyyy')
-                      .format(DateTime.parse(review.createdAt)),
+                  date: review.createdAt,
                   rate: review.rate,
                   id: review.id,
-                  typeOfReport: "CustomerReview",
                 );
               },
             ),

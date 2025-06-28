@@ -94,7 +94,8 @@ class PopularVehiclesCarCard extends StatelessWidget {
                             .getVehicleReviews(vehicleId, state.accessToken);
                         context
                             .read<ReviewCountCubit>()
-                            .getReviewsNumber(vehicleId, state.accessToken);
+                            .getVehicleReviewsNumber(
+                                vehicleId, state.accessToken);
                         await Navigator.push(
                           context,
                           MaterialPageRoute(

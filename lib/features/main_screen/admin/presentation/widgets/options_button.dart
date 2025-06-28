@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/show_model_bottom_sheet.dart';
 import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/main_screen/admin/presentation/cubit/admin_main_cubit/admin_main_cubit.dart';
@@ -12,8 +13,12 @@ class OptionsButton extends StatelessWidget {
   const OptionsButton({
     super.key,
     required this.user,
+    this.color,
+    this.size,
   });
   final UserModel user;
+  final Color? color;
+  final double? size;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AdminMainCubit, AdminMainState>(
@@ -41,8 +46,10 @@ class OptionsButton extends StatelessWidget {
                     ],
                   ));
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.more_vert_rounded,
+              color: color ?? context.theme.black50,
+              size: size ?? 25,
             ),
           );
         } else {
