@@ -6,8 +6,6 @@ import 'package:aggar/features/profile/presentation/views/review_user_screen.dar
 import 'package:aggar/features/profile/presentation/widgets/review_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
 import '../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import '../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_state.dart';
 
@@ -63,11 +61,9 @@ class ReviewUserSection extends StatelessWidget {
                           imageUrl: entry.value.reviewer.imagePath ?? "",
                           name: entry.value.reviewer.name,
                           commentText: entry.value.comments,
-                          date: DateFormat('dd/MM/yyyy')
-                              .format(DateTime.parse(entry.value.createdAt)),
+                          date: entry.value.createdAt,
                           rate: entry.value.rate,
                           id: entry.value.id,
-                          typeOfReport: "CustomerReview",
                         ),
                       )
                       .toList(),

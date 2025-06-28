@@ -7,6 +7,11 @@ final class ReviewVehicleSuccess extends ReviewCountState {
   ReviewVehicleSuccess({this.review});
 }
 
+final class ReviewUserSuccess extends ReviewCountState {
+  final int? review;
+  ReviewUserSuccess({this.review});
+}
+
 final class ReviewCountLoading extends ReviewCountState {}
 
 final class ReviewCountFailure extends ReviewCountState {

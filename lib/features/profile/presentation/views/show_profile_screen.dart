@@ -1,11 +1,14 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
+import 'package:aggar/features/main_screen/admin/presentation/widgets/options_button.dart';
 import 'package:aggar/features/profile/presentation/widgets/location_tab_widget.dart';
+import 'package:aggar/features/profile/presentation/widgets/name_with_user_name_with_role.dart';
+import 'package:aggar/features/profile/presentation/widgets/user_profile_with_image_path.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/utils/app_styles.dart';
 import '../../../main_screen/admin/model/user_model.dart';
-import '../../../messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
 import '../widgets/reviews_tab_widget.dart';
 
 class ShowProfileScreen extends StatefulWidget {
@@ -71,86 +74,45 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
                     ),
                   ),
                   child: Center(
-                    child: Text(
-                      "Profile Account",
-                      style: AppStyles.bold20(context).copyWith(
-                        color: context.theme.white100_1,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 50,
+                        ),
+                        Text(
+                          "Profile Account",
+                          style: AppStyles.bold20(context).copyWith(
+                            color: context.theme.white100_1,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        OptionsButton(
+                          user: widget.user,
+                          color: AppConstants.myWhite100_1,
+                        )
+                      ],
                     ),
                   ),
                 ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.1,
-                  left: 0,
-                  right: 0,
-                  child: CircleAvatar(
-                    backgroundColor: context.theme.white100_1,
-                    radius: 55,
-                    child: CircleAvatar(
-                      radius: 48,
-                      child: AvatarChatView(
-                        image: widget.user.imagePath,
-                        size: 90,
-                      ),
-                    ),
-                  ),
-                ),
+                UserProfileWithImagePath(widget: widget),
               ],
             ),
             const Gap(60),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.user.name,
-                    style: AppStyles.bold24(context).copyWith(
-                      color: context.theme.blue100_1,
-                    ),
-                  ),
-                  const Gap(8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 20,
-                      ),
-                      const Gap(4),
-                      Text(
-                        "4.8",
-                        style: AppStyles.medium16(context).copyWith(
-                          color: context.theme.gray100_2,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(4),
-                      Text(
-                        "(24 reviews)",
-                        style: AppStyles.medium14(context).copyWith(
-                          color: context.theme.gray100_2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const Gap(30),
+            const NameWithUserNameWithRole(),
+            const Gap(20),
             TabBar(
               overlayColor: WidgetStateProperty.all(Colors.transparent),
               controller: _tabController,
               padding: EdgeInsets.zero,
               indicatorPadding: EdgeInsets.zero,
-              indicatorColor: context.theme.blue100_2,
-              dividerColor: context.theme.black25,
-              labelColor: context.theme.blue100_2,
+              indicatorColor: context.theme.blue100_1,
+              dividerColor: context.theme.black10,
+              labelColor: context.theme.blue100_1,
               unselectedLabelColor: context.theme.gray100_2,
               labelStyle: AppStyles.bold18(context)
-                  .copyWith(color: context.theme.blue100_2),
+                  .copyWith(color: context.theme.blue100_1),
               unselectedLabelStyle: AppStyles.bold18(context).copyWith(
                 color: context.theme.black25,
               ),
@@ -163,10 +125,11 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
             _selectedTabIndex == 0
                 ? LocationTabWidget(
                     user: widget.user,
-                    address:
-                        "12, Al Rashidy Street, Minya Al Qamh City, Eastern, 44692, Egypt",
                   )
-                : ReviewsTabWidget(user: widget.user),
+                : ReviewsTabWidget(
+                    user: widget.user,
+                    rate: 5,
+                  ),
           ],
         ),
       ),

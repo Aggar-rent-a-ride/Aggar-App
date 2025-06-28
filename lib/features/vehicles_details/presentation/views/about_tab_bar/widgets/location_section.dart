@@ -68,8 +68,6 @@ class LocationSection extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  print(vehicleLatitude);
-                  print(vehicleLongitude);
                   return MapLocationOnlyShow(
                     location: LatLng(vehicleLatitude, vehicleLongitude),
                     address: vehicleAddress,

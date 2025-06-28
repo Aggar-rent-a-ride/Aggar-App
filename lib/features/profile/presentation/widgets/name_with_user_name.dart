@@ -40,7 +40,26 @@ class NameWithUserName extends StatelessWidget {
             ),
           );
         } else {
-          return const Center(child: Text('Error loading user data'));
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Unknown",
+                  style: AppStyles.bold24(context).copyWith(
+                    color: context.theme.blue100_1,
+                  ),
+                ),
+                Text(
+                  "Unknown",
+                  style: AppStyles.medium18(context).copyWith(
+                    color: context.theme.gray100_2,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
       },
     );

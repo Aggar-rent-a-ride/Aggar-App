@@ -11,6 +11,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 import '../../../../profile/presentation/views/show_profile_screen.dart';
+import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
 
 class UserSearchCard extends StatelessWidget {
   const UserSearchCard({
@@ -30,16 +31,19 @@ class UserSearchCard extends StatelessWidget {
           context
               .read<UserInfoCubit>()
               .fetchUserInfo(user.id.toString(), token);
-        }
-        print("g");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ShowProfileScreen(
-              user: user,
+          context.read<ReviewCubit>().getUserReviews(user.id.toString(), token);
+          context
+              .read<ReviewCountCubit>()
+              .getUserReviewsNumber(user.id.toString(), token);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ShowProfileScreen(
+                user: user,
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
