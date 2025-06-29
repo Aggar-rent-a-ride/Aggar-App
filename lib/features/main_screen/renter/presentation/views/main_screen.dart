@@ -6,6 +6,12 @@ import 'package:aggar/features/main_screen/renter/presentation/views/main_screen
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
+import '../../../../new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
+import '../../../../new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
+import '../../../../new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import '../../../../new_vehicle/presentation/views/add_vehicle_screen.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -112,6 +118,30 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             )
           : Scaffold(
               backgroundColor: Colors.grey[50],
+              floatingActionButton: FloatingActionButton(
+                heroTag: "Dddd",
+                onPressed: () {
+                  context.read<AddVehicleCubit>().reset();
+                  context.read<MainImageCubit>().reset();
+                  context.read<AdditionalImageCubit>().reset();
+                  context.read<MapLocationCubit>().reset();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddVehicleScreen(),
+                    ),
+                  );
+                },
+                backgroundColor: context.theme.blue100_1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Icon(
+                  Icons.add,
+                  color: context.theme.white100_1,
+                  size: 30,
+                ),
+              ),
               body: MainScreenBody(
                 onRefresh: _initializeToken,
               ),

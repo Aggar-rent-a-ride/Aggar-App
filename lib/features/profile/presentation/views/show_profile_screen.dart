@@ -29,6 +29,7 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
 
   @override
   void initState() {
+    print(widget.user.imagePath);
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
@@ -101,7 +102,7 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
                     ),
                   ),
                 ),
-                UserProfileWithImagePath(widget: widget),
+                UserProfileWithImagePath(user: widget.user),
               ],
             ),
             const Gap(60),

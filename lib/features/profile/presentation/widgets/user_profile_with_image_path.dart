@@ -1,15 +1,15 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/avatar_chat_view.dart';
-import 'package:aggar/features/profile/presentation/views/show_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class UserProfileWithImagePath extends StatelessWidget {
   const UserProfileWithImagePath({
     super.key,
-    required this.widget,
+    required this.user,
   });
 
-  final ShowProfileScreen widget;
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class UserProfileWithImagePath extends StatelessWidget {
         child: CircleAvatar(
           radius: 45,
           child: AvatarChatView(
-            image: widget.user.imagePath,
+            image: user.imagePath,
             size: 90,
           ),
         ),

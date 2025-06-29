@@ -1,47 +1,49 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_settings_buttons.dart';
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
-import 'package:aggar/features/profile/presentation/customer/presentation/widgets/profile_tab_bar_section.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
-import '../../../../../authorization/data/cubit/Login/login_cubit.dart';
+import '../../../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
+import '../../../../../new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
+import '../../../../../new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
+import '../../../../../new_vehicle/data/cubits/map_location/map_location_cubit.dart';
+import '../../../../../new_vehicle/presentation/views/add_vehicle_screen.dart';
+import '../widgets/profile_tab_bar.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  @override
-  void initState() {
-    refreshProfile();
-    super.initState();
-  }
-
-  Future<void> refreshProfile() async {
-    String? userId = await context.read<LoginCubit>().getUserId();
-    if (userId != null) {
-      final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.getAccessToken();
-      if (token != null) {
-        context.read<ProfileCubit>().fetchFavoriteVehicles(token);
-        context.read<ReviewCubit>().getUserReviews("22", token);
-      }
-    }
-  }
+class RenterProfileScreen extends StatelessWidget {
+  const RenterProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: "Dddd",
+        onPressed: () {
+          context.read<AddVehicleCubit>().reset();
+          context.read<MainImageCubit>().reset();
+          context.read<AdditionalImageCubit>().reset();
+          context.read<MapLocationCubit>().reset();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddVehicleScreen(),
+            ),
+          );
+        },
+        backgroundColor: context.theme.blue100_1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Icon(
+          Icons.add,
+          color: context.theme.white100_1,
+          size: 30,
+        ),
+      ),
       backgroundColor: context.theme.white100_1,
       body: SingleChildScrollView(
         child: Column(
@@ -81,7 +83,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Gap(50),
             const NameWithUserName(),
             const EditProfileWithSettingsButtons(),
-            const ProfileTabBarSection(),
+            const Gap(15),
+            const RenterProfileTabBarSection()
           ],
         ),
       ),

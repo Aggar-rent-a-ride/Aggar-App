@@ -1,5 +1,5 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
-import 'package:aggar/features/main_screen/renter/model/booking_item.dart';
+import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';

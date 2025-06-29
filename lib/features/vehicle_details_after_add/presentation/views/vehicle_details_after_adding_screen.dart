@@ -71,7 +71,7 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
             IconButton(
               onPressed: () {},
               icon: const Icon(
-                Icons.favorite_border,
+                Icons.more_vert_rounded,
               ),
             ),
           ],
