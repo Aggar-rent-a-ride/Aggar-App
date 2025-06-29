@@ -1,4 +1,4 @@
-import 'package:aggar/features/main_screen/renter/model/booking_item.dart';
+import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
@@ -15,10 +15,12 @@ class BookingDetailsScreenRenter extends StatefulWidget {
   });
 
   @override
-  State<BookingDetailsScreenRenter> createState() => _BookingDetailsScreenRenterState();
+  State<BookingDetailsScreenRenter> createState() =>
+      _BookingDetailsScreenRenterState();
 }
 
-class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter> {
+class _BookingDetailsScreenRenterState
+    extends State<BookingDetailsScreenRenter> {
   bool _isProcessingResponse = false;
 
   @override
@@ -58,26 +60,27 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
               ),
             );
           }
-            if (state is BookingResponseSuccess) {
+          if (state is BookingResponseSuccess) {
             setState(() {
               _isProcessingResponse = false;
             });
-            
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: state.isAccepted ? Colors.green : Colors.orange,
+                backgroundColor:
+                    state.isAccepted ? Colors.green : Colors.orange,
               ),
             );
-            
+
             Navigator.pop(context, state.isAccepted ? 'accepted' : 'rejected');
           }
-          
+
           if (state is BookingResponseError) {
             setState(() {
               _isProcessingResponse = false;
             });
-            
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -85,7 +88,7 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
               ),
             );
           }
-          
+
           if (state is BookingResponseLoading) {
             setState(() {
               _isProcessingResponse = true;
@@ -131,7 +134,9 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                   const Gap(24),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<BookingCubit>().getBookingById(widget.booking.id);
+                      context
+                          .read<BookingCubit>()
+                          .getBookingById(widget.booking.id);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6B73FF),
@@ -189,7 +194,8 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: _getStatusColor(bookingData?.status ?? widget.booking.status)
+                                color: _getStatusColor(bookingData?.status ??
+                                        widget.booking.status)
                                     .withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -197,16 +203,15 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                                 bookingData?.status ?? widget.booking.status,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: _getStatusColor(bookingData?.status ?? widget.booking.status),
+                                  color: _getStatusColor(bookingData?.status ??
+                                      widget.booking.status),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                           ],
                         ),
-
                         const Gap(24),
-
                         const Text(
                           'Customer Profile',
                           style: TextStyle(
@@ -216,7 +221,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                           ),
                         ),
                         const Gap(12),
-
                         Row(
                           children: [
                             CircleAvatar(
@@ -277,7 +281,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                           ),
                         ),
                         const Gap(12),
-
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
@@ -298,13 +301,15 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                                         width: 60,
                                         height: 60,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
                                           return Container(
                                             width: 60,
                                             height: 60,
                                             decoration: BoxDecoration(
                                               color: Colors.grey[300],
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
                                             child: const Icon(
                                               Icons.directions_car,
@@ -317,10 +322,12 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                                   const Gap(12),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          bookingData?.vehicleModel ?? 'Vehicle',
+                                          bookingData?.vehicleModel ??
+                                              'Vehicle',
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
@@ -343,9 +350,7 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                             ],
                           ),
                         ),
-
                         const Gap(24),
-
                         const Text(
                           'Booking Period',
                           style: TextStyle(
@@ -355,7 +360,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                           ),
                         ),
                         const Gap(12),
-
                         Row(
                           children: [
                             Expanded(
@@ -372,7 +376,8 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                                   ),
                                   const Gap(4),
                                   Text(
-                                    _formatDate(bookingData?.startDate) ?? widget.booking.date,
+                                    _formatDate(bookingData?.startDate) ??
+                                        widget.booking.date,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -396,7 +401,8 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                                   ),
                                   const Gap(4),
                                   Text(
-                                    _formatDate(bookingData?.endDate) ?? widget.booking.date,
+                                    _formatDate(bookingData?.endDate) ??
+                                        widget.booking.date,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -408,9 +414,7 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                             ),
                           ],
                         ),
-
                         const Gap(16),
-
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(12),
@@ -439,7 +443,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                             ],
                           ),
                         ),
-
                         const Gap(24),
                         const Text(
                           'Pricing Details',
@@ -450,15 +453,14 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                           ),
                         ),
                         const Gap(12),
-
-                        _buildPriceRow('Base Price', '\$${bookingData?.price.toStringAsFixed(2) ?? '0.00'}'),
+                        _buildPriceRow('Base Price',
+                            '\$${bookingData?.price.toStringAsFixed(2) ?? '0.00'}'),
                         if ((bookingData?.discount ?? 0) > 0)
-                          _buildPriceRow('Discount', '-\$${((bookingData?.price ?? 0) * (bookingData?.discount ?? 0) / 100).toStringAsFixed(2)}'),
-
+                          _buildPriceRow('Discount',
+                              '-\$${((bookingData?.price ?? 0) * (bookingData?.discount ?? 0) / 100).toStringAsFixed(2)}'),
                         const Gap(12),
                         const Divider(),
                         const Gap(8),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -484,10 +486,10 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                     ),
                   ),
                 ),
-
                 const Gap(24),
-
-                if ((bookingData?.status ?? widget.booking.status).toLowerCase() == 'pending') ...[
+                if ((bookingData?.status ?? widget.booking.status)
+                        .toLowerCase() ==
+                    'pending') ...[
                   if (_isProcessingResponse) ...[
                     Container(
                       padding: const EdgeInsets.all(20),
@@ -512,7 +514,8 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => _showDeclineConfirmation(context, bookingData?.id ?? widget.booking.id),
+                            onPressed: () => _showDeclineConfirmation(
+                                context, bookingData?.id ?? widget.booking.id),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.red,
@@ -534,7 +537,8 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                         const Gap(12),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => _showAcceptConfirmation(context, bookingData?.id ?? widget.booking.id),
+                            onPressed: () => _showAcceptConfirmation(
+                                context, bookingData?.id ?? widget.booking.id),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF6B73FF),
                               foregroundColor: Colors.white,
@@ -560,24 +564,32 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(bookingData?.status ?? widget.booking.status).withOpacity(0.1),
+                      color: _getStatusColor(
+                              bookingData?.status ?? widget.booking.status)
+                          .withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _getStatusColor(bookingData?.status ?? widget.booking.status).withOpacity(0.3),
+                        color: _getStatusColor(
+                                bookingData?.status ?? widget.booking.status)
+                            .withOpacity(0.3),
                       ),
                     ),
                     child: Row(
                       children: [
                         Icon(
-                          _getStatusIcon(bookingData?.status ?? widget.booking.status),
-                          color: _getStatusColor(bookingData?.status ?? widget.booking.status),
+                          _getStatusIcon(
+                              bookingData?.status ?? widget.booking.status),
+                          color: _getStatusColor(
+                              bookingData?.status ?? widget.booking.status),
                         ),
                         const Gap(12),
                         Expanded(
                           child: Text(
-                            _getStatusMessage(bookingData?.status ?? widget.booking.status),
+                            _getStatusMessage(
+                                bookingData?.status ?? widget.booking.status),
                             style: TextStyle(
-                              color: _getStatusColor(bookingData?.status ?? widget.booking.status),
+                              color: _getStatusColor(
+                                  bookingData?.status ?? widget.booking.status),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -586,7 +598,6 @@ class _BookingDetailsScreenRenterState extends State<BookingDetailsScreenRenter>
                     ),
                   ),
                 ],
-
                 const Gap(20),
               ],
             ),
