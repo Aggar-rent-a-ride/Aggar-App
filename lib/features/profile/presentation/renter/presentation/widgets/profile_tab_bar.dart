@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/cubit/user_cubit/user_info_cubit.dart';
 import '../../../../../../core/cubit/user_cubit/user_info_state.dart';
+import 'booking_history_list.dart'; // Import the new booking history widget
 
 class RenterProfileTabBarSection extends StatefulWidget {
   const RenterProfileTabBarSection({super.key});
@@ -25,10 +27,7 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
   @override
   void initState() {
     super.initState();
-    context.read<ProfileCubit>().fetchRenterVehicles(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQ0NjhiZDQwLTc5YWYtNGQwYy1hOTM3LWU0YWQxYjNmMjRjYiIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIxNjUxMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.ESKMWei1GKJVEoSZBcjusbtcYv556ItIQjnOSdOoxc8");
-    context.read<ReviewCubit>().getUserReviews("22",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQ0NjhiZDQwLTc5YWYtNGQwYy1hOTM3LWU0YWQxYjNmMjRjYiIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIxNjUxMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.ESKMWei1GKJVEoSZBcjusbtcYv556ItIQjnOSdOoxc8");
+    _initializeWithToken();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
@@ -37,6 +36,44 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
         });
       }
     });
+  }
+
+  Future<void> _initializeWithToken() async {
+    try {
+      final tokenCubit = context.read<TokenRefreshCubit>();
+      final accessToken = await tokenCubit.getAccessToken();
+
+      if (accessToken != null) {
+        if (mounted) {
+          context.read<ProfileCubit>().fetchRenterVehicles(accessToken);
+        }
+
+        // Get user ID and fetch reviews
+        await _fetchUserReviewsWithToken(accessToken);
+      } else {
+        print('No valid access token available');
+      }
+    } catch (e) {
+      print('Error initializing with token: $e');
+    }
+  }
+
+  Future<void> _fetchUserReviewsWithToken(String accessToken) async {
+    try {
+      final userInfoCubit = context.read<UserInfoCubit>();
+      final userState = userInfoCubit.state;
+
+      String? userId;
+      if (userState is UserInfoSuccess) {
+        userId = userState.userInfoModel.id.toString();
+      } else {}
+
+      if (userId != null && mounted) {
+        context.read<ReviewCubit>().getUserReviews(userId, accessToken);
+      }
+    } catch (e) {
+      print('Error fetching user reviews: $e');
+    }
   }
 
   @override
@@ -73,14 +110,21 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
               tabs: const [
                 Tab(text: 'Vehicles'),
                 Tab(text: 'Reviews'),
-                Tab(text: "Booking"),
+                Tab(text: 'Booking'),
               ],
             ),
-            _selectedTabIndex == 0
-                ? const RenterVehiclesList()
-                : _selectedTabIndex == 1
-                    ? ReviewUserSection(userId: userId.toString())
-                    : const SizedBox(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *
+                  0.6, // Fixed height instead of Expanded
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  const RenterVehiclesList(),
+                  ReviewUserSection(userId: userId?.toString() ?? ''),
+                  const BookingHistoryList(),
+                ],
+              ),
+            ),
           ],
         );
       },

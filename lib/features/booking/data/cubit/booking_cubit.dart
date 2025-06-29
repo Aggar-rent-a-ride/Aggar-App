@@ -15,6 +15,7 @@ class BookingCubit extends Cubit<BookingState> {
     required this.tokenRefreshCubit,
   }) : super(BookingInitial());
 
+  // Create booking
   Future<void> createBooking({
     required int vehicleId,
     required DateTime startDate,
@@ -29,19 +30,19 @@ class BookingCubit extends Cubit<BookingState> {
         'EndDate': endDate.toIso8601String(),
       });
 
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.post(
-                EndPoint.createBooking,
-                data: formData,
-                options: await _getAuthOptions(), // Add authorization header
-                isFromData: true,
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.post(
+          EndPoint.createBooking,
+          data: formData,
+          options: await _getAuthOptions(),
+          isFromData: true,
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (response.containsKey('status') ? response['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
-      if (statusCode == 201 || statusCode == 200) {
+      if (_isSuccessStatus(statusCode)) {
         final bookingData = responseData['data'] ?? responseData;
         final booking =
             BookingModel.fromJson(bookingData as Map<String, dynamic>);
@@ -53,29 +54,25 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const BookingCreateError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(BookingCreateError(message: e.toString()));
-      }
+      _handleError(e, (message) => BookingCreateError(message: message));
     }
   }
 
+  // Get booking by ID
   Future<void> getBookingById(int bookingId) async {
     emit(BookingGetByIdLoading());
 
     try {
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.get(
-                EndPoint.getBookingById,
-                queryParameters: {'id': bookingId},
-                options: await _getAuthOptions(),
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.getBookingById,
+          queryParameters: {'id': bookingId},
+          options: await _getAuthOptions(),
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (responseData.containsKey('status') ? responseData['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
       if (statusCode == 200) {
         final bookingData = responseData['data'] ?? responseData;
@@ -89,15 +86,11 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const BookingGetByIdError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(BookingGetByIdError(message: e.toString()));
-      }
+      _handleError(e, (message) => BookingGetByIdError(message: message));
     }
   }
 
+  // Get bookings count
   Future<void> getBookingsCount({BookingStatus? status}) async {
     emit(BookingsCountLoading());
 
@@ -107,16 +100,16 @@ class BookingCubit extends Cubit<BookingState> {
         queryParams['status'] = status.value;
       }
 
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.get(
-                EndPoint.getBookingsCount,
-                queryParameters: queryParams,
-                options: await _getAuthOptions(),
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.getBookingsCount,
+          queryParameters: queryParams,
+          options: await _getAuthOptions(),
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (responseData.containsKey('status') ? responseData['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
       if (statusCode == 200) {
         final count = responseData['data'] ?? responseData['count'] ?? 0;
@@ -128,15 +121,11 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const BookingsCountError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(BookingsCountError(message: e.toString()));
-      }
+      _handleError(e, (message) => BookingsCountError(message: message));
     }
   }
 
+  // Get renter pending bookings
   Future<void> getRenterPendingBookings({
     int pageNo = 1,
     int pageSize = 10,
@@ -149,55 +138,31 @@ class BookingCubit extends Cubit<BookingState> {
         'pageSize': pageSize,
       };
 
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.get(
-                EndPoint
-                    .getRenterPendingBookings, 
-                queryParameters: queryParams,
-                options: await _getAuthOptions(),
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.getRenterPendingBookings,
+          queryParameters: queryParams,
+          options: await _getAuthOptions(),
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (responseData.containsKey('status') ? responseData['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
       if (statusCode == 200) {
         final bookingsData = responseData['data'] ?? responseData;
+        final result = _parseBookingsResponse(bookingsData, pageNo, pageSize);
 
-        if (bookingsData is Map) {
-          final bookingsMap = Map<String, dynamic>.from(bookingsData);
-
-          if (bookingsMap.containsKey('data')) {
-            final bookingsResponse = BookingsResponse.fromJson(bookingsMap);
-
-            emit(RenterPendingBookingsSuccess(
-              bookings: bookingsResponse.data,
-              totalPages: bookingsResponse.totalPages,
-              currentPage: bookingsResponse.pageNumber,
-              pageSize: bookingsResponse.pageSize,
-            ));
-          } else {
-            emit(const RenterPendingBookingsError(
-              message: 'Invalid response format',
-            ));
-          }
-        } else if (bookingsData is List) {
-          final bookings = bookingsData
-              .where((item) => item != null)
-              .map((item) =>
-                  BookingModel.fromJson(Map<String, dynamic>.from(item as Map)))
-              .toList();
-
+        if (result != null) {
           emit(RenterPendingBookingsSuccess(
-            bookings: bookings,
-            totalPages: 1,
-            currentPage: pageNo,
-            pageSize: pageSize,
+            bookings: result['bookings'],
+            totalPages: result['totalPages'],
+            currentPage: result['currentPage'],
+            pageSize: result['pageSize'],
           ));
         } else {
           emit(const RenterPendingBookingsError(
-            message: 'Invalid response format',
-          ));
+              message: 'Invalid response format'));
         }
       } else {
         emit(RenterPendingBookingsError(
@@ -206,29 +171,82 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const RenterPendingBookingsError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(RenterPendingBookingsError(message: e.toString()));
-      }
+      _handleError(
+          e, (message) => RenterPendingBookingsError(message: message));
     }
   }
 
+  // Get booking history - NEW METHOD
+  Future<void> getBookingHistory({
+    BookingStatus? status,
+    int pageNo = 1,
+    int pageSize = 10,
+  }) async {
+    emit(BookingHistoryLoading());
+
+    try {
+      final queryParams = <String, dynamic>{
+        'pageNo': pageNo,
+        'pageSize': pageSize,
+      };
+
+      if (status != null) {
+        queryParams['status'] = status.value;
+      }
+
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.getBookingHistory,
+          queryParameters: queryParams,
+          options: await _getAuthOptions(),
+        ),
+      );
+
+      final responseData = response as Map<String, dynamic>;
+      final statusCode = _getStatusCode(responseData);
+
+      if (statusCode == 200) {
+        final historyData = responseData['data'] ?? responseData;
+        final result =
+            _parseBookingHistoryResponse(historyData, pageNo, pageSize);
+
+        if (result != null) {
+          emit(BookingHistorySuccess(
+            bookings: result['bookings'],
+            totalPages: result['totalPages'],
+            currentPage: result['currentPage'],
+            pageSize: result['pageSize'],
+            status: status,
+          ));
+        } else {
+          emit(const BookingHistoryError(message: 'Invalid response format'));
+        }
+      } else {
+        emit(BookingHistoryError(
+          message: responseData['message']?.toString() ??
+              'Failed to get booking history',
+        ));
+      }
+    } catch (e) {
+      _handleError(e, (message) => BookingHistoryError(message: message));
+    }
+  }
+
+  // Cancel booking
   Future<void> cancelBooking(int bookingId) async {
     emit(const BookingCancelLoading());
 
     try {
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.put(
-                EndPoint.cancelBooking,
-                queryParameters: {'id': bookingId},
-                options: await _getAuthOptions(),
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.put(
+          EndPoint.cancelBooking,
+          queryParameters: {'id': bookingId},
+          options: await _getAuthOptions(),
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (responseData.containsKey('status') ? responseData['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
       if (statusCode == 200) {
         final message = responseData['message']?.toString() ??
@@ -241,15 +259,11 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const BookingCancelError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(BookingCancelError(message: e.toString()));
-      }
+      _handleError(e, (message) => BookingCancelError(message: message));
     }
   }
 
+  // Respond to booking (accept/reject)
   Future<void> respondToBooking({
     required int bookingId,
     required bool isAccepted,
@@ -257,26 +271,26 @@ class BookingCubit extends Cubit<BookingState> {
     emit(const BookingResponseLoading());
 
     try {
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.put(
-                EndPoint.bookingResponse, // You'll need to add this to your EndPoint class
-                queryParameters: {
-                  'id': bookingId,
-                  'isAccepted': isAccepted.toString(),
-                },
-                options: await _getAuthOptions(),
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.put(
+          EndPoint.bookingResponse,
+          queryParameters: {
+            'id': bookingId,
+            'isAccepted': isAccepted.toString(),
+          },
+          options: await _getAuthOptions(),
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (responseData.containsKey('status') ? responseData['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
       if (statusCode == 200) {
         final message = responseData['message']?.toString() ??
-            (isAccepted 
-                ? 'You accepted this booking successfully.' 
+            (isAccepted
+                ? 'You accepted this booking successfully.'
                 : 'You rejected this booking successfully.');
-        
+
         emit(BookingResponseSuccess(
           message: message,
           bookingId: bookingId,
@@ -284,36 +298,32 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       } else {
         emit(BookingResponseError(
-          message: responseData['message']?.toString() ?? 
+          message: responseData['message']?.toString() ??
               'Failed to respond to booking',
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const BookingResponseError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(BookingResponseError(message: e.toString()));
-      }
+      _handleError(e, (message) => BookingResponseError(message: message));
     }
   }
 
+  // Confirm booking
   Future<void> confirmBooking(int bookingId) async {
     emit(const BookingConfirmLoading());
 
     try {
-      final response =
-          await _makeAuthenticatedRequest(() async => dioConsumer.get(
-                EndPoint.confirmBooking, 
-                queryParameters: {'id': bookingId},
-                options: await _getAuthOptions(),
-              ));
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.confirmBooking,
+          queryParameters: {'id': bookingId},
+          options: await _getAuthOptions(),
+        ),
+      );
 
       final responseData = response as Map<String, dynamic>;
-      final statusCode = responseData['statusCode'] ??
-          (responseData.containsKey('status') ? responseData['status'] : 200);
+      final statusCode = _getStatusCode(responseData);
 
-      if (statusCode == 201 || statusCode == 200) {
+      if (_isSuccessStatus(statusCode)) {
         final data = responseData['data'] as Map<String, dynamic>?;
         final clientSecret = data?['clientSecret'] as String?;
         final message = responseData['message']?.toString() ??
@@ -331,15 +341,11 @@ class BookingCubit extends Cubit<BookingState> {
         ));
       }
     } catch (e) {
-      if (e is DioException && e.response?.statusCode == 401) {
-        emit(const BookingConfirmError(
-            message: 'Authentication failed. Please login again.'));
-      } else {
-        emit(BookingConfirmError(message: e.toString()));
-      }
+      _handleError(e, (message) => BookingConfirmError(message: message));
     }
   }
 
+  // Convenience methods
   Future<void> acceptBooking(int bookingId) async {
     await respondToBooking(bookingId: bookingId, isAccepted: true);
   }
@@ -348,6 +354,26 @@ class BookingCubit extends Cubit<BookingState> {
     await respondToBooking(bookingId: bookingId, isAccepted: false);
   }
 
+  Future<void> refreshRenterPendingBookings({
+    int pageNo = 1,
+    int pageSize = 10,
+  }) async {
+    await getRenterPendingBookings(pageNo: pageNo, pageSize: pageSize);
+  }
+
+  Future<void> refreshBookingHistory({
+    BookingStatus? status,
+    int pageNo = 1,
+    int pageSize = 10,
+  }) async {
+    await getBookingHistory(status: status, pageNo: pageNo, pageSize: pageSize);
+  }
+
+  void resetState() {
+    emit(BookingInitial());
+  }
+
+  // Private helper methods
   Future<Options> _getAuthOptions() async {
     final token = await tokenRefreshCubit.getAccessToken();
     print("CURRENT TOKEN: $token");
@@ -360,7 +386,8 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
   Future<dynamic> _makeAuthenticatedRequest(
-      Future<dynamic> Function() apiCall) async {
+    Future<dynamic> Function() apiCall,
+  ) async {
     try {
       await tokenRefreshCubit.ensureValidToken();
       return await apiCall();
@@ -382,17 +409,98 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  Future<void> refreshRenterPendingBookings({
-    int pageNo = 1,
-    int pageSize = 10,
-  }) async {
-    await getRenterPendingBookings(
-      pageNo: pageNo,
-      pageSize: pageSize,
-    );
+  int _getStatusCode(Map<String, dynamic> responseData) {
+    return responseData['statusCode'] ??
+        (responseData.containsKey('status') ? responseData['status'] : 200);
   }
 
-  void resetState() {
-    emit(BookingInitial());
+  bool _isSuccessStatus(int statusCode) {
+    return statusCode == 200 || statusCode == 201;
+  }
+
+  void _handleError(
+      dynamic error, BookingState Function(String) createErrorState) {
+    if (error is DioException && error.response?.statusCode == 401) {
+      emit(createErrorState('Authentication failed. Please login again.'));
+    } else {
+      emit(createErrorState(error.toString()));
+    }
+  }
+
+  Map<String, dynamic>? _parseBookingsResponse(
+    dynamic bookingsData,
+    int pageNo,
+    int pageSize,
+  ) {
+    if (bookingsData is Map) {
+      final bookingsMap = Map<String, dynamic>.from(bookingsData);
+
+      if (bookingsMap.containsKey('data')) {
+        final bookingsResponse = BookingsResponse.fromJson(bookingsMap);
+        return {
+          'bookings': bookingsResponse.data,
+          'totalPages': bookingsResponse.totalPages,
+          'currentPage': bookingsResponse.pageNumber,
+          'pageSize': bookingsResponse.pageSize,
+        };
+      }
+    } else if (bookingsData is List) {
+      final bookings = bookingsData
+          .where((item) => item != null)
+          .map((item) =>
+              BookingModel.fromJson(Map<String, dynamic>.from(item as Map)))
+          .toList();
+
+      return {
+        'bookings': bookings,
+        'totalPages': 1,
+        'currentPage': pageNo,
+        'pageSize': pageSize,
+      };
+    }
+    return null;
+  }
+
+  Map<String, dynamic>? _parseBookingHistoryResponse(
+    dynamic historyData,
+    int pageNo,
+    int pageSize,
+  ) {
+    if (historyData is Map) {
+      final historyMap = Map<String, dynamic>.from(historyData);
+
+      if (historyMap.containsKey('data')) {
+        // Parse the nested data structure
+        final bookingsList = historyMap['data'] as List?;
+        if (bookingsList != null) {
+          final bookings = bookingsList
+              .where((item) => item != null)
+              .map((item) => BookingHistoryModel.fromJson(
+                  Map<String, dynamic>.from(item as Map)))
+              .toList();
+
+          return {
+            'bookings': bookings,
+            'totalPages': historyMap['totalPages'] ?? 1,
+            'currentPage': historyMap['pageNumber'] ?? pageNo,
+            'pageSize': historyMap['pageSize'] ?? pageSize,
+          };
+        }
+      }
+    } else if (historyData is List) {
+      final bookings = historyData
+          .where((item) => item != null)
+          .map((item) => BookingHistoryModel.fromJson(
+              Map<String, dynamic>.from(item as Map)))
+          .toList();
+
+      return {
+        'bookings': bookings,
+        'totalPages': 1,
+        'currentPage': pageNo,
+        'pageSize': pageSize,
+      };
+    }
+    return null;
   }
 }
