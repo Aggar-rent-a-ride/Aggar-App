@@ -23,28 +23,7 @@ class NotificationCardStyle extends StatelessWidget {
           ),
         ),
       ),
-      child: ElevatedButton(
-        style: ButtonStyle(
-          overlayColor: WidgetStateProperty.all(context.theme.blue10_2),
-          backgroundColor: WidgetStateProperty.all(
-            Colors.transparent,
-          ),
-          elevation: WidgetStateProperty.all(0),
-          shape: WidgetStateProperty.all(
-            const RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero,
-            ),
-          ),
-          padding: WidgetStateProperty.all(
-            const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 25,
-            ),
-          ),
-        ),
-        onPressed: () {},
-        child: widget,
-      ),
+      child: widget,
     );
   }
 }

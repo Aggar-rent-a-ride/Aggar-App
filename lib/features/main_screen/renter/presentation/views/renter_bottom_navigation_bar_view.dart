@@ -10,8 +10,8 @@ import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/ad
 import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/new_vehicle/presentation/views/add_vehicle_screen.dart';
+import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/views/profile_screen.dart';
-import 'package:aggar/features/settings/presentation/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -77,7 +77,7 @@ class _RenterBottomNavigationBarViewState
     List<Widget> screens = [
       const MainScreen(),
       const MessagesView(),
-      const SettingsScreen(),
+      const NotificationScreen(),
       const ProfileScreen()
     ];
 
