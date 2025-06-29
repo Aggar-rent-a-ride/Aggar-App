@@ -25,10 +25,12 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
   @override
   void initState() {
     super.initState();
+    context.read<UserInfoCubit>().fetchUserInfo("20",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw");
     context.read<ProfileCubit>().fetchRenterVehicles(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQ0NjhiZDQwLTc5YWYtNGQwYy1hOTM3LWU0YWQxYjNmMjRjYiIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIxNjUxMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.ESKMWei1GKJVEoSZBcjusbtcYv556ItIQjnOSdOoxc8");
-    context.read<ReviewCubit>().getUserReviews("22",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQ0NjhiZDQwLTc5YWYtNGQwYy1hOTM3LWU0YWQxYjNmMjRjYiIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIxNjUxMiwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.ESKMWei1GKJVEoSZBcjusbtcYv556ItIQjnOSdOoxc8");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw");
+    context.read<ReviewCubit>().getUserReviews("20",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw");
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {

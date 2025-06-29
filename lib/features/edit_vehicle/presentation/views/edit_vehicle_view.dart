@@ -106,8 +106,8 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const EditVehicleView(
-                        vehicleId: '127',
+                      builder: (context) => EditVehicleView(
+                        vehicleId: widget.vehicleId,
                       ),
                     ),
                   );

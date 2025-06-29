@@ -4,6 +4,8 @@ import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_state.dart';
 import 'package:aggar/features/profile/presentation/renter/presentation/widgets/vehicle_card.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/views/vehicle_details_after_adding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,7 +61,7 @@ class RenterVehiclesList extends StatelessWidget {
                             entry: entry,
                             onTap: () async {
                               const token =
-                                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6Ijk0NTg0MDY0LTA3MGYtNGIyOC05YzIyLTA0YjJjZTViMjBkZiIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIxNDgyMywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.sLLaCNSoCmPZIV64pfTMGKaJ4GkudO0704amMQMHqc8";
+                                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw";
                               final addVehicleCubit =
                                   context.read<AddVehicleCubit>();
                               showDialog(
@@ -70,6 +72,14 @@ class RenterVehiclesList extends StatelessWidget {
 
                               await addVehicleCubit.getData(
                                   entry.value.id.toString(), token);
+                              await context
+                                  .read<ReviewCubit>()
+                                  .getVehicleReviews(
+                                      entry.value.id.toString(), token);
+                              await context
+                                  .read<ReviewCountCubit>()
+                                  .getVehicleReviewsNumber(
+                                      entry.value.id.toString(), token);
 
                               Navigator.pop(context); // remove loading dialog
 
@@ -80,6 +90,8 @@ class RenterVehiclesList extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           VehicleDetailsAfterAddingScreen(
+                                        discountList: vehicle.discounts,
+                                        vehicleRate: vehicle.rate,
                                         images: vehicle.vehicleImages,
                                         mainImage: vehicle.mainImagePath,
                                         renterName: vehicle.renter?.name ?? "",
