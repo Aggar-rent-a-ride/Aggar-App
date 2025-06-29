@@ -1,4 +1,5 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/model/user_model.dart';
@@ -9,6 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../../profile/presentation/views/show_profile_screen.dart';
+import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
+import '../../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 
 class PersonImageWithName extends StatelessWidget {
   const PersonImageWithName({
@@ -67,51 +72,81 @@ class PersonImageWithName extends StatelessWidget {
         if (snapshot.hasError ||
             !snapshot.hasData ||
             snapshot.data!['StatusCode'] != 200) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AvatarChatView(
-                image: snapshot.data!["data"]["imagePath"],
-                size: 40,
-              ),
-              const Gap(5),
-              Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      snapshot.data!["data"]["name"],
-                      style: AppStyles.semiBold16(context).copyWith(
-                        color: context.theme.black100,
+          return GestureDetector(
+            onTap: () async {
+              final tokenCubit = context.read<TokenRefreshCubit>();
+              final token = await tokenCubit.getAccessToken();
+              if (token != null) {
+                context
+                    .read<UserInfoCubit>()
+                    .fetchUserInfo(id.toString(), token);
+                context
+                    .read<ReviewCubit>()
+                    .getUserReviews(id.toString(), token);
+                context
+                    .read<ReviewCountCubit>()
+                    .getUserReviewsNumber(id.toString(), token);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowProfileScreen(
+                      user: UserModel(
+                        id: id,
+                        name: snapshot.data!["data"]["name"],
+                        username: "",
+                        imagePath: snapshot.data!["data"]["imagePath"],
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
                     ),
-                    Text(
-                      type,
-                      style: AppStyles.medium12(context).copyWith(
-                        color: context.theme.black50,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
+                  ),
+                );
+              }
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AvatarChatView(
+                  image: snapshot.data!["data"]["imagePath"],
+                  size: 40,
                 ),
-              ),
-              const Spacer(
-                flex: 1,
-              ),
-              OptionsButton(
-                  user: UserModel(
-                      id: id,
-                      name: snapshot.data!["data"]["name"],
-                      username: snapshot.data!["data"]["name"])),
-            ],
+                const Gap(5),
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        snapshot.data!["data"]["name"],
+                        style: AppStyles.semiBold16(context).copyWith(
+                          color: context.theme.black100,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      Text(
+                        type,
+                        style: AppStyles.medium12(context).copyWith(
+                          color: context.theme.black50,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(
+                  flex: 1,
+                ),
+                OptionsButton(
+                    user: UserModel(
+                        id: id,
+                        name: snapshot.data!["data"]["name"],
+                        username: snapshot.data!["data"]["name"])),
+              ],
+            ),
           );
         } else {
           return const SizedBox();

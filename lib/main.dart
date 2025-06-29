@@ -259,6 +259,7 @@ class MyApp extends StatelessWidget {
             statisticsCubit: context.read<StatisticsCubit>(),
           ),
         ),
+       
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {

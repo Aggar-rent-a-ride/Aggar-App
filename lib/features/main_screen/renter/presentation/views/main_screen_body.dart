@@ -1,6 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/booking/presentation/views/booking_details_view_renter.dart';
-import 'package:aggar/features/main_screen/renter/model/booking_item.dart';
+import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:aggar/features/main_screen/renter/presentation/widgets/booking_card.dart';
 import 'package:aggar/features/main_screen/widgets/main_header.dart';
 import 'package:aggar/features/notification/presentation/views/notification_screen.dart';

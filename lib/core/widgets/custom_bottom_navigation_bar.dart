@@ -38,6 +38,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 label: 'Home',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
+                size: 20,
               ),
               SelectedTabBottomNavigationBar(
                 iconImage: AppAssets.assetsIconsChats,
@@ -45,11 +46,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 label: 'Messages',
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
+                size: 23,
               ),
               SelectedTabBottomNavigationBar(
-                iconImage: AppAssets.assetsIconsNotificationSettings,
+                iconImage: AppAssets.assetsIconsNotifications,
                 index: 2,
                 label: 'Notifications',
+                size: 23,
                 onTapped: onTapped,
                 selectedIndex: selectedIndex,
               ),
