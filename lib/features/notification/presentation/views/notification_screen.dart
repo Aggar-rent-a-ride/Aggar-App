@@ -10,6 +10,7 @@ import 'package:aggar/features/notification/presentation/widgets/section_header.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/core/services/notification_service.dart' as service;
+import 'package:aggar/features/booking/presentation/views/confirm_booking.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -332,30 +333,33 @@ class _NotificationScreenState extends State<NotificationScreen> {
     String? targetType,
     dynamic targetId,
   ) {
-    // Navigate to notification details screen
-    // You can pass the notification object and any additional data needed
+    // If the notification is for a booking confirmation, navigate to BookingConfirmScreen
+    if (targetType != null && targetType.toLowerCase() == 'booking') {
+      // Try to get bookingId from additionalData (targetBookingId or targetId)
+      final bookingId =
+          notification.additionalData?['targetBookingId'] ?? targetId;
+      if (bookingId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookingConfirmScreen(
+                bookingId: bookingId is int
+                    ? bookingId
+                    : int.tryParse(bookingId.toString())),
+          ),
+        );
+        return;
+      }
+    }
+    // Default: Navigate to notification details screen
     Navigator.pushNamed(
       context,
-      '/notification-details', // Define this route in your app
+      '/notification-details',
       arguments: {
         'notification': notification,
         'targetType': targetType,
         'targetId': targetId,
       },
     );
-
-    // Alternative: If you prefer using a specific details screen widget
-    /*
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NotificationDetailsScreen(
-          notification: notification,
-          targetType: targetType,
-          targetId: targetId,
-        ),
-      ),
-    );
-    */
   }
 }

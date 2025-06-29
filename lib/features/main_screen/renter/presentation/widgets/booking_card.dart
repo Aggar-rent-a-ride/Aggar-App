@@ -3,7 +3,6 @@ import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
 import '../../../../../core/helper/custom_snack_bar.dart';
 
 class BookingCard extends StatelessWidget {
