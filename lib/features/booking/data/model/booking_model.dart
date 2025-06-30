@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class BookingModel {
   final int id;
   final int totalDays;
@@ -165,5 +167,123 @@ class BookingsResponse {
       pageNumber: json['pageNumber'] ?? 0,
       pageSize: json['pageSize'] ?? 0,
     );
+  }
+}
+
+class BookingHistoryModel extends Equatable {
+  final int id;
+  final String vehicleBrand;
+  final String vehicleModel;
+  final String vehicleType;
+  final DateTime startDate;
+  final DateTime endDate;
+  final double finalPrice;
+  final String bookingStatus;
+
+  const BookingHistoryModel({
+    required this.id,
+    required this.vehicleBrand,
+    required this.vehicleModel,
+    required this.vehicleType,
+    required this.startDate,
+    required this.endDate,
+    required this.finalPrice,
+    required this.bookingStatus,
+  });
+
+  factory BookingHistoryModel.fromJson(Map<String, dynamic> json) {
+    return BookingHistoryModel(
+      id: json['id'] as int,
+      vehicleBrand: json['vehicleBrand'] as String,
+      vehicleModel: json['vehicleModel'] as String,
+      vehicleType: json['vehicleType'] as String,
+      startDate: DateTime.parse(json['startDate'] as String),
+      endDate: DateTime.parse(json['endDate'] as String),
+      finalPrice: (json['finalPrice'] as num).toDouble(),
+      bookingStatus: json['bookingStatus'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'vehicleBrand': vehicleBrand,
+      'vehicleModel': vehicleModel,
+      'vehicleType': vehicleType,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'finalPrice': finalPrice,
+      'bookingStatus': bookingStatus,
+    };
+  }
+
+  BookingHistoryModel copyWith({
+    int? id,
+    String? vehicleBrand,
+    String? vehicleModel,
+    String? vehicleType,
+    DateTime? startDate,
+    DateTime? endDate,
+    double? finalPrice,
+    String? bookingStatus,
+  }) {
+    return BookingHistoryModel(
+      id: id ?? this.id,
+      vehicleBrand: vehicleBrand ?? this.vehicleBrand,
+      vehicleModel: vehicleModel ?? this.vehicleModel,
+      vehicleType: vehicleType ?? this.vehicleType,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      finalPrice: finalPrice ?? this.finalPrice,
+      bookingStatus: bookingStatus ?? this.bookingStatus,
+    );
+  }
+
+  // Getter for status enum if you have one
+  BookingStatus get status {
+    switch (bookingStatus.toLowerCase()) {
+      case 'pending':
+        return BookingStatus.pending;
+      case 'accepted':
+        return BookingStatus.accepted;
+      case 'confirmed':
+        return BookingStatus.confirmed;
+      case 'canceled':
+      case 'cancelled':
+        return BookingStatus.canceled;
+      default:
+        return BookingStatus.pending;
+    }
+  }
+
+  // Helper getters
+  bool get isPending => bookingStatus.toLowerCase() == 'pending';
+  bool get isAccepted => bookingStatus.toLowerCase() == 'accepted';
+  bool get isConfirmed => bookingStatus.toLowerCase() == 'confirmed';
+  bool get isCanceled =>
+      bookingStatus.toLowerCase() == 'canceled' ||
+      bookingStatus.toLowerCase() == 'cancelled';
+
+  // Duration calculation
+  Duration get duration => endDate.difference(startDate);
+
+  // Days calculation
+  int get durationInDays => duration.inDays;
+
+  @override
+  List<Object?> get props => [
+        id,
+        vehicleBrand,
+        vehicleModel,
+        vehicleType,
+        startDate,
+        endDate,
+        finalPrice,
+        bookingStatus,
+      ];
+
+  @override
+  String toString() {
+    return 'BookingHistoryModel(id: $id, vehicleBrand: $vehicleBrand, vehicleModel: $vehicleModel, vehicleType: $vehicleType, startDate: $startDate, endDate: $endDate, finalPrice: $finalPrice, bookingStatus: $bookingStatus)';
   }
 }
