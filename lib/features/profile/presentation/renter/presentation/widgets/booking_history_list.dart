@@ -303,7 +303,7 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
               Text(
                 'Vehicle Type: ${booking.vehicleType}',
                 style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                 ),
               ),
               const SizedBox(height: 12),
@@ -312,7 +312,7 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
                   Icon(
                     Icons.calendar_today,
                     size: 16,
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -330,13 +330,13 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
                       Icon(
                         Icons.receipt,
                         size: 16,
-                        color: context.theme.gray100_2,
+                        color: context.theme.black50,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         'Booking #${booking.id}',
                         style: AppStyles.medium12(context).copyWith(
-                          color: context.theme.gray100_2,
+                          color: context.theme.black50,
                         ),
                       ),
                     ],
@@ -353,7 +353,7 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
                       Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
-                        color: context.theme.gray100_2,
+                        color: context.theme.black50,
                       ),
                     ],
                   ),
@@ -374,20 +374,20 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
           Icon(
             Icons.history,
             size: 64,
-            color: context.theme.gray100_2,
+            color: context.theme.black50,
           ),
           const SizedBox(height: 16),
           Text(
             'No booking history found',
             style: AppStyles.bold18(context).copyWith(
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Your booking history will appear here',
             style: AppStyles.medium14(context).copyWith(
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
             ),
           ),
         ],
@@ -416,7 +416,7 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
           Text(
             message,
             style: AppStyles.medium14(context).copyWith(
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
             ),
             textAlign: TextAlign.center,
           ),
