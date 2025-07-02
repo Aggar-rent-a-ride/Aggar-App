@@ -10,6 +10,7 @@ abstract class BookingState extends Equatable {
 
 class BookingInitial extends BookingState {}
 
+// Create booking states
 class BookingCreateLoading extends BookingState {}
 
 class BookingCreateSuccess extends BookingState {
@@ -30,6 +31,7 @@ class BookingCreateError extends BookingState {
   List<Object?> get props => [message];
 }
 
+// Get booking by ID states
 class BookingGetByIdLoading extends BookingState {}
 
 class BookingGetByIdSuccess extends BookingState {
@@ -50,6 +52,7 @@ class BookingGetByIdError extends BookingState {
   List<Object?> get props => [message];
 }
 
+// Get bookings by status states
 class BookingsGetByStatusLoading extends BookingState {}
 
 class BookingsGetByStatusSuccess extends BookingState {
@@ -78,6 +81,7 @@ class BookingsGetByStatusError extends BookingState {
   List<Object?> get props => [message];
 }
 
+// Bookings count states
 class BookingsCountLoading extends BookingState {}
 
 class BookingsCountSuccess extends BookingState {
@@ -102,6 +106,7 @@ class BookingsCountError extends BookingState {
   List<Object?> get props => [message];
 }
 
+// Renter pending bookings states
 class RenterPendingBookingsLoading extends BookingState {}
 
 class RenterPendingBookingsSuccess extends BookingState {
@@ -130,73 +135,36 @@ class RenterPendingBookingsError extends BookingState {
   List<Object?> get props => [message];
 }
 
-class BookingMultipleOperationState extends BookingState {
-  final bool isCreating;
-  final bool isGettingById;
-  final bool isGettingByStatus;
-  final bool isGettingCount;
-  final bool isGettingRenterPending; // NEW: Added for renter pending bookings
-  final BookingModel? currentBooking;
-  final List<BookingModel> bookings;
-  final List<BookingModel>
-      renterPendingBookings; // NEW: Added for renter pending bookings
-  final int? totalCount;
-  final String? errorMessage;
+// Booking history states - NEW
+class BookingHistoryLoading extends BookingState {}
 
-  const BookingMultipleOperationState({
-    this.isCreating = false,
-    this.isGettingById = false,
-    this.isGettingByStatus = false,
-    this.isGettingCount = false,
-    this.isGettingRenterPending = false, // NEW
-    this.currentBooking,
-    this.bookings = const [],
-    this.renterPendingBookings = const [], // NEW
-    this.totalCount,
-    this.errorMessage,
+class BookingHistorySuccess extends BookingState {
+  final List<BookingHistoryModel> bookings;
+  final int totalPages;
+  final int currentPage;
+  final int pageSize;
+  final BookingStatus? status;
+
+  const BookingHistorySuccess({
+    required this.bookings,
+    required this.totalPages,
+    required this.currentPage,
+    required this.pageSize,
+    this.status,
   });
 
-  BookingMultipleOperationState copyWith({
-    bool? isCreating,
-    bool? isGettingById,
-    bool? isGettingByStatus,
-    bool? isGettingCount,
-    bool? isGettingRenterPending, // NEW
-    BookingModel? currentBooking,
-    List<BookingModel>? bookings,
-    List<BookingModel>? renterPendingBookings, // NEW
-    int? totalCount,
-    String? errorMessage,
-  }) {
-    return BookingMultipleOperationState(
-      isCreating: isCreating ?? this.isCreating,
-      isGettingById: isGettingById ?? this.isGettingById,
-      isGettingByStatus: isGettingByStatus ?? this.isGettingByStatus,
-      isGettingCount: isGettingCount ?? this.isGettingCount,
-      isGettingRenterPending:
-          isGettingRenterPending ?? this.isGettingRenterPending, // NEW
-      currentBooking: currentBooking ?? this.currentBooking,
-      bookings: bookings ?? this.bookings,
-      renterPendingBookings:
-          renterPendingBookings ?? this.renterPendingBookings, // NEW
-      totalCount: totalCount ?? this.totalCount,
-      errorMessage: errorMessage,
-    );
-  }
+  @override
+  List<Object?> get props =>
+      [bookings, totalPages, currentPage, pageSize, status];
+}
+
+class BookingHistoryError extends BookingState {
+  final String message;
+
+  const BookingHistoryError({required this.message});
 
   @override
-  List<Object?> get props => [
-        isCreating,
-        isGettingById,
-        isGettingByStatus,
-        isGettingCount,
-        isGettingRenterPending, // NEW
-        currentBooking,
-        bookings,
-        renterPendingBookings, // NEW
-        totalCount,
-        errorMessage,
-      ];
+  List<Object?> get props => [message];
 }
 
 // Cancel booking states
@@ -282,4 +250,84 @@ class BookingConfirmError extends BookingState {
 
   @override
   List<Object> get props => [message];
+}
+
+// Multiple operation state (for complex UI states)
+class BookingMultipleOperationState extends BookingState {
+  final bool isCreating;
+  final bool isGettingById;
+  final bool isGettingByStatus;
+  final bool isGettingCount;
+  final bool isGettingRenterPending;
+  final bool isGettingHistory; // NEW: Added for booking history
+  final BookingModel? currentBooking;
+  final List<BookingModel> bookings;
+  final List<BookingModel> renterPendingBookings;
+  final List<BookingHistoryModel>
+      historyBookings; // NEW: Added for booking history
+  final int? totalCount;
+  final String? errorMessage;
+
+  const BookingMultipleOperationState({
+    this.isCreating = false,
+    this.isGettingById = false,
+    this.isGettingByStatus = false,
+    this.isGettingCount = false,
+    this.isGettingRenterPending = false,
+    this.isGettingHistory = false, // NEW
+    this.currentBooking,
+    this.bookings = const [],
+    this.renterPendingBookings = const [],
+    this.historyBookings = const [], // NEW
+    this.totalCount,
+    this.errorMessage,
+  });
+
+  BookingMultipleOperationState copyWith({
+    bool? isCreating,
+    bool? isGettingById,
+    bool? isGettingByStatus,
+    bool? isGettingCount,
+    bool? isGettingRenterPending,
+    bool? isGettingHistory, // NEW
+    BookingModel? currentBooking,
+    List<BookingModel>? bookings,
+    List<BookingModel>? renterPendingBookings,
+    List<BookingHistoryModel>? historyBookings, // NEW
+    int? totalCount,
+    String? errorMessage,
+  }) {
+    return BookingMultipleOperationState(
+      isCreating: isCreating ?? this.isCreating,
+      isGettingById: isGettingById ?? this.isGettingById,
+      isGettingByStatus: isGettingByStatus ?? this.isGettingByStatus,
+      isGettingCount: isGettingCount ?? this.isGettingCount,
+      isGettingRenterPending:
+          isGettingRenterPending ?? this.isGettingRenterPending,
+      isGettingHistory: isGettingHistory ?? this.isGettingHistory, // NEW
+      currentBooking: currentBooking ?? this.currentBooking,
+      bookings: bookings ?? this.bookings,
+      renterPendingBookings:
+          renterPendingBookings ?? this.renterPendingBookings,
+      historyBookings: historyBookings ?? this.historyBookings, // NEW
+      totalCount: totalCount ?? this.totalCount,
+      errorMessage: errorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        isCreating,
+        isGettingById,
+        isGettingByStatus,
+        isGettingCount,
+        isGettingRenterPending,
+        isGettingHistory, // NEW
+        currentBooking,
+        bookings,
+        renterPendingBookings,
+        historyBookings, // NEW
+        totalCount,
+        errorMessage,
+      ];
 }

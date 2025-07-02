@@ -2,6 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/widgets/saved_vehicle_section.dart';
 import 'package:aggar/features/profile/presentation/widgets/review_user_section.dart';
+import 'package:aggar/features/profile/presentation/renter/presentation/widgets/booking_history_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,19 +19,11 @@ class ProfileTabBarSection extends StatefulWidget {
 class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _selectedTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          _selectedTabIndex = _tabController.index;
-        });
-      }
-    });
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -67,11 +60,20 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
               tabs: const [
                 Tab(text: 'Saved'),
                 Tab(text: 'Reviews'),
+                Tab(text: 'Booking'),
               ],
             ),
-            _selectedTabIndex == 0
-                ? const SavedVehicleSection()
-                : ReviewUserSection(userId: userId.toString())
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6 - 48,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  const SavedVehicleSection(),
+                  ReviewUserSection(userId: userId?.toString() ?? ''),
+                  const BookingHistoryList(),
+                ],
+              ),
+            ),
           ],
         );
       },

@@ -18,6 +18,7 @@ class EndPoint {
   static const String getRenterPendingBookings = "/api/booking/pending";
   static const String bookingResponse = '/api/booking/response';
   static const String confirmBooking = '/booking/confirm';
+  static const String getBookingHistory = '/api/booking/history';
 
   // Vehicle endpoints
   static String vehicle = "/api/vehicle/";
