@@ -12,19 +12,15 @@ class UserInfoCubit extends Cubit<UserInfoState> {
   Future<void> fetchUserInfo(String userId, String token) async {
     emit(UserInfoLoading());
     try {
-      print('Fetching user info for userId: $userId with token: $token');
       final response = await dio.get(
         EndPoint.getUserInfo,
         queryParameters: {"userId": userId},
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
-
-      print('API Response: $response');
       final userInfo = UserInfoModel.fromJson(response["data"]);
-      print('Parsed UserInfo: $userInfo');
+
       emit(UserInfoSuccess(userInfoModel: userInfo));
     } catch (e) {
-      print('Error fetching user info: $e');
       emit(UserInfoError(errorMessage: e.toString()));
     }
   }
@@ -41,7 +37,6 @@ class UserInfoCubit extends Cubit<UserInfoState> {
       String bio) async {
     emit(UserInfoLoading());
     try {
-      print('Editing profile for userId: $userId');
       final formData = FormData.fromMap({
         'name': name,
         'image': await MultipartFile.fromFile(image, filename: 'profile.jpg'),
@@ -58,11 +53,9 @@ class UserInfoCubit extends Cubit<UserInfoState> {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      print('Edit Profile Response: $response');
       final updatedUserInfo = UserInfoModel.fromJson(response["data"]);
       emit(UserInfoSuccess(userInfoModel: updatedUserInfo));
     } catch (e) {
-      print('Error editing profile: $e');
       emit(UserInfoError(errorMessage: e.toString()));
     }
   }

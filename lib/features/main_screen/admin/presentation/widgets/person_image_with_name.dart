@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/model/user_model.dart';
@@ -13,7 +14,6 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../profile/presentation/views/show_profile_screen.dart';
 import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
-import '../../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 
 class PersonImageWithName extends StatelessWidget {
   const PersonImageWithName({
@@ -81,7 +81,7 @@ class PersonImageWithName extends StatelessWidget {
                     .read<UserInfoCubit>()
                     .fetchUserInfo(id.toString(), token);
                 context
-                    .read<ReviewCubit>()
+                    .read<UserReviewCubit>()
                     .getUserReviews(id.toString(), token);
                 context
                     .read<ReviewCountCubit>()

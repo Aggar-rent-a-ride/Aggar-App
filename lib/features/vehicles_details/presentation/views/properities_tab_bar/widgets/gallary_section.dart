@@ -54,7 +54,7 @@ class GallarySection extends StatelessWidget {
               "Gallery",
               style: style ??
                   AppStyles.bold18(context).copyWith(
-                    color: context.theme.black50,
+                    color: context.theme.black100,
                   ),
             ),
             const Gap(10),
@@ -84,7 +84,7 @@ class GallarySection extends StatelessWidget {
             "Gallery",
             style: style ??
                 AppStyles.bold18(context).copyWith(
-                  color: context.theme.black50,
+                  color: context.theme.black100,
                 ),
           ),
           const Gap(10),

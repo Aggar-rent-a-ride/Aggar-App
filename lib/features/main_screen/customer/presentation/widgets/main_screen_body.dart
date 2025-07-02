@@ -37,13 +37,7 @@ class MainScreenBody extends StatelessWidget {
               ),
               padding: const EdgeInsets.only(
                   left: 20, right: 20, top: 55, bottom: 20),
-              child: MainHeader(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NotificationScreen(),
-                    )),
-              ),
+              child: const MainHeader(),
             ),
             const Gap(15),
             Padding(

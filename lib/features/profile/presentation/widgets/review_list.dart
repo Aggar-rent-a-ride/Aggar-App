@@ -4,22 +4,23 @@ import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/profile/presentation/views/review_user_screen.dart';
 import 'package:aggar/features/profile/presentation/widgets/comments_count.dart';
 import 'package:aggar/features/profile/presentation/widgets/review_card.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../core/cubit/user_review_cubit/user_review_cubit.dart';
+import '../../../../core/cubit/user_review_cubit/user_review_state.dart';
 
 class ReviewList extends StatelessWidget {
   const ReviewList({super.key, required this.userId});
   final String userId;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReviewCubit, ReviewState>(
+    return BlocBuilder<UserReviewCubit, UserReviewState>(
       builder: (context, state) {
-        if (state is ReviewLoading) {
+        if (state is UserReviewLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is ReviewSuccess) {
+        } else if (state is UserReviewSuccess) {
           if (state.review!.data.isEmpty) {
             return Center(
               child: Text(
@@ -70,7 +71,7 @@ class ReviewList extends StatelessWidget {
               ),
             ],
           );
-        } else if (state is ReviewFailure) {
+        } else if (state is UserReviewFailure) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

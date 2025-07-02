@@ -1,4 +1,6 @@
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
@@ -13,6 +15,11 @@ import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
+import '../../../../../../core/cubit/user_cubit/user_info_cubit.dart';
+import '../../../../../profile/presentation/views/show_profile_screen.dart';
+import '../../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
 
 class PersonalChatView extends StatefulWidget {
   const PersonalChatView({
@@ -96,6 +103,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              toolbarHeight: 70,
               iconTheme: IconThemeData(
                 color: context.theme.white100_2,
               ),
@@ -106,21 +114,56 @@ class _PersonalChatViewState extends State<PersonalChatView> {
               backgroundColor: context.theme.blue100_1,
               title: personalChatCubit.isSearchActive
                   ? SearchForMsgByContentOrDate(cubit: personalChatCubit)
-                  : ImageAndNamePersonMessage(
-                      name: widget.receiverName,
-                      image: widget.reciverImg,
+                  : GestureDetector(
+                      onTap: () async {
+                        final tokenCubit = context.read<TokenRefreshCubit>();
+                        final token = await tokenCubit.getAccessToken();
+                        if (token != null) {
+                          context.read<UserInfoCubit>().fetchUserInfo(
+                              widget.receiverId.toString(), token);
+                          context.read<UserReviewCubit>().getUserReviews(
+                              widget.receiverId.toString(), token);
+                          context.read<ReviewCountCubit>().getUserReviewsNumber(
+                              widget.receiverId.toString(), token);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShowProfileScreen(
+                                user: UserModel(
+                                  username: "",
+                                  id: widget.receiverId,
+                                  name: widget.receiverName,
+                                  imagePath: widget.reciverImg,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: ImageAndNamePersonMessage(
+                        name: widget.receiverName,
+                        image: widget.reciverImg,
+                      ),
                     ),
               leading: personalChatCubit.isSearchActive
                   ? IconButton(
                       icon: Icon(
-                        Icons.arrow_back,
+                        Icons.arrow_back_ios_new_rounded,
                         color: context.theme.white100_2,
                       ),
                       onPressed: () {
                         personalChatCubit.clearSearch();
                       },
                     )
-                  : null,
+                  : IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: context.theme.white100_2,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),

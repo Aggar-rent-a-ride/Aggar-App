@@ -6,7 +6,6 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_location_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/pick_image/pick_location_state.dart';
-import 'package:aggar/features/authorization/data/cubit/verification/verification_cubit.dart';
 import 'package:aggar/features/authorization/presentation/widget/back_out_line_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/card_type.dart';
 import 'package:aggar/features/authorization/presentation/widget/terms_check.dart';
@@ -138,6 +137,8 @@ class PickLocation extends StatelessWidget {
                                 if (state.latitude.isEmpty &&
                                     state.longitude.isEmpty)
                                   PickLocationOnMapButton(
+                                    color: context.theme.black10,
+                                    textColor: context.theme.black100,
                                     onPickLocation: (LatLng location,
                                         String locationAddress) {
                                       cubit.updateLatitude(

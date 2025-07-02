@@ -1,14 +1,44 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_settings_buttons.dart';
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import '../../../../../../core/cubit/user_cubit/user_info_cubit.dart';
+import '../../../../../../core/cubit/user_review_cubit/user_review_cubit.dart';
+import '../../../customer/presentation/cubit/profile/profile_cubit.dart';
 import '../widgets/profile_tab_bar.dart';
 
-class RenterProfileScreen extends StatelessWidget {
+class RenterProfileScreen extends StatefulWidget {
   const RenterProfileScreen({super.key});
+
+  @override
+  State<RenterProfileScreen> createState() => _RenterProfileScreenState();
+}
+
+class _RenterProfileScreenState extends State<RenterProfileScreen> {
+  @override
+  void initState() {
+    refreshProfile();
+    super.initState();
+  }
+
+  Future<void> refreshProfile() async {
+    String? userId = await context.read<LoginCubit>().getUserId();
+    if (userId != null) {
+      final tokenCubit = context.read<TokenRefreshCubit>();
+      final token = await tokenCubit.getAccessToken();
+      if (token != null) {
+        context.read<UserInfoCubit>().fetchUserInfo(userId, token);
+        context.read<ProfileCubit>().fetchRenterVehicles(token);
+        context.read<UserReviewCubit>().getUserReviews(userId, token);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

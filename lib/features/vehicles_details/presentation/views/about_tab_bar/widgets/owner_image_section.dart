@@ -17,7 +17,7 @@ class OwnerImageSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 0),
             color: context.theme.black25,
             spreadRadius: 0,
             blurRadius: 4,

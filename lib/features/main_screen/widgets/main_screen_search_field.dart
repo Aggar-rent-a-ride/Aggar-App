@@ -1,7 +1,9 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/search/presentation/views/search_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainScreenSearchField extends StatelessWidget {
   final VoidCallback? onTap;
@@ -37,11 +39,23 @@ class MainScreenSearchField extends StatelessWidget {
         focusNode: focusNode,
         onTap: onTap == null
             ? () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    return const SearchScreen();
-                  },
-                ));
+                context.read<SearchCubit>().clearBrandFilter();
+                context.read<SearchCubit>().clearNearestFilter();
+                context.read<SearchCubit>().clearPricingFilter();
+                context.read<SearchCubit>().clearRateFilter();
+                context.read<SearchCubit>().clearSearch();
+                context.read<SearchCubit>().clearStatusFilter();
+                context.read<SearchCubit>().clearTransmissionFilter();
+                context.read<SearchCubit>().clearTypeFilter();
+                context.read<SearchCubit>().clearYearFilter();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const SearchScreen();
+                    },
+                  ),
+                );
               }
             : null,
         decoration: InputDecoration(
