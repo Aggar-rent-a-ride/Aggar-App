@@ -297,13 +297,23 @@ class BookingCubit extends Cubit<BookingState> {
           isAccepted: isAccepted,
         ));
       } else {
-        emit(BookingResponseError(
-          message: responseData['message']?.toString() ??
-              'Failed to respond to booking',
-        ));
+        // Handle different status codes appropriately
+        final message = responseData['message']?.toString() ??
+            'Failed to respond to booking';
+
+        emit(BookingResponseError(message: message));
       }
     } catch (e) {
-      _handleError(e, (message) => BookingResponseError(message: message));
+      // Check if it's a DioException with 409 status code
+      if (e is DioException && e.response?.statusCode == 409) {
+        final responseData = e.response?.data as Map<String, dynamic>? ?? {};
+        final message = responseData['message']?.toString() ??
+            'You need to create a payment account to accept bookings.';
+
+        emit(BookingResponseError(message: message));
+      } else {
+        _handleError(e, (message) => BookingResponseError(message: message));
+      }
     }
   }
 
