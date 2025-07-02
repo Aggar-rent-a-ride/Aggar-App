@@ -11,25 +11,17 @@ class ReviewCubit extends Cubit<ReviewState> {
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
 
   bool _isLoadingMore = false;
-  int _pageVehicleReviews = 1, _pageUserReviews = 1;
-  int _totalPagesVehicleReviews = 1, _totalPagesUserReviews = 1;
+  int _pageVehicleReviews = 1;
+  int _totalPagesVehicleReviews = 1;
 
   final List<ReviewModel> _vehicleReviews = [];
-  final List<ReviewModel> _userReviews = [];
 
   List<ReviewModel> get vehicleReviews => List.unmodifiable(_vehicleReviews);
-  List<ReviewModel> get userReviews => List.unmodifiable(_userReviews);
 
-  void _resetList(
-      List<ReviewModel> list, int page, int totalPages, bool isVehicleReviews) {
+  void _resetList(List<ReviewModel> list, int page, int totalPages) {
     list.clear();
-    if (isVehicleReviews) {
-      _pageVehicleReviews = page;
-      _totalPagesVehicleReviews = totalPages;
-    } else {
-      _pageUserReviews = page;
-      _totalPagesUserReviews = totalPages;
-    }
+    _pageVehicleReviews = page;
+    _totalPagesVehicleReviews = totalPages;
   }
 
   Future<void> getVehicleReviews(String vehicleId, String accessToken,
@@ -41,7 +33,7 @@ class ReviewCubit extends Cubit<ReviewState> {
     try {
       if (!isLoadMore) {
         emit(ReviewLoading());
-        _resetList(_vehicleReviews, 1, 1, true);
+        _resetList(_vehicleReviews, 1, 1);
       } else {
         _isLoadingMore = true;
         emit(ReviewLoadingMore(
@@ -95,77 +87,9 @@ class ReviewCubit extends Cubit<ReviewState> {
     }
   }
 
-  Future<void> getUserReviews(String userId, String accessToken,
-      {bool isLoadMore = false}) async {
-    if (isLoadMore &&
-        (_isLoadingMore || _pageUserReviews >= _totalPagesUserReviews)) return;
-
-    try {
-      if (!isLoadMore) {
-        emit(ReviewLoading());
-        _resetList(_userReviews, 1, 1, false);
-      } else {
-        _isLoadingMore = true;
-        emit(ReviewLoadingMore(
-          reviewModel: ListReviewModel(
-            data: _userReviews,
-            totalPages: _totalPagesUserReviews,
-            pageNumber: _pageUserReviews,
-          ),
-        ));
-      }
-
-      final response = await dioConsumer.get(
-        EndPoint.getUserReviews,
-        queryParameters: {
-          'userId': userId,
-          'pageNo': isLoadMore ? _pageUserReviews + 1 : 1,
-          'pageSize': 8,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
-      );
-
-      final reviews = ListReviewModel.fromJson(response);
-      if (isLoadMore) {
-        _userReviews.addAll(reviews.data);
-      } else {
-        _userReviews.clear();
-        _userReviews.addAll(reviews.data);
-      }
-      if (_userReviews.length > 50) {
-        _userReviews.removeRange(0, _userReviews.length - 50);
-      }
-
-      _pageUserReviews = isLoadMore ? _pageUserReviews + 1 : 1;
-      _totalPagesUserReviews = reviews.totalPages;
-
-      emit(ReviewSuccess(
-        review: ListReviewModel(
-          data: _userReviews,
-          totalPages: _totalPagesUserReviews,
-          pageNumber: _pageUserReviews,
-        ),
-      ));
-    } catch (e) {
-      emit(ReviewFailure(e.toString()));
-    } finally {
-      _isLoadingMore = false;
-    }
-  }
-
   void loadMoreVehicleReviews(String vehicleId, String accessToken) =>
       getVehicleReviews(vehicleId, accessToken, isLoadMore: true);
 
-  void loadMoreUserReviews(String userId, String accessToken) =>
-      getUserReviews(userId, accessToken, isLoadMore: true);
-
   bool get canLoadMoreVehicleReviews =>
       _pageVehicleReviews < _totalPagesVehicleReviews && !_isLoadingMore;
-
-  bool get canLoadMoreUserReviews =>
-      _pageUserReviews < _totalPagesUserReviews && !_isLoadingMore;
 }

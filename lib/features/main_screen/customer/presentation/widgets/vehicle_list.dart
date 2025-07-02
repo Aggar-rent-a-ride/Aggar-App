@@ -1,9 +1,11 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 class VehicleList extends StatelessWidget {
@@ -19,6 +21,33 @@ class VehicleList extends StatelessWidget {
           final vehicles = state is VehicleLoaded
               ? state.vehicles.data
               : (state as VehicleLoadingMore).vehicles.data;
+
+          if (vehicles.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Iconsax.car_copy,
+                      size: 50,
+                      color: context.theme.blue100_2,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'No vehicles available',
+                      style: AppStyles.medium16(context).copyWith(
+                        color: context.theme.black50,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
           return Column(
             children: [
               ListView.builder(
@@ -44,7 +73,7 @@ class VehicleList extends StatelessWidget {
                 ),
             ],
           );
-        } else {
+        } else if (state is VehicleLoading) {
           return Shimmer.fromColors(
             baseColor: context.theme.grey100_1,
             highlightColor: context.theme.white100_1,
@@ -61,6 +90,26 @@ class VehicleList extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 15),
                 ),
               ),
+            ),
+          );
+        } else {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Iconsax.warning_2_copy,
+                  size: 40,
+                  color: context.theme.black50,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Failed to load vehicles',
+                  style: AppStyles.medium16(context).copyWith(
+                    color: context.theme.black50,
+                  ),
+                ),
+              ],
             ),
           );
         }

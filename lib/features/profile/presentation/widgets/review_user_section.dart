@@ -6,8 +6,8 @@ import 'package:aggar/features/profile/presentation/views/review_user_screen.dar
 import 'package:aggar/features/profile/presentation/widgets/review_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
-import '../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_state.dart';
+import '../../../../core/cubit/user_review_cubit/user_review_cubit.dart';
+import '../../../../core/cubit/user_review_cubit/user_review_state.dart';
 
 class ReviewUserSection extends StatelessWidget {
   const ReviewUserSection({
@@ -18,14 +18,14 @@ class ReviewUserSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReviewCubit, ReviewState>(
+    return BlocBuilder<UserReviewCubit, UserReviewState>(
       builder: (context, state) {
-        if (state is ReviewLoading) {
+        if (state is UserReviewLoading) {
           return const Padding(
             padding: EdgeInsets.all(16.0),
             child: Center(child: CircularProgressIndicator()),
           );
-        } else if (state is ReviewSuccess) {
+        } else if (state is UserReviewSuccess) {
           final vehicles = state.review!.data;
           if (vehicles.isEmpty) {
             return Padding(

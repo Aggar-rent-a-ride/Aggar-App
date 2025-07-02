@@ -28,7 +28,7 @@ class RatingAndReviewsSection extends StatelessWidget {
                   "Rating and Reviews",
                   style: style ??
                       AppStyles.bold18(context).copyWith(
-                        color: context.theme.black50,
+                        color: context.theme.black100,
                       ),
                 ),
                 RatingGraphSection(

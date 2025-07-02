@@ -131,7 +131,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       _pageRenter = isLoadMore ? _pageRenter + 1 : 1;
       _totalPagesRenter = vehicles.totalPages ?? 1;
-
+      print(_renterVehicles);
       emit(ProfileVehiclesSuccess(
           listVehicleModel: ListVehicleModel(
               data: _renterVehicles, totalPages: _totalPagesRenter)));

@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
@@ -5,7 +6,6 @@ import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_se
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/widgets/profile_tab_bar_section.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final token = await tokenCubit.getAccessToken();
       if (token != null) {
         context.read<ProfileCubit>().fetchFavoriteVehicles(token);
-        context.read<ReviewCubit>().getUserReviews("22", token);
+        context.read<UserReviewCubit>().getUserReviews(userId, token);
       }
     }
   }

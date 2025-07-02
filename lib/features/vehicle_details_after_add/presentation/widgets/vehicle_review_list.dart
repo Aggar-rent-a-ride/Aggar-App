@@ -1,5 +1,4 @@
 import 'package:aggar/core/widgets/comment_section.dart';
-import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_state.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +30,10 @@ class VehicleReviewList extends StatelessWidget {
                   ),
                 ),
               ),
-              const SeeMoreButton(),
             ],
           );
         } else {
-          return const Text("fffffff");
+          return const SizedBox();
         }
       },
     );

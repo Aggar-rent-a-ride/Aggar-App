@@ -6,6 +6,7 @@ import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/report/report_creation_cubit.dart';
 import 'package:aggar/core/cubit/reportId/report_by_id_cubit.dart';
 import 'package:aggar/core/cubit/theme/theme_cubit.dart';
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/themes/light_theme.dart';
@@ -122,6 +123,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => MainImageCubit(),
+        ),
+        BlocProvider(
+          create: (context) => UserReviewCubit(),
         ),
         BlocProvider(
           create: (context) => PickLocationCubit(),

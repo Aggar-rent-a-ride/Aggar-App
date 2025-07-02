@@ -36,6 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final token = await tokenCubit.getAccessToken();
     if (token != null) {
       context.read<SearchCubit>().setAccessToken(token);
+      context.read<SearchCubit>().fetchSearch(pageNo: 1);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
