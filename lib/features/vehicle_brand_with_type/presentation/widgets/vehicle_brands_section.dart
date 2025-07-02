@@ -38,10 +38,41 @@ class _VehicleBrandsSectionState extends State<VehicleBrandsSection> {
         } else if (state is AdminVehicleBrandLoaded) {
           final vehicleTypes = state.listVehicleBrandModel.data;
           if (vehicleTypes.isEmpty) {
-            return Text(
-              "No vehicle brands available",
-              style: AppStyles.regular16(context).copyWith(
-                color: context.theme.blue100_1,
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Vehicle Brands",
+                        style: AppStyles.bold18(context).copyWith(
+                          color: context.theme.blue100_1,
+                        ),
+                      ),
+                      const Gap(2),
+                      Text(
+                        "${vehicleTypes.length} brands available",
+                        style: AppStyles.regular12(context).copyWith(
+                          color: context.theme.blue100_1.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  AddVehicleTypeOrBrandButton(
+                    text: "Add Brand",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddVehicleBrandScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             );
           }

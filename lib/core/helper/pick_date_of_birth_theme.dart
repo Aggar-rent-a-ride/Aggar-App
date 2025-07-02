@@ -30,7 +30,7 @@ Widget pickDateOfBirthTheme(BuildContext context, Widget? child) {
         headerHeadlineStyle: AppStyles.bold24(context).copyWith(
           color: context.theme.black100,
         ),
-        dividerColor: context.theme.gray100_1,
+        dividerColor: context.theme.grey100_1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

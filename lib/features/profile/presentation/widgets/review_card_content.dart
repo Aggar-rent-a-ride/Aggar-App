@@ -34,7 +34,7 @@ class ReviewCardContent extends StatelessWidget {
         Text(
           commentText,
           style: AppStyles.medium16(context).copyWith(
-            color: context.theme.gray100_2,
+            color: context.theme.black50,
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,

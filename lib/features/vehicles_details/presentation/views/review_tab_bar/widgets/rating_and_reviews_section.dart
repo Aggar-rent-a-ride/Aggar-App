@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/vehicle_review_list.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/comment_section_review_and_rating.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_graph_section.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class RatingAndReviewsSection extends StatelessWidget {
                   "Rating and Reviews",
                   style: style ??
                       AppStyles.bold18(context).copyWith(
-                        color: context.theme.gray100_3,
+                        color: context.theme.black50,
                       ),
                 ),
                 RatingGraphSection(
@@ -35,6 +36,7 @@ class RatingAndReviewsSection extends StatelessWidget {
                 ),
                 const Gap(15),
                 CommentSectionReviewAndRating(style: style),
+                const VehicleReviewList()
               ],
             ),
           );

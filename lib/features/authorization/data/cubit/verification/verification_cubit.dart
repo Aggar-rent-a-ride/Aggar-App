@@ -5,15 +5,17 @@ import 'package:aggar/core/api/end_points.dart';
 import 'verification_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 class VerificationCubit extends Cubit<VerificationState> {
   late final DioConsumer _apiConsumer;
   final Map<String, dynamic>? userData;
+  static bool _hasInitialCodeBeenSent = false;
 
-  VerificationCubit({this.userData}) : super(const VerificationState()) {
+  VerificationCubit({this.userData, required BuildContext context})
+      : super(const VerificationState()) {
     _apiConsumer = DioConsumer(dio: Dio());
 
-    // Extract user data from registration response
     if (userData != null && userData!['data'] != null) {
       final data = userData!['data'];
       emit(state.copyWith(
@@ -21,9 +23,19 @@ class VerificationCubit extends Cubit<VerificationState> {
         userId: data[ApiKey.userId],
       ));
 
-      // Send verification code right away
-      sendVerificationCode();
+      if (!_hasInitialCodeBeenSent) {
+        _hasInitialCodeBeenSent = true;
+        _sendInitialVerificationCode();
+      }
     }
+  }
+
+  Future<void> _sendInitialVerificationCode() async {
+    if (state.userId == 0) return;
+    await _apiConsumer.post(
+      EndPoint.sendActivationCode,
+      queryParameters: {"userId": state.userId},
+    );
   }
 
   void updateCode(String code) {
@@ -49,19 +61,14 @@ class VerificationCubit extends Cubit<VerificationState> {
         EndPoint.sendActivationCode,
         queryParameters: {"userId": state.userId},
       );
-
-      print('Verification code sent: $response');
       emit(state.copyWith(isResending: false));
     } on DioException catch (e) {
-      print('Dio exception: ${e.message}');
-      print('Response data: ${e.response?.data}');
       emit(state.copyWith(
         isResending: false,
         errorMessage:
             'Failed to send verification code: ${e.response?.data?.toString() ?? e.message}',
       ));
     } catch (error) {
-      print('Verification code error: $error');
       emit(state.copyWith(
         isResending: false,
         errorMessage: 'Failed to send verification code: $error',
@@ -69,7 +76,7 @@ class VerificationCubit extends Cubit<VerificationState> {
     }
   }
 
-  Future<void> verifyCode() async {
+  Future<void> verifyCode(BuildContext context) async {
     if (!state.isFormValid) {
       emit(state.copyWith(
         errorMessage: 'Please enter the complete verification code.',
@@ -88,22 +95,19 @@ class VerificationCubit extends Cubit<VerificationState> {
         },
       );
 
-      print('Verification successful: $response');
-
-      // Save user data to SharedPreferences
       await _saveUserData(response);
+
+      _hasInitialCodeBeenSent = false;
 
       emit(state.copyWith(isLoading: false, isSuccess: true));
     } on DioException catch (e) {
-      print('Dio exception: ${e.message}');
-      print('Response data: ${e.response?.data}');
+      String errorMessage =
+          e.response?.data?.toString() ?? e.message ?? 'Verification failed';
       emit(state.copyWith(
         isLoading: false,
-        errorMessage:
-            'Verification failed: ${e.response?.data?.toString() ?? e.message}',
+        errorMessage: 'Verification failed: $errorMessage',
       ));
     } catch (error) {
-      print('Verification error: $error');
       emit(state.copyWith(
         isLoading: false,
         errorMessage: 'Verification failed: $error',
@@ -116,26 +120,17 @@ class VerificationCubit extends Cubit<VerificationState> {
       final prefs = await SharedPreferences.getInstance();
 
       if (response['data'] != null) {
-        // Save user info
         await prefs.setString('user_data', jsonEncode(response['data']));
-
-        // Save token if available
         final accessToken = response['data'][ApiKey.accessToken];
         if (accessToken != null && accessToken.isNotEmpty) {
           await prefs.setString('access_token', accessToken);
         }
-
-        // Save refresh token if available
         final refreshToken = response['data'][ApiKey.refreshToken];
         if (refreshToken != null && refreshToken.isNotEmpty) {
           await prefs.setString('refresh_token', refreshToken);
         }
-
-        // Set logged in status
         await prefs.setBool('is_logged_in', true);
       }
-    } catch (e) {
-      print('Error saving user data: $e');
-    }
+    } catch (e) {}
   }
 }

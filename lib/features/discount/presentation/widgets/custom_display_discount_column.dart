@@ -15,13 +15,13 @@ class CustomDisplayDiscountColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           title,
-          style: AppStyles.medium18(context).copyWith(
-            color: context.theme.blue100_5,
+          style: AppStyles.semiBold15(context).copyWith(
+            color: context.theme.blue100_1,
           ),
         ),
         Row(

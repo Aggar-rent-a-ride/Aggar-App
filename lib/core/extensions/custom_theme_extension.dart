@@ -6,9 +6,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
   final Color black50;
   final Color black100;
 
-  final Color gray100_1;
-  final Color gray100_2;
-  final Color gray100_3;
+  final Color grey100_1;
 
   final Color white100_1;
   final Color white50_1;
@@ -38,9 +36,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     required this.black25,
     required this.black50,
     required this.black100,
-    required this.gray100_1,
-    required this.gray100_2,
-    required this.gray100_3,
+    required this.grey100_1,
     required this.white100_1,
     required this.white50_1,
     required this.white100_2,
@@ -68,9 +64,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
       black25: const Color(0x40000000),
       black50: const Color(0x80000000),
       black100: const Color(0xFF000000),
-      gray100_1: const Color(0xFF888888),
-      gray100_2: const Color(0xFF999999),
-      gray100_3: const Color(0xFFCCCCCC),
+      grey100_1: const Color(0xFF888888),
       white100_1: const Color(0xFFFFFFFF),
       white50_1: const Color(0x80FFFFFF),
       white100_2: const Color(0xFFF9F9F9),
@@ -100,9 +94,8 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
     Color? black25,
     Color? black50,
     Color? black100,
-    Color? gray100_1,
-    Color? gray100_2,
-    Color? gray100_3,
+    Color? grey100_1,
+    Color? grey100_3,
     Color? white100_1,
     Color? white50_1,
     Color? white100_2,
@@ -129,9 +122,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
       black25: black25 ?? this.black25,
       black50: black50 ?? this.black50,
       black100: black100 ?? this.black100,
-      gray100_1: gray100_1 ?? this.gray100_1,
-      gray100_2: gray100_2 ?? this.gray100_2,
-      gray100_3: gray100_3 ?? this.gray100_3,
+      grey100_1: grey100_1 ?? this.grey100_1,
       white100_1: white100_1 ?? this.white100_1,
       white50_1: white50_1 ?? this.white50_1,
       white100_2: white100_2 ?? this.white100_2,
@@ -167,9 +158,7 @@ class CustomThemeExtension extends ThemeExtension<CustomThemeExtension> {
       black25: Color.lerp(black25, other.black25, t)!,
       black50: Color.lerp(black50, other.black50, t)!,
       black100: Color.lerp(black100, other.black100, t)!,
-      gray100_1: Color.lerp(gray100_1, other.gray100_1, t)!,
-      gray100_2: Color.lerp(gray100_2, other.gray100_2, t)!,
-      gray100_3: Color.lerp(gray100_3, other.gray100_3, t)!,
+      grey100_1: Color.lerp(grey100_1, other.grey100_1, t)!,
       white100_1: Color.lerp(white100_1, other.white100_1, t)!,
       white50_1: Color.lerp(white50_1, other.white50_1, t)!,
       white100_2: Color.lerp(white100_2, other.white100_2, t)!,

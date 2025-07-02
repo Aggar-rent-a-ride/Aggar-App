@@ -62,7 +62,7 @@ class _BalanceDetailCardState extends State<BalanceDetailCard> {
                 Text(
                   widget.subtitle,
                   style: AppStyles.regular14(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
               ],

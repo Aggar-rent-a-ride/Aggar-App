@@ -53,11 +53,11 @@ class CustomTextField extends StatelessWidget {
             ),
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(5),
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
-                    blurRadius: 4,
+                    blurRadius: 2,
                     offset: Offset(0, 0),
                   ),
                 ],
@@ -84,15 +84,15 @@ class CustomTextField extends StatelessWidget {
                   filled: true,
                   fillColor: context.theme.black10,
                   contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14,
+                    vertical: 16,
                     horizontal: 19,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(5),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(5),
                     borderSide: state.hasError
                         ? BorderSide(
                             color: context.theme.red10_1,
@@ -101,7 +101,7 @@ class CustomTextField extends StatelessWidget {
                         : BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(5),
                     borderSide: state.hasError
                         ? BorderSide(
                             color: context.theme.red10_1,
@@ -111,6 +111,7 @@ class CustomTextField extends StatelessWidget {
                   ),
                   suffixIcon: suffixIcon != null
                       ? IconButton(
+                          color: context.theme.black50,
                           icon: suffixIcon!,
                           onPressed: onSuffixIconPressed,
                         )

@@ -77,7 +77,7 @@ class _TabBarSectionState extends State<TabBarSection>
           indicatorColor: context.theme.blue100_2,
           dividerColor: context.theme.black10,
           labelColor: context.theme.blue100_2,
-          unselectedLabelColor: context.theme.gray100_2,
+          unselectedLabelColor: context.theme.black50,
           labelStyle: AppStyles.bold18(context)
               .copyWith(color: context.theme.blue100_2),
           unselectedLabelStyle: AppStyles.bold18(context).copyWith(

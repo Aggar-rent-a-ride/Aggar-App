@@ -33,7 +33,7 @@ class NameWithUserName extends StatelessWidget {
                 Text(
                   user.userName,
                   style: AppStyles.medium18(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
               ],
@@ -54,7 +54,7 @@ class NameWithUserName extends StatelessWidget {
                 Text(
                   "Unknown",
                   style: AppStyles.medium18(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
               ],

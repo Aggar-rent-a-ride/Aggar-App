@@ -4,14 +4,7 @@ import 'package:aggar/features/profile/presentation/widgets/edit_profile_with_se
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
-import '../../../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
-import '../../../../../new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
-import '../../../../../new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
-import '../../../../../new_vehicle/data/cubits/map_location/map_location_cubit.dart';
-import '../../../../../new_vehicle/presentation/views/add_vehicle_screen.dart';
 import '../widgets/profile_tab_bar.dart';
 
 class RenterProfileScreen extends StatelessWidget {
@@ -20,30 +13,6 @@ class RenterProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: "Dddd",
-        onPressed: () {
-          context.read<AddVehicleCubit>().reset();
-          context.read<MainImageCubit>().reset();
-          context.read<AdditionalImageCubit>().reset();
-          context.read<MapLocationCubit>().reset();
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddVehicleScreen(),
-            ),
-          );
-        },
-        backgroundColor: context.theme.blue100_1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        child: Icon(
-          Icons.add,
-          color: context.theme.white100_1,
-          size: 30,
-        ),
-      ),
       backgroundColor: context.theme.white100_1,
       body: SingleChildScrollView(
         child: Column(

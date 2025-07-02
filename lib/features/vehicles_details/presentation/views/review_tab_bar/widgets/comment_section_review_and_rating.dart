@@ -22,7 +22,7 @@ class CommentSectionReviewAndRating extends StatelessWidget {
             "Comments (${state.review})",
             style: style ??
                 AppStyles.bold18(context).copyWith(
-                  color: context.theme.gray100_3,
+                  color: context.theme.black50,
                 ),
           );
         } else {
@@ -30,7 +30,7 @@ class CommentSectionReviewAndRating extends StatelessWidget {
             "Comments (0)",
             style: style ??
                 AppStyles.bold18(context).copyWith(
-                  color: context.theme.gray100_3,
+                  color: context.theme.black50,
                 ),
           );
         }

@@ -14,7 +14,7 @@ class SpletContainer extends StatelessWidget {
         height: 7,
         width: 70,
         decoration: BoxDecoration(
-          color: context.theme.gray100_1,
+          color: context.theme.grey100_1,
           borderRadius: BorderRadius.circular(15),
         ),
       ),

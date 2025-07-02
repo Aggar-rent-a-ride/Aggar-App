@@ -1,10 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
-import 'package:aggar/core/utils/app_assets.dart';
-import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/core/widgets/custom_elevated_button.dart';
-import 'package:aggar/features/authorization/data/cubit/verification/verification_cubit.dart';
-import 'package:aggar/features/authorization/data/cubit/verification/verification_state.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,9 +7,21 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class VerificationViewContent extends StatelessWidget {
+import '../../../../core/utils/app_assets.dart';
+import '../../../../core/utils/app_styles.dart';
+import '../../../../core/widgets/custom_elevated_button.dart';
+import '../../data/cubit/verification/verification_cubit.dart';
+import '../../data/cubit/verification/verification_state.dart';
+
+class VerificationViewContent extends StatefulWidget {
   const VerificationViewContent({super.key});
 
+  @override
+  State<VerificationViewContent> createState() =>
+      _VerificationViewContentState();
+}
+
+class _VerificationViewContentState extends State<VerificationViewContent> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<VerificationCubit, VerificationState>(
@@ -24,7 +31,7 @@ class VerificationViewContent extends StatelessWidget {
             customSnackBar(
               context,
               "Error",
-              "Verifcation Error :${state.errorMessage!}",
+              "Verification Error: ${state.errorMessage!}",
               SnackBarType.error,
             ),
           );
@@ -40,7 +47,8 @@ class VerificationViewContent extends StatelessWidget {
               SnackBarType.success,
             ),
           );
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
             return const SignInView();
           }));
         }
@@ -83,7 +91,7 @@ class VerificationViewContent extends StatelessWidget {
                   Text(
                     'Please enter the verification code sent to:',
                     style: AppStyles.regular20(context)
-                        .copyWith(color: context.theme.gray100_2),
+                        .copyWith(color: context.theme.black50),
                   ),
                   Text(
                     state.email ?? 'your email',
@@ -105,7 +113,7 @@ class VerificationViewContent extends StatelessWidget {
                       fieldHeight: 50,
                       fieldWidth: 50,
                       activeColor: context.theme.blue100_1,
-                      inactiveColor: context.theme.gray100_2,
+                      inactiveColor: context.theme.black50,
                       selectedColor: context.theme.blue100_2,
                     ),
                   ),
@@ -116,7 +124,7 @@ class VerificationViewContent extends StatelessWidget {
                       Text(
                         "Didn't receive the code?",
                         style: AppStyles.regular20(context).copyWith(
-                          color: context.theme.gray100_2,
+                          color: context.theme.black50,
                         ),
                       ),
                       TextButton(
@@ -164,8 +172,9 @@ class VerificationViewContent extends StatelessWidget {
                         )
                       : CustomElevatedButton(
                           onPressed: state.isFormValid
-                              ? () =>
-                                  context.read<VerificationCubit>().verifyCode()
+                              ? () => context
+                                  .read<VerificationCubit>()
+                                  .verifyCode(context)
                               : null,
                           text: "Verify",
                         )

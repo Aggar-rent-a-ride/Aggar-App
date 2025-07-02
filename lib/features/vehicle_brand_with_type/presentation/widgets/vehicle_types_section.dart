@@ -38,10 +38,41 @@ class _VehicleTypesSectionState extends State<VehicleTypesSection> {
         } else if (state is AdminVehicleTypeLoaded) {
           final vehicleTypes = state.listVehicleTypeModel.data;
           if (vehicleTypes.isEmpty) {
-            return Text(
-              "No vehicle types available",
-              style: AppStyles.regular16(context).copyWith(
-                color: context.theme.blue100_1,
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Vehicle Types",
+                        style: AppStyles.bold18(context).copyWith(
+                          color: context.theme.blue100_1,
+                        ),
+                      ),
+                      const Gap(2),
+                      Text(
+                        "${vehicleTypes.length} types available",
+                        style: AppStyles.regular12(context).copyWith(
+                          color: context.theme.blue100_1.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  AddVehicleTypeOrBrandButton(
+                    text: "Add Type",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddVehicleTypeScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             );
           }

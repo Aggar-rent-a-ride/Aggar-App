@@ -13,7 +13,7 @@ class LoadingUsersSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       child: Shimmer.fromColors(
-          baseColor: context.theme.gray100_1,
+          baseColor: context.theme.grey100_1,
           highlightColor: context.theme.white100_1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

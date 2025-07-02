@@ -181,7 +181,7 @@ class _InputNameWithDropDownListState extends State<InputNameWithDropDownList> {
                     border: Border.all(
                       color: state.hasError
                           ? context.theme.red100_1
-                          : context.theme.gray100_2,
+                          : context.theme.black50,
                       width: 1,
                       style: BorderStyle.solid,
                     ),

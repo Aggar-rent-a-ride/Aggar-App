@@ -51,7 +51,7 @@ class _PricingShowModelBottomSheetState
             });
           },
           activeColor: context.theme.blue100_6,
-          inactiveColor: context.theme.gray100_1,
+          inactiveColor: context.theme.grey100_1,
         ),
         const Gap(10),
         Row(

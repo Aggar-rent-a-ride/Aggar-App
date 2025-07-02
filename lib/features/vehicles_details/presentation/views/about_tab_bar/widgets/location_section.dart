@@ -30,7 +30,7 @@ class LocationSection extends StatelessWidget {
           "Location",
           style: style ??
               AppStyles.bold18(context).copyWith(
-                color: context.theme.gray100_3,
+                color: context.theme.black50,
               ),
         ),
         CurrentLocationWithDistanceSection(

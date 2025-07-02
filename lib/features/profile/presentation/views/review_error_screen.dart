@@ -19,13 +19,13 @@ class ReviewErrorScreen extends StatelessWidget {
             Icon(
               Icons.error_outline,
               size: 48,
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
             ),
             const Gap(16),
             Text(
               "Something went wrong",
               style: AppStyles.medium16(context).copyWith(
-                color: context.theme.gray100_2,
+                color: context.theme.black50,
               ),
             ),
           ],

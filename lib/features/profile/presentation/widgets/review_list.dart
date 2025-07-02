@@ -25,7 +25,7 @@ class ReviewList extends StatelessWidget {
               child: Text(
                 'No reviews available',
                 style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                 ),
               ),
             );
@@ -79,14 +79,14 @@ class ReviewList extends StatelessWidget {
                 Text(
                   'No Reviews Yet',
                   style: AppStyles.semiBold16(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
                 const Gap(8),
                 Text(
                   'Be the first to share your experience!',
                   style: AppStyles.medium14(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
               ],

@@ -6,9 +6,7 @@ class AppLightColors {
   static Color myBlack50 = const Color(0xff7F7F7F);
   static Color myBlack100 = const Color(0xff000000);
   ////////////////////////////////////////
-  static Color myGray100_1 = const Color(0xffD9D9D9);
-  static Color myGray100_2 = const Color(0xff7D7D7D);
-  static Color myGray100_3 = const Color(0xff505050);
+  static Color myGrey100_1 = const Color(0xffD9D9D9);
   ///////////////////////////////////////
   static Color myWhite100_1 = const Color(0xffffffff);
   static Color myWhite50_1 = const Color(0xffffffff).withOpacity(0.5);

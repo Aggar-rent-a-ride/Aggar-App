@@ -33,7 +33,7 @@ class NoReviewUser extends StatelessWidget {
             Text(
               'No reviews available',
               style: AppStyles.bold18(context).copyWith(
-                color: context.theme.gray100_2,
+                color: context.theme.black50,
               ),
             ),
           ],

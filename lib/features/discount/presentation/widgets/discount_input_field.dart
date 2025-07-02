@@ -33,7 +33,7 @@ class DiscountInputField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: context.theme.gray100_2,
+            color: context.theme.black50,
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -45,7 +45,7 @@ class DiscountInputField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
-            color: context.theme.gray100_2,
+            color: context.theme.black50,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(

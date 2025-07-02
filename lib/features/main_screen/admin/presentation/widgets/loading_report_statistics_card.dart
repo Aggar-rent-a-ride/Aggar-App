@@ -10,7 +10,7 @@ class LoadingReportStatisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: context.theme.gray100_1,
+      baseColor: context.theme.grey100_1,
       highlightColor: context.theme.white100_1,
       child: Container(
         height: MediaQuery.of(context).size.height * 0.39,

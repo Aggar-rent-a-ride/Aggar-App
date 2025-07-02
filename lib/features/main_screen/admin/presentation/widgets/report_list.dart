@@ -89,14 +89,14 @@ class _ReportListState extends State<ReportList> {
                     Icon(
                       Icons.report_off,
                       size: 64,
-                      color: context.theme.gray100_1,
+                      color: context.theme.grey100_1,
                     ),
                     const Gap(16),
                     Text(
                       'No reports found',
                       style: TextStyle(
                         fontSize: 18,
-                        color: context.theme.gray100_1,
+                        color: context.theme.grey100_1,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -105,7 +105,7 @@ class _ReportListState extends State<ReportList> {
                       'Try adjusting your filters',
                       style: TextStyle(
                         fontSize: 14,
-                        color: context.theme.gray100_1,
+                        color: context.theme.grey100_1,
                       ),
                     ),
                   ],
@@ -199,7 +199,7 @@ class _ReportListState extends State<ReportList> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: context.theme.gray100_1,
+                        color: context.theme.grey100_1,
                       ),
                     ),
                   ),
@@ -216,7 +216,7 @@ class _ReportListState extends State<ReportList> {
           // Loading state
           return Expanded(
             child: Shimmer.fromColors(
-              baseColor: context.theme.gray100_1,
+              baseColor: context.theme.grey100_1,
               highlightColor: context.theme.white100_1,
               child: Padding(
                 padding:

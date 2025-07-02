@@ -19,7 +19,7 @@ class CurrentLocationWithDistanceSection extends StatelessWidget {
           Icon(
             Icons.location_on_sharp,
             size: 20,
-            color: context.theme.gray100_2,
+            color: context.theme.black50,
           ),
           Expanded(
             flex: 7,

@@ -2,7 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/edit_vehicle/presentation/views/edit_vehicle_view.dart';
-import 'package:aggar/features/new_vehicle/presentation/widgets/bottom_navigation_bar_content.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/pricing_and_discounts_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/location_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
@@ -11,7 +11,6 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_wi
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class VehicleDetailsAfterAddingScreen extends StatelessWidget {
   const VehicleDetailsAfterAddingScreen({
@@ -35,6 +34,8 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
     this.pfpImage,
     required this.renterName,
     required this.vehicleId,
+    this.vehicleRate,
+    this.discountList,
   });
   final int yearOfManufaction;
   final String vehicleModel;
@@ -55,6 +56,8 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
   final String? pfpImage;
   final String renterName;
   final String vehicleId;
+  final double? vehicleRate;
+  final List<dynamic>? discountList;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -69,7 +72,16 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
           backgroundColor: context.theme.white100_1,
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditVehicleView(
+                      vehicleId: vehicleId,
+                    ),
+                  ),
+                );
+              },
               icon: const Icon(
                 Icons.more_vert_rounded,
               ),
@@ -131,27 +143,18 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
                   ),
                 ),
                 RatingAndReviewsSection(
+                  vehicleRate: vehicleRate,
                   style: AppStyles.bold18(context).copyWith(
                     color: AppLightColors.myBlue100_2,
                   ),
                 ),
+                PricingAndDiscountsSection(
+                  discountList: discountList ?? [],
+                  price: vehicleRentPrice,
+                )
               ],
             ),
           ),
-        ),
-        // TODO :what to edit with edit button
-        bottomNavigationBar: BottomNavigationBarContent(
-          title: "Edit Vehicle",
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return EditVehicleView(vehicleId: vehicleId);
-                },
-              ),
-            );
-          },
         ),
       ),
     );

@@ -63,7 +63,7 @@ class BalanceCard extends StatelessWidget {
                 Text(
                   currency,
                   style: AppStyles.regular16(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
               ],

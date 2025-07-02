@@ -289,6 +289,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
               ? List<String>.from(data['vehicleImages']
                   .map((image) => image is String ? image : image.toString()))
               : [],
+          discounts: data['discounts'] ?? [],
         );
         initWithVehicleData(vehicle, id);
       } catch (parseError) {

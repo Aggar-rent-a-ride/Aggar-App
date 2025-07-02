@@ -2,12 +2,12 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/credentials/credentials_state.dart';
 import 'package:aggar/features/authorization/presentation/widget/back_out_line_button.dart';
+import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
-import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 
 class CredentialsPage extends StatelessWidget {
   final PageController controller;
@@ -45,7 +45,6 @@ class CredentialsPage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final cubit = CredentialsCubit();
-
         if (initialData != null) {
           if (initialData!.containsKey('email')) {
             cubit.updateEmail(initialData!['email'] as String);
@@ -58,7 +57,6 @@ class CredentialsPage extends StatelessWidget {
                 initialData!['confirmPassword'] as String);
           }
         }
-
         return cubit;
       },
       child: BlocConsumer<CredentialsCubit, CredentialsState>(
@@ -71,7 +69,6 @@ class CredentialsPage extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<CredentialsCubit>();
-
           return Scaffold(
             backgroundColor: context.theme.white100_1,
             body: SafeArea(
@@ -80,6 +77,7 @@ class CredentialsPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: Form(
+                      key: cubit.formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -95,7 +93,7 @@ class CredentialsPage extends StatelessWidget {
                             inputType: TextInputType.emailAddress,
                             obscureText: false,
                             hintText: "Enter your Email",
-                            initialValue: state.email,
+                            controller: cubit.emailController,
                             onChanged: cubit.updateEmail,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -112,7 +110,7 @@ class CredentialsPage extends StatelessWidget {
                             inputType: TextInputType.text,
                             obscureText: !state.passwordVisible,
                             hintText: "Enter password",
-                            initialValue: state.password,
+                            controller: cubit.passwordController,
                             onChanged: cubit.updatePassword,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -135,7 +133,7 @@ class CredentialsPage extends StatelessWidget {
                             inputType: TextInputType.text,
                             obscureText: !state.confirmPasswordVisible,
                             hintText: "Enter your password again",
-                            initialValue: state.confirmPassword,
+                            controller: cubit.confirmPasswordController,
                             onChanged: cubit.updateConfirmPassword,
                             validator: (value) {
                               if (value == null || value.isEmpty) {

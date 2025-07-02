@@ -68,14 +68,14 @@ class _RoleUserListState extends State<RoleUserList> {
                     Icon(
                       Icons.person_off,
                       size: 64,
-                      color: context.theme.gray100_1,
+                      color: context.theme.grey100_1,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No users found',
                       style: TextStyle(
                         fontSize: 18,
-                        color: context.theme.gray100_1,
+                        color: context.theme.grey100_1,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -84,7 +84,7 @@ class _RoleUserListState extends State<RoleUserList> {
                       'Try adjusting your filters',
                       style: TextStyle(
                         fontSize: 14,
-                        color: context.theme.gray100_1,
+                        color: context.theme.grey100_1,
                       ),
                     ),
                   ],
@@ -120,7 +120,7 @@ class _RoleUserListState extends State<RoleUserList> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Shimmer.fromColors(
-                      baseColor: context.theme.gray100_1,
+                      baseColor: context.theme.grey100_1,
                       highlightColor: context.theme.white100_1,
                       child: const CircularProgressIndicator(),
                     ),
@@ -156,7 +156,7 @@ class _RoleUserListState extends State<RoleUserList> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: context.theme.gray100_1,
+                        color: context.theme.grey100_1,
                       ),
                     ),
                   ),
@@ -175,7 +175,7 @@ class _RoleUserListState extends State<RoleUserList> {
           // Loading or NoSearch state
           return Expanded(
             child: Shimmer.fromColors(
-              baseColor: context.theme.gray100_1,
+              baseColor: context.theme.grey100_1,
               highlightColor: context.theme.white100_1,
               child: Padding(
                 padding:
