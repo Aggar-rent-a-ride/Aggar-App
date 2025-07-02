@@ -40,7 +40,7 @@ class RenterVehiclesList extends StatelessWidget {
                     Text(
                       'No reviews yet',
                       style: AppStyles.medium16(context).copyWith(
-                        color: context.theme.gray100_2,
+                        color: context.theme.black50,
                       ),
                     ),
                   ],
@@ -61,7 +61,7 @@ class RenterVehiclesList extends StatelessWidget {
                             entry: entry,
                             onTap: () async {
                               const token =
-                                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw";
+                                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6Ijg1NjgyNzRlLWZhMWUtNGEyZS1hOTVlLTJhMGI3ZWYwNTlhNyIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTI0NjY3NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6FhN9OCYhe2PHJUksiyJ0f_ac7o7fP7t5579V8z8eJU";
                               final addVehicleCubit =
                                   context.read<AddVehicleCubit>();
                               showDialog(

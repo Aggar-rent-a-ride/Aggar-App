@@ -26,11 +26,11 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
   void initState() {
     super.initState();
     context.read<UserInfoCubit>().fetchUserInfo("20",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6Ijg1NjgyNzRlLWZhMWUtNGEyZS1hOTVlLTJhMGI3ZWYwNTlhNyIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTI0NjY3NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6FhN9OCYhe2PHJUksiyJ0f_ac7o7fP7t5579V8z8eJU");
     context.read<ProfileCubit>().fetchRenterVehicles(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6Ijg1NjgyNzRlLWZhMWUtNGEyZS1hOTVlLTJhMGI3ZWYwNTlhNyIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTI0NjY3NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6FhN9OCYhe2PHJUksiyJ0f_ac7o7fP7t5579V8z8eJU");
     context.read<ReviewCubit>().getUserReviews("20",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6IjQzOWUxOTc0LTY1MDctNDM1Zi1iZmI5LTA0MmZkYmEzMmUyMCIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTIzNTY5OSwiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6GP6cSvlOQ7JK6dbgq-CQ36B-F5zU9saNi8qviwDkiw");
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMCIsImp0aSI6Ijg1NjgyNzRlLWZhMWUtNGEyZS1hOTVlLTJhMGI3ZWYwNTlhNyIsInVzZXJuYW1lIjoiUmVudGVyIiwidWlkIjoiMjAiLCJyb2xlcyI6WyJVc2VyIiwiUmVudGVyIl0sImV4cCI6MTc1MTI0NjY3NywiaXNzIjoiQWdnYXJBcGkiLCJhdWQiOiJGbHV0dGVyIn0.6FhN9OCYhe2PHJUksiyJ0f_ac7o7fP7t5579V8z8eJU");
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
@@ -66,7 +66,7 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
               indicatorColor: context.theme.blue100_2,
               dividerColor: context.theme.black25,
               labelColor: context.theme.blue100_2,
-              unselectedLabelColor: context.theme.gray100_2,
+              unselectedLabelColor: context.theme.black50,
               labelStyle: AppStyles.bold18(context)
                   .copyWith(color: context.theme.blue100_2),
               unselectedLabelStyle: AppStyles.bold18(context).copyWith(

@@ -1,10 +1,12 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_state.dart';
 import 'package:aggar/core/widgets/custom_dialog.dart';
 import 'package:aggar/features/edit_vehicle/presentation/widgets/loading_edit_vehicle_view_body.dart';
+import 'package:aggar/features/edit_vehicle/presentation/widgets/vehicle_discount_section.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_brand/vehicle_brand_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
@@ -94,6 +96,9 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                 final token = await tokenRefreshCubit.getAccessToken();
 
                 if (token != null) {
+                  await context
+                      .read<DiscountCubit>()
+                      .addDiscount(widget.vehicleId);
                   await editVehicleCubit.updateVehicle(
                     widget.vehicleId,
                     mapLocationCubit.selectedLocation!,
@@ -187,13 +192,13 @@ class _EditVehicleViewState extends State<EditVehicleView> {
           ),
           body: isLoading
               ? Shimmer.fromColors(
-                  baseColor: context.theme.gray100_1,
+                  baseColor: context.theme.grey100_1,
                   highlightColor: context.theme.white100_1,
                   child: const LoadingEditVehicleViewBody(),
                 )
               : state is EditVehicleFailure
                   ? Shimmer.fromColors(
-                      baseColor: context.theme.gray100_1,
+                      baseColor: context.theme.grey100_1,
                       highlightColor: context.theme.white100_1,
                       child: const LoadingEditVehicleViewBody(),
                     )
@@ -300,6 +305,12 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                                       .read<EditVehicleCubit>()
                                       .setVehicleStatus(value);
                                 },
+                              ),
+                              const Gap(25),
+                              VehicleDiscountSection(
+                                vehicleId: widget.vehicleId,
+                                isEditing: true,
+                                vehicleData: vehicleData,
                               ),
                               const Gap(25),
                             ],

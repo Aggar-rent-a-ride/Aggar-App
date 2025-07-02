@@ -51,7 +51,7 @@ class AllVehicleError extends StatelessWidget {
                   icon: const Icon(Icons.arrow_back),
                   label: const Text("Go Back"),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: context.theme.gray100_1,
+                    foregroundColor: context.theme.grey100_1,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 12),
                   ),

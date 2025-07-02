@@ -33,7 +33,7 @@ class NameWithUserNameWithRole extends StatelessWidget {
                     Text(
                       state.userInfoModel.userName,
                       style: AppStyles.medium18(context).copyWith(
-                        color: context.theme.gray100_2,
+                        color: context.theme.black50,
                       ),
                     ),
                     const Gap(5),

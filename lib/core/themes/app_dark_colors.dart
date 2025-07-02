@@ -6,10 +6,9 @@ class AppDarkColors {
   static Color myBlack50 = const Color(0xff808080);
   static Color myBlack100 = const Color(0xffC0C0C0); // done
   ////////////////////////////////////////
-  static Color myGray100_1 = const Color(0xff424448); //done
-  static Color myGray100_2 =
+  static Color myGrey100_1 = const Color(0xff424448); //done
+  static Color myGrey100_2 =
       const Color.fromARGB(255, 90, 93, 98); //TODO: want to be edit
-  static Color myGray100_3 = const Color(0xffAFAFAF);
   ///////////////////////////////////////
   static Color myWhite100_1 = const Color(0xff171717); //done
   static Color myWhite50_1 = const Color(0xff000000).withOpacity(0.5);

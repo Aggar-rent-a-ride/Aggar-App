@@ -1,12 +1,12 @@
-import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_state.dart';
+import 'package:aggar/features/authorization/data/cubit/pick_image/pick_location_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/sign_up/sign_up_state.dart';
-import 'package:aggar/features/authorization/data/cubit/pick_image/pick_image_cubit.dart';
+import 'package:aggar/features/authorization/presentation/views/pick_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/cubit/pick_image/pick_location_state.dart';
 import 'credentials.dart';
 import 'personal_info.dart';
-import 'pick_image.dart';
 
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
@@ -19,7 +19,7 @@ class SignUpView extends StatelessWidget {
         BlocProvider(
           create: (context) {
             final signUpCubit = context.read<SignUpCubit>();
-            return PickImageCubit(
+            return PickLocationCubit(
               userData: signUpCubit.userData,
             );
           },
@@ -38,13 +38,14 @@ class SignUpPageView extends StatefulWidget {
 }
 
 class _SignUpPageViewState extends State<SignUpPageView> {
-  final PageController _pageController = PageController();
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PickImageCubit>().setPageController(_pageController);
+      context.read<PickLocationCubit>().setPageController(_pageController);
     });
   }
 
@@ -61,8 +62,8 @@ class _SignUpPageViewState extends State<SignUpPageView> {
         builder: (context, state) {
           final SignUpCubit cubit = context.read<SignUpCubit>();
 
-          if (context.read<PickImageCubit>().userData != cubit.userData) {
-            context.read<PickImageCubit>().updateUserData(cubit.userData);
+          if (context.read<PickLocationCubit>().userData != cubit.userData) {
+            context.read<PickLocationCubit>().updateUserData(cubit.userData);
           }
           return PageView(
             controller: _pageController,
@@ -82,9 +83,9 @@ class _SignUpPageViewState extends State<SignUpPageView> {
                   cubit.updateFormData(data);
                 },
               ),
-              BlocBuilder<PickImageCubit, PickImageState>(
-                builder: (context, pickImageState) {
-                  return PickImage(
+              BlocBuilder<PickLocationCubit, PickLocationState>(
+                builder: (context, pickLocationState) {
+                  return PickLocation(
                     controller: _pageController,
                     onRegistrationSuccess: (data) {
                       cubit.updateFormData(data);

@@ -37,7 +37,7 @@ class SavedVehicleSection extends StatelessWidget {
                     Text(
                       'No saved vehicles yet',
                       style: AppStyles.medium16(context).copyWith(
-                        color: context.theme.gray100_2,
+                        color: context.theme.black50,
                       ),
                     ),
                   ],
@@ -79,7 +79,7 @@ class SavedVehicleSection extends StatelessWidget {
               child: Text(
                 'Error: ${state.errorMessage}',
                 style: AppStyles.medium16(context).copyWith(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                 ),
               ),
             ),
@@ -96,7 +96,7 @@ class SavedVehicleSection extends StatelessWidget {
                 Text(
                   'No saved vehicles yet',
                   style: AppStyles.medium16(context).copyWith(
-                    color: context.theme.gray100_2,
+                    color: context.theme.black50,
                   ),
                 ),
               ],

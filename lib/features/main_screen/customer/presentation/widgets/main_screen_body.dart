@@ -55,14 +55,14 @@ class MainScreenBody extends StatelessWidget {
                   state.isVehicleTypesLoaded
                       ? const VehiclesTypeSection()
                       : Shimmer.fromColors(
-                          baseColor: context.theme.gray100_1,
+                          baseColor: context.theme.grey100_1,
                           highlightColor: context.theme.white100_1,
                           child: const LoadingVehicleTypeSection(),
                         ),
                   state.isVehicleBrandsLoaded
                       ? const BrandsSection()
                       : Shimmer.fromColors(
-                          baseColor: context.theme.gray100_1,
+                          baseColor: context.theme.grey100_1,
                           highlightColor: context.theme.white100_1,
                           child: const LoadingVehicleBrandSection(),
                         ),

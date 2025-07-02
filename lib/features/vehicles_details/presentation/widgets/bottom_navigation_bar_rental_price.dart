@@ -18,7 +18,7 @@ class BottomNavigationBarRentalPrice extends StatelessWidget {
           Text(
             "Rental Price",
             style: AppStyles.bold18(context).copyWith(
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
             ),
           ),
           Text.rich(

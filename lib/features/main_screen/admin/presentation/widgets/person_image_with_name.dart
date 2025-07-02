@@ -41,7 +41,7 @@ class PersonImageWithName extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Shimmer.fromColors(
-            baseColor: context.theme.gray100_1,
+            baseColor: context.theme.grey100_1,
             highlightColor: context.theme.white100_1,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,

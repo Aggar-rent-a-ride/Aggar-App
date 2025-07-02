@@ -35,7 +35,7 @@ class VehiclesTypeSection extends StatelessWidget {
               minThumbLength: MediaQuery.sizeOf(context).width * 0.1,
               trackVisibility: true,
               trackRadius: const Radius.circular(50),
-              trackColor: context.theme.gray100_1,
+              trackColor: context.theme.grey100_1,
               controller: scrollController,
               thumbColor: context.theme.blue100_5,
               radius: const Radius.circular(20),

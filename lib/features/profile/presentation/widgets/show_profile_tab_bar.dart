@@ -20,7 +20,7 @@ class ShowProfileTabBar extends StatelessWidget {
       indicatorColor: context.theme.blue100_1,
       dividerColor: context.theme.black10,
       labelColor: context.theme.blue100_1,
-      unselectedLabelColor: context.theme.gray100_2,
+      unselectedLabelColor: context.theme.black50,
       labelStyle:
           AppStyles.bold18(context).copyWith(color: context.theme.blue100_1),
       unselectedLabelStyle: AppStyles.bold18(context).copyWith(

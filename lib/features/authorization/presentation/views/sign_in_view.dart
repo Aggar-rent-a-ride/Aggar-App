@@ -62,7 +62,7 @@ class _SignInContent extends StatelessWidget {
               ),
             );
             final userType = state.userType;
-            if (userType == "User") {
+            if (userType == "Admin") {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -123,16 +123,7 @@ class _SignInContent extends StatelessWidget {
                           loginCubit.togglePasswordVisibility,
                     ),
                     const Gap(5),
-                    SignInForgetPasswordButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const VerificationView(),
-                          ),
-                        );
-                      },
-                    ),
+                    const SignInForgetPasswordButton(),
                     const Gap(20),
                     CustomElevatedButton(
                       onPressed: isLoading ? null : loginCubit.handleLogin,

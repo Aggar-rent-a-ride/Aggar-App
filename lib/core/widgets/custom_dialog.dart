@@ -31,7 +31,7 @@ class CustomDialog extends StatelessWidget {
       content: Text(
         subtitle,
         style: AppStyles.medium18(context).copyWith(
-          color: context.theme.gray100_2,
+          color: context.theme.black50,
         ),
       ),
       actions: [

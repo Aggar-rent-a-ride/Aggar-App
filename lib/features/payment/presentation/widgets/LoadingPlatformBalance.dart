@@ -11,7 +11,7 @@ class ShimmerLoading extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
       child: Shimmer.fromColors(
-        baseColor: context.theme.gray100_2.withOpacity(0.3),
+        baseColor: context.theme.black50.withOpacity(0.3),
         highlightColor: context.theme.white100_1.withOpacity(0.6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

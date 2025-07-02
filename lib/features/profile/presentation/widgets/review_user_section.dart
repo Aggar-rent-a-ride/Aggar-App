@@ -40,7 +40,7 @@ class ReviewUserSection extends StatelessWidget {
                     Text(
                       'No reviews yet',
                       style: AppStyles.medium16(context).copyWith(
-                        color: context.theme.gray100_2,
+                        color: context.theme.black50,
                       ),
                     ),
                   ],

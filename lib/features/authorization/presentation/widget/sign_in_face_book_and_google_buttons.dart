@@ -34,7 +34,7 @@ class SignInFaceBookAndGoogleButtons extends StatelessWidget {
             flag: false,
             imageIcon: AppAssets.assetsIconsGoogleIcon,
           ),
-          color: context.theme.gray100_1,
+          color: context.theme.black10,
           text: 'Google',
         ),
       ],

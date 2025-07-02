@@ -73,7 +73,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),
@@ -81,7 +81,7 @@ class InputNameWithInputFieldSection extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: BorderSide(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                   width: 1,
                   style: BorderStyle.solid,
                 ),

@@ -46,7 +46,7 @@ class VehicleCard extends StatelessWidget {
               Text(
                 '${entry.value.year} • ${entry.value.transmission}',
                 style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                 ),
               ),
               Text(

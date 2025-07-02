@@ -54,7 +54,7 @@ class DiscountCard extends StatelessWidget {
               content: Text(
                 'Are you sure you want to delete this discount?',
                 style: AppStyles.medium18(context).copyWith(
-                  color: context.theme.gray100_2,
+                  color: context.theme.black50,
                 ),
               ),
               actions: [
@@ -87,8 +87,8 @@ class DiscountCard extends StatelessWidget {
           color: context.theme.white100_2,
           boxShadow: const [
             BoxShadow(
-              color: Colors.black26,
-              blurRadius: 4,
+              color: Colors.black12,
+              blurRadius: 2,
               offset: Offset(0, 0),
             ),
           ],

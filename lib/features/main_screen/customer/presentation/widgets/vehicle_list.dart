@@ -46,7 +46,7 @@ class VehicleList extends StatelessWidget {
           );
         } else {
           return Shimmer.fromColors(
-            baseColor: context.theme.gray100_1,
+            baseColor: context.theme.grey100_1,
             highlightColor: context.theme.white100_1,
             child: Column(
               children: List.generate(

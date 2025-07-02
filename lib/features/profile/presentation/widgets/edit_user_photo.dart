@@ -68,18 +68,21 @@ class EditUserPhoto extends StatelessWidget {
                       CircleAvatar(
                         backgroundColor: context.theme.white100_1,
                         radius: 83,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 0),
-                              ),
-                            ],
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(90),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 0),
+                                ),
+                              ],
+                            ),
+                            child: imageWidget,
                           ),
-                          child: imageWidget,
                         ),
                       ),
                     ],

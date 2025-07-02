@@ -38,7 +38,7 @@ class PlatformBalanceBody extends StatelessWidget {
           child: Text(
             "No balance data available",
             style: AppStyles.medium18(context).copyWith(
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
             ),
           ),
         );

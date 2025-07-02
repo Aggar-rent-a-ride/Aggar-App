@@ -110,10 +110,15 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   String? _extractUserType(dynamic data) {
-    if (data['roles'] != null &&
-        data['roles'] is List &&
-        data['roles'].length > 1) {
-      return data['roles'][1].toString();
+    if (data['roles'] != null && data['roles'] is List) {
+      final roles = data['roles'] as List;
+      if (roles.contains('Admin')) {
+        return 'Admin';
+      } else if (roles.contains('Renter')) {
+        return 'Renter';
+      } else if (roles.contains('Customer')) {
+        return 'Customer';
+      }
     }
     return null;
   }

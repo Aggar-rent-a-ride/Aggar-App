@@ -14,7 +14,8 @@ class VerificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => VerificationCubit(userData: userData),
+      create: (context) =>
+          VerificationCubit(userData: userData, context: context),
       child: const VerificationViewContent(),
     );
   }

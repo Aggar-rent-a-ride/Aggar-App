@@ -19,13 +19,13 @@ class DividerWithText extends StatelessWidget {
           child: Text(
             "or continue with",
             style: AppStyles.medium18(context).copyWith(
-              color: context.theme.black50,
+              color: context.theme.black25,
             ),
           ),
         ),
         Expanded(
           child: Divider(
-            color: context.theme.black50,
+            color: context.theme.black25,
           ),
         ),
       ],

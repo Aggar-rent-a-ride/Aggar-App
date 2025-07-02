@@ -160,7 +160,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                           obscureText: false,
                           hintText: "Select your birth date",
                           controller: _dateController,
-                          suffixIcon: const Icon(Icons.calendar_today),
+                          suffixIcon: Icon(
+                            Icons.calendar_today,
+                            color: context.theme.black50,
+                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please select your date of birth';

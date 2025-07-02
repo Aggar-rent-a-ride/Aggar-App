@@ -38,7 +38,7 @@ class ReviewCard extends StatelessWidget {
         color: context.theme.white100_1,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.theme.gray100_1.withOpacity(0.3),
+          color: context.theme.grey100_1.withOpacity(0.3),
         ),
       ),
       child: Column(
@@ -89,7 +89,7 @@ class ReviewCard extends StatelessWidget {
                               size: 14,
                               color: starIndex < rate
                                   ? Colors.amber
-                                  : context.theme.gray100_1,
+                                  : context.theme.grey100_1,
                             ),
                           ),
                         ),
@@ -97,7 +97,7 @@ class ReviewCard extends StatelessWidget {
                         Text(
                           formattedDate,
                           style: AppStyles.medium12(context).copyWith(
-                            color: context.theme.gray100_2,
+                            color: context.theme.black50,
                           ),
                         ),
                       ],
@@ -111,7 +111,7 @@ class ReviewCard extends StatelessWidget {
           Text(
             commentText,
             style: AppStyles.medium14(context).copyWith(
-              color: context.theme.gray100_2,
+              color: context.theme.black50,
               height: 1.4,
             ),
           ),

@@ -82,7 +82,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   controller: controller,
                   count: 3,
                   effect: WormEffect(
-                    dotColor: context.theme.gray100_1,
+                    dotColor: context.theme.grey100_1,
                     activeDotColor: context.theme.blue100_1,
                   ),
                 ),

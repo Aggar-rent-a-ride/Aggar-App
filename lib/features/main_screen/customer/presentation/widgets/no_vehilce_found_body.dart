@@ -21,7 +21,7 @@ class NoVehilceFoundBody extends StatelessWidget {
           Icon(
             Icons.directions_car_outlined,
             size: 80,
-            color: context.theme.gray100_1,
+            color: context.theme.grey100_1,
           ),
           const Gap(28),
           Text(
@@ -34,7 +34,7 @@ class NoVehilceFoundBody extends StatelessWidget {
           Text(
             "We couldn't find any vehicles at the moment.\nPlease try again later.",
             style: AppStyles.regular16(context).copyWith(
-              color: context.theme.gray100_1,
+              color: context.theme.grey100_1,
             ),
             textAlign: TextAlign.center,
           ),
