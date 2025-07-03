@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/widgets/custom_icon.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_social_button.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,12 @@ class SignInFaceBookAndGoogleButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SignInSocialButton(
+        SignInSocialButton(
           icon: CustomIcon(
             hight: 21,
             width: 21,
             flag: false,
+            color: AppConstants.myWhite100_1,
             imageIcon: AppAssets.assetsIconsFacebookIcon,
           ),
           color: Colors.blue,
@@ -32,6 +34,7 @@ class SignInFaceBookAndGoogleButtons extends StatelessWidget {
             hight: 21,
             width: 21,
             flag: false,
+            color: null,
             imageIcon: AppAssets.assetsIconsGoogleIcon,
           ),
           color: context.theme.black10,

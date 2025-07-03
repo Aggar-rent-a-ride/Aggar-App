@@ -100,6 +100,15 @@ class _DiscountScreenViewState extends State<DiscountScreenView> {
               }
               if (showDiscountSection) {
                 context.read<DiscountCubit>().addDiscount(widget.vehicleId);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(
+                    context,
+                    "Success",
+                    "Discounts Added Successfully",
+                    SnackBarType.success,
+                  ),
+                );
               } else {
                 Navigator.pop(context);
               }

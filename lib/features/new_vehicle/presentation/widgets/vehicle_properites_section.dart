@@ -49,6 +49,7 @@ class VehicleProperitesSection extends StatelessWidget {
             VehicleHealthOptions(
               isEditing: isEditing,
             ),
+            const Gap(10),
             TransmissionModeOptions(
               isEditing: isEditing,
             ),

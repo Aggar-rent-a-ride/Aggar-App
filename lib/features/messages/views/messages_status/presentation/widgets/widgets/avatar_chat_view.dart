@@ -1,4 +1,5 @@
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class AvatarChatView extends StatelessWidget {
       borderRadius: BorderRadius.circular(150),
       child: Container(
         decoration: BoxDecoration(
+          color: context.theme.grey100_1,
           borderRadius: BorderRadius.circular(50),
           boxShadow: const [
             BoxShadow(
@@ -28,7 +30,8 @@ class AvatarChatView extends StatelessWidget {
         ),
         child: image == null
             ? Image.asset(
-                AppAssets.assetsImagesDafaultPfp,
+                color: context.theme.black50,
+                AppAssets.assetsImagesDafaultPfp0,
                 height: size ?? 50,
                 width: size ?? 50,
                 fit: BoxFit.cover,
@@ -42,7 +45,7 @@ class AvatarChatView extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) {
                   debugPrint("Error loading avatar image: $error");
                   return Image.asset(
-                    AppAssets.assetsImagesDafaultPfp,
+                    AppAssets.assetsImagesDafaultPfp0,
                     height: size ?? 50,
                     width: size ?? 50,
                     fit: BoxFit.cover,

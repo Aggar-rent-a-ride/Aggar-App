@@ -152,8 +152,11 @@ class _PickMainImageButtonContentState
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image(
-              image: const AssetImage(AppAssets.assetsIconsPickimage),
+              image: const AssetImage(
+                AppAssets.assetsIconsPickimage,
+              ),
               height: MediaQuery.of(context).size.width * 0.1,
+              color: context.theme.blue100_1,
             ),
             Text(
               "click here to pick \nmain image ",

@@ -13,11 +13,11 @@ class AddImageButton extends StatelessWidget {
     return Container(
       width: buttonSize,
       height: buttonSize,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: context.theme.black25,
-            offset: const Offset(0, 0),
+            color: Colors.black12,
+            offset: Offset(0, 0),
             blurRadius: 4,
           )
         ],

@@ -60,6 +60,7 @@ class AdditionalImageCubit extends Cubit<AdditionalImageState> {
 
   void reset() {
     images = [];
+    imagesUrl = [];
     emit(AdditionalImagesInitial());
   }
 }

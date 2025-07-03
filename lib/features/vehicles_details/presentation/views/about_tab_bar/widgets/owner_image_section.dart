@@ -28,7 +28,7 @@ class OwnerImageSection extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: pfpImage == null
             ? Image.asset(
-                AppAssets.assetsImagesDafaultPfp,
+                AppAssets.assetsImagesDafaultPfp0,
                 height: 45,
               )
             : Image.network(

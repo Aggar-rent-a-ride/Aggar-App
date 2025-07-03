@@ -30,7 +30,7 @@ class AppConstants {
   static Color myBlue100_1_1 = const Color(0xff3C6EC9);
   static Color myBlue10_1_1 = const Color(0xffECF1FA);
 
-  static Color myGreen100_2 = const Color(0xffB5F8C3);
-  static Color myRed100_2 = const Color(0xffFFB7B8);
-  static Color myYellow100_2 = const Color(0xffFAE5C6);
+  static Color myGreen100_2 = const Color.fromARGB(255, 140, 192, 151);
+  static Color myRed100_2 = const Color.fromARGB(255, 209, 150, 151);
+  static Color myYellow100_2 = const Color.fromARGB(255, 184, 169, 146);
 }

@@ -26,7 +26,7 @@ class PricingAndDiscountsSection extends StatelessWidget {
         Text(
           'Pricing & Discounts',
           style: AppStyles.bold18(context).copyWith(
-            color: AppLightColors.myBlue100_2,
+            color: context.theme.blue100_2,
           ),
         ),
         const Gap(10),
@@ -57,7 +57,7 @@ class PricingAndDiscountsSection extends StatelessWidget {
               Text(
                 currencyFormatter.format(price),
                 style: AppStyles.bold36(context).copyWith(
-                  color: AppLightColors.myBlue100_2,
+                  color: context.theme.blue100_2,
                 ),
               ),
               const Gap(5),
@@ -75,7 +75,7 @@ class PricingAndDiscountsSection extends StatelessWidget {
           Text(
             'Available Discounts',
             style: AppStyles.bold18(context).copyWith(
-              color: AppLightColors.myBlue100_2,
+              color: context.theme.blue100_2,
             ),
           ),
           const SizedBox(height: 8),
@@ -123,7 +123,7 @@ class PricingAndDiscountsSection extends StatelessWidget {
                         Text(
                           '${currencyFormatter.format(discountedPrice)}/day',
                           style: AppStyles.regular16(context).copyWith(
-                            color: AppLightColors.myBlue100_2,
+                            color: context.theme.blue100_2,
                           ),
                         ),
                       ],

@@ -165,7 +165,7 @@ class EditUserPhoto extends StatelessWidget {
                     editCubit.selectedImage == null &&
                         (user.imageUrl == null || user.imageUrl!.isEmpty)) {
                   imageWidget = Image.asset(
-                    AppAssets.assetsImagesDafaultPfp,
+                    AppAssets.assetsImagesDafaultPfp0,
                     height: 150,
                     width: 150,
                     fit: BoxFit.cover,
@@ -237,7 +237,7 @@ class EditUserPhoto extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Image.asset(AppAssets.assetsImagesDafaultPfp),
+                          child: Image.asset(AppAssets.assetsImagesDafaultPfp0),
                         ),
                       ),
                     ),

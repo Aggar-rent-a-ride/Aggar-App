@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aggar/features/new_vehicle/data/model/vehicle_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,6 +18,15 @@ class EditVehicleSuccess extends EditVehicleState {
   final dynamic response;
 
   const EditVehicleSuccess(this.response);
+
+  @override
+  List<Object?> get props => [response];
+}
+
+class EditVehicleDeleted extends EditVehicleState {
+  final dynamic response;
+
+  const EditVehicleDeleted(this.response);
 
   @override
   List<Object?> get props => [response];

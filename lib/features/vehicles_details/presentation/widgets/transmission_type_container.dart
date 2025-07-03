@@ -17,19 +17,12 @@ class TransmissionTypeContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0, 0),
-            blurRadius: 4,
-          ),
-        ],
-        color: context.theme.blue10_2,
+        color: context.theme.blue100_1.withOpacity(0.2),
       ),
       child: Text(
         transmissionType,
         style: AppStyles.semiBold14(context).copyWith(
-          color: context.theme.blue100_2,
+          color: context.theme.blue100_1,
         ),
       ),
     );

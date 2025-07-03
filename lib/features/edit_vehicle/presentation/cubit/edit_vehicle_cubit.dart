@@ -472,7 +472,7 @@ class EditVehicleCubit extends Cubit<EditVehicleState> {
       );
 
       if (response.statusCode == 200) {
-        emit(EditVehicleSuccess(response.data));
+        emit(EditVehicleDeleted(response.data));
       } else {
         emit(EditVehicleFailure("Error: ${response.statusCode}"));
       }

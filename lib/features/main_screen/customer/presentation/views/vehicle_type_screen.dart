@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_type/vehicle_type_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicle_type/vehicle_type_state.dart';
@@ -57,7 +58,12 @@ class _VehicleTypeScreenState extends State<VehicleTypeScreen> {
           .fetchVehicleType(token, widget.selectedTypeId);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to retrieve access token')),
+        customSnackBar(
+          context,
+          "Error",
+          "Failed to retrieve access token",
+          SnackBarType.error,
+        ),
       );
     }
   }

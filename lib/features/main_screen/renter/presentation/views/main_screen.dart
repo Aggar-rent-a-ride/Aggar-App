@@ -1,6 +1,7 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_main_screen.dart';
 import 'package:aggar/features/main_screen/renter/presentation/views/main_screen_body.dart';
 import 'package:flutter/material.dart';
@@ -93,9 +94,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         _isLoadingToken = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Session expired. Please login again.'),
-          backgroundColor: Colors.red,
+        customSnackBar(
+          context,
+          "Error",
+          "Authentication failed. Please login again.",
+          SnackBarType.error,
         ),
       );
     }

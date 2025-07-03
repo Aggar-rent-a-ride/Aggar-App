@@ -1,15 +1,13 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/themes/app_light_colors.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/edit_vehicle/presentation/views/edit_vehicle_view.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/pricing_and_discounts_section.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/vehicle_details_menu_icon_button.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/location_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_and_reviews_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_with_type_and_year_of_manifiction.dart';
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -59,6 +57,7 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
   final String vehicleId;
   final double? vehicleRate;
   final List<dynamic>? discountList;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -72,20 +71,8 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
           centerTitle: true,
           backgroundColor: context.theme.white100_1,
           actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditVehicleView(
-                      vehicleId: vehicleId,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.more_vert_rounded,
-              ),
+            VehicleDetailsMenuIconButton(
+              vehicleId: vehicleId,
             ),
           ],
           leading: IconButton(
@@ -122,12 +109,12 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
                   images: images,
                   mainImage: mainImage,
                   style: AppStyles.bold18(context).copyWith(
-                    color: AppLightColors.myBlue100_2,
+                    color: context.theme.blue100_2,
                   ),
                 ),
                 OverViewSection(
                   style: AppStyles.bold18(context).copyWith(
-                    color: AppLightColors.myBlue100_2,
+                    color: context.theme.blue100_2,
                   ),
                   vehicleType: vehicleType,
                   color: vehicleColor,
@@ -141,13 +128,13 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
                   vehicleLongitude: vehicleLongitude,
                   vehicleLatitude: vehicleLatitude,
                   style: AppStyles.bold18(context).copyWith(
-                    color: AppLightColors.myBlue100_2,
+                    color: context.theme.blue100_2,
                   ),
                 ),
                 RatingAndReviewsSection(
                   vehicleRate: vehicleRate,
                   style: AppStyles.bold18(context).copyWith(
-                    color: AppLightColors.myBlue100_2,
+                    color: context.theme.blue100_2,
                   ),
                 ),
                 PricingAndDiscountsSection(

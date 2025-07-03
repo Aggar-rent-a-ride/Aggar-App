@@ -24,7 +24,7 @@ class AppDarkColors {
   static Color myBlue100_5 = const Color.fromARGB(255, 35, 56, 94); //done
   static Color myBlue100_2 = const Color.fromARGB(255, 41, 63, 100);
   static Color myBlue50_2 = const Color(0xff556A8A);
-  static Color myBlue10_2 = const Color(0xff101E40);
+  static Color myBlue10_2 = const Color.fromARGB(255, 13, 24, 51);
   static Color myBlue100_3 = const Color(0xff5A7887);
   static Color myBlue100_4 = const Color(0xff1F2B3F);
   static Color myBlue100_6 = const Color(0xff8AA6D6);
@@ -34,7 +34,7 @@ class AppDarkColors {
   static Color myYellow100_1 = const Color(0xffA67F00);
   static Color myYellow10_1 = const Color(0xff1A1804);
   static Color myRed100_1 = const Color(0xffCF3023);
-  static Color myRed10_1 = const Color.fromARGB(255, 125, 45, 42);
+  static Color myRed10_1 = const Color.fromARGB(255, 48, 17, 17);
   static Color myGreen100_1 = const Color(0xff1E7234);
   static Color myGreen10_1 = const Color(0xff071A0A);
 }

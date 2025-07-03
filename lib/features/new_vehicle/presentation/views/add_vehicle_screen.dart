@@ -48,6 +48,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   void _resetAllState() {
     // Reset AddVehicleCubit state
     final addVehicleCubit = context.read<AddVehicleCubit>();
+    final mainImageCubit = context.read<MainImageCubit>();
+    final additionalImagesCubit = context.read<AdditionalImageCubit>();
+
+    mainImageCubit.reset();
+    additionalImagesCubit.reset();
     addVehicleCubit.reset();
 
     // Reset form controllers
