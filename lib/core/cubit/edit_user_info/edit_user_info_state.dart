@@ -1,8 +1,8 @@
+import 'package:equatable/equatable.dart';
+import 'package:latlong2/latlong.dart';
 import 'dart:io';
 
 import 'package:aggar/features/profile/data/model/user_info_model.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:equatable/equatable.dart';
 
 abstract class EditUserInfoState extends Equatable {
   const EditUserInfoState();
@@ -19,6 +19,15 @@ class EditUserInfoSuccess extends EditUserInfoState {
   final UserInfoModel userInfoModel;
 
   const EditUserInfoSuccess({required this.userInfoModel});
+
+  @override
+  List<Object> get props => [userInfoModel];
+}
+
+class EditGetUserInfoSuccess extends EditUserInfoState {
+  final UserInfoModel userInfoModel;
+
+  const EditGetUserInfoSuccess({required this.userInfoModel});
 
   @override
   List<Object> get props => [userInfoModel];
@@ -51,4 +60,9 @@ class EditUserInfoImageUpdated extends EditUserInfoState {
 
   @override
   List<Object> get props => [image];
+}
+
+class EditUserInfoImageRemoved extends EditUserInfoState {
+  @override
+  List<Object> get props => [];
 }

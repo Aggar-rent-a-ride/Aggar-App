@@ -1,3 +1,5 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,23 +11,45 @@ void showNoNetworkDialog(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('No Internet Connection'),
-        content: const Text(
-          'Please check your internet connection and try again.',
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
-        actions: <Widget>[
+        backgroundColor: context.theme.white100_2,
+        title: Text(
+          'No Internet Connection',
+          style: AppStyles.semiBold24(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
+        content: Text(
+          'Please check your internet connection and try again.',
+          style: AppStyles.medium18(context).copyWith(
+            color: context.theme.black50,
+          ),
+        ),
+        actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               context.read<MainCubit>().checkInternetConnection();
             },
-            child: const Text('Retry'),
+            child: Text(
+              'Retry',
+              style: AppStyles.bold15(context).copyWith(
+                color: context.theme.blue100_1,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
               SystemNavigator.pop();
             },
-            child: const Text('Exit App'),
+            child: Text(
+              "Exit",
+              style: AppStyles.semiBold15(context).copyWith(
+                color: context.theme.red100_1,
+              ),
+            ),
           ),
         ],
       );

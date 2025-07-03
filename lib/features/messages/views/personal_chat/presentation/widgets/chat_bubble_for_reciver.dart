@@ -68,7 +68,7 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         margin: const EdgeInsets.symmetric(horizontal: 25),
         decoration: BoxDecoration(
-          color: context.theme.white100_2,
+          color: context.theme.white100_4,
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -92,9 +92,8 @@ class _ChatBubbleForReciverState extends State<ChatBubbleForReciver> {
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Text(
                   widget.message.message,
-                  style: AppStyles.medium16(context).copyWith(
-                    color: context.theme.blue100_1,
-                  ),
+                  style: AppStyles.medium16(context)
+                      .copyWith(color: context.theme.black100),
                 ),
               )
             else

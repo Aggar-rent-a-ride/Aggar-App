@@ -33,7 +33,7 @@ class SettingsScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Gap(12),
+              Gap(20),
               PaymentCard(),
               Gap(12),
               RentHistoryCard(),

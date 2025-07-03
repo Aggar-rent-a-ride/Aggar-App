@@ -64,7 +64,7 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
               ],
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.6 - 48,
+              height: MediaQuery.of(context).size.height + 500,
               child: TabBarView(
                 controller: _tabController,
                 children: [

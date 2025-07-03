@@ -19,15 +19,19 @@ class PaymentCard extends StatelessWidget {
       padingHorizental: 5,
       padingVeritical: 10,
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ConnectedAccountPage()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const ConnectedAccountPage()));
       },
       backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
-          const Image(
-            image: AssetImage(
+          Image(
+            image: const AssetImage(
               AppAssets.assetsIconsPayment,
             ),
+            color: context.theme.blue100_1,
             height: 25,
             width: 25,
           ),

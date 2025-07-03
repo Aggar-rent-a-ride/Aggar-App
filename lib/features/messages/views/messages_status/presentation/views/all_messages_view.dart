@@ -3,6 +3,7 @@ import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_chat_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/views/no_messages_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
@@ -239,23 +240,8 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 ),
               );
             }
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("No chats available"),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (!mounted) return;
-                      final token = await _tokenRefreshCubit.getAccessToken();
-                      if (token != null) {
-                        await _messageCubit.getMyChat(token);
-                      }
-                    },
-                    child: const Text("Refresh"),
-                  ),
-                ],
-              ),
+            return const Center(
+              child: NoMessagesView(),
             );
           },
         );

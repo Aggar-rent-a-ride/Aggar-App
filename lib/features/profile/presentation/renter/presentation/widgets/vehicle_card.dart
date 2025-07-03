@@ -38,7 +38,8 @@ class VehicleCard extends StatelessWidget {
           ),
           title: Text(
             '${entry.value.brand} ${entry.value.model}',
-            style: AppStyles.bold16(context),
+            style: AppStyles.bold16(context)
+                .copyWith(color: context.theme.black100),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

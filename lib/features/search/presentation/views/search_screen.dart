@@ -85,7 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   left: 20,
                   right: 20,
                   top: MediaQuery.of(context).padding.top + 20,
-                  bottom: 20,
+                  bottom: 10,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,11 +97,24 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         const Gap(10),
                         FilterIcon(
-                          onPressed: cubit.toggleFilterVisibility,
+                          onPressed: () {
+                            context.read<SearchCubit>().clearBrandFilter();
+                            context.read<SearchCubit>().clearNearestFilter();
+                            context.read<SearchCubit>().clearPricingFilter();
+                            context.read<SearchCubit>().clearRateFilter();
+                            context.read<SearchCubit>().clearSearch();
+                            context.read<SearchCubit>().clearStatusFilter();
+                            context
+                                .read<SearchCubit>()
+                                .clearTransmissionFilter();
+                            context.read<SearchCubit>().clearTypeFilter();
+                            context.read<SearchCubit>().clearYearFilter();
+                            cubit.toggleFilterVisibility();
+                          },
                         ),
                       ],
                     ),
-                    const Gap(12),
+                    const Gap(5),
                     if (cubit.isFilterVisible)
                       const SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -119,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ],
                         ),
                       ),
-                    const Gap(12),
+                    const Gap(5),
                     if (cubit.isFilterVisible && cubit.isNearestFilterSelected)
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 4),

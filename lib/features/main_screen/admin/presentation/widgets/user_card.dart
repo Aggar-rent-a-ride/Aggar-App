@@ -36,6 +36,7 @@ class UserCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ShowProfileScreen(
+                isAdmin: true,
                 user: user,
               ),
             ),

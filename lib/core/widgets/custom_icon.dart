@@ -33,6 +33,7 @@ class CustomIcon extends StatelessWidget {
               image: AssetImage(
                 imageIcon!,
               ),
+              color: color,
               height: size,
             ),
     );

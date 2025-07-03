@@ -177,7 +177,10 @@ class _PersonalChatViewState extends State<PersonalChatView> {
                             Icons.date_range_outlined,
                           ),
                         )
-                      : MenuIconButton(cubit: personalChatCubit),
+                      : MenuIconButton(
+                          cubit: personalChatCubit,
+                          userId: widget.receiverId,
+                        ),
                 ),
               ],
             ),

@@ -14,10 +14,10 @@ Future<dynamic> customShowModelBottmSheet(
         topRight: Radius.circular(15),
       ),
     ),
-    sheetAnimationStyle: AnimationStyle(
-      duration: const Duration(milliseconds: 300),
+    sheetAnimationStyle: const AnimationStyle(
+      duration: Duration(milliseconds: 300),
       curve: Curves.ease,
-      reverseDuration: const Duration(milliseconds: 300),
+      reverseDuration: Duration(milliseconds: 300),
       reverseCurve: Curves.ease,
     ),
     context: context,
