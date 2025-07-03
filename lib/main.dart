@@ -6,6 +6,7 @@ import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/report/report_creation_cubit.dart';
 import 'package:aggar/core/cubit/reportId/report_by_id_cubit.dart';
 import 'package:aggar/core/cubit/theme/theme_cubit.dart';
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/theme_cubit_extension.dart';
 import 'package:aggar/core/themes/dark_theme.dart';
 import 'package:aggar/core/themes/light_theme.dart';
@@ -57,7 +58,10 @@ import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  CacheHelper().init();
+
+  // Initialize cache helper and wait for it to complete
+  await CacheHelper().init();
+
   const secureStorage = FlutterSecureStorage();
 
   final languageCubit = LanguageCubit();
@@ -87,7 +91,7 @@ class MyApp extends StatelessWidget {
     final dio = Dio();
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
+        BlocProvider<ThemeCubit>(
           create: (context) => ThemeCubit(),
         ),
         BlocProvider(
@@ -122,6 +126,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => MainImageCubit(),
+        ),
+        BlocProvider(
+          create: (context) => UserReviewCubit(),
         ),
         BlocProvider(
           create: (context) => PickLocationCubit(),
@@ -265,27 +272,24 @@ class MyApp extends StatelessWidget {
           return BlocBuilder<LanguageCubit, LanguageState>(
             builder: (context, languageState) {
               return MaterialApp(
-                  locale: DevicePreview.locale(context),
-                  builder: DevicePreview.appBuilder,
-                  themeMode: context.themeCubit.themeMode,
-                  darkTheme: darkTheme,
-                  theme: lightTheme,
-                  debugShowCheckedModeBanner: false,
-                  /* locale: languageState is LanguageChanged
-                      ? languageState.locale
-                      : DevicePreview.locale(context),*/
-                  supportedLocales: const [
-                    Locale('en', 'US'),
-                    Locale('ar', 'SA'),
-                  ],
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  // builder: DevicePreview.appBuilder,
-                  home: const SplashView());
+                locale: DevicePreview.locale(context),
+                builder: DevicePreview.appBuilder,
+                themeMode: context.themeCubit.themeMode,
+                darkTheme: darkTheme,
+                theme: lightTheme,
+                debugShowCheckedModeBanner: false,
+                supportedLocales: const [
+                  Locale('en', 'US'),
+                  Locale('ar', 'SA'),
+                ],
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                home: const SplashView(),
+              );
             },
           );
         },

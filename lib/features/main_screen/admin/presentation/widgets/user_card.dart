@@ -1,4 +1,5 @@
 import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/model/user_model.dart';
@@ -10,7 +11,6 @@ import 'package:gap/gap.dart';
 import '../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 import '../../../../profile/presentation/views/show_profile_screen.dart';
 import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
-import '../../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 
 class UserCard extends StatelessWidget {
   const UserCard({super.key, required this.user});
@@ -26,7 +26,9 @@ class UserCard extends StatelessWidget {
           context
               .read<UserInfoCubit>()
               .fetchUserInfo(user.id.toString(), token);
-          context.read<ReviewCubit>().getUserReviews(user.id.toString(), token);
+          context
+              .read<UserReviewCubit>()
+              .getUserReviews(user.id.toString(), token);
           context
               .read<ReviewCountCubit>()
               .getUserReviewsNumber(user.id.toString(), token);
@@ -34,6 +36,7 @@ class UserCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ShowProfileScreen(
+                isAdmin: true,
                 user: user,
               ),
             ),

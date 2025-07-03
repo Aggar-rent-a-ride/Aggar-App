@@ -10,9 +10,11 @@ class PickLocationOnMapButton extends StatelessWidget {
     super.key,
     required this.onPickLocation,
     this.color,
+    this.textColor,
   });
   final Function(LatLng, String) onPickLocation;
   final Color? color;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +69,8 @@ class PickLocationOnMapButton extends StatelessWidget {
         ),
         child: Text(
           "Pick on Map",
-          style: AppStyles.regular16(context).copyWith(
-            color: context.theme.blue100_1,
+          style: AppStyles.medium16(context).copyWith(
+            color: textColor ?? context.theme.blue100_1,
           ),
         ),
       ),

@@ -21,10 +21,11 @@ class ContactUsCard extends StatelessWidget {
       backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
-          const Image(
-            image: AssetImage(
+          Image(
+            image: const AssetImage(
               AppAssets.assetsIconsContactUs,
             ),
+            color: context.theme.blue100_1,
             height: 25,
             width: 25,
           ),
@@ -36,10 +37,11 @@ class ContactUsCard extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          const CustomIcon(
+          CustomIcon(
             flag: false,
             hight: 15,
             width: 15,
+            color: context.theme.blue100_1,
             imageIcon: AppAssets.assetsIconsContactUsLink,
           )
         ],

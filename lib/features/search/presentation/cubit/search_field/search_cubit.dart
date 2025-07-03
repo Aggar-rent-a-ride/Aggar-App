@@ -36,6 +36,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   int totalPages = 1;
   bool isLoadingMore = false;
   LocationModel? currentLocation;
+  String? currentAddress;
 
   SearchCubit({this.accessToken}) : super(SearchCubitInitial()) {
     textController.addListener(onTextChanged);
@@ -45,13 +46,17 @@ class SearchCubit extends Cubit<SearchCubitState> {
     accessToken = token;
   }
 
-  void setLocation(LocationModel? location) {
+  void setLocation(LocationModel? location, [String? address]) {
     currentLocation = location;
-    print(
-        "Current Location: ${currentLocation!.latitude}, ${currentLocation!.longitude}");
+    currentAddress = address;
+    if (location != null) {
+      print("Current Location: ${location.latitude}, ${location.longitude}");
+      print("Address: $address");
+    }
     if (isNearestFilterSelected) {
       fetchSearch(pageNo: 1);
     }
+    emit(SearchCubitNearestSelected(isNearestFilterSelected));
   }
 
   void onTextChanged() {
@@ -236,6 +241,10 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void toggleNearestFilter() {
     isNearestFilterSelected = !isNearestFilterSelected;
     currentPage = 1;
+
+    if (!isNearestFilterSelected) {
+      currentLocation = null;
+    }
     emit(SearchCubitNearestSelected(isNearestFilterSelected));
     fetchSearch(pageNo: 1);
   }
@@ -243,6 +252,7 @@ class SearchCubit extends Cubit<SearchCubitState> {
   void clearNearestFilter() {
     if (isNearestFilterSelected) {
       isNearestFilterSelected = false;
+      currentLocation = null;
       currentPage = 1;
       emit(SearchCubitNearestSelected(false));
       fetchSearch(pageNo: 1);

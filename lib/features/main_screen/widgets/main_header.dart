@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class MainHeader extends StatelessWidget {
-  const MainHeader({super.key, this.onPressed});
-  final void Function()? onPressed;
+  const MainHeader({super.key});
   @override
   Widget build(BuildContext context) {
     return Column(

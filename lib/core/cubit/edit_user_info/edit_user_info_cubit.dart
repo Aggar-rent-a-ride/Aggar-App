@@ -55,7 +55,7 @@ class EditUserInfoCubit extends Cubit<EditUserInfoState> {
         double.parse((userInfo.location.latitude).toString()),
         double.parse((userInfo.location.longitude).toString()),
       );
-      emit(EditUserInfoSuccess(userInfoModel: userInfo));
+      emit(EditGetUserInfoSuccess(userInfoModel: userInfo));
     } catch (e) {
       emit(EditUserInfoError(errorMessage: e.toString()));
     }
@@ -85,6 +85,23 @@ class EditUserInfoCubit extends Cubit<EditUserInfoState> {
 
       final updatedUserInfo = UserInfoModel.fromJson(response["data"]);
       emit(EditUserInfoSuccess(userInfoModel: updatedUserInfo));
+    } catch (e) {
+      emit(EditUserInfoError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> removeProfileImage({
+    required String token,
+  }) async {
+    emit(EditUserInfoLoading());
+    try {
+      await dio.delete(
+        EndPoint.removeProfileImage,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      selectedImage = null;
+      emit(EditUserInfoImageRemoved());
     } catch (e) {
       emit(EditUserInfoError(errorMessage: e.toString()));
     }

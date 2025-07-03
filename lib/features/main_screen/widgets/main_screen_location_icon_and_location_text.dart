@@ -27,10 +27,11 @@ class MainScreenLocationIconAndLocationText extends StatelessWidget {
         }
         return Row(
           children: [
-            const CustomIcon(
+            CustomIcon(
               hight: 20,
               width: 20,
               flag: false,
+              color: context.theme.black50,
               imageIcon: AppAssets.assetsIconsLocation,
             ),
             const Gap(5),

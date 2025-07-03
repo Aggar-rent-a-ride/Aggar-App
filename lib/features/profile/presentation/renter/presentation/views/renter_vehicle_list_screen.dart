@@ -2,22 +2,23 @@ import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_all_vehicle.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../main_screen/customer/presentation/widgets/loading_all_vehicle.dart';
-import '../cubit/profile/profile_cubit.dart';
-import '../cubit/profile/profile_state.dart';
+import '../../../customer/presentation/cubit/profile/profile_cubit.dart';
+import '../../../customer/presentation/cubit/profile/profile_state.dart';
 
-class FavoriteVehicleScreen extends StatefulWidget {
-  const FavoriteVehicleScreen({super.key});
+class RenterVehicleListScreen extends StatefulWidget {
+  const RenterVehicleListScreen({super.key});
 
   @override
-  State<FavoriteVehicleScreen> createState() => _FavoriteVehicleScreenState();
+  State<RenterVehicleListScreen> createState() =>
+      _RenterVehicleListScreenState();
 }
 
-class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
+class _RenterVehicleListScreenState extends State<RenterVehicleListScreen> {
   late ScrollController _scrollController;
   late ProfileCubit _cubit;
   String? tokenr;
@@ -45,13 +46,13 @@ class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
       setState(() {
         tokenr = token;
       });
-      _cubit.fetchFavoriteVehicles(token);
+      _cubit.fetchRenterVehicles(token);
     }
   }
 
   void _onScroll() {
     if (_isBottom && tokenr != null) {
-      _cubit.loadMoreFavoriteVehicles(tokenr!);
+      _cubit.loadMoreRenterVehicles(tokenr!);
     }
   }
 
@@ -91,7 +92,7 @@ class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
                   ),
                 ),
                 Text(
-                  "All Favorite Vehicles",
+                  "Your Vehicles",
                   style: AppStyles.bold20(context).copyWith(
                     color: context.theme.white100_1,
                   ),
@@ -121,12 +122,12 @@ class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
                     child: LoadingAllVehicle(),
                   );
                 }
-                if (state is ProfileGetFavoriteSuccess ||
-                    state is ProfileFavoriteVehicleLoadingMore) {
-                  final vehicles = _cubit.favoriteVehicles;
-                  final canLoadMore = _cubit.canLoadMoreFavorite;
+                if (state is ProfileRenterVehicleLoadingMore ||
+                    state is ProfileVehiclesSuccess) {
+                  final vehicles = _cubit.renterVehicles;
+                  final canLoadMore = _cubit.canLoadMoreRenter;
                   final isLoadingMore =
-                      state is ProfileFavoriteVehicleLoadingMore;
+                      state is ProfileRenterVehicleLoadingMore;
                   return Column(
                     children: [
                       Expanded(

@@ -7,7 +7,6 @@ import 'package:aggar/features/main_screen/widgets/main_header.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_section.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/vehicle_brand_section.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/vehicles_type_section.dart';
-import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -37,13 +36,7 @@ class MainScreenBody extends StatelessWidget {
               ),
               padding: const EdgeInsets.only(
                   left: 20, right: 20, top: 55, bottom: 20),
-              child: MainHeader(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NotificationScreen(),
-                    )),
-              ),
+              child: const MainHeader(),
             ),
             const Gap(15),
             Padding(

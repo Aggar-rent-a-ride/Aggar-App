@@ -1,7 +1,11 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 
 class NoMessagesView extends StatelessWidget {
   const NoMessagesView({super.key});
@@ -32,6 +36,17 @@ class NoMessagesView extends StatelessWidget {
               style: AppStyles.medium20(context).copyWith(
                 color: context.theme.blue100_2,
               ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final tokenCubit = context.read<TokenRefreshCubit>();
+                final token = await tokenCubit.getAccessToken();
+                final messageCubit = context.read<MessageCubit>();
+                if (token != null) {
+                  await messageCubit.getMyChat(token);
+                }
+              },
+              child: const Text("Refresh"),
             ),
           ],
         ),

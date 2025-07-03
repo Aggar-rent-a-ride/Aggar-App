@@ -2,6 +2,7 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/main_screen/main_screen_state.dart';
@@ -60,14 +61,14 @@ class PopularVehiclesCarCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             SpinKitThreeBounce(
-                              color: context.theme.white100_1,
+                              color: AppConstants.myWhite100_1,
                               size: 30.0,
                             ),
                             const Gap(10),
                             Text(
                               "Loading vehicle details...",
                               style: AppStyles.medium16(context).copyWith(
-                                color: context.theme.white100_1,
+                                color: AppConstants.myWhite100_1,
                               ),
                             ),
                           ],

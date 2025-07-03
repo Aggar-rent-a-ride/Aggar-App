@@ -28,7 +28,7 @@ class BottomNavigationBarRentalPrice extends StatelessWidget {
                   text: '$price\$',
                   style: AppStyles.bold28(context).copyWith(
                     color: context.theme.blue100_2,
-                  ), // Bold text style
+                  ),
                 ),
                 const TextSpan(
                   text: '/day',
@@ -37,7 +37,7 @@ class BottomNavigationBarRentalPrice extends StatelessWidget {
             ),
             style: AppStyles.medium20(context).copyWith(
               color: context.theme.black50,
-            ), // Base text style
+            ),
           ),
         ],
       ),

@@ -1,10 +1,10 @@
 import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/options_button.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/user_image.dart';
-import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -31,7 +31,9 @@ class UserSearchCard extends StatelessWidget {
           context
               .read<UserInfoCubit>()
               .fetchUserInfo(user.id.toString(), token);
-          context.read<ReviewCubit>().getUserReviews(user.id.toString(), token);
+          context
+              .read<UserReviewCubit>()
+              .getUserReviews(user.id.toString(), token);
           context
               .read<ReviewCountCubit>()
               .getUserReviewsNumber(user.id.toString(), token);
@@ -39,6 +41,7 @@ class UserSearchCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ShowProfileScreen(
+                isAdmin: true,
                 user: user,
               ),
             ),

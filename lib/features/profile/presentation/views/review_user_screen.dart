@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_all_vehicle.dart';
 import 'package:aggar/features/profile/presentation/views/review_error_screen.dart';
@@ -21,7 +22,7 @@ class ReviewUserScreen extends StatefulWidget {
 
 class _ReviewUserScreenState extends State<ReviewUserScreen> {
   late ScrollController _scrollController;
-  late ReviewCubit _cubit;
+  late UserReviewCubit _cubit;
   String? token;
 
   @override
@@ -29,7 +30,7 @@ class _ReviewUserScreenState extends State<ReviewUserScreen> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-    _cubit = context.read<ReviewCubit>();
+    _cubit = context.read<UserReviewCubit>();
     _fetchInitialData();
   }
 

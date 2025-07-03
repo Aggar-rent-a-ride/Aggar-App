@@ -54,7 +54,7 @@ class GallarySection extends StatelessWidget {
               "Gallery",
               style: style ??
                   AppStyles.bold18(context).copyWith(
-                    color: context.theme.black50,
+                    color: context.theme.black100,
                   ),
             ),
             const Gap(10),
@@ -84,7 +84,7 @@ class GallarySection extends StatelessWidget {
             "Gallery",
             style: style ??
                 AppStyles.bold18(context).copyWith(
-                  color: context.theme.black50,
+                  color: context.theme.black100,
                 ),
           ),
           const Gap(10),
@@ -94,9 +94,9 @@ class GallarySection extends StatelessWidget {
             minThumbLength: 40,
             trackVisibility: true,
             trackRadius: const Radius.circular(50),
-            trackColor: context.theme.grey100_1,
+            trackColor: context.theme.white100_4,
             controller: _scrollController,
-            thumbColor: context.theme.blue100_2,
+            thumbColor: context.theme.blue100_1,
             radius: const Radius.circular(20),
             thickness: 8,
             child: SingleChildScrollView(
