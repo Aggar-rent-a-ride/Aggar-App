@@ -1,3 +1,4 @@
+import 'package:aggar/features/booking/presentation/views/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
@@ -28,6 +29,22 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
           Navigator.pop(
               context, true); // Return true to indicate booking was cancelled
         } else if (state is BookingCancelError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state is BookingConfirmSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Navigate to payment page with client secret
+          _navigateToPaymentPage(context, state.clientSecret, state.bookingId);
+        } else if (state is BookingConfirmError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -324,62 +341,156 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // Action Buttons (only show if status is Pending)
-                if (booking.status.toLowerCase() == 'pending') ...[
-                  Column(
-                    children: [
-                      BlocBuilder<BookingCubit, BookingState>(
-                        builder: (context, state) {
-                          final isLoading = state is BookingCancelLoading;
-
-                          return SizedBox(
-                            width: double.infinity,
-                            height: 48,
-                            child: OutlinedButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : () {
-                                      _showCancelConfirmationDialog(context);
-                                    },
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.red),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: isLoading
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.red),
-                                      ),
-                                    )
-                                  : const Text(
-                                      'Cancel Booking',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ),
-                ],
+                // Action Buttons based on status
+                _buildActionButtons(context),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    final status = booking.status.toLowerCase();
+
+    if (status == 'pending') {
+      return Column(
+        children: [
+          BlocBuilder<BookingCubit, BookingState>(
+            builder: (context, state) {
+              final isLoading = state is BookingCancelLoading;
+
+              return SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          _showCancelConfirmationDialog(context);
+                        },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.red),
+                          ),
+                        )
+                      : const Text(
+                          'Cancel Booking',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+        ],
+      );
+    } else if (status == 'accepted') {
+      return BlocBuilder<BookingCubit, BookingState>(
+        builder: (context, state) {
+          final isCancelLoading = state is BookingCancelLoading;
+          final isConfirmLoading = state is BookingConfirmLoading;
+
+          return Column(
+            children: [
+              // Confirm Booking Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: isConfirmLoading || isCancelLoading
+                      ? null
+                      : () {
+                          _handleConfirmBooking(context);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6366F1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: isConfirmLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'Confirm & Pay',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Cancel Booking Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: isCancelLoading || isConfirmLoading
+                      ? null
+                      : () {
+                          _showCancelConfirmationDialog(context);
+                        },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: isCancelLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.red),
+                          ),
+                        )
+                      : const Text(
+                          'Cancel Booking',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+          );
+        },
+      );
+    }
+
+    // No buttons for other statuses (confirmed, rejected, canceled, etc.)
+    return const SizedBox.shrink();
   }
 
   Widget _buildPricingRow(String label, String amount) {
@@ -455,8 +566,36 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
   }
 
   void _handleCancelBooking(BuildContext context) {
-    // Get the BookingCubit and call the cancel booking method
     final bookingCubit = context.read<BookingCubit>();
     bookingCubit.cancelBooking(booking.id);
+  }
+
+  void _handleConfirmBooking(BuildContext context) {
+    final bookingCubit = context.read<BookingCubit>();
+    bookingCubit.confirmBooking(booking.id);
+  }
+
+  void _navigateToPaymentPage(
+      BuildContext context, String? clientSecret, int bookingId) {
+    if (clientSecret != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentScreen(
+              clientSecret: clientSecret,
+              bookingId: bookingId,
+              amount: booking.finalPrice,
+              booking: booking,
+            ),
+          ));
+    } else {
+      // Handle case where client secret is not provided
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Payment initialization failed. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

@@ -55,12 +55,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize cache helper and wait for it to complete
   await CacheHelper().init();
+
+  await _initializeStripe();
 
   const secureStorage = FlutterSecureStorage();
 
@@ -74,6 +76,13 @@ void main() async {
       initialLanguageCubit: languageCubit,
     ),
   ));
+}
+
+Future<void> _initializeStripe() async {
+  Stripe.publishableKey =
+      "pk_test_51QzlxRLiWNEAMEsfyM1WAReytcHlTzP2Kn4vYh8QBMW7kxNHpY3oJkcaiSKHTV2QS4uAMRbmSd2mdZLehd2WYzb300dZB5tYwJ";
+
+  await Stripe.instance.applySettings();
 }
 
 class MyApp extends StatelessWidget {
