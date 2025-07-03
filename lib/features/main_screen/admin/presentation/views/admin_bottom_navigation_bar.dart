@@ -1,6 +1,7 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/main_screen.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/custom_bottom_navigation_bar_admin.dart';
@@ -75,9 +76,11 @@ class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar>
       listener: (context, state) {
         if (state is TokenRefreshFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Session expired. Please login again.'),
-              backgroundColor: Colors.red,
+            customSnackBar(
+              context,
+              "Error",
+              "Session expired. Please login again.",
+              SnackBarType.error,
             ),
           );
           Navigator.of(context).pushReplacement(

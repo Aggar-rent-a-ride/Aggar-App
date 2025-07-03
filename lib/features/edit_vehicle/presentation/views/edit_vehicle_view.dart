@@ -1,7 +1,7 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
-import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_cubit.dart';
 import 'package:aggar/features/edit_vehicle/presentation/cubit/edit_vehicle_state.dart';
 import 'package:aggar/core/widgets/custom_dialog.dart';
@@ -19,6 +19,7 @@ import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_images_s
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_location_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_properites_section.dart';
 import 'package:aggar/features/new_vehicle/presentation/widgets/vehicle_rental_price_section.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -49,8 +50,12 @@ class _EditVehicleViewState extends State<EditVehicleView> {
         context.read<VehicleTypeCubit>().fetchVehicleTypes(token);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Authentication failed. Please login again.')),
+          customSnackBar(
+            context,
+            "Error",
+            "Authentication failed. Please login again.",
+            SnackBarType.error,
+          ),
         );
       }
     });
@@ -59,14 +64,27 @@ class _EditVehicleViewState extends State<EditVehicleView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<EditVehicleCubit, EditVehicleState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is EditVehicleFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.errorMessage)),
           );
         } else if (state is EditVehicleSuccess) {
+          // Refresh the vehicle list in ProfileCubit
+          final tokenRefreshCubit = context.read<TokenRefreshCubit>();
+          final token = await tokenRefreshCubit.getAccessToken();
+          if (token != null) {
+            context.read<ProfileCubit>().fetchRenterVehicles(token);
+          }
+          Navigator.pop(context);
+          // Show success message and navigate back
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Vehicle updated successfully')),
+            customSnackBar(
+              context,
+              "Success",
+              "Vehicle updated successfully",
+              SnackBarType.success,
+            ),
           );
           Navigator.pop(context);
         }
@@ -86,8 +104,11 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                   false) {
                 if (mapLocationCubit.selectedLocation == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please select a location on the map'),
+                    customSnackBar(
+                      context,
+                      "Warning",
+                      "Please select a location on the map",
+                      SnackBarType.warning,
                     ),
                   );
                   return;
@@ -96,9 +117,6 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                 final token = await tokenRefreshCubit.getAccessToken();
 
                 if (token != null) {
-                  await context
-                      .read<DiscountCubit>()
-                      .addDiscount(widget.vehicleId);
                   await editVehicleCubit.updateVehicle(
                     widget.vehicleId,
                     mapLocationCubit.selectedLocation!,
@@ -108,18 +126,14 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                     token,
                   );
                 } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditVehicleView(
-                        vehicleId: widget.vehicleId,
-                      ),
-                    ),
-                  );
+                  Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text('Authentication failed. Please login again.')),
+                    customSnackBar(
+                      context,
+                      "Error",
+                      "Authentication failed. Please login again.",
+                      SnackBarType.error,
+                    ),
                   );
                 }
               }
@@ -160,9 +174,12 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text(
-                              'Authentication failed. Please login again.')),
+                      customSnackBar(
+                        context,
+                        "Error",
+                        "Authentication failed. Please login again.",
+                        SnackBarType.error,
+                      ),
                     );
                   }
                 },

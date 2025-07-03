@@ -3,10 +3,9 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_all_vehicle.dart';
-import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card.dart';
+import 'package:aggar/features/profile/presentation/renter/presentation/widgets/renter_vehicle_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../customer/presentation/cubit/profile/profile_cubit.dart';
 import '../../../customer/presentation/cubit/profile/profile_state.dart';
 
@@ -18,10 +17,12 @@ class RenterVehicleListScreen extends StatefulWidget {
       _RenterVehicleListScreenState();
 }
 
-class _RenterVehicleListScreenState extends State<RenterVehicleListScreen> {
+class _RenterVehicleListScreenState extends State<RenterVehicleListScreen>
+    with RouteAware {
   late ScrollController _scrollController;
   late ProfileCubit _cubit;
   String? tokenr;
+  bool _isFetching = false;
 
   @override
   void initState() {
@@ -33,25 +34,60 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Subscribe to route changes
+    final ModalRoute? route = ModalRoute.of(context);
+    if (route != null) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    routeObserver.unsubscribe(this);
     super.dispose();
   }
 
+  @override
+  void didPopNext() {
+    // Called when this screen is returned to from another screen
+    if (tokenr != null && !_isFetching) {
+      _fetchInitialData();
+    }
+  }
+
   Future<void> _fetchInitialData() async {
+    if (_isFetching) return;
+    setState(() {
+      _isFetching = true;
+    });
     final tokenCubit = context.read<TokenRefreshCubit>();
     final token = await tokenCubit.getAccessToken();
     if (token != null) {
       setState(() {
         tokenr = token;
       });
-      _cubit.fetchRenterVehicles(token);
+      await _cubit.fetchRenterVehicles(token);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        customSnackBar(
+          context,
+          "Error",
+          "Authentication failed. Please login again.",
+          SnackBarType.error,
+        ),
+      );
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   void _onScroll() {
-    if (_isBottom && tokenr != null) {
+    if (_isBottom && tokenr != null && !_isFetching) {
       _cubit.loadMoreRenterVehicles(tokenr!);
     }
   }
@@ -105,6 +141,9 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen> {
             child: BlocConsumer<ProfileCubit, ProfileState>(
               listener: (context, state) {
                 if (state is ProfileError) {
+                  setState(() {
+                    _isFetching = false;
+                  });
                   ScaffoldMessenger.of(context).showSnackBar(
                     customSnackBar(
                       context,
@@ -156,7 +195,7 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen> {
                               final vehicle = vehicles[index];
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 5),
-                                child: PopularVehiclesCarCard(
+                                child: RenterVehicleCard(
                                   assetImagePath: vehicle.mainImagePath,
                                   carName: "${vehicle.brand} ${vehicle.model}",
                                   carType: vehicle.transmission,
@@ -181,3 +220,6 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen> {
     );
   }
 }
+
+// Ensure the RouteObserver is defined in a suitable place, e.g., in main.dart
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();

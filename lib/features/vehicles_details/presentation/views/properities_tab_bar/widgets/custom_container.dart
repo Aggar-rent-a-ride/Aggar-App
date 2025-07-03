@@ -1,4 +1,3 @@
-import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -23,11 +22,11 @@ class CustomContainer extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
         decoration: BoxDecoration(
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: context.theme.black25,
+              color: Colors.black12,
               blurRadius: 3,
-              offset: const Offset(0, 0),
+              offset: Offset(0, 0),
             )
           ],
           color: containerColor,

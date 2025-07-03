@@ -73,13 +73,13 @@ SnackBar customSnackBar(
               Text(
                 title,
                 style: AppStyles.medium16(context).copyWith(
-                  color: context.theme.black100,
+                  color: AppConstants.myBlack100_1,
                 ),
               ),
               Text(
                 subtitle,
                 style: AppStyles.regular13(context).copyWith(
-                  color: context.theme.black100,
+                  color: AppConstants.myBlack100_1,
                 ),
               ),
             ],

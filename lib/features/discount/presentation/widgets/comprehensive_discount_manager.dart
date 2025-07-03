@@ -1,8 +1,8 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_cubit.dart';
 import 'package:aggar/features/discount/presentation/cubit/discount_state.dart';
-import 'package:aggar/features/discount/presentation/widgets/add_discount_button_list.dart';
 import 'package:aggar/features/discount/presentation/widgets/discount_card.dart';
 import 'package:aggar/features/discount/presentation/widgets/no_discount_yet_section.dart';
 import 'package:aggar/features/discount/presentation/widgets/note_discount_section.dart';
@@ -15,71 +15,93 @@ class ComprehensiveDiscountManager extends StatelessWidget {
   final String vehicleId;
   final bool isEditing;
   final VoidCallback? onDiscountsUpdated;
+  final List<dynamic>? discounts;
 
   const ComprehensiveDiscountManager({
     super.key,
     required this.vehicleId,
     this.isEditing = false,
     this.onDiscountsUpdated,
+    this.discounts,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DiscountCubit(
-        tokenRefreshCubit: context.read(),
-      ),
-      child: BlocConsumer<DiscountCubit, DiscountState>(
-        listener: (context, state) {
-          if (state is DiscountFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage),
-                backgroundColor: context.theme.red100_1,
+    // Initialize discounts if provided
+    if (discounts != null && discounts!.isNotEmpty) {
+      context.read<DiscountCubit>().initializeDiscounts(discounts!);
+    }
+
+    return BlocConsumer<DiscountCubit, DiscountState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Vehicle Discounts:',
+              style: AppStyles.bold22(context).copyWith(
+                color: context.theme.blue100_2,
               ),
-            );
-          } else if (state is DiscountSuccess && state.response != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Discounts updated successfully'),
-                backgroundColor: context.theme.green100_1,
-              ),
-            );
-            onDiscountsUpdated?.call();
-          }
-        },
-        builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Vehicle Discounts :',
-                style: AppStyles.bold22(context).copyWith(
-                  color: context.theme.blue100_2,
-                ),
-              ),
-              const Gap(10),
-              const Column(
-                children: [
-                  NumberOfDaysAndPersentageRow(),
-                  Gap(15),
-                  NoteDiscountSection(),
-                ],
-              ),
-              const Row(
-                children: [
-                  Expanded(
-                    child: AddDiscountButtonList(),
+            ),
+            const Gap(10),
+            const NumberOfDaysAndPersentageRow(),
+            const Gap(15),
+            const NoteDiscountSection(),
+            const Gap(15),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<DiscountCubit>().addDiscountToList();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.theme.blue100_5,
+                      foregroundColor: context.theme.white100_1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text('Add to List'),
                   ),
-                ],
-              ),
-              const Gap(20),
-              _buildDiscountList(context, state),
-              const Gap(20),
-            ],
-          );
-        },
-      ),
+                ),
+                const Gap(10),
+                if (isEditing)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (vehicleId.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            customSnackBar(
+                              context,
+                              "Error",
+                              "Vehicle ID is missing. Cannot add discounts.",
+                              SnackBarType.error,
+                            ),
+                          );
+                          return;
+                        }
+                        context.read<DiscountCubit>().addDiscount(vehicleId);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: context.theme.green100_1,
+                        foregroundColor: context.theme.white100_1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('Save Discounts'),
+                    ),
+                  ),
+              ],
+            ),
+            const Gap(20),
+            _buildDiscountList(context, state),
+            const Gap(20),
+          ],
+        );
+      },
     );
   }
 
@@ -124,14 +146,39 @@ class ComprehensiveDiscountManager extends StatelessWidget {
             itemCount: state.discounts.length,
             separatorBuilder: (context, index) => const Gap(10),
             itemBuilder: (context, index) {
-              return DiscountCard(
-                discount: state.discounts[index],
-                index: index,
+              final discount = state.discounts[index];
+              return Dismissible(
+                key: Key('discount_$index'),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  color: context.theme.red100_1,
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
+                onDismissed: (direction) {
+                  context.read<DiscountCubit>().removeDiscount(index);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    customSnackBar(
+                      context,
+                      "Error",
+                      "Discount Removed!",
+                      SnackBarType.error,
+                    ),
+                  );
+                },
+                child: DiscountCard(
+                  discount: discount,
+                  index: index,
+                ),
               );
             },
           )
         else
-          const NoDiscountYetSection()
+          const NoDiscountYetSection(),
       ],
     );
   }

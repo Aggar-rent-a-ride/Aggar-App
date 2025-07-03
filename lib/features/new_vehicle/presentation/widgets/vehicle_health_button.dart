@@ -21,10 +21,10 @@ class VehicleHealthButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.39,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            offset: const Offset(0, 0),
-            color: context.theme.black25,
+            offset: Offset(0, 0),
+            color: Colors.black12,
             blurRadius: 4,
           )
         ],

@@ -41,8 +41,6 @@ class _VehicleDiscountSectionState extends State<VehicleDiscountSection> {
         !_hasLoadedDiscounts &&
         mounted) {
       _hasLoadedDiscounts = true;
-      _discountCubit
-          .loadDiscountsFromVehicleData(widget.vehicleData?.discounts);
     }
   }
 
@@ -65,6 +63,7 @@ class _VehicleDiscountSectionState extends State<VehicleDiscountSection> {
           vehicleId: widget.vehicleId,
           isEditing: widget.isEditing,
           onDiscountsUpdated: () {},
+          discounts: widget.vehicleData?.discounts,
         ),
       ),
     );
