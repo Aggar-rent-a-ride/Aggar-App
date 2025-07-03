@@ -1,3 +1,4 @@
+import 'package:aggar/features/booking/presentation/views/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
@@ -565,13 +566,11 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
   }
 
   void _handleCancelBooking(BuildContext context) {
-    // Get the BookingCubit and call the cancel booking method
     final bookingCubit = context.read<BookingCubit>();
     bookingCubit.cancelBooking(booking.id);
   }
 
   void _handleConfirmBooking(BuildContext context) {
-    // Get the BookingCubit and call the confirm booking method
     final bookingCubit = context.read<BookingCubit>();
     bookingCubit.confirmBooking(booking.id);
   }
@@ -579,18 +578,16 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
   void _navigateToPaymentPage(
       BuildContext context, String? clientSecret, int bookingId) {
     if (clientSecret != null) {
-      // Navigate to payment page with the client secret
-      // Replace 'PaymentPage' with your actual payment page route
-      Navigator.pushNamed(
-        context,
-        '/payment', // Your payment page route
-        arguments: {
-          'clientSecret': clientSecret,
-          'bookingId': bookingId,
-          'amount': booking.finalPrice,
-          'booking': booking,
-        },
-      );
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentScreen(
+              clientSecret: clientSecret,
+              bookingId: bookingId,
+              amount: booking.finalPrice,
+              booking: booking,
+            ),
+          ));
     } else {
       // Handle case where client secret is not provided
       ScaffoldMessenger.of(context).showSnackBar(
