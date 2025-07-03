@@ -41,6 +41,7 @@ class AppUserTargetTypeCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ShowProfileScreen(
+                isAdmin: true,
                 user: UserModel(
                     id: id, name: name, username: "", imagePath: imagePath),
               ),

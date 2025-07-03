@@ -11,6 +11,7 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/car_name_wi
 import 'package:aggar/features/vehicles_details/presentation/widgets/custom_image_car.dart';
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class VehicleDetailsAfterAddingScreen extends StatelessWidget {
   const VehicleDetailsAfterAddingScreen({
@@ -108,6 +109,7 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Gap(5),
                 CustomImageCar(
                   mainImage: mainImage,
                 ),

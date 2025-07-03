@@ -11,12 +11,11 @@ import '../../../main_screen/admin/model/user_model.dart';
 import '../widgets/reviews_tab_widget.dart';
 
 class ShowProfileScreen extends StatefulWidget {
-  const ShowProfileScreen({
-    super.key,
-    required this.user,
-  });
+  const ShowProfileScreen(
+      {super.key, required this.user, this.isAdmin = false});
 
   final UserModel user;
+  final bool isAdmin;
 
   @override
   State<ShowProfileScreen> createState() => _ShowProfileScreenState();
@@ -108,7 +107,10 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
             const Gap(60),
             const NameWithUserNameWithRole(),
             const Gap(20),
-            SenMessageWithOptionButtons(user: widget.user),
+            SenMessageWithOptionButtons(
+              user: widget.user,
+              isAdmin: widget.isAdmin,
+            ),
             const Gap(20),
             ShowProfileTabBar(tabController: _tabController),
             const Gap(20),

@@ -20,10 +20,11 @@ class LanguageCard extends StatelessWidget {
       backgroundColor: context.theme.blue100_7,
       child: Row(
         children: [
-          const Image(
-            image: AssetImage(
+          Image(
+            image: const AssetImage(
               AppAssets.assetsIconsLanguage,
             ),
+            color: context.theme.blue100_1,
             height: 25,
             width: 25,
           ),

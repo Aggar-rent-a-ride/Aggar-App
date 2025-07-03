@@ -41,6 +41,7 @@ class UserSearchCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ShowProfileScreen(
+                isAdmin: true,
                 user: user,
               ),
             ),

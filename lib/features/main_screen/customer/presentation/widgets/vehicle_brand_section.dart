@@ -65,9 +65,9 @@ class BrandsSection extends StatelessWidget {
                   minThumbLength: MediaQuery.sizeOf(context).width * 0.1,
                   trackVisibility: true,
                   trackRadius: const Radius.circular(50),
-                  trackColor: context.theme.grey100_1,
+                  trackColor: context.theme.white100_4,
                   controller: scrollController,
-                  thumbColor: context.theme.blue100_5,
+                  thumbColor: context.theme.blue100_1,
                   radius: const Radius.circular(20),
                   thickness: 8,
                   child: Padding(

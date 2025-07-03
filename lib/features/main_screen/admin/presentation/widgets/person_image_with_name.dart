@@ -90,6 +90,7 @@ class PersonImageWithName extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ShowProfileScreen(
+                      isAdmin: true,
                       user: UserModel(
                         id: id,
                         name: snapshot.data!["data"]["name"],

@@ -2,6 +2,7 @@ import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/get_file_name.dart';
 import 'package:aggar/core/helper/get_mini_type_file.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/views/image_view.dart';
@@ -92,7 +93,7 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
                 child: Text(
                   widget.message.message,
                   style: AppStyles.medium16(context).copyWith(
-                    color: context.theme.white100_1,
+                    color: AppConstants.myWhite100_1,
                   ),
                 ),
               )
@@ -134,7 +135,7 @@ class _ChatBubbleForSenderState extends State<ChatBubbleForSender> {
             Text(
               widget.message.time,
               style: AppStyles.medium12(context).copyWith(
-                color: context.theme.black25,
+                color: AppConstants.myWhite100_1.withOpacity(0.7),
               ),
             ),
           ],

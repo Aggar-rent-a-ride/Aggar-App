@@ -11,6 +11,7 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/tab_bar_sec
 import 'package:aggar/features/vehicles_details/presentation/widgets/vehicle_details_menu_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class VehiclesDetailsView extends StatelessWidget {
   const VehiclesDetailsView({
@@ -130,6 +131,7 @@ class VehiclesDetailsView extends StatelessWidget {
                     spacing: 10,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Gap(5),
                       CustomImageCar(
                         mainImage: mainImage,
                       ),

@@ -16,14 +16,15 @@ class FilterIcon extends StatelessWidget {
       height: MediaQuery.of(context).size.width * 0.12,
       child: Container(
         decoration: BoxDecoration(
-          color: context.theme.black50.withOpacity(0.25),
+          color: context.theme.white100_1.withOpacity(0.5),
           borderRadius: BorderRadius.circular(12),
         ),
         child: IconButton(
-          icon: const CustomIcon(
+          icon: CustomIcon(
             hight: 20,
             width: 20,
             flag: false,
+            color: context.theme.blue100_8,
             imageIcon: AppAssets.assetsIconsSort,
           ),
           onPressed: onPressed,

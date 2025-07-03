@@ -95,11 +95,14 @@ class _SignInContent extends StatelessWidget {
               ),
             );
           } else if (state is LoginFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
+              customSnackBar(
                 context,
                 "Error",
                 "Sign In Error: ${state.errorMessage}",
-                SnackBarType.error));
+                SnackBarType.error,
+              ),
+            );
           }
         },
         builder: (context, state) {
