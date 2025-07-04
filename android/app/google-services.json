@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "494015124169",
+    "project_id": "agger-89b54",
+    "storage_bucket": "agger-89b54.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494015124169:android:36b524356c6ff47137f318",
+        "android_client_info": {
+          "package_name": "com.example.aggar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBezChSeBBrHwU5HdO1d11nIkjq0pgLKcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

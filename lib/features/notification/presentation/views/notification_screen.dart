@@ -4,7 +4,7 @@ import 'package:aggar/features/notification/data/cubit/notification_state.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_app_bar.dart';
-import 'package:aggar/features/notification/presentation/widgets/connection_status_banner.dart';
+// Remove this import: import 'package:aggar/features/notification/presentation/widgets/connection_status_banner.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_loading_state.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_empty_state.dart';
 import 'package:aggar/features/notification/presentation/widgets/notification_error_state.dart';
@@ -60,7 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen>
         opacity: _fadeAnimation,
         child: Column(
           children: [
-            const ConnectionStatusBanner(),
+            // Remove this line: const ConnectionStatusBanner(),
             Expanded(
               child: MultiBlocListener(
                 listeners: [
@@ -95,10 +95,7 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   Widget _buildNotificationBody() {
     return BlocBuilder<NotificationCubit, NotificationState>(
-      buildWhen: (previous, current) =>
-          current is NotificationLoading ||
-          current is NotificationsLoaded ||
-          current is NotificationError && !current.isRecoverable,
+      // Remove buildWhen to listen to ALL state changes for real-time updates
       builder: (context, state) {
         if (state is NotificationLoading) {
           return const NotificationLoadingState();

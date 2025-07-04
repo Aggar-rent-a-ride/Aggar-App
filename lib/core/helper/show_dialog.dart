@@ -4,6 +4,7 @@ import 'package:aggar/features/main_screen/customer/presentation/cubit/main_scre
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 void showNoNetworkDialog(BuildContext context) {
   showDialog(
@@ -29,9 +30,25 @@ void showNoNetworkDialog(BuildContext context) {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              // Close the dialog first
               Navigator.of(context).pop();
-              context.read<MainCubit>().checkInternetConnection();
+
+              // Check internet connection
+              final hasInternet =
+                  await InternetConnectionChecker.instance.hasConnection;
+
+              if (hasInternet) {
+                // If internet is available, reinitialize the app
+                if (context.mounted) {
+                  context.read<MainCubit>().initializeApp();
+                }
+              } else {
+                // If still no internet, show the dialog again
+                if (context.mounted) {
+                  showNoNetworkDialog(context);
+                }
+              }
             },
             child: Text(
               'Retry',

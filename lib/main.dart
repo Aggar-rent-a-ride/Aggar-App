@@ -56,18 +56,36 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'core/services/firebase_notification_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'core/services/local_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await FirebaseNotificationService.initialize();
+  await LocalNotificationService.initialize();
+  await LocalNotificationService.requestPermissions();
+
+  // Future.delayed(const Duration(seconds: 3), () {
+  //   LocalNotificationService.show(
+  //       "Test Notification", "This is a test from main.dart");
+  // });
+
+  String? token = await FirebaseMessaging.instance.getToken();
+  print('FCM Token: ${token ?? 'No token'}');
 
   await CacheHelper().init();
-
   await _initializeStripe();
 
   const secureStorage = FlutterSecureStorage();
-
   final languageCubit = LanguageCubit();
   languageCubit.changeToEnglish();
+
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    print('FCM Token refreshed: $newToken');
+  });
 
   runApp(DevicePreview(
     enabled: !kReleaseMode,
