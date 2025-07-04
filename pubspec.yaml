@@ -93,6 +93,7 @@ dependencies:
   marquee: ^2.3.0
   iconsax_flutter: ^1.0.1
   flutter_stripe: ^11.5.0
+  firebase_messaging: ^15.2.9
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
