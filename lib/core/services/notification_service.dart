@@ -187,20 +187,67 @@ class NotificationService {
     if (parameters == null || parameters.isEmpty) return;
 
     try {
-      String responseStr = parameters[0].toString();
-      print('Received notification: $responseStr');
+      final rawData = parameters[0];
+      print('Received notification: $rawData');
+      print('Data type: ${rawData.runtimeType}');
 
-      // Handle possible format inconsistencies
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r'(\w+):'),
-        (match) => '"${match.group(1)}":',
-      );
-      responseStr = responseStr.replaceAllMapped(
-        RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*[^",\{\}\[\]\s])'),
-        (match) => ': "${match.group(1)}"',
-      );
+      Map<String, dynamic> responseData;
 
-      final Map<String, dynamic> responseData = jsonDecode(responseStr);
+      // Handle different data types
+      if (rawData is Map<String, dynamic>) {
+        // Already a Map, use directly
+        responseData = rawData;
+      } else if (rawData is String) {
+        // Try to parse as JSON string
+        try {
+          responseData = jsonDecode(rawData);
+        } catch (e) {
+          print('Failed to parse as JSON: $e');
+          throw Exception('Invalid JSON format: $rawData');
+        }
+      } else {
+        // Convert to string and try to parse
+        String responseStr = rawData.toString();
+
+        // Check if it looks like a Map toString() output
+        if (responseStr.startsWith('{') && responseStr.endsWith('}')) {
+          // Try to convert Map toString() format to proper JSON
+          responseStr = responseStr
+              // Add quotes around keys
+              .replaceAllMapped(
+                  RegExp(r'(\w+):'), (match) => '"${match.group(1)}":')
+              // Add quotes around string values (but not numbers, booleans, null)
+              .replaceAllMapped(
+                  RegExp(r':\s*([^",\{\}\[\]\s][^,\{\}\[\]]*?)(?=\s*[,\}])'),
+                  (match) {
+            String value = match.group(1)!.trim();
+
+            // Don't quote numbers
+            if (RegExp(r'^\d+(\.\d+)?$').hasMatch(value)) {
+              return match.group(0)!;
+            }
+
+            // Don't quote booleans or null
+            if (value == 'true' || value == 'false' || value == 'null') {
+              return match.group(0)!;
+            }
+
+            // Quote everything else (including datetime strings)
+            return ': "$value"';
+          });
+
+          try {
+            responseData = jsonDecode(responseStr);
+          } catch (e) {
+            print('Failed to convert toString() format to JSON: $e');
+            print('Converted string: $responseStr');
+            throw Exception('Could not parse notification data: $e');
+          }
+        } else {
+          throw Exception('Unrecognized data format: $responseStr');
+        }
+      }
+
       print('Parsed notification data: $responseData');
 
       // Handle different response formats
@@ -214,6 +261,11 @@ class NotificationService {
       final notification = Notification.fromJson(notificationData);
 
       _notificationController.add(notification);
+
+      // Show local notification if enabled
+      if (_showLocalNotifications) {
+        _showLocalNotification(notification);
+      }
     } catch (e) {
       print('Error handling received notification: $e');
       _notificationController.addError('Failed to process notification: $e');
