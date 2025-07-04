@@ -155,13 +155,7 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  'Vehicle ID: ${booking.vehicleId}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
+
                 const SizedBox(height: 8),
                 Row(
                   children: [

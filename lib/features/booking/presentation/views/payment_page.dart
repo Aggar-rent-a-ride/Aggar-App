@@ -321,7 +321,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Visa: 4242 4242 4242 4242\nMastercard: 5555 5555 5555 4444\nUse any future date and any 3-digit CVC',
+            'Visa: 4242 4242 4242 4242\nMastercard: 5555 5555 5555 4444\nUse any future date and 123 CVC',
             style: TextStyle(
               color: Colors.amber.shade700,
               fontSize: 11,
