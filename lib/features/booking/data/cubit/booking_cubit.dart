@@ -88,40 +88,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  Future<void> getBookingsCount({BookingStatus? status}) async {
-    emit(BookingsCountLoading());
-
-    try {
-      final queryParams = <String, dynamic>{};
-      if (status != null) {
-        queryParams['status'] = status.value;
-      }
-
-      final response = await _makeAuthenticatedRequest(
-        () async => dioConsumer.get(
-          EndPoint.getBookingsCount,
-          queryParameters: queryParams,
-          options: await _getAuthOptions(),
-        ),
-      );
-
-      final responseData = response as Map<String, dynamic>;
-      final statusCode = _getStatusCode(responseData);
-
-      if (statusCode == 200) {
-        final count = responseData['data'] ?? responseData['count'] ?? 0;
-        emit(BookingsCountSuccess(count: count as int, status: status));
-      } else {
-        emit(BookingsCountError(
-          message: responseData['message']?.toString() ??
-              'Failed to get bookings count',
-        ));
-      }
-    } catch (e) {
-      _handleError(e, (message) => BookingsCountError(message: message));
-    }
-  }
-
   Future<void> getRenterPendingBookings({
     int pageNo = 1,
     int pageSize = 10,
@@ -227,6 +193,40 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
+  Future<void> getBookingIntervals() async {
+    emit(BookingIntervalsLoading());
+
+    try {
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.getBookingIntervals,
+          options: await _getAuthOptions(),
+        ),
+      );
+
+      final responseData = response as Map<String, dynamic>;
+      final statusCode = _getStatusCode(responseData);
+
+      if (statusCode == 200) {
+        final intervalsData = responseData['data'] ?? responseData;
+        final intervals = _parseBookingIntervalsResponse(intervalsData);
+
+        if (intervals != null) {
+          emit(BookingIntervalsSuccess(intervals: intervals));
+        } else {
+          emit(const BookingIntervalsError(message: 'Invalid response format'));
+        }
+      } else {
+        emit(BookingIntervalsError(
+          message: responseData['message']?.toString() ??
+              'Failed to get booking intervals',
+        ));
+      }
+    } catch (e) {
+      _handleError(e, (message) => BookingIntervalsError(message: message));
+    }
+  }
+
   Future<void> cancelBooking(int bookingId) async {
     emit(const BookingCancelLoading());
 
@@ -290,14 +290,12 @@ class BookingCubit extends Cubit<BookingState> {
           isAccepted: isAccepted,
         ));
       } else {
-        // Handle different status codes appropriately
         final message = responseData['message']?.toString() ??
             'Failed to respond to booking';
 
         emit(BookingResponseError(message: message));
       }
     } catch (e) {
-      // Check if it's a DioException with 409 status code
       if (e is DioException && e.response?.statusCode == 409) {
         final responseData = e.response?.data as Map<String, dynamic>? ?? {};
         final message = responseData['message']?.toString() ??
@@ -368,6 +366,10 @@ class BookingCubit extends Cubit<BookingState> {
     int pageSize = 10,
   }) async {
     await getBookingHistory(status: status, pageNo: pageNo, pageSize: pageSize);
+  }
+
+  Future<void> refreshBookingIntervals() async {
+    await getBookingIntervals();
   }
 
   void resetState() {
@@ -499,6 +501,33 @@ class BookingCubit extends Cubit<BookingState> {
         'currentPage': pageNo,
         'pageSize': pageSize,
       };
+    }
+    return null;
+  }
+
+  List<BookingInterval>? _parseBookingIntervalsResponse(dynamic intervalsData) {
+    try {
+      if (intervalsData is List) {
+        return intervalsData
+            .where((item) => item != null)
+            .map((item) => BookingInterval.fromJson(
+                Map<String, dynamic>.from(item as Map)))
+            .toList();
+      } else if (intervalsData is Map) {
+        final intervalsMap = Map<String, dynamic>.from(intervalsData);
+
+        // Check if there's a nested 'data' field
+        if (intervalsMap.containsKey('data') && intervalsMap['data'] is List) {
+          final intervalsList = intervalsMap['data'] as List;
+          return intervalsList
+              .where((item) => item != null)
+              .map((item) => BookingInterval.fromJson(
+                  Map<String, dynamic>.from(item as Map)))
+              .toList();
+        }
+      }
+    } catch (e) {
+      print('Error parsing booking intervals: $e');
     }
     return null;
   }
