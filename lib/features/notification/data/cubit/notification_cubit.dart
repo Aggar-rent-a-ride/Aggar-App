@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:aggar/core/services/notification_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:aggar/core/services/local_notification_service.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
   final NotificationService _notificationService;
@@ -27,6 +28,7 @@ class NotificationCubit extends Cubit<NotificationState> {
   bool _shouldBeConnected = false;
   int _reconnectionAttempt = 0;
   final int _maxReconnectionAttempts = 5;
+  bool _localNotificationsEnabled = true;
 
   NotificationCubit({
     required TokenRefreshCubit tokenRefreshCubit,
@@ -39,6 +41,38 @@ class NotificationCubit extends Cubit<NotificationState> {
     _setupTokenRefreshCubit();
     _setupSubscriptions();
     _setupNetworkConnectivity();
+    _initializeLocalNotifications();
+  }
+
+  Future<void> _initializeLocalNotifications() async {
+    try {
+      await LocalNotificationService.initialize();
+      final permissionGranted =
+          await LocalNotificationService.requestPermissions();
+      if (permissionGranted) {
+        print('Local notifications initialized and permissions granted');
+      } else {
+        print('Local notification permissions denied');
+        _localNotificationsEnabled = false;
+      }
+    } catch (e) {
+      print('Error initializing local notifications: $e');
+      _localNotificationsEnabled = false;
+    }
+  }
+
+  void setLocalNotificationsEnabled(bool enabled) {
+    _localNotificationsEnabled = enabled;
+    _notificationService.setLocalNotifications(enabled);
+  }
+
+  Future<void> testLocalNotification() async {
+    try {
+      await LocalNotificationService.showTestNotification();
+      print('Test notification sent');
+    } catch (e) {
+      print('Error sending test notification: $e');
+    }
   }
 
   void _setupTokenRefreshCubit() {
@@ -81,9 +115,13 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     _notificationSubscription =
         _notificationService.onNotificationReceived.listen((notification) {
-      print('Notification received: ${notification.id}');
+      print('Notification received in cubit: ${notification.id}');
       _notifications.insert(0, notification);
       _unreadCount++;
+
+      if (_localNotificationsEnabled) {
+        _showLocalNotification(notification);
+      }
 
       if (state is NotificationsLoaded) {
         emit((state as NotificationsLoaded).copyWith(
@@ -134,6 +172,64 @@ class NotificationCubit extends Cubit<NotificationState> {
     });
   }
 
+  Future<void> _showLocalNotification(Notification notification) async {
+    try {
+      String title = 'New Notification';
+      final targetType = notification.additionalData?['targetType'] as String?;
+
+      if (notification.senderName != null) {
+        switch (targetType) {
+          case 'Message':
+            title = 'New Message from ${notification.senderName}';
+            break;
+          case 'CustomerReview':
+          case 'RenterReview':
+            title = 'New Review from ${notification.senderName}';
+            break;
+          case 'Booking':
+            title = 'New Booking from ${notification.senderName}';
+            break;
+          case 'Rental':
+            title = 'Rental Update from ${notification.senderName}';
+            break;
+          default:
+            title = 'New Notification from ${notification.senderName}';
+        }
+      } else {
+        switch (targetType) {
+          case 'Message':
+            title = 'New Message';
+            break;
+          case 'CustomerReview':
+          case 'RenterReview':
+            title = 'New Review';
+            break;
+          case 'Booking':
+            title = 'New Booking';
+            break;
+          case 'Rental':
+            title = 'Rental Update';
+            break;
+          default:
+            title = 'New Notification';
+        }
+      }
+
+      await LocalNotificationService.showSignalRNotification(
+        title: title,
+        body: notification.content,
+        senderName: notification.senderName,
+        notificationType: targetType,
+        notificationId: notification.id,
+        additionalData: notification.additionalData,
+      );
+
+      print('Local notification shown: $title - ${notification.content}');
+    } catch (e) {
+      print('Error showing local notification: $e');
+    }
+  }
+
   Future<void> initialize() async {
     if (_isInitialized && _notificationService.isConnected) return;
 
@@ -175,7 +271,6 @@ class NotificationCubit extends Cubit<NotificationState> {
       await fetchNotifications();
     } catch (e) {
       print('Error initializing notification service: $e');
-      // Detect specific WebSocket errors
       final errorMessage = e.toString();
       if (errorMessage.contains('WebSocketChannelException') ||
           errorMessage.contains('WebSocketException')) {

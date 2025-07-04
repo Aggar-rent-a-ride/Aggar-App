@@ -12,12 +12,29 @@ import 'package:aggar/features/main_screen/customer/presentation/widgets/loading
 import 'package:aggar/features/main_screen/customer/presentation/widgets/main_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aggar/core/services/signalr_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
+  Future<void> _startSignalR() async {
+    const secureStorage = FlutterSecureStorage();
+    String? userIdStr = await secureStorage.read(key: 'userId');
+    int? userId = userIdStr != null ? int.tryParse(userIdStr) : null;
+    if (userId != null && userId > 0) {
+      await SignalRService().initialize(userId: userId);
+      print('SignalRService initialized for customer with userId: $userId');
+    } else {
+      print('SignalRService not started: userId not found');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startSignalR();
+    });
     return BlocConsumer<MainCubit, MainState>(
       listener: (context, state) {
         if (state is MainAuthError) {

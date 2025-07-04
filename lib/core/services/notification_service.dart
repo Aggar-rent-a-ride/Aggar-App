@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/services/local_notification_service.dart'; // Import your local notification service
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:dio/dio.dart';
 
@@ -53,7 +54,6 @@ class Notification {
   }
 
   static dynamic _extractTargetId(Map<String, dynamic> json) {
-    // Helper function to get value with fallback for different case formats
     T? getValue<T>(String key) {
       return json[key] ?? json[key.toLowerCase()] ?? json[key.toUpperCase()];
     }
@@ -90,6 +90,7 @@ class NotificationService {
   TokenRefreshCubit? _tokenRefreshCubit;
   bool _isConnected = false;
   int? _userId;
+  bool _showLocalNotifications = true; // Flag to control local notifications
 
   final _notificationController = StreamController<Notification>.broadcast();
   final _connectionController = StreamController<bool>.broadcast();
@@ -101,13 +102,20 @@ class NotificationService {
   Stream<int> get onUnreadCountChange => _unreadCountController.stream;
   bool get isConnected => _isConnected;
   int get currentUserId => _userId ?? 0;
+
   void setTokenRefreshCubit(TokenRefreshCubit cubit) {
     _tokenRefreshCubit = cubit;
+  }
+
+  void setLocalNotifications(bool enabled) {
+    _showLocalNotifications = enabled;
   }
 
   Future<void> initialize({required int userId}) async {
     _userId = userId;
     await _connectToNotificationHub();
+
+    await LocalNotificationService.requestPermissions();
   }
 
   Future<void> _connectToNotificationHub() async {
@@ -121,7 +129,6 @@ class NotificationService {
     }
 
     try {
-      // Close existing connection if any
       await disconnect();
 
       _hubConnection = HubConnectionBuilder()
@@ -176,6 +183,7 @@ class NotificationService {
   }
 
   void _handleReceiveNotification(List<Object?>? parameters) {
+    print('SignalR _handleReceiveNotification called!');
     if (parameters == null || parameters.isEmpty) return;
 
     try {
@@ -204,10 +212,61 @@ class NotificationService {
       }
 
       final notification = Notification.fromJson(notificationData);
+
       _notificationController.add(notification);
     } catch (e) {
       print('Error handling received notification: $e');
       _notificationController.addError('Failed to process notification: $e');
+    }
+  }
+
+  void _showLocalNotification(Notification notification) {
+    try {
+      String title = notification.senderName != null
+          ? '${notification.senderName}'
+          : 'New Notification';
+
+      final targetType = notification.additionalData?['targetType'] as String?;
+      switch (targetType) {
+        case 'Message':
+          title = notification.senderName != null
+              ? '${notification.senderName} sent a message'
+              : 'New Message';
+          break;
+        case 'CustomerReview':
+        case 'RenterReview':
+          title = notification.senderName != null
+              ? '${notification.senderName} left a review'
+              : 'New Review';
+          break;
+        case 'Booking':
+          title = notification.senderName != null
+              ? '${notification.senderName} made a booking'
+              : 'New Booking';
+          break;
+        case 'Rental':
+          title = notification.senderName != null
+              ? 'Rental update from ${notification.senderName}'
+              : 'Rental Update';
+          break;
+        default:
+          title = notification.senderName != null
+              ? '${notification.senderName}'
+              : 'New Notification';
+      }
+
+      LocalNotificationService.showSignalRNotification(
+        title: title,
+        body: notification.content,
+        senderName: notification.senderName,
+        notificationType: targetType,
+        notificationId: notification.id,
+        additionalData: notification.additionalData,
+      );
+
+      print('Local notification shown: $title - ${notification.content}');
+    } catch (e) {
+      print('Error showing local notification: $e');
     }
   }
 
@@ -270,7 +329,6 @@ class NotificationService {
         }
       }
 
-      // Convert to ntification objects
       final notifications = notificationData.map((json) {
         if (json is Map<String, dynamic>) {
           return Notification.fromJson(json);
