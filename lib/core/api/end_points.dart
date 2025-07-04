@@ -19,6 +19,7 @@ class EndPoint {
   static const String bookingResponse = '/api/booking/response';
   static const String confirmBooking = '/booking/confirm';
   static const String getBookingHistory = '/api/booking/history';
+  static const String getBookingIntervals = '/api/booking/intervals';
 
   // Vehicle endpoints
   static String vehicle = "/api/vehicle/";
