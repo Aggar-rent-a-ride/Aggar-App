@@ -127,6 +127,105 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     }
   }
 
+  Future<void> confirmRental({
+    required int rentalId,
+    required String scannedQrCode,
+  }) async {
+    try {
+      final accessToken = await tokenRefreshCubit.getAccessToken();
+
+      if (accessToken == null) {
+        emit(RentalHistoryError(
+            message: 'Authentication failed. Please login again.'));
+        return;
+      }
+
+      final response = await dio.post(
+        EndPoint.confirmRental,
+        queryParameters: {
+          'rentalId': rentalId,
+        },
+        data: {
+          'scannedQrCode': scannedQrCode,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        await getRentalHistory(pageNo: 1, refresh: true);
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        try {
+          await tokenRefreshCubit.refreshToken();
+          return confirmRental(
+              rentalId: rentalId, scannedQrCode: scannedQrCode);
+        } catch (refreshError) {
+          emit(RentalHistoryError(
+              message: 'Session expired. Please login again.'));
+        }
+      } else {
+        emit(RentalHistoryError(
+            message:
+                'Failed to confirm rental: ${e.response?.data['message'] ?? e.toString()}'));
+      }
+    } catch (e) {
+      emit(RentalHistoryError(
+          message: 'Failed to confirm rental: ${e.toString()}'));
+    }
+  }
+
+  Future<void> refundRental({required int rentalId}) async {
+    try {
+      final accessToken = await tokenRefreshCubit.getAccessToken();
+
+      if (accessToken == null) {
+        emit(RentalHistoryError(
+            message: 'Authentication failed. Please login again.'));
+        return;
+      }
+
+      final response = await dio.get(
+        EndPoint.refundRental,
+        queryParameters: {
+          'id': rentalId,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // Refresh the rental history after successful refund
+        await getRentalHistory(pageNo: 1, refresh: true);
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        try {
+          await tokenRefreshCubit.refreshToken();
+          return refundRental(rentalId: rentalId);
+        } catch (refreshError) {
+          emit(RentalHistoryError(
+              message: 'Session expired. Please login again.'));
+        }
+      } else {
+        emit(RentalHistoryError(
+            message:
+                'Failed to refund rental: ${e.response?.data['message'] ?? e.toString()}'));
+      }
+    } catch (e) {
+      emit(RentalHistoryError(
+          message: 'Failed to refund rental: ${e.toString()}'));
+    }
+  }
+
   void loadMoreRentals() {
     if (state is RentalHistoryLoaded) {
       final currentState = state as RentalHistoryLoaded;

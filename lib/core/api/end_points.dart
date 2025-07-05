@@ -59,16 +59,18 @@ class EndPoint {
   static String getVehicleReviews = "$baseUrl/api/review/vehicle-reviews";
   static String getReview = "$baseUrl/api/review";
 
-  //Rental Endpoint
+  // Rental endpoints
   static String rentalHistory = "$baseUrl/api/rental/history";
+  static String confirmRental = "$baseUrl/api/rental/confirm";
+  static String refundRental = "$baseUrl/api/rental/refund";
 
-  //Report Endpoint
+  // Report endpoints
   static String createReport = "$baseUrl/api/report/";
   static String getReportById = "$baseUrl/api/report/";
   static String updateReportStatus = "$baseUrl/api/report/status";
   static String filterReport = "$baseUrl/api/report/filter";
 
-  //User Endpoint
+  // User endpoints
   static String getTotalUser = "$baseUrl/api/user/all";
   static String getTotalUserCount = "$baseUrl/api/user/count-all";
   static String getSearchUsers = "$baseUrl/api/user/search";
@@ -79,7 +81,7 @@ class EndPoint {
   static String editProfile = "$baseUrl/api/user/profile";
   static String removeProfileImage = "$baseUrl/api/user/profile-image";
 
-  //Payment Endpoint
+  // Payment endpoints
   static String connectedAccount = "$baseUrl/api/payment/connected-account";
   static String getPlatformBalance = "$baseUrl/api/payment/balance";
   static String renterpayoutDetails = "$baseUrl/api/payment/renter-payout";

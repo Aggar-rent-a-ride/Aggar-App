@@ -1,12 +1,6 @@
 import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
-@immutable
-abstract class RentalHistoryState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+abstract class RentalHistoryState {}
 
 class RentalHistoryInitial extends RentalHistoryState {}
 
@@ -22,16 +16,25 @@ class RentalHistoryLoaded extends RentalHistoryState {
     required this.currentPage,
     required this.hasMoreData,
   });
-
-  @override
-  List<Object?> get props => [rentals, currentPage, hasMoreData];
 }
 
 class RentalHistoryError extends RentalHistoryState {
   final String message;
 
   RentalHistoryError({required this.message});
+}
 
-  @override
-  List<Object?> get props => [message];
+// New refund-specific states
+class RentalHistoryRefundLoading extends RentalHistoryState {}
+
+class RentalHistoryRefundSuccess extends RentalHistoryState {
+  final String message;
+
+  RentalHistoryRefundSuccess({required this.message});
+}
+
+class RentalHistoryRefundError extends RentalHistoryState {
+  final String message;
+
+  RentalHistoryRefundError({required this.message});
 }

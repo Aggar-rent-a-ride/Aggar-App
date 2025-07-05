@@ -94,6 +94,7 @@ dependencies:
   iconsax_flutter: ^1.0.1
   flutter_stripe: ^11.5.0
   firebase_messaging: ^15.2.9
+  mobile_scanner: ^7.0.1
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
