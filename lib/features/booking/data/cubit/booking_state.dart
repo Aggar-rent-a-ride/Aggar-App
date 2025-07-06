@@ -135,7 +135,6 @@ class RenterPendingBookingsError extends BookingState {
   List<Object?> get props => [message];
 }
 
-// Booking history states - NEW
 class BookingHistoryLoading extends BookingState {}
 
 class BookingHistorySuccess extends BookingState {
@@ -167,7 +166,26 @@ class BookingHistoryError extends BookingState {
   List<Object?> get props => [message];
 }
 
-// Cancel booking states
+class BookingIntervalsLoading extends BookingState {}
+
+class BookingIntervalsSuccess extends BookingState {
+  final List<BookingInterval> intervals;
+
+  const BookingIntervalsSuccess({required this.intervals});
+
+  @override
+  List<Object?> get props => [intervals];
+}
+
+class BookingIntervalsError extends BookingState {
+  final String message;
+
+  const BookingIntervalsError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class BookingCancelLoading extends BookingState {
   const BookingCancelLoading();
 }
@@ -194,7 +212,6 @@ class BookingCancelError extends BookingState {
   List<Object> get props => [message];
 }
 
-// Booking response states (accept/reject)
 class BookingResponseLoading extends BookingState {
   const BookingResponseLoading();
 }
@@ -223,7 +240,6 @@ class BookingResponseError extends BookingState {
   List<Object> get props => [message];
 }
 
-// Booking confirm states (for payment processing)
 class BookingConfirmLoading extends BookingState {
   const BookingConfirmLoading();
 }
@@ -231,7 +247,7 @@ class BookingConfirmLoading extends BookingState {
 class BookingConfirmSuccess extends BookingState {
   final String message;
   final int bookingId;
-  final String? clientSecret; // Stripe client secret for payment processing
+  final String? clientSecret;
 
   const BookingConfirmSuccess({
     required this.message,
@@ -252,19 +268,19 @@ class BookingConfirmError extends BookingState {
   List<Object> get props => [message];
 }
 
-// Multiple operation state (for complex UI states)
 class BookingMultipleOperationState extends BookingState {
   final bool isCreating;
   final bool isGettingById;
   final bool isGettingByStatus;
   final bool isGettingCount;
   final bool isGettingRenterPending;
-  final bool isGettingHistory; // NEW: Added for booking history
+  final bool isGettingHistory;
+  final bool isGettingIntervals;
   final BookingModel? currentBooking;
   final List<BookingModel> bookings;
   final List<BookingModel> renterPendingBookings;
-  final List<BookingHistoryModel>
-      historyBookings; // NEW: Added for booking history
+  final List<BookingHistoryModel> historyBookings;
+  final List<BookingInterval> intervals;
   final int? totalCount;
   final String? errorMessage;
 
@@ -274,11 +290,13 @@ class BookingMultipleOperationState extends BookingState {
     this.isGettingByStatus = false,
     this.isGettingCount = false,
     this.isGettingRenterPending = false,
-    this.isGettingHistory = false, // NEW
+    this.isGettingHistory = false,
+    this.isGettingIntervals = false,
     this.currentBooking,
     this.bookings = const [],
     this.renterPendingBookings = const [],
-    this.historyBookings = const [], // NEW
+    this.historyBookings = const [],
+    this.intervals = const [],
     this.totalCount,
     this.errorMessage,
   });
@@ -289,11 +307,13 @@ class BookingMultipleOperationState extends BookingState {
     bool? isGettingByStatus,
     bool? isGettingCount,
     bool? isGettingRenterPending,
-    bool? isGettingHistory, // NEW
+    bool? isGettingHistory,
+    bool? isGettingIntervals,
     BookingModel? currentBooking,
     List<BookingModel>? bookings,
     List<BookingModel>? renterPendingBookings,
-    List<BookingHistoryModel>? historyBookings, // NEW
+    List<BookingHistoryModel>? historyBookings,
+    List<BookingInterval>? intervals,
     int? totalCount,
     String? errorMessage,
   }) {
@@ -304,12 +324,14 @@ class BookingMultipleOperationState extends BookingState {
       isGettingCount: isGettingCount ?? this.isGettingCount,
       isGettingRenterPending:
           isGettingRenterPending ?? this.isGettingRenterPending,
-      isGettingHistory: isGettingHistory ?? this.isGettingHistory, // NEW
+      isGettingHistory: isGettingHistory ?? this.isGettingHistory,
+      isGettingIntervals: isGettingIntervals ?? this.isGettingIntervals,
       currentBooking: currentBooking ?? this.currentBooking,
       bookings: bookings ?? this.bookings,
       renterPendingBookings:
           renterPendingBookings ?? this.renterPendingBookings,
-      historyBookings: historyBookings ?? this.historyBookings, // NEW
+      historyBookings: historyBookings ?? this.historyBookings,
+      intervals: intervals ?? this.intervals, // NEW
       totalCount: totalCount ?? this.totalCount,
       errorMessage: errorMessage,
     );
@@ -322,12 +344,41 @@ class BookingMultipleOperationState extends BookingState {
         isGettingByStatus,
         isGettingCount,
         isGettingRenterPending,
-        isGettingHistory, // NEW
+        isGettingHistory,
+        isGettingIntervals,
         currentBooking,
         bookings,
         renterPendingBookings,
-        historyBookings, // NEW
+        historyBookings,
+        intervals,
         totalCount,
         errorMessage,
       ];
+}
+
+class BookingInterval extends Equatable {
+  final DateTime startDate;
+  final DateTime endDate;
+
+  const BookingInterval({
+    required this.startDate,
+    required this.endDate,
+  });
+
+  factory BookingInterval.fromJson(Map<String, dynamic> json) {
+    return BookingInterval(
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [startDate, endDate];
 }

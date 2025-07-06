@@ -80,6 +80,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
 
       if (userId != null) {
         await secureStorage.write(key: 'userId', value: userId.toString());
+        print('Extracted and stored userId from token: $userId');
       }
     } catch (e) {
       print('Error extracting userId from token: $e');
@@ -112,7 +113,13 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
 
         final newAccessToken = tokenData[ApiKey.accessToken];
         final newRefreshToken = tokenData[ApiKey.refreshToken];
-        final userId = tokenData['userId']?.toString();
+
+        // FIX: Don't rely on userId from refresh response if it's 0
+        // Instead, always extract it from the JWT token
+        String? userId = tokenData['userId']?.toString();
+        if (userId == null || userId == '0') {
+          userId = await _extractUserIdFromToken(newAccessToken);
+        }
 
         _cachedAccessToken = newAccessToken;
 
@@ -130,9 +137,7 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
               key: 'tokenStoredAt', value: DateTime.now().toIso8601String())
         ]);
 
-        if (userId == null) {
-          await _extractAndStoreUserIdFromToken(newAccessToken);
-        }
+        print('Token refreshed successfully. UserId: $userId');
 
         emit(TokenRefreshSuccess(
           accessToken: newAccessToken,
@@ -147,6 +152,23 @@ class TokenRefreshCubit extends Cubit<TokenRefreshState> {
       _cachedAccessToken = null;
       emit(TokenRefreshFailure(error.toString()));
       rethrow;
+    }
+  }
+
+  // Helper method to extract userId from JWT token
+  Future<String?> _extractUserIdFromToken(String token) async {
+    try {
+      final Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      final userId = decodedToken['sub'] ?? decodedToken['uid'];
+
+      if (userId != null) {
+        await secureStorage.write(key: 'userId', value: userId.toString());
+        return userId.toString();
+      }
+      return null;
+    } catch (e) {
+      print('Error extracting userId from token: $e');
+      return null;
     }
   }
 

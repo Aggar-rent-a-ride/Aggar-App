@@ -6,12 +6,14 @@ import 'package:aggar/features/main_screen/customer/presentation/widgets/loading
 import 'package:aggar/features/main_screen/renter/presentation/views/main_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../../new_vehicle/data/cubits/add_vehicle_cubit/add_vehicle_cubit.dart';
 import '../../../../new_vehicle/data/cubits/additinal_images_cubit/additinal_images_cubit.dart';
 import '../../../../new_vehicle/data/cubits/main_image_cubit/main_image_cubit.dart';
 import '../../../../new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import '../../../../new_vehicle/presentation/views/add_vehicle_screen.dart';
+import 'package:aggar/core/services/signalr_service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -30,6 +32,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeToken();
+      _startSignalR();
     });
   }
 
@@ -76,6 +79,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           _isLoadingToken = false;
         });
       }
+    }
+  }
+
+  Future<void> _startSignalR() async {
+    const secureStorage = FlutterSecureStorage();
+    String? userIdStr = await secureStorage.read(key: 'userId');
+    int? userId = userIdStr != null ? int.tryParse(userIdStr) : null;
+    if (userId != null && userId > 0) {
+      await SignalRService().initialize(userId: userId);
+      print('SignalRService initialized for renter with userId: $userId');
+    } else {
+      print('SignalRService not started: userId not found');
     }
   }
 

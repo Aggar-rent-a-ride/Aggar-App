@@ -2,6 +2,7 @@ import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
+import 'package:aggar/features/payment/presentation/views/connected_account_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -81,12 +82,20 @@ class _BookingDetailsScreenRenterState
               _isProcessingResponse = false;
             });
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
+            // Check if the error is about needing a payment account
+            if (state.message.toLowerCase().contains('payment account') ||
+                state.message
+                    .toLowerCase()
+                    .contains('create a payment account')) {
+              _showPaymentAccountRequiredDialog(context);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
           }
 
           if (state is BookingResponseLoading) {
@@ -686,6 +695,94 @@ class _BookingDetailsScreenRenterState
   String? _formatDate(DateTime? date) {
     if (date == null) return null;
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  // NEW METHOD: Show payment account required dialog
+  void _showPaymentAccountRequiredDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          icon: Icon(
+            Icons.account_balance,
+            size: 48,
+            color: Colors.blue[600],
+          ),
+          title: const Text(
+            'Payment Account Required',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'To accept bookings and receive payments, you need to connect your bank account first.',
+                style: TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              Gap(12),
+              Text(
+                'This is a one-time setup that enables secure payment processing.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Later',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _navigateToConnectedAccountPage(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[600],
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              icon: const Icon(Icons.arrow_forward, size: 16),
+              label: const Text('Setup Account'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // NEW METHOD: Navigate to ConnectedAccountPage
+  void _navigateToConnectedAccountPage(BuildContext context) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ConnectedAccountPage(),
+      ),
+    );
+
+    // If the user successfully connected their account, you might want to refresh the booking
+    if (result == true) {
+      // Refresh the booking data or show a success message
+      context.read<BookingCubit>().getBookingById(widget.booking.id);
+    }
   }
 
   void _showAcceptConfirmation(BuildContext context, int bookingId) {

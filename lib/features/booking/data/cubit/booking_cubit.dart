@@ -15,7 +15,6 @@ class BookingCubit extends Cubit<BookingState> {
     required this.tokenRefreshCubit,
   }) : super(BookingInitial());
 
-  // Create booking
   Future<void> createBooking({
     required int vehicleId,
     required DateTime startDate,
@@ -58,7 +57,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Get booking by ID
   Future<void> getBookingById(int bookingId) async {
     emit(BookingGetByIdLoading());
 
@@ -90,42 +88,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Get bookings count
-  Future<void> getBookingsCount({BookingStatus? status}) async {
-    emit(BookingsCountLoading());
-
-    try {
-      final queryParams = <String, dynamic>{};
-      if (status != null) {
-        queryParams['status'] = status.value;
-      }
-
-      final response = await _makeAuthenticatedRequest(
-        () async => dioConsumer.get(
-          EndPoint.getBookingsCount,
-          queryParameters: queryParams,
-          options: await _getAuthOptions(),
-        ),
-      );
-
-      final responseData = response as Map<String, dynamic>;
-      final statusCode = _getStatusCode(responseData);
-
-      if (statusCode == 200) {
-        final count = responseData['data'] ?? responseData['count'] ?? 0;
-        emit(BookingsCountSuccess(count: count as int, status: status));
-      } else {
-        emit(BookingsCountError(
-          message: responseData['message']?.toString() ??
-              'Failed to get bookings count',
-        ));
-      }
-    } catch (e) {
-      _handleError(e, (message) => BookingsCountError(message: message));
-    }
-  }
-
-  // Get renter pending bookings
   Future<void> getRenterPendingBookings({
     int pageNo = 1,
     int pageSize = 10,
@@ -176,7 +138,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Get booking history - NEW METHOD
   Future<void> getBookingHistory({
     BookingStatus? status,
     int pageNo = 1,
@@ -232,7 +193,40 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Cancel booking
+  Future<void> getBookingIntervals() async {
+    emit(BookingIntervalsLoading());
+
+    try {
+      final response = await _makeAuthenticatedRequest(
+        () async => dioConsumer.get(
+          EndPoint.getBookingIntervals,
+          options: await _getAuthOptions(),
+        ),
+      );
+
+      final responseData = response as Map<String, dynamic>;
+      final statusCode = _getStatusCode(responseData);
+
+      if (statusCode == 200) {
+        final intervalsData = responseData['data'] ?? responseData;
+        final intervals = _parseBookingIntervalsResponse(intervalsData);
+
+        if (intervals != null) {
+          emit(BookingIntervalsSuccess(intervals: intervals));
+        } else {
+          emit(const BookingIntervalsError(message: 'Invalid response format'));
+        }
+      } else {
+        emit(BookingIntervalsError(
+          message: responseData['message']?.toString() ??
+              'Failed to get booking intervals',
+        ));
+      }
+    } catch (e) {
+      _handleError(e, (message) => BookingIntervalsError(message: message));
+    }
+  }
+
   Future<void> cancelBooking(int bookingId) async {
     emit(const BookingCancelLoading());
 
@@ -263,7 +257,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Respond to booking (accept/reject)
   Future<void> respondToBooking({
     required int bookingId,
     required bool isAccepted,
@@ -297,24 +290,31 @@ class BookingCubit extends Cubit<BookingState> {
           isAccepted: isAccepted,
         ));
       } else {
-        emit(BookingResponseError(
-          message: responseData['message']?.toString() ??
-              'Failed to respond to booking',
-        ));
+        final message = responseData['message']?.toString() ??
+            'Failed to respond to booking';
+
+        emit(BookingResponseError(message: message));
       }
     } catch (e) {
-      _handleError(e, (message) => BookingResponseError(message: message));
+      if (e is DioException && e.response?.statusCode == 409) {
+        final responseData = e.response?.data as Map<String, dynamic>? ?? {};
+        final message = responseData['message']?.toString() ??
+            'You need to create a payment account to accept bookings.';
+
+        emit(BookingResponseError(message: message));
+      } else {
+        _handleError(e, (message) => BookingResponseError(message: message));
+      }
     }
   }
 
-  // Confirm booking
   Future<void> confirmBooking(int bookingId) async {
     emit(const BookingConfirmLoading());
 
     try {
       final response = await _makeAuthenticatedRequest(
         () async => dioConsumer.get(
-          EndPoint.confirmBooking,
+          '/api/booking/confirm',
           queryParameters: {'id': bookingId},
           options: await _getAuthOptions(),
         ),
@@ -345,7 +345,6 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  // Convenience methods
   Future<void> acceptBooking(int bookingId) async {
     await respondToBooking(bookingId: bookingId, isAccepted: true);
   }
@@ -369,11 +368,14 @@ class BookingCubit extends Cubit<BookingState> {
     await getBookingHistory(status: status, pageNo: pageNo, pageSize: pageSize);
   }
 
+  Future<void> refreshBookingIntervals() async {
+    await getBookingIntervals();
+  }
+
   void resetState() {
     emit(BookingInitial());
   }
 
-  // Private helper methods
   Future<Options> _getAuthOptions() async {
     final token = await tokenRefreshCubit.getAccessToken();
     print("CURRENT TOKEN: $token");
@@ -470,7 +472,6 @@ class BookingCubit extends Cubit<BookingState> {
       final historyMap = Map<String, dynamic>.from(historyData);
 
       if (historyMap.containsKey('data')) {
-        // Parse the nested data structure
         final bookingsList = historyMap['data'] as List?;
         if (bookingsList != null) {
           final bookings = bookingsList
@@ -500,6 +501,33 @@ class BookingCubit extends Cubit<BookingState> {
         'currentPage': pageNo,
         'pageSize': pageSize,
       };
+    }
+    return null;
+  }
+
+  List<BookingInterval>? _parseBookingIntervalsResponse(dynamic intervalsData) {
+    try {
+      if (intervalsData is List) {
+        return intervalsData
+            .where((item) => item != null)
+            .map((item) => BookingInterval.fromJson(
+                Map<String, dynamic>.from(item as Map)))
+            .toList();
+      } else if (intervalsData is Map) {
+        final intervalsMap = Map<String, dynamic>.from(intervalsData);
+
+        // Check if there's a nested 'data' field
+        if (intervalsMap.containsKey('data') && intervalsMap['data'] is List) {
+          final intervalsList = intervalsMap['data'] as List;
+          return intervalsList
+              .where((item) => item != null)
+              .map((item) => BookingInterval.fromJson(
+                  Map<String, dynamic>.from(item as Map)))
+              .toList();
+        }
+      }
+    } catch (e) {
+      print('Error parsing booking intervals: $e');
     }
     return null;
   }
