@@ -1,6 +1,7 @@
 import 'package:aggar/features/booking/presentation/views/payment_page.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
+import 'package:aggar/features/rent_history/presentation/views/rent_history_view.dart';
 import 'package:aggar/features/rent_history/presentation/views/scanner_qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -510,106 +511,119 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
         },
       );
     } else if (status == 'confirmed') {
-      return BlocBuilder<RentalHistoryCubit, RentalHistoryState>(
-        builder: (context, state) {
-          final isRefundLoading = state is RentalHistoryRefundLoading;
-
-          return Column(
-            children: [
-              // Scan QR Code Button
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: isRefundLoading
-                      ? null
-                      : () {
-                          _handleScanQRCode(context);
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB), // Blue color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+      // Instead of showing buttons, redirect to rental history
+      return Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.green.shade200),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green.shade600,
+                  size: 48,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Booking Confirmed!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green.shade800,
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.qr_code_scanner,
-                        color: Colors.white,
-                        size: 20,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Your booking has been confirmed and payment processed successfully.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.green.shade700,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _navigateToRentalHistory(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade600,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      SizedBox(width: 8),
-                      Text(
-                        'Scan QR Code',
-                        style: TextStyle(
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.history,
                           color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                          size: 20,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Refund Button
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: isRefundLoading
-                      ? null
-                      : () {
-                          _showRefundConfirmationDialog(context);
-                        },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.orange),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                        SizedBox(width: 8),
+                        Text(
+                          'View in Rental History',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: isRefundLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.orange),
-                          ),
-                        )
-                      : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.payment,
-                              color: Colors.orange,
-                              size: 20,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Request Refund',
-                              style: TextStyle(
-                                color: Colors.orange,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
                 ),
-              ),
-              const SizedBox(height: 12),
-            ],
-          );
-        },
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'You can manage your rental (scan QR code, request refunds, etc.) from the Rental History section.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
       );
     }
 
     // No buttons for other statuses (rejected, canceled, etc.)
     return const SizedBox.shrink();
+  }
+
+  void _navigateToRentalHistory(BuildContext context) {
+    try {
+      // Navigate to rental history page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: context.read<RentalHistoryCubit>(),
+            child: const RentHistoryView(),
+          ),
+        ),
+      );
+    } catch (e) {
+      // Handle navigation error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error navigating to rental history: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _handleScanQRCode(BuildContext context) async {
@@ -620,7 +634,7 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
         MaterialPageRoute(
           builder: (context) => BlocProvider.value(
             value: context.read<RentalHistoryCubit>(),
-            child: QRScannerPage(bookingId: booking.id),
+            child: QRScannerPage(rentalId: booking.id),
           ),
         ),
       );

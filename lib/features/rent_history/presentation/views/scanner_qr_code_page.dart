@@ -5,11 +5,11 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 
 class QRScannerPage extends StatefulWidget {
-  final int bookingId;
+  final int rentalId;
 
   const QRScannerPage({
     super.key,
-    required this.bookingId,
+    required this.rentalId,
   });
 
   @override
@@ -21,6 +21,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
   bool isFlashOn = false;
   bool isScanning = true;
   bool isProcessing = false;
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -34,168 +35,316 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   @override
   void dispose() {
+    _isDisposed = true;
     controller.dispose();
     super.dispose();
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (!_isDisposed && mounted) {
+      setState(fn);
+    }
+  }
+
+  void _exitWithResult(bool success, [String? message]) {
+    if (!_isDisposed && mounted) {
+      Navigator.of(context).pop(success);
+    }
+  }
+
+  void _showErrorAndRetry(String message) {
+    if (!_isDisposed && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error, color: Colors.white),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(message),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          action: SnackBarAction(
+            label: 'Retry',
+            textColor: Colors.white,
+            onPressed: _resetScanner,
+          ),
+        ),
+      );
+
+      // Reset scanner state after showing error
+      _safeSetState(() {
+        isProcessing = false;
+        isScanning = true;
+      });
+
+      // Restart scanning
+      try {
+        controller.start();
+      } catch (e) {
+        debugPrint('Error restarting scanner: $e');
+      }
+    }
+  }
+
+  void _resetScanner() {
+    if (!_isDisposed && mounted) {
+      _safeSetState(() {
+        isProcessing = false;
+        isScanning = true;
+      });
+
+      try {
+        controller.start();
+      } catch (e) {
+        debugPrint('Error resetting scanner: $e');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<RentalHistoryCubit, RentalHistoryState>(
       listener: (context, state) {
+        debugPrint('QR Scanner received state: ${state.runtimeType}');
+
         if (state is RentalHistoryLoaded) {
           // Rental confirmed successfully
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Rental confirmed successfully!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pop(context, true); // Return success
-        } else if (state is RentalHistoryError) {
-          // Show error and allow scanning again
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
-          setState(() {
-            isProcessing = false;
-            isScanning = true;
+          debugPrint('Rental confirmed successfully');
+          if (!_isDisposed && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text('Rental confirmed successfully!'),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+            );
+          }
+
+          // Exit with success after a short delay to show the success message
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            _exitWithResult(true, 'Rental confirmed successfully');
           });
-          controller.start();
+        } else if (state is RentalHistoryError) {
+          // Handle specific error cases
+          debugPrint('QR Scanner error: ${state.message}');
+          String errorMessage = state.message;
+
+          // Check for specific error types
+          if (errorMessage.toLowerCase().contains('qr code is not valid')) {
+            errorMessage =
+                'Invalid QR code. Please scan a valid QR code or enter the correct code manually.';
+          } else if (errorMessage.toLowerCase().contains('network')) {
+            errorMessage =
+                'Network error. Please check your connection and try again.';
+          } else if (errorMessage.toLowerCase().contains('timeout')) {
+            errorMessage = 'Request timeout. Please try again.';
+          } else if (errorMessage.toLowerCase().contains('400')) {
+            errorMessage =
+                'Invalid QR code. Please scan the correct QR code for this rental.';
+          }
+
+          _showErrorAndRetry(errorMessage);
+        } else if (state is RentalHistoryLoading) {
+          // Handle loading state - keep showing processing
+          debugPrint('QR Scanner processing...');
+          _safeSetState(() {
+            isProcessing = true;
+            isScanning = false;
+          });
         }
       },
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: const Text(
-            'Scan QR Code',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+      child: WillPopScope(
+        onWillPop: () async {
+          // Stop camera when leaving the screen
+          try {
+            await controller.stop();
+          } catch (e) {
+            debugPrint('Error stopping camera: $e');
+          }
+          return true;
+        },
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () async {
+                try {
+                  await controller.stop();
+                } catch (e) {
+                  debugPrint('Error stopping camera: $e');
+                }
+                _exitWithResult(false);
+              },
             ),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                isFlashOn ? Icons.flash_on : Icons.flash_off,
+            title: const Text(
+              'Scan QR Code',
+              style: TextStyle(
                 color: Colors.white,
-              ),
-              onPressed: _toggleFlash,
-            ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            // QR Scanner View
-            MobileScanner(
-              controller: controller,
-              onDetect: _onQRViewCreated,
-            ),
-
-            // Custom Overlay
-            Container(
-              decoration: const ShapeDecoration(
-                shape: QrScannerOverlayShape(
-                  borderColor: Color(0xFF2563EB),
-                  borderRadius: 12,
-                  borderLength: 30,
-                  borderWidth: 8,
-                  cutOutSize: 280,
-                ),
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
               ),
             ),
-
-            // Top instruction text
-            Positioned(
-              top: 40,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(12),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  isFlashOn ? Icons.flash_on : Icons.flash_off,
+                  color: Colors.white,
                 ),
-                child: const Text(
-                  'Position the QR code within the frame to scan',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                onPressed: _toggleFlash,
+              ),
+              if (!isProcessing)
+                IconButton(
+                  icon: const Icon(Icons.keyboard, color: Colors.white),
+                  onPressed: _showManualInputDialog,
+                ),
+            ],
+          ),
+          body: Stack(
+            children: [
+              // QR Scanner View
+              MobileScanner(
+                controller: controller,
+                onDetect: _onQRViewCreated,
+              ),
+
+              // Custom Overlay
+              Container(
+                decoration: const ShapeDecoration(
+                  shape: QrScannerOverlayShape(
+                    borderColor: Color(0xFF2563EB),
+                    borderRadius: 12,
+                    borderLength: 30,
+                    borderWidth: 8,
+                    cutOutSize: 280,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
-            ),
 
-            // Bottom controls
-            Positioned(
-              bottom: 80,
-              left: 20,
-              right: 20,
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+              // Top instruction text
+              Positioned(
+                top: 40,
+                left: 20,
+                right: 20,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    'Position the QR code within the frame to scan',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    decoration: BoxDecoration(
-                      color: isProcessing
-                          ? Colors.orange.withOpacity(0.8)
-                          : isScanning
-                              ? Colors.green.withOpacity(0.8)
-                              : Colors.grey.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isProcessing)
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+
+              // Bottom controls
+              Positioned(
+                bottom: 80,
+                left: 20,
+                right: 20,
+                child: Column(
+                  children: [
+                    // Status indicator
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isProcessing
+                            ? Colors.orange.withOpacity(0.8)
+                            : isScanning
+                                ? Colors.green.withOpacity(0.8)
+                                : Colors.grey.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (isProcessing)
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          else
+                            Icon(
+                              isScanning ? Icons.qr_code_scanner : Icons.pause,
+                              color: Colors.white,
+                              size: 16,
                             ),
-                          )
-                        else
-                          Icon(
-                            isScanning ? Icons.qr_code_scanner : Icons.pause,
-                            color: Colors.white,
-                            size: 16,
+                          const SizedBox(width: 8),
+                          Text(
+                            isProcessing
+                                ? 'Confirming rental...'
+                                : isScanning
+                                    ? 'Scanning...'
+                                    : 'Paused',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        const SizedBox(width: 8),
-                        Text(
-                          isProcessing
-                              ? 'Confirming rental...'
-                              : isScanning
-                                  ? 'Scanning...'
-                                  : 'Paused',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 16),
+
+                    // Manual input button
+                    ElevatedButton.icon(
+                      onPressed: isProcessing ? null : _showManualInputDialog,
+                      icon: const Icon(Icons.keyboard, size: 18),
+                      label: const Text('Enter Code Manually'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2563EB),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -204,60 +353,118 @@ class _QRScannerPageState extends State<QRScannerPage> {
   void _onQRViewCreated(BarcodeCapture barcodeCapture) {
     if (isScanning && !isProcessing && barcodeCapture.barcodes.isNotEmpty) {
       final barcode = barcodeCapture.barcodes.first;
-      if (barcode.rawValue != null) {
-        setState(() {
+      if (barcode.rawValue != null && barcode.rawValue!.isNotEmpty) {
+        debugPrint('QR Code scanned: ${barcode.rawValue}');
+
+        _safeSetState(() {
           isScanning = false;
           isProcessing = true;
         });
-        controller.stop();
+
+        try {
+          controller.stop();
+        } catch (e) {
+          debugPrint('Error stopping camera: $e');
+        }
+
         _confirmRental(barcode.rawValue!);
       }
     }
   }
 
   void _toggleFlash() async {
-    await controller.toggleTorch();
-    setState(() {
-      isFlashOn = !isFlashOn;
-    });
+    if (!_isDisposed && mounted) {
+      try {
+        await controller.toggleTorch();
+        _safeSetState(() {
+          isFlashOn = !isFlashOn;
+        });
+      } catch (e) {
+        debugPrint('Error toggling flash: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Unable to toggle flash'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 
   void _confirmRental(String scannedCode) {
-    final rentalHistoryCubit = context.read<RentalHistoryCubit>();
-    rentalHistoryCubit.confirmRental(
-      rentalId: widget.bookingId,
-      scannedQrCode: scannedCode,
-    );
+    if (!_isDisposed && mounted) {
+      try {
+        debugPrint(
+            'Confirming rental with code: $scannedCode, rentalId: ${widget.rentalId}');
+        final rentalHistoryCubit = context.read<RentalHistoryCubit>();
+        rentalHistoryCubit.confirmRental(
+          rentalId: widget.rentalId,
+          scannedQrCode: scannedCode,
+        );
+      } catch (e) {
+        debugPrint('Error confirming rental: $e');
+        _showErrorAndRetry('Failed to confirm rental. Please try again.');
+      }
+    }
   }
 
   void _showManualInputDialog() {
+    if (isProcessing) return;
+
     final TextEditingController textController = TextEditingController();
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Enter Code Manually'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(
+                Icons.keyboard,
+                color: Color(0xFF2563EB),
+                size: 24,
+              ),
+              SizedBox(width: 8),
+              Text('Enter Code Manually'),
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Enter the code if you cannot scan the QR code:'),
+              const Text(
+                'Enter the verification code if you cannot scan the QR code:',
+                style: TextStyle(fontSize: 14),
+              ),
               const SizedBox(height: 16),
               TextField(
                 controller: textController,
                 decoration: const InputDecoration(
-                  labelText: 'Code',
+                  labelText: 'Verification Code',
                   border: OutlineInputBorder(),
                   hintText: 'Enter the code here',
+                  prefixIcon: Icon(Icons.qr_code),
                 ),
                 autofocus: true,
+                textCapitalization: TextCapitalization.characters,
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    Navigator.of(dialogContext).pop();
+                    _handleManualInput(value.trim());
+                  }
+                },
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Cancel'),
             ),
@@ -265,15 +472,10 @@ class _QRScannerPageState extends State<QRScannerPage> {
               onPressed: () {
                 final code = textController.text.trim();
                 if (code.isNotEmpty) {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    isScanning = false;
-                    isProcessing = true;
-                  });
-                  controller.stop();
-                  _confirmRental(code);
+                  Navigator.of(dialogContext).pop();
+                  _handleManualInput(code);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(dialogContext).showSnackBar(
                     const SnackBar(
                       content: Text('Please enter a valid code'),
                       backgroundColor: Colors.red,
@@ -283,16 +485,31 @@ class _QRScannerPageState extends State<QRScannerPage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
               ),
-              child: const Text(
-                'Confirm',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: const Text('Confirm'),
             ),
           ],
         );
       },
     );
+  }
+
+  void _handleManualInput(String code) {
+    debugPrint('Manual input code: $code');
+
+    _safeSetState(() {
+      isScanning = false;
+      isProcessing = true;
+    });
+
+    try {
+      controller.stop();
+    } catch (e) {
+      debugPrint('Error stopping camera: $e');
+    }
+
+    _confirmRental(code);
   }
 }
 

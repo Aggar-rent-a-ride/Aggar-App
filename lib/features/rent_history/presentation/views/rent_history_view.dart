@@ -11,6 +11,21 @@ import 'package:gap/gap.dart';
 class RentHistoryView extends StatelessWidget {
   const RentHistoryView({super.key});
 
+  // Helper method to get color for rental status
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return Colors.green;
+      case 'not started':
+      case 'notstarted':
+        return Colors.orange;
+      case 'refunded':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,48 +48,69 @@ class RentHistoryView extends StatelessWidget {
                 icon: const Icon(Icons.filter_list),
                 onSelected: (value) {
                   final cubit = context.read<RentalHistoryCubit>();
-                  switch (value) {
-                    case 'all':
-                      cubit.refreshRentalHistory();
-                      break;
-                    case 'Completed':
-                      _showFilteredRentals(
-                          context, cubit.getCompletedRentals());
-                      break;
-                    case 'In Progress':
-                      _showFilteredRentals(
-                          context, cubit.getInProgressRentals());
-                      break;
-                    case 'Not Started':
-                      _showFilteredRentals(
-                          context, cubit.getNotStartedRentals());
-                      break;
-                    case 'Cancelled':
-                      _showFilteredRentals(
-                          context, cubit.getCancelledRentals());
-                      break;
-                  }
+                  cubit.filterRentals(value);
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
                     value: 'all',
-                    child: Text('All Rentals'),
+                    child: Row(
+                      children: [
+                        Icon(Icons.all_inclusive, size: 18),
+                        SizedBox(width: 8),
+                        Text('All Rentals'),
+                      ],
+                    ),
                   ),
-                  const PopupMenuItem<String>(
-                    value: 'Completed',
-                    child: Text('Completed'),
+                  PopupMenuItem<String>(
+                    value: 'Confirmed',
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: _getStatusColor('confirmed'),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Confirmed'),
+                      ],
+                    ),
                   ),
-                  const PopupMenuItem<String>(
-                    value: 'In Progress',
-                    child: Text('In Progress'),
-                  ),
-                  const PopupMenuItem<String>(
+                  PopupMenuItem<String>(
                     value: 'Not Started',
-                    child: Text('Not Started'),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: _getStatusColor('not started'),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Not Started'),
+                      ],
+                    ),
                   ),
-                  const PopupMenuItem<String>(
-                    value: 'Cancelled',
-                    child: Text('Cancelled'),
+                  PopupMenuItem<String>(
+                    value: 'Refunded',
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: _getStatusColor('refunded'),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Refunded'),
+                      ],
+                    ),
                   ),
                 ],
               );
@@ -85,14 +121,6 @@ class RentHistoryView extends StatelessWidget {
       backgroundColor: context.theme.white100_1,
       body: const RentHistoryBody(),
     );
-  }
-
-  void _showFilteredRentals(BuildContext context, List rentals) {
-    final snackBar = SnackBar(
-      content: Text('Showing ${rentals.length} rentals'),
-      duration: const Duration(seconds: 2),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
@@ -136,6 +164,21 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
     return currentScroll >= (maxScroll * 0.9);
   }
 
+  // Helper method to get color for rental status
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return Colors.green;
+      case 'not started':
+      case 'notstarted':
+        return Colors.orange;
+      case 'refunded':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -153,53 +196,140 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                   state is! RentalHistoryLoaded) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is RentalHistoryLoaded) {
-                final rentals = state.rentals;
+                final rentals = state.displayedRentals ?? state.rentals;
 
                 if (rentals.isEmpty) {
                   return Center(
-                    child: Text(
-                      'No rental history found',
-                      style: AppStyles.medium18(context),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.history,
+                          size: 64,
+                          color: Colors.grey.shade400,
+                        ),
+                        const Gap(16),
+                        Text(
+                          state.activeFilter == 'all'
+                              ? 'No rental history found'
+                              : 'No ${state.activeFilter.toLowerCase()} rentals found',
+                          style: AppStyles.medium18(context)
+                              .copyWith(color: Colors.grey.shade600),
+                        ),
+                        if (state.activeFilter != 'all') ...[
+                          const Gap(8),
+                          TextButton(
+                            onPressed: () {
+                              context
+                                  .read<RentalHistoryCubit>()
+                                  .filterRentals('all');
+                            },
+                            child: const Text('Show All Rentals'),
+                          ),
+                        ],
+                      ],
                     ),
                   );
                 }
 
-                return ListView.separated(
-                  controller: _scrollController,
-                  itemCount: rentals.length + (state.hasMoreData ? 1 : 0),
-                  separatorBuilder: (context, index) => const Gap(15),
-                  itemBuilder: (context, index) {
-                    if (index >= rentals.length) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          child: CircularProgressIndicator(),
+                return Column(
+                  children: [
+                    // Filter indicator
+                    if (state.activeFilter != 'all')
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
                         ),
-                      );
-                    }
-
-                    final rental = rentals[index];
-                    return RentalCard(
-                      rental: rental,
-                      onViewMore: () {
-                        // Fixed: Navigate to detail page instead of showing snackbar
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RentalHistoryDetail(
-                              rentalItem: rental,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.blue.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.filter_list,
+                              size: 16,
+                              color: Colors.blue.shade700,
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                            const SizedBox(width: 8),
+                            Text(
+                              'Showing ${rentals.length} ${state.activeFilter} rentals',
+                              style: TextStyle(
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<RentalHistoryCubit>()
+                                    .filterRentals('all');
+                              },
+                              child: Icon(
+                                Icons.close,
+                                size: 16,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    // Rental list
+                    Expanded(
+                      child: ListView.separated(
+                        controller: _scrollController,
+                        itemCount: rentals.length +
+                            (state.hasMoreData && state.activeFilter == 'all'
+                                ? 1
+                                : 0),
+                        separatorBuilder: (context, index) => const Gap(15),
+                        itemBuilder: (context, index) {
+                          if (index >= rentals.length) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+
+                          final rental = rentals[index];
+                          return RentalCard(
+                            rental: rental,
+                            onViewMore: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RentalHistoryDetail(
+                                    rentalItem: rental,
+                                    statusColor:
+                                        _getStatusColor(rental.rentalStatus),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               } else if (state is RentalHistoryError) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red.shade400,
+                      ),
+                      const Gap(16),
                       Text(
                         'Failed to load rental history',
                         style: AppStyles.medium18(context),
@@ -218,6 +348,10 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                               .read<RentalHistoryCubit>()
                               .refreshRentalHistory();
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
                         child: const Text('Try Again'),
                       ),
                     ],

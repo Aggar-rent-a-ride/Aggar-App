@@ -10,6 +10,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
   final TokenRefreshCubit tokenRefreshCubit;
   final int pageSize;
   List<RentalHistoryItem> _allRentals = [];
+  String? _activeFilter;
 
   RentalHistoryCubit({
     required this.dio,
@@ -20,6 +21,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
   Future<void> getRentalHistory({int pageNo = 1, bool refresh = false}) async {
     if (refresh) {
       _allRentals = [];
+      _activeFilter = null;
       emit(RentalHistoryInitial());
     }
 
@@ -102,10 +104,19 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       } else {
         _allRentals = [..._allRentals, ...rentals];
       }
+
+      // Apply current filter if one is active
+      List<RentalHistoryItem> displayedRentals = _allRentals;
+      if (_activeFilter != null && _activeFilter != 'all') {
+        displayedRentals = _filterRentalsByStatus(_activeFilter!);
+      }
+
       emit(RentalHistoryLoaded(
         rentals: _allRentals,
+        displayedRentals: displayedRentals,
         currentPage: pageNo,
         hasMoreData: rentals.length >= pageSize,
+        activeFilter: _activeFilter ?? 'all',
       ));
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -303,7 +314,8 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
   void loadMoreRentals() {
     if (state is RentalHistoryLoaded) {
       final currentState = state as RentalHistoryLoaded;
-      if (currentState.hasMoreData) {
+      // Only load more if we're showing all rentals (not filtered)
+      if (currentState.hasMoreData && _activeFilter == 'all') {
         getRentalHistory(pageNo: currentState.currentPage + 1);
       }
     }
@@ -313,27 +325,56 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     getRentalHistory(pageNo: 1, refresh: true);
   }
 
-  List<RentalHistoryItem> getRentalsByStatus(String status) {
+  // New method to handle filtering
+  void filterRentals(String filter) {
+    _activeFilter = filter;
+
     if (state is RentalHistoryLoaded) {
       final currentState = state as RentalHistoryLoaded;
-      return currentState.rentals
-          .where((rental) => rental.rentalStatus == status)
-          .toList();
+
+      List<RentalHistoryItem> displayedRentals;
+      if (filter == 'all') {
+        displayedRentals = currentState.rentals;
+      } else {
+        displayedRentals = _filterRentalsByStatus(filter);
+      }
+
+      emit(RentalHistoryLoaded(
+        rentals: currentState.rentals,
+        displayedRentals: displayedRentals,
+        currentPage: currentState.currentPage,
+        hasMoreData: currentState.hasMoreData,
+        activeFilter: filter,
+      ));
     }
-    return [];
+  }
+
+  // Helper method to filter rentals by status
+  List<RentalHistoryItem> _filterRentalsByStatus(String status) {
+    return _allRentals
+        .where((rental) =>
+            rental.rentalStatus.toLowerCase() == status.toLowerCase())
+        .toList();
+  }
+
+  List<RentalHistoryItem> getRentalsByStatus(String status) {
+    return _allRentals
+        .where((rental) =>
+            rental.rentalStatus.toLowerCase() == status.toLowerCase())
+        .toList();
   }
 
   RentalHistoryItem? getRentalDetails(int rentalId) {
-    if (state is RentalHistoryLoaded) {
-      final currentState = state as RentalHistoryLoaded;
-      try {
-        return currentState.rentals
-            .firstWhere((rental) => rental.id == rentalId);
-      } catch (e) {
-        return null;
-      }
+    try {
+      return _allRentals.firstWhere((rental) => rental.id == rentalId);
+    } catch (e) {
+      return null;
     }
-    return null;
+  }
+
+  // Status-specific filter methods - Updated to match actual API status values
+  List<RentalHistoryItem> getConfirmedRentals() {
+    return getRentalsByStatus('Confirmed');
   }
 
   List<RentalHistoryItem> getCompletedRentals() {
@@ -350,5 +391,9 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
 
   List<RentalHistoryItem> getCancelledRentals() {
     return getRentalsByStatus('Cancelled');
+  }
+
+  List<RentalHistoryItem> getRefundedRentals() {
+    return getRentalsByStatus('Refunded');
   }
 }

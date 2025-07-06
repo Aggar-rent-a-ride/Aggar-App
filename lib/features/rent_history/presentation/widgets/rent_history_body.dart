@@ -38,6 +38,20 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
     }
   }
 
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return Colors.green;
+      case 'not started':
+      case 'notstarted':
+        return Colors.orange;
+      case 'refunded':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
   bool get _isBottom {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
@@ -96,6 +110,7 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                           MaterialPageRoute(
                             builder: (context) => RentalHistoryDetail(
                               rentalItem: rental,
+                              statusColor: _getStatusColor(rental.rentalStatus),
                             ),
                           ),
                         );
