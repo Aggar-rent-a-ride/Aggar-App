@@ -14,33 +14,38 @@ class RentalCard extends StatelessWidget {
     required this.onViewMore,
   });
 
+  // Helper method to get status colors - only 3 values
+  Map<String, Color> _getStatusColors(String status) {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return {
+          'color': Colors.green,
+          'bgColor': Colors.green.withOpacity(0.15),
+        };
+      case 'notstarted':
+        return {
+          'color': Colors.orange,
+          'bgColor': Colors.orange.withOpacity(0.15),
+        };
+      case 'refunded':
+        return {
+          'color': Colors.red,
+          'bgColor': Colors.red.withOpacity(0.15),
+        };
+      default:
+        return {
+          'color': Colors.grey,
+          'bgColor': Colors.grey.withOpacity(0.15),
+        };
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Color statusColor;
-    Color statusBgColor;
-    String statusText = rental.rentalStatus;
-
-    switch (rental.rentalStatus) {
-      case 'Completed':
-        statusColor = Colors.teal;
-        statusBgColor = Colors.tealAccent.withOpacity(0.2);
-        break;
-      case 'In Progress':
-        statusColor = Colors.deepOrange;
-        statusBgColor = Colors.deepOrange.withOpacity(0.1);
-        break;
-      case 'Not Started':
-        statusColor = Colors.orange;
-        statusBgColor = Colors.orange.withOpacity(0.1);
-        break;
-      case 'Cancelled':
-        statusColor = Colors.red;
-        statusBgColor = Colors.red.withOpacity(0.1);
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusBgColor = Colors.grey.withOpacity(0.1);
-    }
+    final statusColors = _getStatusColors(rental.rentalStatus);
+    final statusColor = statusColors['color']!;
+    final statusBgColor = statusColors['bgColor']!;
+    final statusText = rental.rentalStatus;
 
     final dateFormat = DateFormat('dd/MM/yyyy');
     final startDate = dateFormat.format(rental.startDate);
@@ -83,11 +88,29 @@ class RentalCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: statusBgColor,
                     borderRadius: BorderRadius.circular(50),
+                    border: Border.all(
+                      color: statusColor.withOpacity(0.3),
+                      width: 1,
+                    ),
                   ),
-                  child: Text(
-                    statusText,
-                    style: AppStyles.medium15(context)
-                        .copyWith(color: statusColor),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const Gap(8),
+                      Text(
+                        statusText,
+                        style: AppStyles.medium15(context)
+                            .copyWith(color: statusColor),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -203,7 +226,8 @@ class RentalCard extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onViewMore,
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.grey),
+                  side:
+                      const BorderSide(color: Colors.black), // Fixed blue color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -212,7 +236,7 @@ class RentalCard extends StatelessWidget {
                 child: Text(
                   'View more',
                   style: AppStyles.medium16(context)
-                      .copyWith(color: Colors.black87),
+                      .copyWith(color: Colors.black), // Fixed blue color
                 ),
               ),
             ),
