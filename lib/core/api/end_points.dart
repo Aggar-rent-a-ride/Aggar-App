@@ -63,6 +63,7 @@ class EndPoint {
   static String rentalHistory = "$baseUrl/api/rental/history";
   static String confirmRental = "$baseUrl/api/rental/confirm";
   static String refundRental = "$baseUrl/api/rental/refund";
+  static String rental = "$baseUrl/api/rental";
 
   // Report endpoints
   static String createReport = "$baseUrl/api/report/";

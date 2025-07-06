@@ -127,6 +127,67 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     }
   }
 
+  Future<RentalHistoryItem?> getRentalById({required int rentalId}) async {
+    try {
+      final accessToken = await tokenRefreshCubit.getAccessToken();
+
+      if (accessToken == null) {
+        emit(RentalHistoryError(
+            message: 'Authentication failed. Please login again.'));
+        return null;
+      }
+
+      final response = await dio.get(
+        EndPoint.rental,
+        queryParameters: {
+          'id': rentalId,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        try {
+          if (response.data is Map<String, dynamic>) {
+            final responseData = response.data as Map<String, dynamic>;
+
+            if (responseData.containsKey('data') &&
+                responseData['data'] != null) {
+              return RentalHistoryItem.fromJson(responseData['data']);
+            }
+          }
+          throw Exception('Invalid response format');
+        } catch (parseError) {
+          throw Exception('Failed to parse rental data: $parseError');
+        }
+      }
+      return null;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        try {
+          await tokenRefreshCubit.refreshToken();
+          return getRentalById(rentalId: rentalId);
+        } catch (refreshError) {
+          emit(RentalHistoryError(
+              message: 'Session expired. Please login again.'));
+          return null;
+        }
+      } else {
+        emit(RentalHistoryError(
+            message:
+                'Failed to get rental details: ${e.response?.data['message'] ?? e.toString()}'));
+        return null;
+      }
+    } catch (e) {
+      emit(RentalHistoryError(
+          message: 'Failed to get rental details: ${e.toString()}'));
+      return null;
+    }
+  }
+
   Future<void> confirmRental({
     required int rentalId,
     required String scannedQrCode,
@@ -181,11 +242,14 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
   }
 
   Future<void> refundRental({required int rentalId}) async {
+    // Emit loading state
+    emit(RentalHistoryRefundLoading());
+
     try {
       final accessToken = await tokenRefreshCubit.getAccessToken();
 
       if (accessToken == null) {
-        emit(RentalHistoryError(
+        emit(RentalHistoryRefundError(
             message: 'Authentication failed. Please login again.'));
         return;
       }
@@ -203,8 +267,18 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       );
 
       if (response.statusCode == 200) {
+        // Emit success state
+        emit(RentalHistoryRefundSuccess(
+          message:
+              'Refund request submitted successfully. Processing time: 3-5 business days.',
+        ));
+
         // Refresh the rental history after successful refund
         await getRentalHistory(pageNo: 1, refresh: true);
+      } else {
+        emit(RentalHistoryRefundError(
+          message: 'Failed to process refund request. Please try again.',
+        ));
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -212,16 +286,16 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           await tokenRefreshCubit.refreshToken();
           return refundRental(rentalId: rentalId);
         } catch (refreshError) {
-          emit(RentalHistoryError(
+          emit(RentalHistoryRefundError(
               message: 'Session expired. Please login again.'));
         }
       } else {
-        emit(RentalHistoryError(
+        emit(RentalHistoryRefundError(
             message:
                 'Failed to refund rental: ${e.response?.data['message'] ?? e.toString()}'));
       }
     } catch (e) {
-      emit(RentalHistoryError(
+      emit(RentalHistoryRefundError(
           message: 'Failed to refund rental: ${e.toString()}'));
     }
   }
