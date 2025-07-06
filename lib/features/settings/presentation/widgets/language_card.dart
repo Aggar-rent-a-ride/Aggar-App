@@ -17,7 +17,7 @@ class LanguageCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 0,
-      backgroundColor: context.theme.blue100_7,
+      backgroundColor: context.theme.blue100_1.withOpacity(0.1),
       child: Row(
         children: [
           Image(

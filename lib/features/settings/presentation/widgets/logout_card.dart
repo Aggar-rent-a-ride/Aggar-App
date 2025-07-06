@@ -75,7 +75,7 @@ class LogoutCard extends StatelessWidget {
                     );
                   }
                 : null,
-            backgroundColor: context.theme.blue100_7,
+            backgroundColor: context.theme.blue100_1.withOpacity(0.1),
             child: Row(
               children: [
                 const Image(

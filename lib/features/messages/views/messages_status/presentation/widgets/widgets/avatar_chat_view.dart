@@ -45,6 +45,7 @@ class AvatarChatView extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) {
                   debugPrint("Error loading avatar image: $error");
                   return Image.asset(
+                    color: context.theme.black50,
                     AppAssets.assetsImagesDafaultPfp0,
                     height: size ?? 50,
                     width: size ?? 50,

@@ -165,6 +165,7 @@ class EditUserPhoto extends StatelessWidget {
                     editCubit.selectedImage == null &&
                         (user.imageUrl == null || user.imageUrl!.isEmpty)) {
                   imageWidget = Image.asset(
+                    color: context.theme.black50,
                     AppAssets.assetsImagesDafaultPfp0,
                     height: 150,
                     width: 150,

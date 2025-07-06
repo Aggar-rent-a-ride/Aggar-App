@@ -57,6 +57,7 @@ class NameAndRateSection extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
+                  color: context.theme.black50,
                   AppAssets.assetsImagesDafaultPfp0,
                   height: 45,
                   width: 45,

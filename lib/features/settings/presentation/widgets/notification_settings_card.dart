@@ -18,7 +18,7 @@ class NotificationSettingsCard extends StatelessWidget {
       padingHorizental: 5,
       padingVeritical: 10,
       onPressed: () {},
-      backgroundColor: context.theme.blue100_7,
+      backgroundColor: context.theme.blue100_1.withOpacity(0.1),
       child: Row(
         children: [
           Image(

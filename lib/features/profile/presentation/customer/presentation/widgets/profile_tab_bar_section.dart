@@ -5,6 +5,7 @@ import 'package:aggar/features/profile/presentation/widgets/review_user_section.
 import 'package:aggar/features/profile/presentation/renter/presentation/widgets/booking_history_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 import '../../../../../../core/cubit/user_cubit/user_info_cubit.dart';
 import '../../../../../../core/cubit/user_cubit/user_info_state.dart';
@@ -43,25 +44,29 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
 
         return Column(
           children: [
-            TabBar(
-              overlayColor: WidgetStateProperty.all(Colors.transparent),
-              controller: _tabController,
-              padding: EdgeInsets.zero,
-              indicatorPadding: EdgeInsets.zero,
-              indicatorColor: context.theme.blue100_2,
-              dividerColor: context.theme.black25,
-              labelColor: context.theme.blue100_2,
-              unselectedLabelColor: context.theme.black50,
-              labelStyle: AppStyles.bold18(context)
-                  .copyWith(color: context.theme.blue100_2),
-              unselectedLabelStyle: AppStyles.bold18(context).copyWith(
-                color: context.theme.black25,
+            const Gap(10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: TabBar(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                controller: _tabController,
+                padding: EdgeInsets.zero,
+                indicatorPadding: EdgeInsets.zero,
+                indicatorColor: context.theme.blue100_1,
+                dividerColor: context.theme.black25,
+                labelColor: context.theme.blue100_1,
+                unselectedLabelColor: context.theme.black50,
+                labelStyle: AppStyles.bold18(context)
+                    .copyWith(color: context.theme.blue100_2),
+                unselectedLabelStyle: AppStyles.bold18(context).copyWith(
+                  color: context.theme.black25,
+                ),
+                tabs: const [
+                  Tab(text: 'Saved'),
+                  Tab(text: 'Reviews'),
+                  Tab(text: 'Booking'),
+                ],
               ),
-              tabs: const [
-                Tab(text: 'Saved'),
-                Tab(text: 'Reviews'),
-                Tab(text: 'Booking'),
-              ],
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height + 500,
