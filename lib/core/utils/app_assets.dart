@@ -258,4 +258,8 @@ class AppAssets {
   /// assets/images/verification_icon.png
   static const String assetsImagesVerificationIcon =
       "assets/images/verification_icon.png";
+
+  /// Assets for assetsImagesLogo
+  /// assets/images/logo.png
+  static const String assetsImagesLogo = "assets/images/logo.png";
 }
