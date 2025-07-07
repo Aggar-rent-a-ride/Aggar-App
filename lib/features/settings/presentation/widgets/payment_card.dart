@@ -24,7 +24,7 @@ class PaymentCard extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) => const ConnectedAccountPage()));
       },
-      backgroundColor: context.theme.blue100_1.withOpacity(0.1),
+      backgroundColor: context.theme.blue100_1.withOpacity(0.05),
       child: Row(
         children: [
           Image(

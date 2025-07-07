@@ -20,7 +20,7 @@ class UserImage extends StatelessWidget {
         height: 35,
         width: 35,
         decoration: BoxDecoration(
-          color: context.theme.white100_2,
+          color: context.theme.grey100_1,
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -31,6 +31,7 @@ class UserImage extends StatelessWidget {
         ),
         child: user.imagePath == null
             ? Image.asset(
+                color: context.theme.black50,
                 AppAssets.assetsImagesDafaultPfp0,
                 height: 35,
                 width: 35,
@@ -40,6 +41,7 @@ class UserImage extends StatelessWidget {
                 EndPoint.baseUrl + user.imagePath!,
                 errorBuilder: (context, error, stackTrace) {
                   return Image.asset(
+                    color: context.theme.black50,
                     AppAssets.assetsImagesDafaultPfp0,
                     height: 35,
                     width: 35,

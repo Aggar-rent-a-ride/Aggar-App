@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,9 @@ class StepIndicator extends StatelessWidget {
           width: 24,
           height: 24,
           decoration: BoxDecoration(
-            color: isActive ? AppConstants.myBlue100_3 : AppConstants.myBlack100_1.withOpacity(0.3),
+            color: isActive
+                ? AppConstants.myBlue100_3
+                : AppConstants.myBlack100_1.withOpacity(0.3),
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -39,7 +42,7 @@ class StepIndicator extends StatelessWidget {
                 : Text(
                     stepNumber.toString(),
                     style: AppStyles.semiBold12(context).copyWith(
-                      color: AppConstants.myWhite100_1,
+                      color: context.theme.black50,
                     ),
                   ),
           ),
@@ -48,7 +51,9 @@ class StepIndicator extends StatelessWidget {
         Text(
           title,
           style: AppStyles.semiBold16(context).copyWith(
-            color: isActive ? AppConstants.myBlack100_1 : AppConstants.myBlack100_1.withOpacity(0.5),
+            color: isActive
+                ? context.theme.black100
+                : context.theme.black100.withOpacity(0.5),
           ),
         ),
       ],

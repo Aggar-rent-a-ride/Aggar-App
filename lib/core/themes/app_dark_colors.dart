@@ -20,9 +20,9 @@ class AppDarkColors {
       const Color(0xFF333333); // Slightly lighter for elevated surfaces
 
   ///////////////////////////////////////
-  static Color myBlue100_1 = const Color.fromARGB(255, 53, 64, 91);
+  static Color myBlue100_1 = const Color.fromARGB(255, 84, 100, 141);
   static Color myBlue100_5 = const Color.fromARGB(255, 35, 56, 94); //done
-  static Color myBlue100_2 = const Color.fromARGB(255, 41, 63, 100);
+  static Color myBlue100_2 = const Color.fromARGB(255, 60, 87, 135);
   static Color myBlue50_2 = const Color(0xff556A8A);
   static Color myBlue10_2 = const Color.fromARGB(255, 13, 24, 51);
   static Color myBlue100_3 = const Color(0xff5A7887);

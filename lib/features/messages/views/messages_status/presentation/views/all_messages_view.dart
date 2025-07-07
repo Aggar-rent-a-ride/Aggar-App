@@ -1,8 +1,8 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
-import 'package:aggar/features/messages/views/messages_status/data/model/list_chat_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/views/loading_message_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/no_messages_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/widgets/widgets/chat_person.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
@@ -85,6 +85,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
     super.build(context);
     return BlocConsumer<MessageCubit, MessageState>(
       listener: (context, state) {
+        // Only handle navigation-related states in listener
         if (state is MessageSuccess && mounted) {
           _isViewActive = false;
           Navigator.push(
@@ -127,124 +128,196 @@ class _AllMessagesViewState extends State<AllMessagesView>
               SnackBarType.error,
             ),
           );
+        } else if (state is ChatsFailure && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            customSnackBar(
+              context,
+              "Error",
+              "Chats Error: ${state.errorMessage}",
+              SnackBarType.error,
+            ),
+          );
         }
       },
       builder: (context, state) {
-        return StreamBuilder<ListChatModel?>(
-          stream: _messageCubit.chatStream,
-          initialData: _messageCubit.initialChats,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting &&
-                snapshot.data == null) {
-              return const Center(
-                child: CircularProgressIndicator(color: Colors.blue),
-              );
-            }
-            if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
-            }
-            if (snapshot.hasData && snapshot.data != null) {
-              final chats = snapshot.data!;
-              if (chats.data.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("No chats available"),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (!mounted) return;
-                          final token =
-                              await _tokenRefreshCubit.getAccessToken();
-                          if (token != null) {
-                            await _messageCubit.getMyChat(token);
-                          }
-                        },
-                        child: const Text("Refresh"),
-                      ),
-                    ],
-                  ),
-                );
+        if (state is ChatsLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.blue),
+          );
+        }
+
+        if (state is ChatSuccess) {
+          final chats = state.chats;
+
+          if (chats.data.isEmpty) {
+            return const NoMessagesView();
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              if (!mounted) return;
+              final token = await _tokenRefreshCubit.getAccessToken();
+              if (token != null) {
+                await _messageCubit.getMyChat(token);
               }
-              return RefreshIndicator(
-                onRefresh: () async {
-                  if (!mounted) return;
-                  final token = await _tokenRefreshCubit.getAccessToken();
-                  if (token != null) {
-                    await _messageCubit.getMyChat(token);
-                  }
-                },
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(top: 10),
-                  itemCount:
-                      chats.data.length + (state is ChatsLoading ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == chats.data.length && state is ChatsLoading) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(color: Colors.blue),
-                        ),
+            },
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.only(top: 10),
+              itemCount:
+                  chats.data.length + (state is ChatsLoadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == chats.data.length && state is ChatsLoadingMore) {
+                  return const LoadingMessageView();
+                }
+
+                final chatData = chats.data[index];
+                DateTime messageTime =
+                    DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
+                String period = messageTime.hour >= 12 ? 'PM' : 'AM';
+                int hour12 =
+                    messageTime.hour % 12 == 0 ? 12 : messageTime.hour % 12;
+                String hoursAndMinutes =
+                    "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
+
+                final messageContent = chatData.lastMessage.content ??
+                    chatData.lastMessage.filePath ??
+                    "No message";
+
+                if (messageContent == "No message" &&
+                    chatData.unseenMessageIds.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+
+                return ChatPerson(
+                  onTap: () async {
+                    if (!mounted) return;
+                    final personalChatCubit = context.read<PersonalChatCubit>();
+                    final token = await _tokenRefreshCubit.getAccessToken();
+                    if (token != null && mounted) {
+                      await _messageCubit.getMyChat(token);
+                      _messageCubit.stopPolling();
+                      _isViewActive = false;
+                      await _messageCubit.getMessages(
+                        receiverImg: chatData.user.imagePath,
+                        userId: chatData.user.id.toString(),
+                        dateTime: DateTime.now().toUtc().toIso8601String(),
+                        pageSize: "20",
+                        dateFilter: "0",
+                        accessToken: token,
+                        receiverName: chatData.user.name,
+                      );
+                      await personalChatCubit.markAsSeen(
+                        token,
+                        chatData.unseenMessageIds,
                       );
                     }
-                    final chatData = chats.data[index];
-                    DateTime messageTime =
-                        DateTime.parse('${chatData.lastMessage.sentAt}Z')
-                            .toLocal();
-                    String period = messageTime.hour >= 12 ? 'PM' : 'AM';
-                    int hour12 =
-                        messageTime.hour % 12 == 0 ? 12 : messageTime.hour % 12;
-                    String hoursAndMinutes =
-                        "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
-                    final messageContent = chatData.lastMessage.content ??
-                        chatData.lastMessage.filePath ??
-                        "No message";
-                    if (messageContent == "No message" &&
-                        chatData.unseenMessageIds.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-                    return ChatPerson(
-                      onTap: () async {
-                        if (!mounted) return;
-                        final personalChatCubit =
-                            context.read<PersonalChatCubit>();
-                        final token = await _tokenRefreshCubit.getAccessToken();
-                        if (token != null && mounted) {
-                          await _messageCubit.getMyChat(token);
-                          _messageCubit.stopPolling();
-                          _isViewActive = false;
-                          await _messageCubit.getMessages(
-                            receiverImg: chatData.user.imagePath,
-                            userId: chatData.user.id.toString(),
-                            dateTime: DateTime.now().toUtc().toIso8601String(),
-                            pageSize: "20",
-                            dateFilter: "0",
-                            accessToken: token,
-                            receiverName: chatData.user.name,
-                          );
-                          await personalChatCubit.markAsSeen(
-                            token,
-                            chatData.unseenMessageIds,
-                          );
-                        }
-                      },
-                      name: chatData.user.name,
-                      msg: messageContent,
-                      isMsg: chatData.lastMessage.content != null,
-                      time: hoursAndMinutes,
-                      numberMsg: chatData.unseenMessageIds.length,
-                      image: chatData.user.imagePath,
-                    );
                   },
+                  name: chatData.user.name,
+                  msg: messageContent,
+                  isMsg: chatData.lastMessage.content != null,
+                  time: hoursAndMinutes,
+                  numberMsg: chatData.unseenMessageIds.length,
+                  image: chatData.user.imagePath,
+                );
+              },
+            ),
+          );
+        }
+
+        if (state is ChatsLoadingMore) {
+          final chats = state.chats;
+          return RefreshIndicator(
+            onRefresh: () async {
+              if (!mounted) return;
+              final token = await _tokenRefreshCubit.getAccessToken();
+              if (token != null) {
+                await _messageCubit.getMyChat(token);
+              }
+            },
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.only(top: 10),
+              itemCount: chats.data.length + 1,
+              itemBuilder: (context, index) {
+                if (index == chats.data.length) {
+                  return const LoadingMessageView();
+                }
+
+                final chatData = chats.data[index];
+                DateTime messageTime =
+                    DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
+                String period = messageTime.hour >= 12 ? 'PM' : 'AM';
+                int hour12 =
+                    messageTime.hour % 12 == 0 ? 12 : messageTime.hour % 12;
+                String hoursAndMinutes =
+                    "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
+
+                final messageContent = chatData.lastMessage.content ??
+                    chatData.lastMessage.filePath ??
+                    "No message";
+
+                if (messageContent == "No message" &&
+                    chatData.unseenMessageIds.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+
+                return ChatPerson(
+                  onTap: () async {
+                    if (!mounted) return;
+                    final personalChatCubit = context.read<PersonalChatCubit>();
+                    final token = await _tokenRefreshCubit.getAccessToken();
+                    if (token != null && mounted) {
+                      await _messageCubit.getMyChat(token);
+                      _messageCubit.stopPolling();
+                      _isViewActive = false;
+                      await _messageCubit.getMessages(
+                        receiverImg: chatData.user.imagePath,
+                        userId: chatData.user.id.toString(),
+                        dateTime: DateTime.now().toUtc().toIso8601String(),
+                        pageSize: "20",
+                        dateFilter: "0",
+                        accessToken: token,
+                        receiverName: chatData.user.name,
+                      );
+                      await personalChatCubit.markAsSeen(
+                        token,
+                        chatData.unseenMessageIds,
+                      );
+                    }
+                  },
+                  name: chatData.user.name,
+                  msg: messageContent,
+                  isMsg: chatData.lastMessage.content != null,
+                  time: hoursAndMinutes,
+                  numberMsg: chatData.unseenMessageIds.length,
+                  image: chatData.user.imagePath,
+                );
+              },
+            ),
+          );
+        }
+        if (state is ChatsFailure) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Error: ${state.errorMessage}"),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (!mounted) return;
+                    final token = await _tokenRefreshCubit.getAccessToken();
+                    if (token != null) {
+                      await _messageCubit.getMyChat(token);
+                    }
+                  },
+                  child: const Text("Retry"),
                 ),
-              );
-            }
-            return const Center(
-              child: NoMessagesView(),
-            );
-          },
-        );
+              ],
+            ),
+          );
+        }
+        return const LoadingMessageView();
       },
     );
   }

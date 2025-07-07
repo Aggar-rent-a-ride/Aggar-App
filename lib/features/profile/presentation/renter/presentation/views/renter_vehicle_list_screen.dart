@@ -38,16 +38,13 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen>
     super.didChangeDependencies();
     // Subscribe to route changes
     final ModalRoute? route = ModalRoute.of(context);
-    if (route != null) {
-      routeObserver.subscribe(this, route);
-    }
+    if (route != null) {}
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-    routeObserver.unsubscribe(this);
     super.dispose();
   }
 
@@ -220,6 +217,3 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen>
     );
   }
 }
-
-// Ensure the RouteObserver is defined in a suitable place, e.g., in main.dart
-final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();

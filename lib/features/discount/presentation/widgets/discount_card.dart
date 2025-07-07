@@ -111,6 +111,24 @@ class DiscountCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.swipe_left,
+                  size: 20,
+                  color: context.theme.black50.withOpacity(0.5),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Swipe to delete',
+                  style: AppStyles.medium14(context).copyWith(
+                    color: context.theme.black50.withOpacity(0.5),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -56,8 +56,6 @@ class LogoutCubit extends Cubit<LogoutState> {
     } on DioException catch (e) {
       await _handleDioError(e);
     } catch (error) {
-      print('Logout error: ${error.toString()}');
-
       await secureStorage.deleteAll();
       emit(LogoutFailure(
           errorMessage: "Logout encountered an error: ${error.toString()}"));
@@ -65,10 +63,6 @@ class LogoutCubit extends Cubit<LogoutState> {
   }
 
   Future<void> _handleDioError(DioException error) async {
-    print('Dio error during logout: ${error.toString()}');
-    print('Response status: ${error.response?.statusCode}');
-    print('Response data: ${error.response?.data}');
-
     await secureStorage.deleteAll();
 
     String errorMessage = "Network error during logout";

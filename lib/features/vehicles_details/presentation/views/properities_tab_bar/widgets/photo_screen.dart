@@ -1,6 +1,7 @@
 import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_assets.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:photo_view/photo_view.dart';
@@ -22,7 +23,7 @@ class PhotoScreen extends StatelessWidget {
         PageController(initialPage: initialIndex);
 
     return Scaffold(
-      backgroundColor: context.theme.white100_1,
+      backgroundColor: AppConstants.myBlack100_1,
       appBar: AppBar(
         backgroundColor: context.theme.black100,
         leading: IconButton(

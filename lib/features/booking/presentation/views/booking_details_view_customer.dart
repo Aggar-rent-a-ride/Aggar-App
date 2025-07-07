@@ -1,4 +1,9 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/views/payment_page.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_booking_period.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_type_and_year_vehicle.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_vehicle_image.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/presentation/views/rent_history_view.dart';
@@ -8,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
 class BookingDetailsScreenCustomer extends StatelessWidget {
@@ -22,7 +28,6 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        // Existing BookingCubit listener
         BlocListener<BookingCubit, BookingState>(
           listener: (context, state) {
             if (state is BookingCancelSuccess) {
@@ -83,18 +88,13 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
         ),
       ],
       child: Scaffold(
+        backgroundColor: context.theme.white100_1,
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: const Text(
-            'Booking Details',
-            style: TextStyle(
-                color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
-          ),
+          elevation: 1,
+          shadowColor: Colors.grey[900],
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+          backgroundColor: context.theme.white100_1,
           actions: [
             Container(
               margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
@@ -113,260 +113,143 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
               ),
             ),
           ],
-        ),
-        body: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: context.theme.black100,
             ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-
-                // Vehicle Information
-                const Text(
-                  'Vehicle Information',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+          title: Text(
+            'Booking Details',
+            style: AppStyles.semiBold24(context)
+                .copyWith(color: context.theme.black100),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Container(
+            decoration: BoxDecoration(
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(0, 0),
+                    blurRadius: 4,
+                  )
+                ],
+                color: context.theme.white100_2,
+                borderRadius: BorderRadius.circular(15)),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                spacing: 15,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BookingDetailsVehicleInformationSection(booking: booking),
+                  BookingDetailsBookingPeriodWithTotalDurationSection(
+                      booking: booking),
+                  Text(
+                    'Pricing Details',
+                    style: AppStyles.semiBold16(context).copyWith(
+                      color: context.theme.black100,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: booking.vehicleImagePath != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            'https://aggarapi.runasp.net/api/booking${booking.vehicleImagePath}',
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Center(
-                                child: Text(
-                                  booking.vehicleModel,
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              );
-                            },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Daily Rate',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
                           ),
-                        )
-                      : Center(
-                          child: Text(
-                            booking.vehicleModel,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
+                        ),
+                        Text(
+                          '\$${(booking.price / booking.totalDays).toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        Text(
+                          '\$${booking.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (booking.discount > 0)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Discount',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
                             ),
                           ),
-                        ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  '${booking.vehicleBrand ?? ''} ${booking.vehicleModel} (${booking.vehicleYear})',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    if (booking.vehicleType != null) ...[
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.directions_car, size: 12),
-                            const SizedBox(width: 4),
-                            Text(booking.vehicleType!,
-                                style: const TextStyle(fontSize: 12)),
-                          ],
+                          Text(
+                            '-\$${booking.discount.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const Divider(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Total Amount',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      Text(
+                        '\$${booking.finalPrice.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF6366F1),
+                        ),
+                      ),
                     ],
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'Year: ${booking.vehicleYear}',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 35),
-
-                // Booking Period
-                const Text(
-                  'Booking Period',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
                   ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'START DATE',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            DateFormat('MMM dd, yyyy')
-                                .format(booking.startDate),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            DateFormat('h:mm a').format(booking.startDate),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'END DATE',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            DateFormat('MMM dd, yyyy').format(booking.endDate),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            DateFormat('h:mm a').format(booking.endDate),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total Duration',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    Text(
-                      '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 32),
 
-                // Pricing Details
-                const Text(
-                  'Pricing Details',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _buildPricingRow('Daily Rate',
-                    '\$${(booking.price / booking.totalDays).toStringAsFixed(2)}'),
-                _buildPricingRow(
-                    '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
-                    '\$${booking.price.toStringAsFixed(2)}'),
-                if (booking.discount > 0)
-                  _buildPricingRow(
-                      'Discount', '-\$${booking.discount.toStringAsFixed(2)}'),
-                const Divider(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Total Amount',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '\$${booking.finalPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF6366F1),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-
-                // Action Buttons based on status
-                _buildActionButtons(context),
-              ],
+                  // Action Buttons based on status
+                  _buildActionButtons(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -850,5 +733,96 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+class BookingDetailsVehicleInformationSection extends StatelessWidget {
+  const BookingDetailsVehicleInformationSection({
+    super.key,
+    required this.booking,
+  });
+
+  final BookingModel booking;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Vehicle Information',
+          style: AppStyles.semiBold16(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
+        BookingDetailsVehicleImage(booking: booking),
+        Text(
+          '${booking.vehicleBrand ?? ''} ${booking.vehicleModel} (${booking.vehicleYear})',
+          style: AppStyles.semiBold16(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
+        BookingDetailsTypeAndYearVehicle(booking: booking),
+      ],
+    );
+  }
+}
+
+class BookingDetailsBookingPeriodWithTotalDurationSection
+    extends StatelessWidget {
+  const BookingDetailsBookingPeriodWithTotalDurationSection({
+    super.key,
+    required this.booking,
+  });
+
+  final BookingModel booking;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Booking Period',
+          style: AppStyles.semiBold16(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
+        BookingDetailsBookingPeriod(booking: booking),
+        BookingDetailsTotalDuration(booking: booking),
+      ],
+    );
+  }
+}
+
+class BookingDetailsTotalDuration extends StatelessWidget {
+  const BookingDetailsTotalDuration({
+    super.key,
+    required this.booking,
+  });
+
+  final BookingModel booking;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Total Duration',
+          style: AppStyles.semiBold16(context).copyWith(
+            color: context.theme.blue100_1,
+          ),
+        ),
+        Text(
+          '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
+          style: AppStyles.bold18(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
+      ],
+    );
   }
 }

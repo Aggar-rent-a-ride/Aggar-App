@@ -104,7 +104,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                 ),
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 55, bottom: 20),
-                child: const MainHeader(),
+                child: const MainHeader(isRenter: true),
               ),
 
               // Calendar Section
