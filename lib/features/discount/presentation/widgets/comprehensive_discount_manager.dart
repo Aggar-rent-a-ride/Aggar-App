@@ -57,7 +57,7 @@ class ComprehensiveDiscountManager extends StatelessWidget {
                       context.read<DiscountCubit>().addDiscountToList();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: context.theme.blue100_5,
+                      backgroundColor: context.theme.blue100_1,
                       foregroundColor: context.theme.white100_1,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

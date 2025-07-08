@@ -1,4 +1,5 @@
 import 'package:aggar/core/api/end_points.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class BookingDetailsVehicleImage extends StatelessWidget {
       width: double.infinity,
       height: MediaQuery.sizeOf(context).height * 0.35,
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: context.theme.white100_4,
         borderRadius: BorderRadius.circular(12),
       ),
       child: booking.vehicleImagePath != null

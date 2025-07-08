@@ -1,4 +1,7 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,47 +26,39 @@ class BookingCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[400]!),
-          color: Colors.white,
+          border: Border.all(color: context.theme.black10),
+          color: context.theme.white100_2,
         ),
         child: Row(
           children: [
-            // Avatar
             CircleAvatar(
-              radius: 20,
+              radius: MediaQuery.sizeOf(context).width * 0.05,
               backgroundColor: booking.color,
               child: Text(
                 booking.initial,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+                style: AppStyles.semiBold18(context).copyWith(
+                  color: AppConstants.myWhite100_1,
                 ),
               ),
             ),
             const Gap(12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     booking.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                    style: AppStyles.semiBold16(context).copyWith(
+                      color: context.theme.black100,
                     ),
                   ),
-                  const Gap(2),
                   Text(
                     booking.service,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
+                    style: AppStyles.medium13(context).copyWith(
+                      color: context.theme.black50,
                     ),
                   ),
-                  const Gap(4),
+                  const Gap(5),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -75,51 +70,43 @@ class BookingCard extends StatelessWidget {
                     ),
                     child: Text(
                       booking.status,
-                      style: TextStyle(
-                        fontSize: 10,
+                      style: AppStyles.regular10(context).copyWith(
                         color: _getStatusTextColor(booking.status),
-                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   booking.time,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                  style: AppStyles.medium14(context).copyWith(
+                    color: context.theme.black100,
                   ),
                 ),
                 Text(
                   booking.date,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
+                  style: AppStyles.regular12(context).copyWith(
+                    color: context.theme.black50,
                   ),
                 ),
                 const Gap(8),
-
-                // Show action buttons only for pending bookings
                 if (booking.status.toLowerCase() == 'pending') ...[
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _buildActionButton(
                         icon: Icons.check,
-                        color: Colors.green,
+                        color: context.theme.green100_1,
                         onPressed: () => _handleAcceptBooking(context),
                       ),
                       const Gap(8),
                       _buildActionButton(
                         icon: Icons.close,
-                        color: Colors.red,
+                        color: context.theme.red100_1,
                         onPressed: () => _handleRejectBooking(context),
                       ),
                     ],

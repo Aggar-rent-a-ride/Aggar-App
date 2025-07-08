@@ -1,20 +1,18 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/views/payment_page.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_booking_period.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_type_and_year_vehicle.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_vehicle_image.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_booking_period_with_total_duration_section.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_discount_row.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_pricing_details_section.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_vehicle_information_section.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/presentation/views/rent_history_view.dart';
-import 'package:aggar/features/rent_history/presentation/views/scanner_qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
-import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 
 class BookingDetailsScreenCustomer extends StatelessWidget {
   final BookingModel booking;
@@ -64,7 +62,6 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
             }
           },
         ),
-        // New RentalHistoryCubit listener for refund states
         BlocListener<RentalHistoryCubit, RentalHistoryState>(
           listener: (context, state) {
             if (state is RentalHistoryRefundSuccess) {
@@ -74,7 +71,6 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
                   backgroundColor: Colors.green,
                 ),
               );
-              // Navigate back to refresh the bookings list
               Navigator.pop(context, true);
             } else if (state is RentalHistoryError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -150,103 +146,28 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
                   BookingDetailsVehicleInformationSection(booking: booking),
                   BookingDetailsBookingPeriodWithTotalDurationSection(
                       booking: booking),
-                  Text(
-                    'Pricing Details',
-                    style: AppStyles.semiBold16(context).copyWith(
-                      color: context.theme.black100,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Daily Rate',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        Text(
-                          '\$${(booking.price / booking.totalDays).toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        Text(
-                          '\$${booking.price.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  BookingDetailsPricingDetailsSection(booking: booking),
                   if (booking.discount > 0)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Discount',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          Text(
-                            '-\$${booking.discount.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    BookingDetailsDiscountRow(booking: booking),
                   const Divider(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Total Amount',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                        style: AppStyles.semiBold16(context).copyWith(
+                          color: context.theme.black100,
                         ),
                       ),
                       Text(
                         '\$${booking.finalPrice.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF6366F1),
+                        style: AppStyles.semiBold16(context).copyWith(
+                          color: context.theme.black100,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 32),
-
-                  // Action Buttons based on status
                   _buildActionButtons(context),
                 ],
               ),
@@ -509,151 +430,6 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
     }
   }
 
-  void _handleScanQRCode(BuildContext context) async {
-    try {
-      // Navigate to QR scanner page and wait for result
-      final result = await Navigator.push<bool>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: context.read<RentalHistoryCubit>(),
-            child: QRScannerPage(rentalId: booking.id),
-          ),
-        ),
-      );
-
-      if (result == true) {
-        // Rental was confirmed successfully
-        // Show success message and navigate back
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Rental confirmed successfully! You can now access the vehicle.'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
-          ),
-        );
-
-        // Navigate back to refresh the bookings list
-        Navigator.pop(context, true);
-      }
-    } catch (e) {
-      // Handle navigation error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error opening QR scanner: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  void _showRefundConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('Request Refund'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Are you sure you want to request a refund for this booking?',
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Refund Amount: \$${booking.finalPrice.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF6366F1),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Processing time: 3-5 business days',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _handleRefundRequest(context);
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.orange,
-              ),
-              child: const Text('Request Refund'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // FIXED: Modified refund handler to use booking ID directly
-  void _handleRefundRequest(BuildContext context) {
-    try {
-      final rentalHistoryCubit = context.read<RentalHistoryCubit>();
-
-      // Use the booking ID directly for refund request
-      // This assumes your backend API can handle refunds using booking ID
-      rentalHistoryCubit.refundRental(rentalId: booking.id);
-
-      // Show loading message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Processing refund request...'),
-          backgroundColor: Colors.blue,
-        ),
-      );
-    } catch (e) {
-      // Handle any errors in the refund request
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error processing refund: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Widget _buildPricingRow(String label, String amount) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade600,
-            ),
-          ),
-          Text(
-            amount,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
@@ -733,96 +509,5 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
         ),
       );
     }
-  }
-}
-
-class BookingDetailsVehicleInformationSection extends StatelessWidget {
-  const BookingDetailsVehicleInformationSection({
-    super.key,
-    required this.booking,
-  });
-
-  final BookingModel booking;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 10,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Vehicle Information',
-          style: AppStyles.semiBold16(context).copyWith(
-            color: context.theme.black100,
-          ),
-        ),
-        BookingDetailsVehicleImage(booking: booking),
-        Text(
-          '${booking.vehicleBrand ?? ''} ${booking.vehicleModel} (${booking.vehicleYear})',
-          style: AppStyles.semiBold16(context).copyWith(
-            color: context.theme.black100,
-          ),
-        ),
-        BookingDetailsTypeAndYearVehicle(booking: booking),
-      ],
-    );
-  }
-}
-
-class BookingDetailsBookingPeriodWithTotalDurationSection
-    extends StatelessWidget {
-  const BookingDetailsBookingPeriodWithTotalDurationSection({
-    super.key,
-    required this.booking,
-  });
-
-  final BookingModel booking;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 10,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Booking Period',
-          style: AppStyles.semiBold16(context).copyWith(
-            color: context.theme.black100,
-          ),
-        ),
-        BookingDetailsBookingPeriod(booking: booking),
-        BookingDetailsTotalDuration(booking: booking),
-      ],
-    );
-  }
-}
-
-class BookingDetailsTotalDuration extends StatelessWidget {
-  const BookingDetailsTotalDuration({
-    super.key,
-    required this.booking,
-  });
-
-  final BookingModel booking;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Total Duration',
-          style: AppStyles.semiBold16(context).copyWith(
-            color: context.theme.blue100_1,
-          ),
-        ),
-        Text(
-          '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
-          style: AppStyles.bold18(context).copyWith(
-            color: context.theme.black100,
-          ),
-        ),
-      ],
-    );
   }
 }
