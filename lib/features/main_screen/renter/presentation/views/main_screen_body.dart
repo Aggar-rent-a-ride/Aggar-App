@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/views/booking_details_view_renter.dart';
 import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
@@ -110,22 +111,25 @@ class _MainScreenBodyState extends State<MainScreenBody> {
 
               // Calendar Section
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 15,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: context.theme.white100_1,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
+                        color: Colors.black12,
+                        blurRadius: 2,
+                        offset: Offset(0, 0),
                       ),
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -134,9 +138,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                           children: [
                             Text(
                               'Calendar',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                              style: AppStyles.bold20(context).copyWith(
                                 color: context.theme.black100,
                               ),
                             ),
@@ -151,7 +153,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                             ),
                           ],
                         ),
-                        const Gap(16),
                         TableCalendar<dynamic>(
                           firstDay: DateTime.utc(2020, 1, 1),
                           lastDay: DateTime.utc(2030, 12, 31),
@@ -199,27 +200,36 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               Icons.chevron_right,
                               color: context.theme.grey100_1,
                             ),
-                            titleTextStyle: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                            titleTextStyle:
+                                AppStyles.semiBold16(context).copyWith(
                               color: context.theme.black100,
                             ),
                           ),
                           calendarStyle: CalendarStyle(
                             outsideDaysVisible: false,
-                            weekendTextStyle: TextStyle(
+                            weekendTextStyle:
+                                AppStyles.semiBold16(context).copyWith(
                               color: context.theme.black100,
                             ),
-                            holidayTextStyle: TextStyle(
+                            holidayTextStyle:
+                                AppStyles.semiBold16(context).copyWith(
                               color: context.theme.black100,
                             ),
                             selectedDecoration: BoxDecoration(
                               color: context.theme.blue100_1,
                               shape: BoxShape.circle,
                             ),
+                            selectedTextStyle:
+                                AppStyles.semiBold16(context).copyWith(
+                              color: context.theme.black100,
+                            ),
                             todayDecoration: BoxDecoration(
                               color: context.theme.grey100_1,
                               shape: BoxShape.circle,
+                            ),
+                            todayTextStyle:
+                                AppStyles.semiBold16(context).copyWith(
+                              color: context.theme.black100,
                             ),
                             defaultTextStyle: TextStyle(
                               color: context.theme.black100,
@@ -234,13 +244,13 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                                 const EdgeInsets.symmetric(horizontal: 1.0),
                           ),
                           daysOfWeekStyle: DaysOfWeekStyle(
-                            weekdayStyle: TextStyle(
-                              color: context.theme.grey100_1,
-                              fontWeight: FontWeight.w500,
+                            weekdayStyle:
+                                AppStyles.semiBold16(context).copyWith(
+                              color: context.theme.black50,
                             ),
-                            weekendStyle: TextStyle(
-                              color: context.theme.grey100_1,
-                              fontWeight: FontWeight.w500,
+                            weekendStyle:
+                                AppStyles.semiBold16(context).copyWith(
+                              color: context.theme.black50,
                             ),
                           ),
                           calendarBuilders: CalendarBuilders(
@@ -266,7 +276,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                         // Add legend for calendar
                         const Gap(16),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildLegendItem(
                               color: context.theme.blue100_1,
@@ -282,26 +292,26 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                             ),
                           ],
                         ),
+                        const Gap(16),
                       ],
                     ),
                   ),
                 ),
               ),
-
-              const Gap(24),
-
-              // New Bookings Section with BlocBuilder
+              const Gap(5),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: context.theme.white100_1,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
+                      color: Colors.black12,
+                      blurRadius: 2,
+                      offset: Offset(0, 0),
                     ),
                   ],
                 ),
@@ -531,9 +541,8 @@ class _MainScreenBodyState extends State<MainScreenBody> {
         const Gap(4),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            color: context.theme.grey100_1,
+          style: AppStyles.semiBold12(context).copyWith(
+            color: context.theme.black50,
           ),
         ),
       ],

@@ -378,6 +378,7 @@ class NotificationService {
         final data = response['data'];
         if (data is Map<String, dynamic> && data.containsKey('data')) {
           notificationData = data['data'] as List<dynamic>;
+          print(notificationData[0]);
         }
       }
 

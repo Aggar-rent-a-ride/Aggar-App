@@ -282,6 +282,7 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
                   child: RefreshIndicator(
                     onRefresh: () async => _loadBookingHistory(isRefresh: true),
                     child: ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 20),
                       controller: _scrollController,
                       shrinkWrap: true,
                       physics: const AlwaysScrollableScrollPhysics(),

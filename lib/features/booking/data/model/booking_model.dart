@@ -45,7 +45,7 @@ class BookingModel {
       vehicleModel: json['vehicleModel'] ?? json['VehicleModel'] ?? '',
       vehicleBrand: json['vehicleBrand'] ?? json['VehicleBrand'],
       vehicleType: json['vehicleType'] ?? json['VehicleType'],
-      status: json['bookingStatus'] ?? json['bookingStatus'] ?? '',
+      status: json['Status'] ?? json['status'] ?? '',
       vehicleId: json['vehicleId'] ?? json['VehicleId'] ?? 0,
       startDate: DateTime.parse(json['startDate'] ?? json['StartDate']),
       endDate: DateTime.parse(json['endDate'] ?? json['EndDate']),
