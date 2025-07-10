@@ -1,12 +1,10 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_daily_rate_row.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_duration_row.dart';
 import 'package:flutter/material.dart';
 
-class BookingDetailsPricingDetailsSection extends StatelessWidget {
-  const BookingDetailsPricingDetailsSection({
+class BookingDetailsCustomerTotalDuration extends StatelessWidget {
+  const BookingDetailsCustomerTotalDuration({
     super.key,
     required this.booking,
   });
@@ -15,17 +13,21 @@ class BookingDetailsPricingDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Pricing Details',
+          'Total Duration',
           style: AppStyles.semiBold16(context).copyWith(
+            color: context.theme.blue100_1,
+          ),
+        ),
+        Text(
+          '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
+          style: AppStyles.bold18(context).copyWith(
             color: context.theme.black100,
           ),
         ),
-        BookingDetailsDailyRateRow(booking: booking),
-        BookingDetailsDurationRow(booking: booking),
       ],
     );
   }

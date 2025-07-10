@@ -3,13 +3,13 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
 
-class BookingDetailsDurationRow extends StatelessWidget {
-  const BookingDetailsDurationRow({
+class BookingDetailsRenterTotalAmout extends StatelessWidget {
+  const BookingDetailsRenterTotalAmout({
     super.key,
-    required this.booking,
+    required this.bookingData,
   });
 
-  final BookingModel booking;
+  final BookingModel? bookingData;
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +17,15 @@ class BookingDetailsDurationRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '${booking.totalDays} Day${booking.totalDays > 1 ? 's' : ''}',
-          style: AppStyles.medium14(context).copyWith(
-            color: context.theme.black50,
+          'Total Amount',
+          style: AppStyles.semiBold16(context).copyWith(
+            color: context.theme.black100,
           ),
         ),
         Text(
-          '\$${booking.price.toStringAsFixed(2)}',
-          style: AppStyles.semiBold18(context).copyWith(
-            color: context.theme.black100,
+          '\$${bookingData!.finalPrice.toStringAsFixed(2)}',
+          style: AppStyles.semiBold20(context).copyWith(
+            color: context.theme.blue100_1,
           ),
         ),
       ],

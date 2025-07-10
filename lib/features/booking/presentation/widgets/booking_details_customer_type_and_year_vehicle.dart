@@ -3,8 +3,8 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
 
-class BookingDetailsTypeAndYearVehicle extends StatelessWidget {
-  const BookingDetailsTypeAndYearVehicle({
+class BookingDetailsCustomerTypeAndYearVehicle extends StatelessWidget {
+  const BookingDetailsCustomerTypeAndYearVehicle({
     super.key,
     required this.booking,
   });

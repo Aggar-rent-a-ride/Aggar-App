@@ -4,13 +4,13 @@ import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class BookingDetailsBookingPeriod extends StatelessWidget {
-  const BookingDetailsBookingPeriod({
+class BookingDetailsRenterBookingPeriod extends StatelessWidget {
+  const BookingDetailsRenterBookingPeriod({
     super.key,
-    required this.booking,
+    required this.bookingData,
   });
 
-  final BookingModel booking;
+  final BookingModel? bookingData;
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,13 @@ class BookingDetailsBookingPeriod extends StatelessWidget {
                 ),
               ),
               Text(
-                DateFormat('MMM dd, yyyy').format(booking.startDate),
+                DateFormat('MMM dd, yyyy').format(bookingData!.startDate),
                 style: AppStyles.bold16(context).copyWith(
                   color: context.theme.black100,
                 ),
               ),
               Text(
-                DateFormat('h:mm a').format(booking.startDate),
+                DateFormat('h:mm a').format(bookingData!.startDate),
                 style: AppStyles.medium12(context).copyWith(
                   color: context.theme.black50,
                 ),
@@ -52,13 +52,13 @@ class BookingDetailsBookingPeriod extends StatelessWidget {
                 ),
               ),
               Text(
-                DateFormat('MMM dd, yyyy').format(booking.endDate),
+                DateFormat('MMM dd, yyyy').format(bookingData!.endDate),
                 style: AppStyles.bold16(context).copyWith(
                   color: context.theme.black100,
                 ),
               ),
               Text(
-                DateFormat('h:mm a').format(booking.endDate),
+                DateFormat('h:mm a').format(bookingData!.endDate),
                 style: AppStyles.medium12(context).copyWith(
                   color: context.theme.black50,
                 ),

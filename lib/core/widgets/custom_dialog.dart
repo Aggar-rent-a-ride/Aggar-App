@@ -9,11 +9,15 @@ class CustomDialog extends StatelessWidget {
     this.onPressed,
     required this.actionTitle,
     required this.subtitle,
+    this.textColor,
+    this.buttonColor,
   });
   final String title;
   final String actionTitle;
   final String subtitle;
   final void Function()? onPressed;
+  final Color? textColor;
+  final Color? buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +49,13 @@ class CustomDialog extends StatelessWidget {
           ),
         ),
         TextButton(
+          style:
+              ButtonStyle(backgroundColor: WidgetStatePropertyAll(buttonColor)),
           onPressed: onPressed,
           child: Text(
             actionTitle,
             style: AppStyles.semiBold15(context).copyWith(
-              color: context.theme.red100_1,
+              color: textColor ?? context.theme.red100_1,
             ),
           ),
         ),

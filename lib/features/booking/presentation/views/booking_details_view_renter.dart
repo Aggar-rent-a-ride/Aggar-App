@@ -1,3 +1,11 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_action_buttons.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_booking_period_with_total_duration_section.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_discount_row.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_pricing_details_section.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_total_amout.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_vehicle_information_section.dart';
 import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
@@ -33,23 +41,45 @@ class _BookingDetailsScreenRenterState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: context.theme.white100_1,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Booking Details',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        elevation: 1,
+        shadowColor: Colors.grey[900],
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
+        backgroundColor: context.theme.white100_1,
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: _getStatusColor(widget.booking.status).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              widget.booking.status,
+              style: TextStyle(
+                color: _getStatusColor(widget.booking.status),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: context.theme.black100,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          'Booking Details',
+          style: AppStyles.semiBold24(context)
+              .copyWith(color: context.theme.black100),
+        ),
       ),
       body: BlocConsumer<BookingCubit, BookingState>(
         listener: (context, state) {
@@ -111,9 +141,108 @@ class _BookingDetailsScreenRenterState
                 color: Color(0xFF6B73FF),
               ),
             );
-          }
-
-          if (state is BookingGetByIdError) {
+          } else if (state is BookingGetByIdSuccess) {
+            BookingModel? bookingDataID;
+            bookingDataID = state.booking;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 0),
+                      blurRadius: 4,
+                    )
+                  ],
+                  color: context.theme.white100_2,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    spacing: 15,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BookingDetailsRenterVehicleInformationSection(
+                          bookingData: bookingDataID, widget: widget),
+                      BookingDetailsRenterBookingPeriodWithTotalDurationSection(
+                          bookingData: bookingDataID),
+                      BookingDetailsRenterPricingDetailsSection(
+                          bookingData: bookingDataID),
+                      if (bookingDataID.discount > 0)
+                        BookingDetailsRenterDiscountRow(
+                            bookingData: bookingDataID),
+                      const Divider(height: 24),
+                      BookingDetailsRenterTotalAmout(
+                          bookingData: bookingDataID),
+                      const Gap(24),
+                      if ((bookingDataID.status).toLowerCase() ==
+                          'pending') ...[
+                        if (_isProcessingResponse) ...[
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              children: [
+                                const CircularProgressIndicator(
+                                  color: Color(0xFF6B73FF),
+                                ),
+                                const Gap(12),
+                                Text(
+                                  'Processing your response...',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ] else ...[
+                          BookingDetailsRenterActionButtons(
+                              bookingData: bookingDataID, widget: widget),
+                        ],
+                      ] else ...[
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: _getStatusColor(bookingDataID.status)
+                                .withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _getStatusColor(bookingDataID.status)
+                                  .withOpacity(0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _getStatusIcon(bookingDataID.status),
+                                color: _getStatusColor(bookingDataID.status),
+                              ),
+                              const Gap(12),
+                              Expanded(
+                                child: Text(
+                                  _getStatusMessage(bookingDataID.status),
+                                  style: AppStyles.semiBold16(context).copyWith(
+                                    color:
+                                        _getStatusColor(bookingDataID.status),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      const Gap(20),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +262,7 @@ class _BookingDetailsScreenRenterState
                   ),
                   const Gap(8),
                   Text(
-                    state.message,
+                    "an Error has occured",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[500],
@@ -157,487 +286,7 @@ class _BookingDetailsScreenRenterState
               ),
             );
           }
-
-          BookingModel? bookingData;
-          if (state is BookingGetByIdSuccess) {
-            bookingData = state.booking;
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Booking Details',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: _getStatusColor(bookingData?.status ??
-                                        widget.booking.status)
-                                    .withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                bookingData?.status ?? widget.booking.status,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: _getStatusColor(bookingData?.status ??
-                                      widget.booking.status),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(24),
-                        const Text(
-                          'Customer Profile',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const Gap(12),
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 25,
-                              backgroundColor: widget.booking.color,
-                              child: Text(
-                                widget.booking.initial,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            const Gap(12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.booking.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                Text(
-                                  'Premium Member',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF6B73FF).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.message,
-                                color: Color(0xFF6B73FF),
-                                size: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(24),
-                        const Text(
-                          'Vehicle Information',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const Gap(12),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[50],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  if (bookingData?.vehicleImagePath != null)
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        'https://aggarapi.runasp.net${bookingData!.vehicleImagePath}',
-                                        width: 60,
-                                        height: 60,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Container(
-                                            width: 60,
-                                            height: 60,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[300],
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: const Icon(
-                                              Icons.directions_car,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  const Gap(12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          bookingData?.vehicleModel ??
-                                              'Vehicle',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        const Gap(4),
-                                        Text(
-                                          'Year: ${bookingData?.vehicleYear ?? 'N/A'}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Gap(24),
-                        const Text(
-                          'Booking Period',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const Gap(12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'START DATE',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[600],
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const Gap(4),
-                                  Text(
-                                    _formatDate(bookingData?.startDate) ??
-                                        widget.booking.date,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'END DATE',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[600],
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const Gap(4),
-                                  Text(
-                                    _formatDate(bookingData?.endDate) ??
-                                        widget.booking.date,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(16),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.blue[50],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Total Duration',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                '${bookingData?.totalDays ?? 1} ${(bookingData?.totalDays ?? 1) == 1 ? 'Day' : 'Days'}',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Gap(24),
-                        const Text(
-                          'Pricing Details',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const Gap(12),
-                        _buildPriceRow('Base Price',
-                            '\$${bookingData?.price.toStringAsFixed(2) ?? '0.00'}'),
-                        if ((bookingData?.discount ?? 0) > 0)
-                          _buildPriceRow('Discount',
-                              '-\$${((bookingData?.price ?? 0) * (bookingData?.discount ?? 0) / 100).toStringAsFixed(2)}'),
-                        const Gap(12),
-                        const Divider(),
-                        const Gap(8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Total Amount',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Text(
-                              '\$${bookingData?.finalPrice.toStringAsFixed(2) ?? '0.00'}',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF6B73FF),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const Gap(24),
-                if ((bookingData?.status ?? widget.booking.status)
-                        .toLowerCase() ==
-                    'pending') ...[
-                  if (_isProcessingResponse) ...[
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          const CircularProgressIndicator(
-                            color: Color(0xFF6B73FF),
-                          ),
-                          const Gap(12),
-                          Text(
-                            'Processing your response...',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ] else ...[
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => _showDeclineConfirmation(
-                                context, bookingData?.id ?? widget.booking.id),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.red,
-                              side: const BorderSide(color: Colors.red),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text(
-                              'Decline',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Gap(12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => _showAcceptConfirmation(
-                                context, bookingData?.id ?? widget.booking.id),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6B73FF),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text(
-                              'Accept Booking',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ] else ...[
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(
-                              bookingData?.status ?? widget.booking.status)
-                          .withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _getStatusColor(
-                                bookingData?.status ?? widget.booking.status)
-                            .withOpacity(0.3),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          _getStatusIcon(
-                              bookingData?.status ?? widget.booking.status),
-                          color: _getStatusColor(
-                              bookingData?.status ?? widget.booking.status),
-                        ),
-                        const Gap(12),
-                        Expanded(
-                          child: Text(
-                            _getStatusMessage(
-                                bookingData?.status ?? widget.booking.status),
-                            style: TextStyle(
-                              color: _getStatusColor(
-                                  bookingData?.status ?? widget.booking.status),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                const Gap(20),
-              ],
-            ),
-          );
         },
-      ),
-    );
-  }
-
-  Widget _buildPriceRow(String label, String amount) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-          ),
-          Text(
-            amount,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -690,11 +339,6 @@ class _BookingDetailsScreenRenterState
       default:
         return 'Booking status: ${status.toUpperCase()}';
     }
-  }
-
-  String? _formatDate(DateTime? date) {
-    if (date == null) return null;
-    return '${date.day}/${date.month}/${date.year}';
   }
 
   // NEW METHOD: Show payment account required dialog
@@ -783,111 +427,5 @@ class _BookingDetailsScreenRenterState
       // Refresh the booking data or show a success message
       context.read<BookingCubit>().getBookingById(widget.booking.id);
     }
-  }
-
-  void _showAcceptConfirmation(BuildContext context, int bookingId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text(
-            'Accept Booking',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text(
-            'Are you sure you want to accept this booking request? This action cannot be undone.',
-            style: TextStyle(fontSize: 14),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _handleAcceptBooking(context, bookingId);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6B73FF),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('Accept'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeclineConfirmation(BuildContext context, int bookingId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text(
-            'Decline Booking',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text(
-            'Are you sure you want to decline this booking request? This action cannot be undone.',
-            style: TextStyle(fontSize: 14),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _handleRejectBooking(context, bookingId);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('Decline'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _handleAcceptBooking(BuildContext context, int bookingId) {
-    context.read<BookingCubit>().acceptBooking(bookingId);
-  }
-
-  void _handleRejectBooking(BuildContext context, int bookingId) {
-    context.read<BookingCubit>().rejectBooking(bookingId);
   }
 }

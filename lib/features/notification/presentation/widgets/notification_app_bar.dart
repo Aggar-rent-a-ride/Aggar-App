@@ -20,14 +20,6 @@ class NotificationAppBar extends StatelessWidget
       toolbarHeight: 80,
       centerTitle: false,
       backgroundColor: Colors.transparent,
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios,
-          color: context.theme.black100,
-          size: 20,
-        ),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
       title: Padding(
         padding: const EdgeInsets.only(left: 4),
         child: Column(

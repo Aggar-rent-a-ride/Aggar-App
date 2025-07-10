@@ -73,9 +73,9 @@ class _RenterProfileTabBarSectionState extends State<RenterProfileTabBarSection>
               controller: _tabController,
               padding: EdgeInsets.zero,
               indicatorPadding: EdgeInsets.zero,
-              indicatorColor: context.theme.blue100_2,
+              indicatorColor: context.theme.blue100_1,
               dividerColor: context.theme.black25,
-              labelColor: context.theme.blue100_2,
+              labelColor: context.theme.blue100_1,
               unselectedLabelColor: context.theme.black50,
               labelStyle: AppStyles.bold18(context)
                   .copyWith(color: context.theme.blue100_2),

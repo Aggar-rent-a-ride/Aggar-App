@@ -1,18 +1,18 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_booking_period.dart';
-import 'package:aggar/features/booking/presentation/widgets/booking_details_total_duration.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_booking_period.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_total_duration.dart';
 import 'package:flutter/material.dart';
 
-class BookingDetailsBookingPeriodWithTotalDurationSection
+class BookingDetailsRenterBookingPeriodWithTotalDurationSection
     extends StatelessWidget {
-  const BookingDetailsBookingPeriodWithTotalDurationSection({
+  const BookingDetailsRenterBookingPeriodWithTotalDurationSection({
     super.key,
-    required this.booking,
+    required this.bookingData,
   });
 
-  final BookingModel booking;
+  final BookingModel? bookingData;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +26,8 @@ class BookingDetailsBookingPeriodWithTotalDurationSection
             color: context.theme.black100,
           ),
         ),
-        BookingDetailsBookingPeriod(booking: booking),
-        BookingDetailsTotalDuration(booking: booking),
+        BookingDetailsRenterBookingPeriod(bookingData: bookingData),
+        BookingDetailsRenterTotalDuration(bookingData: bookingData),
       ],
     );
   }

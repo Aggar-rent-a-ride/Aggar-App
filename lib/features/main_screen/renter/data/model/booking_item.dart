@@ -11,7 +11,7 @@ class BookingItem {
   final String initial;
 
   BookingItem({
-    required this.id, // Add this parameter
+    required this.id,
     required this.name,
     required this.service,
     required this.time,

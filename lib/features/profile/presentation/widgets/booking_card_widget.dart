@@ -2,6 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class BookingCardWidget extends StatelessWidget {
   final BookingHistoryModel booking;
@@ -20,8 +21,9 @@ class BookingCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: context.theme.white100_2,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 2,
+      elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -39,7 +41,9 @@ class BookingCardWidget extends StatelessWidget {
                   Expanded(
                     child: Text(
                       '${booking.vehicleBrand} ${booking.vehicleModel}',
-                      style: AppStyles.bold16(context),
+                      style: AppStyles.bold20(context).copyWith(
+                        color: context.theme.black100,
+                      ),
                     ),
                   ),
                   Container(
@@ -47,11 +51,11 @@ class BookingCardWidget extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: getStatusColor(booking.bookingStatus)
-                          .withOpacity(0.1),
+                          .withOpacity(0.07),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: getStatusColor(booking.bookingStatus),
-                        width: 1,
+                        width: 0.5,
                       ),
                     ),
                     child: Text(
@@ -63,43 +67,29 @@ class BookingCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const Gap(4),
               Text(
                 'Vehicle Type: ${booking.vehicleType}',
-                style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.black50,
+                style: AppStyles.medium13(context).copyWith(
+                  color: context.theme.black25,
                 ),
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 16,
-                    color: context.theme.black50,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${formatDate(booking.startDate.toString())} - ${formatDate(booking.endDate.toString())}',
-                    style: AppStyles.medium14(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
+              const Gap(35),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.receipt,
+                        Icons.calendar_today,
                         size: 16,
                         color: context.theme.black50,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 8),
                       Text(
-                        'Booking #${booking.id}',
-                        style: AppStyles.medium12(context).copyWith(
+                        '${formatDate(booking.startDate.toString())} - ${formatDate(booking.endDate.toString())}',
+                        style: AppStyles.medium14(context).copyWith(
                           color: context.theme.black50,
                         ),
                       ),
@@ -108,16 +98,16 @@ class BookingCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '\$${booking.finalPrice}',
-                        style: AppStyles.bold16(context).copyWith(
-                          color: context.theme.blue100_2,
+                        'see more details',
+                        style: AppStyles.regular13(context).copyWith(
+                          color: context.theme.blue100_1,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 4),
                       Icon(
                         Icons.arrow_forward_ios,
-                        size: 16,
-                        color: context.theme.black50,
+                        size: 13,
+                        color: context.theme.blue100_1,
                       ),
                     ],
                   ),

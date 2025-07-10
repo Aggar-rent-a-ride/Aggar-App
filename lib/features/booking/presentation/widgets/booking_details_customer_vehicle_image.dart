@@ -3,8 +3,8 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
 import 'package:flutter/material.dart';
 
-class BookingDetailsVehicleImage extends StatelessWidget {
-  const BookingDetailsVehicleImage({
+class BookingDetailsCustomerVehicleImage extends StatelessWidget {
+  const BookingDetailsCustomerVehicleImage({
     super.key,
     required this.booking,
   });

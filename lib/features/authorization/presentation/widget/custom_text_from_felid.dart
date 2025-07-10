@@ -95,7 +95,7 @@ class CustomTextField extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     borderSide: state.hasError
                         ? BorderSide(
-                            color: context.theme.red10_1,
+                            color: context.theme.red100_1,
                             width: 1.5,
                           )
                         : BorderSide.none,
@@ -104,7 +104,7 @@ class CustomTextField extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     borderSide: state.hasError
                         ? BorderSide(
-                            color: context.theme.red10_1,
+                            color: context.theme.red100_1,
                             width: 2.0,
                           )
                         : BorderSide.none,
@@ -125,7 +125,7 @@ class CustomTextField extends StatelessWidget {
                 child: Text(
                   state.errorText!,
                   style: TextStyle(
-                    color: context.theme.red10_1,
+                    color: context.theme.red100_1,
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),
