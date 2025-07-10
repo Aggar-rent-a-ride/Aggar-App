@@ -252,9 +252,9 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       customSnackBar(
         context,
-        "Error",
+        "Warning",
         message,
-        SnackBarType.error,
+        SnackBarType.warning,
       ),
     );
   }

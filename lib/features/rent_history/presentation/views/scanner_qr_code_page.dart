@@ -1,3 +1,4 @@
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,27 +56,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
   void _showErrorAndRetry(String message) {
     if (!_isDisposed && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.error, color: Colors.white),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(message),
-              ),
-            ],
-          ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          action: SnackBarAction(
-            label: 'Retry',
-            textColor: Colors.white,
-            onPressed: _resetScanner,
-          ),
+        customSnackBar(
+          context,
+          "Error",
+          message,
+          SnackBarType.error,
         ),
       );
 
@@ -94,21 +79,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
     }
   }
 
-  void _resetScanner() {
-    if (!_isDisposed && mounted) {
-      _safeSetState(() {
-        isProcessing = false;
-        isScanning = true;
-      });
-
-      try {
-        controller.start();
-      } catch (e) {
-        debugPrint('Error resetting scanner: $e');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<RentalHistoryCubit, RentalHistoryState>(
@@ -120,20 +90,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
           debugPrint('Rental confirmed successfully');
           if (!_isDisposed && mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Row(
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text('Rental confirmed successfully!'),
-                  ],
-                ),
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+              customSnackBar(
+                context,
+                "Success",
+                'Rental confirmed successfully!',
+                SnackBarType.success,
               ),
             );
           }
@@ -383,9 +344,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
         debugPrint('Error toggling flash: $e');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Unable to toggle flash'),
-              backgroundColor: Colors.red,
+            customSnackBar(
+              context,
+              "Error",
+              'Unable to toggle flash',
+              SnackBarType.error,
             ),
           );
         }
@@ -475,10 +438,12 @@ class _QRScannerPageState extends State<QRScannerPage> {
                   Navigator.of(dialogContext).pop();
                   _handleManualInput(code);
                 } else {
-                  ScaffoldMessenger.of(dialogContext).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please enter a valid code'),
-                      backgroundColor: Colors.red,
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    customSnackBar(
+                      context,
+                      "Error",
+                      'Please enter a valid code',
+                      SnackBarType.error,
                     ),
                   );
                 }

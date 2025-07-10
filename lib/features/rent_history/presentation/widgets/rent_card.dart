@@ -1,3 +1,4 @@
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +54,15 @@ class RentalCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.theme.white100_2,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.withOpacity(0.8)),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 2,
+            color: Colors.black12,
+            offset: Offset(0, 0),
+          )
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(15),
@@ -70,15 +77,22 @@ class RentalCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                        border: Border.all(
+                            color: context.theme.black50.withOpacity(0.5)),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.calendar_today, size: 20),
+                      child: Icon(
+                        Icons.calendar_today,
+                        size: 20,
+                        color: context.theme.black50.withOpacity(0.5),
+                      ),
                     ),
                     const Gap(10),
                     Text(
                       '#${rental.id}',
-                      style: AppStyles.semiBold18(context),
+                      style: AppStyles.semiBold18(context).copyWith(
+                        color: context.theme.black100,
+                      ),
                     ),
                   ],
                 ),
@@ -125,7 +139,7 @@ class RentalCard extends StatelessWidget {
                     Text(
                       'Client Name',
                       style: AppStyles.regular16(context)
-                          .copyWith(color: Colors.grey),
+                          .copyWith(color: context.theme.black25),
                     ),
                     const Gap(5),
                     Row(
@@ -134,7 +148,7 @@ class RentalCard extends StatelessWidget {
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFDDDDDD),
+                            color: context.theme.blue100_1.withOpacity(0.2),
                             shape: BoxShape.circle,
                             image: rental.user.imagePath != null &&
                                     rental.user.imagePath!.isNotEmpty
@@ -151,8 +165,8 @@ class RentalCard extends StatelessWidget {
                                     rental.user.name.isNotEmpty
                                         ? rental.user.name[0]
                                         : '',
-                                    style: AppStyles.medium16(context)
-                                        .copyWith(color: Colors.white),
+                                    style: AppStyles.medium16(context).copyWith(
+                                        color: context.theme.black100),
                                   ),
                                 )
                               : null,
@@ -160,7 +174,9 @@ class RentalCard extends StatelessWidget {
                         const Gap(10),
                         Text(
                           rental.user.name,
-                          style: AppStyles.medium18(context),
+                          style: AppStyles.medium18(context).copyWith(
+                            color: context.theme.black100,
+                          ),
                         ),
                       ],
                     ),
@@ -172,12 +188,14 @@ class RentalCard extends StatelessWidget {
                     Text(
                       'Total Time',
                       style: AppStyles.regular16(context)
-                          .copyWith(color: Colors.grey),
+                          .copyWith(color: context.theme.black25),
                     ),
                     const Gap(5),
                     Text(
                       totalTime,
-                      style: AppStyles.medium18(context),
+                      style: AppStyles.medium18(context).copyWith(
+                        color: context.theme.black50,
+                      ),
                     ),
                   ],
                 ),
@@ -193,13 +211,14 @@ class RentalCard extends StatelessWidget {
                     Text(
                       'Vehicle ID: ${rental.vehicle.id}',
                       style: AppStyles.regular16(context)
-                          .copyWith(color: Colors.grey),
+                          .copyWith(color: context.theme.black25),
                     ),
                     const Gap(5),
                     Text(
                       '${rental.finalPrice} \$',
-                      style: AppStyles.bold16(context)
-                          .copyWith(color: Colors.black87),
+                      style: AppStyles.bold16(context).copyWith(
+                        color: context.theme.blue100_1,
+                      ),
                     ),
                   ],
                 ),
@@ -209,12 +228,13 @@ class RentalCard extends StatelessWidget {
                     Text(
                       'Start date',
                       style: AppStyles.regular16(context)
-                          .copyWith(color: Colors.grey),
+                          .copyWith(color: context.theme.black25),
                     ),
                     const Gap(5),
                     Text(
                       startDate,
-                      style: AppStyles.medium16(context),
+                      style: AppStyles.medium16(context)
+                          .copyWith(color: context.theme.black50),
                     ),
                   ],
                 ),
@@ -226,17 +246,18 @@ class RentalCard extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onViewMore,
                 style: OutlinedButton.styleFrom(
-                  side:
-                      const BorderSide(color: Colors.black), // Fixed blue color
+                  side: BorderSide(
+                      color: context.theme.black100), // Fixed blue color
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
                 child: Text(
                   'View more',
-                  style: AppStyles.medium16(context)
-                      .copyWith(color: Colors.black), // Fixed blue color
+                  style: AppStyles.medium16(context).copyWith(
+                    color: context.theme.black100,
+                  ),
                 ),
               ),
             ),

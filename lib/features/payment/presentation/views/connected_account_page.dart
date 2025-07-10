@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_state.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/payment/data/model/connected_account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_state.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 
 class ConnectedAccountPage extends StatefulWidget {
   const ConnectedAccountPage({super.key});
@@ -20,7 +23,7 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
   final _phoneController = TextEditingController();
   final _accountNumberController = TextEditingController();
   final _routingNumberController = TextEditingController();
-  
+
   bool _obscureAccountNumber = true;
 
   @override
@@ -37,17 +40,17 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
     try {
       final tokenCubit = context.read<TokenRefreshCubit>();
       final accessToken = await tokenCubit.getAccessToken();
-      
+
       if (accessToken == null) {
         _showErrorDialog('Authentication failed. Please login again.');
         return;
       }
       context.read<PaymentCubit>().createConnectedAccount(
-        accessToken,
-        _phoneController.text,
-        _accountNumberController.text,
-        _routingNumberController.text,
-      );
+            accessToken,
+            _phoneController.text,
+            _accountNumberController.text,
+            _routingNumberController.text,
+          );
     } catch (e) {
       _showErrorDialog('Failed to authenticate. Please try again.');
     }
@@ -56,50 +59,11 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
   void _showSuccessSnackBar(ConnectedAccountModel connectedAccount) {
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(
-              Icons.check_circle,
-              color: Colors.white,
-              size: 24,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Account Connected Successfully!',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    'Account ID: ${connectedAccount.stripeAccountId}',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.green[600],
-        duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        margin: const EdgeInsets.all(16),
-        action: SnackBarAction(
-          label: 'OK',
-          textColor: Colors.white,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
+      customSnackBar(
+        context,
+        "Success",
+        'Account Connected Successfully!',
+        SnackBarType.success,
       ),
     );
   }
@@ -124,7 +88,8 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
     if (value == null || value.isEmpty) {
       return 'Phone number is required';
     }
-    if (!RegExp(r'^\+?[1-9]\d{1,14}$').hasMatch(value.replaceAll(RegExp(r'[\s-()]'), ''))) {
+    if (!RegExp(r'^\+?[1-9]\d{1,14}$')
+        .hasMatch(value.replaceAll(RegExp(r'[\s-()]'), ''))) {
       return 'Please enter a valid phone number';
     }
     return null;
@@ -163,18 +128,26 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
         BlocProvider(create: (context) => PaymentCubit()),
       ],
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: context.theme.white100_1,
         appBar: AppBar(
-          title: const Text('Connect Bank Account'),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black87,
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(
-              height: 1,
-              color: Colors.grey[300],
+          elevation: 1,
+          shadowColor: Colors.grey[900],
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+          backgroundColor: context.theme.white100_1,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: context.theme.black100,
             ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            'Connect Bank Account',
+            style: AppStyles.semiBold24(context)
+                .copyWith(color: context.theme.black100),
           ),
         ),
         body: MultiBlocListener(
@@ -208,37 +181,38 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.blue[50],
+                        color: context.theme.blue100_1.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.blue[100]!),
+                        border: Border.all(
+                          color: context.theme.blue100_1.withOpacity(0.5),
+                        ),
                       ),
                       child: Column(
                         children: [
                           Icon(
                             Icons.account_balance,
                             size: 48,
-                            color: Colors.blue[600],
+                            color: context.theme.blue100_1,
                           ),
                           const Gap(12),
                           Text(
                             'Connect Account',
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue[800],
+                            style: AppStyles.bold20(context).copyWith(
+                              color: context.theme.blue100_1,
                             ),
                           ),
                           const Gap(8),
                           Text(
                             'Securely link your bank account to receive payments',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.blue[700],
+                            style: AppStyles.regular14(context).copyWith(
+                              color: context.theme.blue100_1.withOpacity(0.7),
                             ),
                             textAlign: TextAlign.center,
                           ),
                         ],
                       ),
                     ),
-                    
+
                     const Gap(32),
 
                     _buildInputField(
@@ -249,7 +223,8 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
                       keyboardType: TextInputType.phone,
                       validator: _validatePhone,
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[\d+\-\s()]')),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[\d+\-\s()]')),
                       ],
                     ),
 
@@ -265,7 +240,9 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
                       obscureText: _obscureAccountNumber,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscureAccountNumber ? Icons.visibility : Icons.visibility_off,
+                          _obscureAccountNumber
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
                           setState(() {
@@ -299,20 +276,20 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.green[50],
+                        color: context.theme.green10_1,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.green[200]!),
+                        border: Border.all(
+                            color: context.theme.green100_1.withOpacity(0.2)),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.security, color: Colors.green[600]),
+                          Icon(Icons.security, color: context.theme.green100_1),
                           const Gap(12),
                           Expanded(
                             child: Text(
                               'Your banking information is encrypted and secure',
-                              style: TextStyle(
-                                color: Colors.green[800],
-                                fontWeight: FontWeight.w500,
+                              style: AppStyles.medium14(context).copyWith(
+                                color: context.theme.green100_1,
                               ),
                             ),
                           ),
@@ -325,12 +302,12 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
                     BlocBuilder<PaymentCubit, PaymentState>(
                       builder: (context, state) {
                         final isLoading = state is PaymentLoading;
-                        
+
                         return ElevatedButton(
                           onPressed: isLoading ? null : _createConnectedAccount,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue[600],
-                            foregroundColor: Colors.white,
+                            backgroundColor: context.theme.blue100_1,
+                            foregroundColor: context.theme.white100_1,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -343,14 +320,14 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
                                   width: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
                                   ),
                                 )
-                              : const Text(
+                              : Text(
                                   'Connect Account',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
+                                  style: AppStyles.bold16(context).copyWith(
+                                    color: context.theme.white100_1,
                                   ),
                                 ),
                         );
@@ -382,10 +359,8 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+          style: AppStyles.medium16(context).copyWith(
+            color: context.theme.black100,
           ),
         ),
         const Gap(8),
@@ -397,27 +372,31 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon, color: Colors.grey[600]),
+            hintStyle: AppStyles.regular14(context).copyWith(
+              color: context.theme.grey100_1,
+            ),
+            prefixIcon: Icon(icon, color: context.theme.grey100_1),
             suffixIcon: suffixIcon,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(color: context.theme.grey100_1),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(color: context.theme.grey100_1),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.blue[600]!, width: 2),
+              borderSide: BorderSide(color: context.theme.blue100_1, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.red, width: 2),
+              borderSide: BorderSide(color: context.theme.red100_1, width: 2),
             ),
             filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            fillColor: context.theme.white100_2,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
         ),
       ],

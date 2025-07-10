@@ -238,10 +238,11 @@ class BookingCard extends StatelessWidget {
         Navigator.pop(context); // Close loading dialog
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Accepted booking for ${booking.name}'),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
+          customSnackBar(
+            context,
+            "Success",
+            'Accepted booking for ${booking.name}',
+            SnackBarType.success,
           ),
         );
       } else {
@@ -257,10 +258,11 @@ class BookingCard extends StatelessWidget {
     } catch (e) {
       Navigator.pop(context); // Close loading dialog if open
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error accepting booking: $e'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
+        customSnackBar(
+          context,
+          "Error",
+          'Error accepting booking: $e',
+          SnackBarType.error,
         ),
       );
     }
@@ -315,10 +317,11 @@ class BookingCard extends StatelessWidget {
         Navigator.pop(context); // Close loading dialog
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Rejected booking for ${booking.name}'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
+          customSnackBar(
+            context,
+            "Error",
+            'Rejected booking for ${booking.name}',
+            SnackBarType.error,
           ),
         );
       } else {
@@ -326,7 +329,7 @@ class BookingCard extends StatelessWidget {
           customSnackBar(
             context,
             "Error",
-            "'Session expired. Please login again.'",
+            "Session expired. Please login again.",
             SnackBarType.error,
           ),
         );
@@ -334,10 +337,11 @@ class BookingCard extends StatelessWidget {
     } catch (e) {
       Navigator.pop(context); // Close loading dialog if open
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error rejecting booking: $e'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
+        customSnackBar(
+          context,
+          "Error",
+          'Error rejecting booking: $e',
+          SnackBarType.error,
         ),
       );
     }

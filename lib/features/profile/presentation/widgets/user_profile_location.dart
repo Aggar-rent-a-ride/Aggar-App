@@ -42,7 +42,8 @@ class UserProfileLocation extends StatelessWidget {
             ),
             children: [
               TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate:
+                    'https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.yourapp.name',
               ),
               MarkerLayer(

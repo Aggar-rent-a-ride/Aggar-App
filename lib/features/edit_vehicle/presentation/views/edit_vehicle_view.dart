@@ -67,7 +67,12 @@ class _EditVehicleViewState extends State<EditVehicleView> {
       listener: (context, state) async {
         if (state is EditVehicleFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage)),
+            customSnackBar(
+              context,
+              "Error",
+              state.errorMessage,
+              SnackBarType.error,
+            ),
           );
         } else if (state is EditVehicleSuccess) {
           // Refresh the vehicle list in ProfileCubit

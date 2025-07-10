@@ -20,8 +20,10 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
   @override
   void initState() {
     super.initState();
+    // Load rental history when widget is first created
     context.read<RentalHistoryCubit>().getRentalHistory();
 
+    // Setup scroll listener for pagination
     _scrollController.addListener(_onScroll);
   }
 
@@ -38,6 +40,14 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
     }
   }
 
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  // Helper method to get color for rental status
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'confirmed':
@@ -50,13 +60,6 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
       default:
         return Colors.grey;
     }
-  }
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
   }
 
   @override
@@ -76,53 +79,140 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                   state is! RentalHistoryLoaded) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is RentalHistoryLoaded) {
-                final rentals = state.rentals;
+                final rentals = state.displayedRentals ?? state.rentals;
 
                 if (rentals.isEmpty) {
                   return Center(
-                    child: Text(
-                      'No rental history found',
-                      style: AppStyles.medium18(context),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.history,
+                          size: 64,
+                          color: Colors.grey.shade400,
+                        ),
+                        const Gap(16),
+                        Text(
+                          state.activeFilter == 'all'
+                              ? 'No rental history found'
+                              : 'No ${state.activeFilter.toLowerCase()} rentals found',
+                          style: AppStyles.medium18(context)
+                              .copyWith(color: Colors.grey.shade600),
+                        ),
+                        if (state.activeFilter != 'all') ...[
+                          const Gap(8),
+                          TextButton(
+                            onPressed: () {
+                              context
+                                  .read<RentalHistoryCubit>()
+                                  .filterRentals('all');
+                            },
+                            child: const Text('Show All Rentals'),
+                          ),
+                        ],
+                      ],
                     ),
                   );
                 }
 
-                return ListView.separated(
-                  controller: _scrollController,
-                  itemCount: rentals.length + (state.hasMoreData ? 1 : 0),
-                  separatorBuilder: (context, index) => const Gap(15),
-                  itemBuilder: (context, index) {
-                    if (index >= rentals.length) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          child: CircularProgressIndicator(),
+                return Column(
+                  children: [
+                    // Filter indicator
+                    if (state.activeFilter != 'all')
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
                         ),
-                      );
-                    }
-
-                    final rental = rentals[index];
-                    return RentalCard(
-                      rental: rental,
-                      onViewMore: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RentalHistoryDetail(
-                              rentalItem: rental,
-                              statusColor: _getStatusColor(rental.rentalStatus),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.blue.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.filter_list,
+                              size: 16,
+                              color: Colors.blue.shade700,
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                            const SizedBox(width: 8),
+                            Text(
+                              'Showing ${rentals.length} ${state.activeFilter} rentals',
+                              style: TextStyle(
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<RentalHistoryCubit>()
+                                    .filterRentals('all');
+                              },
+                              child: Icon(
+                                Icons.close,
+                                size: 16,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    // Rental list
+                    Expanded(
+                      child: ListView.separated(
+                        controller: _scrollController,
+                        itemCount: rentals.length +
+                            (state.hasMoreData && state.activeFilter == 'all'
+                                ? 1
+                                : 0),
+                        separatorBuilder: (context, index) => const Gap(15),
+                        itemBuilder: (context, index) {
+                          if (index >= rentals.length) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+
+                          final rental = rentals[index];
+                          return RentalCard(
+                            rental: rental,
+                            onViewMore: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RentalHistoryDetail(
+                                    rentalItem: rental,
+                                    statusColor:
+                                        _getStatusColor(rental.rentalStatus),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               } else if (state is RentalHistoryError) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red.shade400,
+                      ),
+                      const Gap(16),
                       Text(
                         'Failed to load rental history',
                         style: AppStyles.medium18(context),
@@ -141,6 +231,10 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                               .read<RentalHistoryCubit>()
                               .refreshRentalHistory();
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
                         child: const Text('Try Again'),
                       ),
                     ],

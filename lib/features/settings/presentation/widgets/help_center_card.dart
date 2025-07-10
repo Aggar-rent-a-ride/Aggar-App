@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/utils/app_styles.dart';
+import '../../presentation/views/help_center_screen.dart';
 
 class HelpCenterCard extends StatelessWidget {
   const HelpCenterCard({
@@ -18,7 +19,12 @@ class HelpCenterCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 10,
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HelpCenterScreen()),
+        );
+      },
       backgroundColor: context.theme.blue100_1.withOpacity(0.05),
       child: Row(
         children: [

@@ -95,6 +95,9 @@ dependencies:
   flutter_stripe: ^11.5.0
   firebase_messaging: ^15.2.9
   mobile_scanner: ^7.0.1
+  animate_do: ^4.2.0
+  url_launcher: ^6.3.1
+  mailto: ^2.0.0
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
