@@ -19,10 +19,10 @@ class AddDiscountButtonList extends StatelessWidget {
         icon: const Icon(Icons.add),
         label: const Text('Add Discount'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: context.theme.blue100_2,
+          backgroundColor: context.theme.blue100_1,
           foregroundColor: context.theme.white100_1,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16,

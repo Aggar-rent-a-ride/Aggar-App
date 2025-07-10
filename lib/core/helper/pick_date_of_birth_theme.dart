@@ -14,6 +14,36 @@ Widget pickDateOfBirthTheme(BuildContext context, Widget? child) {
             error: context.theme.red100_1,
           ),
       scaffoldBackgroundColor: context.theme.white100_1,
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: context.theme.white100_1,
+        dialBackgroundColor: context.theme.white100_1,
+        hourMinuteTextColor: context.theme.black100,
+        hourMinuteColor: context.theme.white100_1,
+        dayPeriodTextColor: context.theme.black100,
+        dayPeriodColor: context.theme.blue100_1,
+        dialHandColor: context.theme.blue100_1,
+        dialTextColor: context.theme.black100,
+        timeSelectorSeparatorTextStyle: WidgetStateProperty.all(
+          AppStyles.bold36(context).copyWith(
+            color: context.theme.black100,
+          ),
+        ),
+        timeSelectorSeparatorColor:
+            WidgetStateProperty.all(context.theme.black100),
+        entryModeIconColor: context.theme.black100,
+        helpTextStyle: AppStyles.regular16(context).copyWith(
+          color: context.theme.black100,
+        ),
+        hourMinuteTextStyle: AppStyles.bold36(context).copyWith(
+          color: context.theme.black100,
+        ),
+        dayPeriodTextStyle: AppStyles.regular16(context).copyWith(
+          color: context.theme.black100,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
       datePickerTheme: DatePickerThemeData(
         dayStyle: AppStyles.regular16(context).copyWith(
           color: context.theme.black100,

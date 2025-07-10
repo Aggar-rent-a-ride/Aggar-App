@@ -68,6 +68,7 @@ class SavedVehicleSection extends StatelessWidget {
                   children: vehicles
                       .asMap()
                       .entries
+                      .take(6)
                       .map(
                         (entry) => VehicleCard(
                           entry: entry,
@@ -229,16 +230,17 @@ class SavedVehicleSection extends StatelessWidget {
                       )
                       .toList(),
                 ),
-                SeeMoreButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FavoriteVehicleScreen(),
-                      ),
-                    );
-                  },
-                )
+                if (vehicles.length >= 6)
+                  SeeMoreButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoriteVehicleScreen(),
+                        ),
+                      );
+                    },
+                  )
               ],
             ),
           );

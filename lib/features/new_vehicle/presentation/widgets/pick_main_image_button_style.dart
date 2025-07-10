@@ -17,13 +17,6 @@ class PickMainImageButtonStyle extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.25,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0, 0),
-            blurRadius: 4,
-          ),
-        ],
       ),
       child: ElevatedButton(
         style: ButtonStyle(
@@ -32,7 +25,7 @@ class PickMainImageButtonStyle extends StatelessWidget {
             context.theme.blue100_1.withOpacity(0.5),
           ),
           backgroundColor: WidgetStateProperty.all(
-            context.theme.blue100_1.withOpacity(0.3),
+            context.theme.blue100_1.withOpacity(0.15),
           ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(

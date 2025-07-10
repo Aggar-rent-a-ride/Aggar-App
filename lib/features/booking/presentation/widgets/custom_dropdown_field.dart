@@ -1,4 +1,4 @@
-import 'package:aggar/core/utils/app_constants.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -27,7 +27,7 @@ class CustomDropdownField extends StatelessWidget {
         Text(
           label,
           style: AppStyles.medium14(context).copyWith(
-            color: AppConstants.myBlack100_1.withOpacity(0.6),
+            color: context.theme.black50,
           ),
         ),
         const Gap(8),
@@ -35,10 +35,11 @@ class CustomDropdownField extends StatelessWidget {
           width: double.infinity,
           height: 48,
           decoration: BoxDecoration(
-            border:
-                Border.all(color: AppConstants.myBlack100_1.withOpacity(0.6)),
+            border: Border.all(
+              color: context.theme.black25,
+            ),
             borderRadius: BorderRadius.circular(8),
-            color: AppConstants.myWhite100_1,
+            color: context.theme.white100_1,
           ),
           child: InkWell(
             onTap: onTap,
@@ -51,14 +52,13 @@ class CustomDropdownField extends StatelessWidget {
                     value,
                     style: AppStyles.regular14(context).copyWith(
                       color: value == placeholder
-                          ? AppConstants.myBlack100_1.withOpacity(0.6)
-                          : AppConstants.myBlack100_1,
+                          ? context.theme.black50
+                          : context.theme.black100,
                     ),
                   ),
                   Icon(
                     Icons.keyboard_arrow_down,
-                    color:
-                        iconColor ?? AppConstants.myBlack100_1.withOpacity(0.6),
+                    color: iconColor ?? context.theme.black50,
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/views/booking_details_view_renter.dart';
 import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:aggar/features/main_screen/renter/presentation/widgets/booking_card.dart';
@@ -104,7 +105,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                 ),
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 55, bottom: 20),
-                child: const MainHeader(),
+                child: const MainHeader(isRenter: true),
               ),
 
               // Calendar Section
@@ -314,9 +315,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                         children: [
                           Text(
                             'New Bookings',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                            style: AppStyles.bold18(context).copyWith(
                               color: context.theme.black100,
                             ),
                           ),
@@ -329,9 +328,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                           ),
                         ],
                       ),
-                      const Gap(5),
-
-                      // BlocBuilder for BookingCubit
                       BlocBuilder<BookingCubit, BookingState>(
                         builder: (context, state) {
                           if (state is RenterPendingBookingsLoading) {
@@ -427,7 +423,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                                 ),
                               );
                             }
-
+                            print(state.bookings);
                             // Convert BookingModel to BookingItem for display
                             final bookingItems = state.bookings.map((booking) {
                               // Create a display name from vehicle brand and model
@@ -454,6 +450,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                             }).toList();
 
                             return ListView.separated(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: bookingItems.length,

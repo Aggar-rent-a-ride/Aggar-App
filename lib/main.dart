@@ -87,13 +87,12 @@ void main() async {
     print('FCM Token refreshed: $newToken');
   });
 
-  runApp(DevicePreview(
-    enabled: !kReleaseMode,
-    builder: (context) => MyApp(
+  runApp(
+    MyApp(
       secureStorage: secureStorage,
       initialLanguageCubit: languageCubit,
     ),
-  ));
+  );
 }
 
 Future<void> _initializeStripe() async {
@@ -299,8 +298,6 @@ class MyApp extends StatelessWidget {
           return BlocBuilder<LanguageCubit, LanguageState>(
             builder: (context, languageState) {
               return MaterialApp(
-                locale: DevicePreview.locale(context),
-                builder: DevicePreview.appBuilder,
                 themeMode: context.themeCubit.themeMode,
                 darkTheme: darkTheme,
                 theme: lightTheme,

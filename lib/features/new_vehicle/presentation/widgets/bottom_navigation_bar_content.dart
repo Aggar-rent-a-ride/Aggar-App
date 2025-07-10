@@ -43,7 +43,7 @@ class BottomNavigationBarContent extends StatelessWidget {
               context.theme.white50_1,
             ),
             backgroundColor: WidgetStatePropertyAll(
-              color ?? context.theme.blue100_2,
+              color ?? context.theme.blue100_1,
             ),
           ),
           onPressed: onPressed,

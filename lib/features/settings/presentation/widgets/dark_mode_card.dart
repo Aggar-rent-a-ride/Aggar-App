@@ -16,7 +16,7 @@ class DarkModeCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 1,
-      backgroundColor: context.theme.blue100_7,
+      backgroundColor: context.theme.blue100_1.withOpacity(0.05),
       child: Row(
         children: [
           Image(

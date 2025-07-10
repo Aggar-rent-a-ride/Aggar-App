@@ -57,18 +57,19 @@ class ReviewList extends StatelessWidget {
                   );
                 },
               ),
-              SeeMoreButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReviewUserScreen(
-                        userId: userId,
+              if (state.review!.data.length >= 6)
+                SeeMoreButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReviewUserScreen(
+                          userId: userId,
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
             ],
           );
         } else if (state is UserReviewFailure) {

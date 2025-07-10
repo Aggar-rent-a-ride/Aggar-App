@@ -17,6 +17,13 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.theme.white100_1,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          color: context.theme.black100,
+        ),
         elevation: 2,
         shadowColor: Colors.grey[900],
         surfaceTintColor: Colors.transparent,

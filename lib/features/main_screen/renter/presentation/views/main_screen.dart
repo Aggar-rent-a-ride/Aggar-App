@@ -135,7 +135,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               body: const LoadingMainScreen(),
             )
           : Scaffold(
-              backgroundColor: Colors.grey[50],
+              backgroundColor: context.theme.white100_2,
               floatingActionButton: FloatingActionButton(
                 heroTag: "Dddd",
                 onPressed: () {

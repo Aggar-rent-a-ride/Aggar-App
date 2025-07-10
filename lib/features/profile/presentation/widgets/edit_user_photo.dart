@@ -164,11 +164,15 @@ class EditUserPhoto extends StatelessWidget {
                 } else if (editState is EditUserInfoImageRemoved ||
                     editCubit.selectedImage == null &&
                         (user.imageUrl == null || user.imageUrl!.isEmpty)) {
-                  imageWidget = Image.asset(
-                    AppAssets.assetsImagesDafaultPfp0,
-                    height: 150,
-                    width: 150,
-                    fit: BoxFit.cover,
+                  imageWidget = Container(
+                    color: context.theme.grey100_1,
+                    child: Image.asset(
+                      color: context.theme.black50,
+                      AppAssets.assetsImagesDafaultPfp0,
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
                   );
                 } else {
                   imageWidget = AvatarChatView(

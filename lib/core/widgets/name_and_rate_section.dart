@@ -29,7 +29,6 @@ class NameAndRateSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create a GlobalKey to get the position of the IconButton
     final GlobalKey iconButtonKey = GlobalKey();
 
     return Row(
@@ -38,6 +37,7 @@ class NameAndRateSection extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
+            color: context.theme.grey100_1,
             boxShadow: const [
               BoxShadow(
                 offset: Offset(0, 0),
@@ -57,6 +57,7 @@ class NameAndRateSection extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
+                  color: context.theme.black50,
                   AppAssets.assetsImagesDafaultPfp0,
                   height: 45,
                   width: 45,
@@ -78,14 +79,16 @@ class NameAndRateSection extends StatelessWidget {
           onPressed: () async {
             final tokenCubit = context.read<TokenRefreshCubit>();
             final token = await tokenCubit.getAccessToken();
-            final RenderBox button =
-                iconButtonKey.currentContext!.findRenderObject() as RenderBox;
-            final Offset offset = button.localToGlobal(Offset.zero);
-            final RelativeRect position = RelativeRect.fromLTRB(
-              offset.dx,
-              offset.dy + button.size.height,
-              offset.dx + button.size.width,
-              offset.dy,
+            final RenderBox button = context.findRenderObject() as RenderBox;
+            final RenderBox overlay =
+                Overlay.of(context).context.findRenderObject() as RenderBox;
+            final RelativeRect position = RelativeRect.fromRect(
+              Rect.fromPoints(
+                button.localToGlobal(Offset.zero, ancestor: overlay),
+                button.localToGlobal(button.size.bottomRight(Offset.zero),
+                    ancestor: overlay),
+              ),
+              Offset.zero & overlay.size,
             );
 
             showMenu(

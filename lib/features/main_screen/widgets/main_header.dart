@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class MainHeader extends StatelessWidget {
-  const MainHeader({super.key});
+  const MainHeader({super.key, this.isRenter = false});
+  final bool? isRenter;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,7 +30,9 @@ class MainHeader extends StatelessWidget {
           ],
         ),
         const Gap(20),
-        const MainScreenSearchFieldWithFilterIcon()
+        isRenter == true
+            ? const SizedBox()
+            : const MainScreenSearchFieldWithFilterIcon()
       ],
     );
   }

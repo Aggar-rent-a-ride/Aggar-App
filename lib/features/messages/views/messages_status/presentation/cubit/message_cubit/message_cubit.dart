@@ -12,14 +12,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MessageCubit extends Cubit<MessageState> {
   final DioConsumer dioConsumer;
-  final StreamController<ListChatModel?> _chatStreamController =
-      StreamController<ListChatModel?>.broadcast();
-  Stream<ListChatModel?> get chatStream => _chatStreamController.stream;
   Timer? _pollingTimer;
   String? _accessToken;
   bool _isViewActive = false;
   ListChatModel? _cachedChats;
-  DateTime? _lastCacheUpdate;
 
   int _currentPage = 1;
   final int _pageSize = 20;
@@ -29,31 +25,25 @@ class MessageCubit extends Cubit<MessageState> {
   MessageCubit({required this.dioConsumer}) : super(MessageInitial()) {
     _loadCachedChats();
   }
-  ListChatModel? get initialChats => _cachedChats;
 
   void startPolling(String accessToken, {required bool isViewActive}) {
     _accessToken = accessToken;
     _isViewActive = isViewActive;
 
-    // First, show cached data immediately if available
+    // Show cached data immediately if available
     if (_cachedChats != null) {
-      emit(ChatSuccess(chats: _cachedChats));
-      _chatStreamController.add(_cachedChats);
+      emit(ChatSuccess(chats: _cachedChats!));
     }
 
-    // Then fetch fresh data in the background
-    _fetchInitialChats(accessToken);
+    // Fetch fresh data
+    getMyChat(accessToken);
 
-    // Start polling for updates with a small delay to avoid race conditions
+    // Start polling for updates
     _pollingTimer?.cancel();
     if (_isViewActive) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (_isViewActive) {
-          _pollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-            if (_accessToken != null && _isViewActive) {
-              _checkForNewMessages(_accessToken!);
-            }
-          });
+      _pollingTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+        if (_accessToken != null && _isViewActive) {
+          _checkForNewMessages(_accessToken!);
         }
       });
     }
@@ -63,34 +53,6 @@ class MessageCubit extends Cubit<MessageState> {
     _pollingTimer?.cancel();
     _pollingTimer = null;
     _isViewActive = false;
-  }
-
-  Future<void> _fetchInitialChats(String accessToken) async {
-    try {
-      final response = await dioConsumer.get(
-        EndPoint.getMyChat,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
-      );
-
-      if (response == null) return;
-
-      final chats = ListChatModel.fromJson(response);
-      _cachedChats = chats;
-      await _cacheChats(chats);
-
-      // Only emit if the data has changed
-      if (_hasNewMessages(_cachedChats!, chats)) {
-        emit(ChatSuccess(chats: chats));
-        _chatStreamController.add(chats);
-      }
-    } catch (e) {
-      print("Error fetching initial chats: $e");
-      // Don't emit error to keep showing cached data
-    }
   }
 
   Future<void> _checkForNewMessages(String accessToken) async {
@@ -111,25 +73,29 @@ class MessageCubit extends Cubit<MessageState> {
         _cachedChats = newChats;
         await _cacheChats(newChats);
         emit(ChatSuccess(chats: newChats));
-        _chatStreamController.add(newChats);
       }
     } catch (e) {
       print("Error checking for new messages: $e");
+      // Don't emit error to keep showing cached data
     }
   }
 
   Future<void> getMyChat(String accessToken, {bool loadMore = false}) async {
-    if (_isLoadingMore || (!loadMore && !_hasMoreChats)) return;
+    if (_isLoadingMore) return;
 
     try {
       if (loadMore) {
+        if (!_hasMoreChats) return;
         _isLoadingMore = true;
         _currentPage++;
-        emit(ChatsLoading());
+        emit(ChatsLoadingMore(chats: _cachedChats!));
       } else {
         _currentPage = 1;
         _hasMoreChats = true;
-        emit(ChatsLoading());
+        // Only show loading if no cached data
+        if (_cachedChats == null) {
+          emit(ChatsLoading());
+        }
       }
 
       final response = await dioConsumer.get(
@@ -143,15 +109,16 @@ class MessageCubit extends Cubit<MessageState> {
 
       if (response == null) {
         if (_cachedChats == null && !loadMore) {
-          emit(MessageFailure("No response received from server."));
+          emit(ChatsFailure("No response received from server."));
         }
-        if (loadMore) _isLoadingMore = false;
+        if (loadMore) {
+          _currentPage--;
+          _isLoadingMore = false;
+        }
         return;
       }
 
       final newChats = ListChatModel.fromJson(response);
-
-      // Check if we have more pages to load
       _hasMoreChats = newChats.data.length == _pageSize;
 
       if (loadMore) {
@@ -162,21 +129,17 @@ class MessageCubit extends Cubit<MessageState> {
         _cachedChats = updatedChats;
         await _cacheChats(updatedChats);
         emit(ChatSuccess(chats: updatedChats));
-        emit(ChatsLoaded());
-        _chatStreamController.add(updatedChats);
         _isLoadingMore = false;
       } else {
         _cachedChats = newChats;
         await _cacheChats(newChats);
         emit(ChatSuccess(chats: newChats));
-        emit(ChatsLoaded());
-        _chatStreamController.add(newChats);
       }
     } catch (e) {
       if (_cachedChats == null && !loadMore) {
         emit(MessageFailure("Failed to fetch chats: $e"));
       } else if (loadMore) {
-        _currentPage--; // Revert page increment on error
+        _currentPage--;
         _isLoadingMore = false;
         emit(MessageFailure("Failed to load more chats: $e"));
       }
@@ -190,8 +153,7 @@ class MessageCubit extends Cubit<MessageState> {
 
       if (cachedChats != null) {
         _cachedChats = ListChatModel.fromJson(jsonDecode(cachedChats));
-        emit(ChatSuccess(chats: _cachedChats));
-        _chatStreamController.add(_cachedChats);
+        emit(ChatSuccess(chats: _cachedChats!));
       }
     } catch (e) {
       print("Error loading cached chats: $e");
@@ -248,16 +210,12 @@ class MessageCubit extends Cubit<MessageState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('cached_chats');
-      await prefs.remove('last_cache_update');
       _cachedChats = null;
-      _lastCacheUpdate = null;
       _currentPage = 1;
       _hasMoreChats = true;
       emit(MessageInitial());
-      _chatStreamController.add(null);
     } catch (e) {
       emit(MessageFailure("Failed to clear cache: $e"));
-      _chatStreamController.addError("Failed to clear cache: $e");
     }
   }
 
@@ -268,7 +226,6 @@ class MessageCubit extends Cubit<MessageState> {
       final oldChat = oldChats.data[i];
       final newChat = newChats.data[i];
 
-      // Check for new messages, changes in unseen messages, or changes in last message
       if (oldChat.lastMessage.sentAt != newChat.lastMessage.sentAt ||
           oldChat.unseenMessageIds.length != newChat.unseenMessageIds.length ||
           oldChat.lastMessage.content != newChat.lastMessage.content ||
@@ -282,9 +239,6 @@ class MessageCubit extends Cubit<MessageState> {
   @override
   Future<void> close() {
     stopPolling();
-    if (!_chatStreamController.isClosed) {
-      _chatStreamController.close();
-    }
     return super.close();
   }
 }

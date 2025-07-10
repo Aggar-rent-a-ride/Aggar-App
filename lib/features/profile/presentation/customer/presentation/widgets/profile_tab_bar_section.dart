@@ -5,7 +5,8 @@ import 'package:aggar/features/profile/presentation/widgets/review_user_section.
 import 'package:aggar/features/profile/presentation/renter/presentation/widgets/booking_history_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:gap/gap.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 import '../../../../../../core/cubit/user_cubit/user_info_cubit.dart';
 import '../../../../../../core/cubit/user_cubit/user_info_state.dart';
 
@@ -19,17 +20,41 @@ class ProfileTabBarSection extends StatefulWidget {
 class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late PageController _pageController;
+  int selectedTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _pageController = PageController();
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        setState(() {
+          selectedTabIndex = _tabController.index;
+        });
+        _pageController.animateToPage(
+          _tabController.index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      selectedTabIndex = index;
+    });
+    _tabController.animateTo(index);
   }
 
   @override
@@ -43,36 +68,38 @@ class _ProfileTabBarSectionState extends State<ProfileTabBarSection>
 
         return Column(
           children: [
-            TabBar(
-              overlayColor: WidgetStateProperty.all(Colors.transparent),
-              controller: _tabController,
-              padding: EdgeInsets.zero,
-              indicatorPadding: EdgeInsets.zero,
-              indicatorColor: context.theme.blue100_2,
-              dividerColor: context.theme.black25,
-              labelColor: context.theme.blue100_2,
-              unselectedLabelColor: context.theme.black50,
-              labelStyle: AppStyles.bold18(context)
-                  .copyWith(color: context.theme.blue100_2),
-              unselectedLabelStyle: AppStyles.bold18(context).copyWith(
-                color: context.theme.black25,
-              ),
-              tabs: const [
-                Tab(text: 'Saved'),
-                Tab(text: 'Reviews'),
-                Tab(text: 'Booking'),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height + 500,
-              child: TabBarView(
+            const Gap(10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: TabBar(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
                 controller: _tabController,
-                children: [
-                  const SavedVehicleSection(),
-                  ReviewUserSection(userId: userId?.toString() ?? ''),
-                  const BookingHistoryList(),
+                padding: EdgeInsets.zero,
+                indicatorPadding: EdgeInsets.zero,
+                indicatorColor: context.theme.blue100_1,
+                dividerColor: context.theme.black25,
+                labelColor: context.theme.blue100_1,
+                unselectedLabelColor: context.theme.black50,
+                labelStyle: AppStyles.bold18(context)
+                    .copyWith(color: context.theme.blue100_2),
+                unselectedLabelStyle: AppStyles.bold18(context).copyWith(
+                  color: context.theme.black25,
+                ),
+                tabs: const [
+                  Tab(text: 'Saved'),
+                  Tab(text: 'Reviews'),
+                  Tab(text: 'Booking'),
                 ],
               ),
+            ),
+            ExpandablePageView(
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              children: [
+                const SavedVehicleSection(),
+                ReviewUserSection(userId: userId?.toString() ?? ''),
+                const BookingHistoryList(),
+              ],
             ),
           ],
         );

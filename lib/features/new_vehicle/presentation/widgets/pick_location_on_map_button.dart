@@ -23,13 +23,6 @@ class PickLocationOnMapButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0, 0),
-            blurRadius: 2,
-          )
-        ],
       ),
       width: double.infinity,
       height: MediaQuery.sizeOf(context).height * 0.18,
@@ -55,7 +48,7 @@ class PickLocationOnMapButton extends StatelessWidget {
             context.theme.blue100_1.withOpacity(0.5),
           ),
           backgroundColor: WidgetStateProperty.all(
-            color ?? context.theme.blue100_1.withOpacity(0.3),
+            color ?? context.theme.blue100_1.withOpacity(0.15),
           ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(

@@ -1,7 +1,9 @@
-import 'package:aggar/core/utils/app_constants.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
+import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/booking/presentation/views/booking_details_view_customer.dart';
-import 'package:aggar/features/booking/presentation/widgets/custom_app_bar.dart';
 import 'package:aggar/features/booking/presentation/widgets/date_time_row.dart';
 import 'package:aggar/features/booking/presentation/widgets/important_reminder.dart';
 import 'package:aggar/features/booking/presentation/widgets/step_indicator.dart';
@@ -35,7 +37,28 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppConstants.myWhite100_1,
+      backgroundColor: context.theme.white100_1,
+      appBar: AppBar(
+        elevation: 1,
+        shadowColor: Colors.grey[900],
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        backgroundColor: context.theme.white100_1,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: context.theme.black100,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          'Book Vehicle',
+          style: AppStyles.semiBold24(context)
+              .copyWith(color: context.theme.black100),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -43,12 +66,13 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
             listener: (context, state) {
               if (state is BookingCreateSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Booking created successfully!'),
-                    backgroundColor: Colors.green,
+                  customSnackBar(
+                    context,
+                    "Success",
+                    'Booking created successfully!',
+                    SnackBarType.success,
                   ),
                 );
-
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -59,26 +83,20 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                 );
               } else if (state is BookingCreateError) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Booking failed: ${state.message}'),
-                    backgroundColor: Colors.red,
+                  customSnackBar(
+                    context,
+                    "Error",
+                    'Booking failed: ${state.message}',
+                    SnackBarType.error,
                   ),
                 );
               }
             },
             child: Column(
               children: [
-                // Header using CustomAppBar
-                const CustomAppBar(title: 'Book Vehicle'),
-
-                const Gap(32),
-
-                // Step indicator using StepIndicator
+                const Gap(20),
                 const StepIndicator(title: 'Select Date & Time'),
-
                 const Gap(40),
-
-                // Start Date and Pickup Time using DateTimeRow
                 DateTimeRow(
                   dateLabel: 'Start Date:',
                   timeLabel: 'Pickup Time:',
@@ -87,12 +105,8 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                   datePlaceholder: "Select date",
                   onDateTap: () => selectDate(context, true),
                   onTimeTap: () => selectTime(context, true),
-                  timeIconColor: AppConstants.myBlue100_4,
                 ),
-
                 const Gap(24),
-
-                // End Date and Drop Time using DateTimeRow
                 DateTimeRow(
                   dateLabel: 'End Date:',
                   timeLabel: 'Drop Time:',
@@ -102,17 +116,13 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                   onDateTap: () => selectDate(context, false),
                   onTimeTap: () => selectTime(context, false),
                 ),
-
                 const Spacer(),
-
                 const ReminderContainer(
                   title: 'Important Reminder',
                   message:
                       'Please ensure you have all required documents for vehicle pickup.',
                 ),
-
                 const Gap(24),
-
                 BlocBuilder<BookingCubit, BookingState>(
                   builder: (context, state) {
                     final isLoading = state is BookingCreateLoading;
@@ -123,7 +133,6 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                     );
                   },
                 ),
-
                 const Gap(16),
               ],
             ),
@@ -140,17 +149,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppConstants.myBlue100_3,
-              onPrimary: AppConstants.myWhite100_1,
-              surface: AppConstants.myWhite100_1,
-              onSurface: AppConstants.myBlack100_1,
-            ),
-          ),
-          child: child!,
-        );
+        return pickDateOfBirthTheme(context, child!);
       },
     );
 
@@ -159,11 +158,9 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
         String formattedDate = "${picked.day}/${picked.month}/${picked.year}";
         if (isStartDate) {
           selectedStartDate = formattedDate;
-          // Store the DateTime for API call
           startDateTime = _combineDateTime(picked, selectedPickupTime);
         } else {
           selectedEndDate = formattedDate;
-          // Store the DateTime for API call
           endDateTime = _combineDateTime(picked, selectedDropTime);
         }
       });
@@ -175,17 +172,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
       context: context,
       initialTime: const TimeOfDay(hour: 9, minute: 0),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppConstants.myBlue100_3,
-              onPrimary: AppConstants.myWhite100_1,
-              surface: AppConstants.myWhite100_1,
-              onSurface: AppConstants.myBlack100_1,
-            ),
-          ),
-          child: child!,
-        );
+        return pickDateOfBirthTheme(context, child!);
       },
     );
 
@@ -195,14 +182,12 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
             "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}";
         if (isPickupTime) {
           selectedPickupTime = formattedTime;
-          // Update startDateTime if date is already selected
           if (selectedStartDate != "Select date") {
             startDateTime = _combineDateTime(
                 _parseDateString(selectedStartDate), formattedTime);
           }
         } else {
           selectedDropTime = formattedTime;
-          // Update endDateTime if date is already selected
           if (selectedEndDate != "Select date") {
             endDateTime = _combineDateTime(
                 _parseDateString(selectedEndDate), formattedTime);
@@ -229,14 +214,13 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
   DateTime _parseDateString(String dateString) {
     final parts = dateString.split('/');
     return DateTime(
-      int.parse(parts[2]), // year
-      int.parse(parts[1]), // month
-      int.parse(parts[0]), // day
+      int.parse(parts[2]),
+      int.parse(parts[1]),
+      int.parse(parts[0]),
     );
   }
 
   void _createBooking() {
-    // Validation
     if (selectedStartDate == "Select date") {
       _showErrorSnackBar("Please select a start date");
       return;
@@ -256,10 +240,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
       _showErrorSnackBar("End date must be after start date");
       return;
     }
-
-    // Create booking using cubit
     final vehicleIdInt = widget.vehicleId;
-
     context.read<BookingCubit>().createBooking(
           vehicleId: vehicleIdInt,
           startDate: startDateTime!,
@@ -269,9 +250,11 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
+      customSnackBar(
+        context,
+        "Error",
+        message,
+        SnackBarType.error,
       ),
     );
   }

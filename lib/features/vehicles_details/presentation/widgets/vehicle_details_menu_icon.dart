@@ -25,13 +25,13 @@ class VehicleDetailsMenuIcon extends StatelessWidget {
       onPressed: () async {
         final tokenCubit = context.read<TokenRefreshCubit>();
         final token = await tokenCubit.getAccessToken();
-        final RenderBox appBar = context.findRenderObject() as RenderBox;
+        final RenderBox button = context.findRenderObject() as RenderBox;
         final RenderBox overlay =
             Overlay.of(context).context.findRenderObject() as RenderBox;
         final RelativeRect position = RelativeRect.fromRect(
           Rect.fromPoints(
-            appBar.localToGlobal(Offset.zero, ancestor: overlay),
-            appBar.localToGlobal(appBar.size.bottomRight(Offset.zero),
+            button.localToGlobal(Offset.zero, ancestor: overlay),
+            button.localToGlobal(button.size.bottomRight(Offset.zero),
                 ancestor: overlay),
           ),
           Offset.zero & overlay.size,
@@ -41,12 +41,7 @@ class VehicleDetailsMenuIcon extends StatelessWidget {
           elevation: 1,
           color: context.theme.white100_2,
           context: context,
-          position: RelativeRect.fromLTRB(
-            position.left,
-            position.top + appBar.size.height,
-            position.right,
-            position.bottom,
-          ),
+          position: position,
           items: [
             PopupMenuItem(
               value: "create_report",
