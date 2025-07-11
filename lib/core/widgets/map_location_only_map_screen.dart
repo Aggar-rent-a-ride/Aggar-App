@@ -23,7 +23,8 @@ class MapLocationOnlyMapScreen extends StatelessWidget {
       children: [
         TileLayer(
           //urlTemplate: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          urlTemplate:
+              'https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.example.app',
         ),
         MarkerLayer(

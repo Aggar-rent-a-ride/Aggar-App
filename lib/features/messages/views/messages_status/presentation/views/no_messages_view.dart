@@ -31,13 +31,7 @@ class NoMessagesView extends StatelessWidget {
                 color: context.theme.blue100_1,
               ),
             ),
-            Text(
-              " start chating",
-              style: AppStyles.medium20(context).copyWith(
-                color: context.theme.blue100_2,
-              ),
-            ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
                 final tokenCubit = context.read<TokenRefreshCubit>();
                 final token = await tokenCubit.getAccessToken();
@@ -46,7 +40,12 @@ class NoMessagesView extends StatelessWidget {
                   await messageCubit.getMyChat(token);
                 }
               },
-              child: const Text("Refresh"),
+              child: Text(
+                "Refresh",
+                style: AppStyles.medium20(context).copyWith(
+                  color: context.theme.blue100_2,
+                ),
+              ),
             ),
           ],
         ),

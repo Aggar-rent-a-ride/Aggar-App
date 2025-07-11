@@ -31,7 +31,7 @@ class AvatarChatView extends StatelessWidget {
         child: image == null
             ? Image.asset(
                 color: context.theme.black50,
-                AppAssets.assetsImagesDafaultPfp0,
+                AppAssets.assetsImagesDefaultPfp0,
                 height: size ?? 50,
                 width: size ?? 50,
                 fit: BoxFit.cover,
@@ -46,7 +46,7 @@ class AvatarChatView extends StatelessWidget {
                   debugPrint("Error loading avatar image: $error");
                   return Image.asset(
                     color: context.theme.black50,
-                    AppAssets.assetsImagesDafaultPfp0,
+                    AppAssets.assetsImagesDefaultPfp0,
                     height: size ?? 50,
                     width: size ?? 50,
                     fit: BoxFit.cover,

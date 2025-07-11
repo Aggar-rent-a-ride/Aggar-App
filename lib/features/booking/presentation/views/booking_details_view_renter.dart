@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_action_buttons.dart';
 import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_booking_period_with_total_duration_section.dart';
@@ -85,9 +86,11 @@ class _BookingDetailsScreenRenterState
         listener: (context, state) {
           if (state is BookingGetByIdError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
+              customSnackBar(
+                context,
+                "Error",
+                state.message,
+                SnackBarType.error,
               ),
             );
           }
@@ -95,12 +98,12 @@ class _BookingDetailsScreenRenterState
             setState(() {
               _isProcessingResponse = false;
             });
-
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor:
-                    state.isAccepted ? Colors.green : Colors.orange,
+              customSnackBar(
+                context,
+                state.isAccepted ? "Success" : "Warning",
+                state.message,
+                state.isAccepted ? SnackBarType.success : SnackBarType.warning,
               ),
             );
 
@@ -120,9 +123,11 @@ class _BookingDetailsScreenRenterState
               _showPaymentAccountRequiredDialog(context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
+                customSnackBar(
+                  context,
+                  "Error",
+                  state.message,
+                  SnackBarType.error,
                 ),
               );
             }

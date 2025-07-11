@@ -1,3 +1,4 @@
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
 import 'package:aggar/features/booking/data/model/booking_model.dart';
@@ -182,9 +183,11 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
   void _navigateToBookingDetails(BookingHistoryModel booking) {
     if (_userType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to determine user type. Please try again.'),
-          backgroundColor: Colors.red,
+        customSnackBar(
+          context,
+          "Error",
+          'Unable to determine user type. Please try again.',
+          SnackBarType.error,
         ),
       );
       return;

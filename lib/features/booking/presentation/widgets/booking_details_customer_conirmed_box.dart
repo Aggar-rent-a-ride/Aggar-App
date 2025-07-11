@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/presentation/views/rent_history_view.dart';
@@ -62,10 +63,11 @@ class BookingDetailsCustomerConirmedBox extends StatelessWidget {
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text('Error navigating to rental history: $e'),
-                          backgroundColor: Colors.red,
+                        customSnackBar(
+                          context,
+                          "Error",
+                          'Error navigating to rental history: $e',
+                          SnackBarType.error,
                         ),
                       );
                     }

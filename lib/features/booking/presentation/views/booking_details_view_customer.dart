@@ -1,4 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/views/payment_page.dart';
 import 'package:aggar/features/booking/presentation/widgets/booing_details_customer_pending_action_buttons.dart';
@@ -34,24 +35,30 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
           listener: (context, state) {
             if (state is BookingCancelSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.green,
+                customSnackBar(
+                  context,
+                  "Success",
+                  state.message,
+                  SnackBarType.success,
                 ),
               );
               Navigator.pop(context, true);
             } else if (state is BookingCancelError) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
+                customSnackBar(
+                  context,
+                  "Error",
+                  state.message,
+                  SnackBarType.error,
                 ),
               );
             } else if (state is BookingConfirmSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.green,
+                customSnackBar(
+                  context,
+                  "Success",
+                  state.message,
+                  SnackBarType.success,
                 ),
               );
               if (state.clientSecret != null) {
@@ -68,18 +75,21 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
               } else {
                 // Handle case where client secret is not provided
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Payment initialization failed. Please try again.'),
-                    backgroundColor: Colors.red,
+                  customSnackBar(
+                    context,
+                    "Error",
+                    "Payment initialization failed. Please try again.",
+                    SnackBarType.error,
                   ),
                 );
               }
             } else if (state is BookingConfirmError) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
+                customSnackBar(
+                  context,
+                  "Error",
+                  state.message,
+                  SnackBarType.error,
                 ),
               );
             }
@@ -89,17 +99,21 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
           listener: (context, state) {
             if (state is RentalHistoryRefundSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.green,
+                customSnackBar(
+                  context,
+                  "Success",
+                  state.message,
+                  SnackBarType.success,
                 ),
               );
               Navigator.pop(context, true);
             } else if (state is RentalHistoryError) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
+                customSnackBar(
+                  context,
+                  "Error",
+                  state.message,
+                  SnackBarType.error,
                 ),
               );
             }

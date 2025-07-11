@@ -1,5 +1,5 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/utils/app_constants.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/booking/presentation/views/booking_details_view_renter.dart';
 import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
@@ -79,10 +79,11 @@ class _MainScreenBodyState extends State<MainScreenBody> {
               });
             } else if (state is BookingIntervalsError) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                      'Failed to load booking intervals: ${state.message}'),
-                  backgroundColor: Colors.red,
+                customSnackBar(
+                  context,
+                  "Error",
+                  'Failed to load booking intervals: ${state.message}',
+                  SnackBarType.error,
                 ),
               );
             }
@@ -221,7 +222,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                             ),
                             selectedTextStyle:
                                 AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black100,
+                              color: context.theme.white100_1,
                             ),
                             todayDecoration: BoxDecoration(
                               color: context.theme.grey100_1,

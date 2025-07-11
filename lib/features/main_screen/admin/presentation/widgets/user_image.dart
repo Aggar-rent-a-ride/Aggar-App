@@ -32,7 +32,7 @@ class UserImage extends StatelessWidget {
         child: user.imagePath == null
             ? Image.asset(
                 color: context.theme.black50,
-                AppAssets.assetsImagesDafaultPfp0,
+                AppAssets.assetsImagesDefaultPfp0,
                 height: 35,
                 width: 35,
                 fit: BoxFit.cover,
@@ -42,7 +42,7 @@ class UserImage extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) {
                   return Image.asset(
                     color: context.theme.black50,
-                    AppAssets.assetsImagesDafaultPfp0,
+                    AppAssets.assetsImagesDefaultPfp0,
                     height: 35,
                     width: 35,
                     fit: BoxFit.cover,

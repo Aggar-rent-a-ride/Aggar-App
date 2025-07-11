@@ -14,6 +14,7 @@ import 'package:aggar/features/authorization/presentation/widget/sign_in_image_w
 import 'package:aggar/features/main_screen/admin/presentation/views/admin_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/views/customer_bottom_navigation_bar_views.dart';
 import 'package:aggar/features/main_screen/renter/presentation/views/renter_bottom_navigation_bar_view.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
@@ -129,7 +130,10 @@ class _SignInContent extends StatelessWidget {
                     const SignInForgetPasswordButton(),
                     const Gap(20),
                     CustomElevatedButton(
-                      onPressed: isLoading ? null : loginCubit.handleLogin,
+                      onPressed: () {
+                        isLoading ? null : loginCubit.handleLogin();
+                        context.read<MessageCubit>().clearCache();
+                      },
                       text: 'Login',
                       isLoading: isLoading,
                     ),

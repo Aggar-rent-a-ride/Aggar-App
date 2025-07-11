@@ -148,11 +148,14 @@ class EditUserInfoListField extends StatelessWidget {
                     Navigator.pop(context);
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    customSnackBar(
                       context,
                       "Warning",
                       "Please fill in all required fields",
-                      SnackBarType.warning));
+                      SnackBarType.warning,
+                    ),
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(

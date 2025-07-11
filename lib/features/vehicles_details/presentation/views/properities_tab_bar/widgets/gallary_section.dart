@@ -89,17 +89,17 @@ class GallarySection extends StatelessWidget {
           ),
           const Gap(10),
           RawScrollbar(
-padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.sizeOf(context).width * 0.36,
-                  ),
-                  thumbVisibility: true,
-                  minThumbLength: MediaQuery.sizeOf(context).width * 0.1,
-                  trackVisibility: true,
-                  trackRadius: const Radius.circular(50),
-                  trackColor: context.theme.white100_4,
-                  thumbColor: context.theme.blue100_1,
-                  radius: const Radius.circular(20),
-                  thickness: 8,
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.sizeOf(context).width * 0.36,
+            ),
+            thumbVisibility: true,
+            minThumbLength: MediaQuery.sizeOf(context).width * 0.1,
+            trackVisibility: true,
+            trackRadius: const Radius.circular(50),
+            trackColor: context.theme.white100_4,
+            thumbColor: context.theme.blue100_1,
+            radius: const Radius.circular(20),
+            thickness: 8,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               controller: _scrollController,

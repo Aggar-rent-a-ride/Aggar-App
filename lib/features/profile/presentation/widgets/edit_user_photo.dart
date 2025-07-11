@@ -168,7 +168,7 @@ class EditUserPhoto extends StatelessWidget {
                     color: context.theme.grey100_1,
                     child: Image.asset(
                       color: context.theme.black50,
-                      AppAssets.assetsImagesDafaultPfp0,
+                      AppAssets.assetsImagesDefaultPfp0,
                       height: 150,
                       width: 150,
                       fit: BoxFit.cover,
@@ -241,7 +241,7 @@ class EditUserPhoto extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Image.asset(AppAssets.assetsImagesDafaultPfp0),
+                          child: Image.asset(AppAssets.assetsImagesDefaultPfp0),
                         ),
                       ),
                     ),

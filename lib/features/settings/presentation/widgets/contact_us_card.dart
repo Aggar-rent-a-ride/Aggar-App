@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/utils/app_styles.dart';
+import '../../presentation/views/contact_us_screen.dart';
 
 class ContactUsCard extends StatelessWidget {
   const ContactUsCard({
@@ -17,7 +18,12 @@ class ContactUsCard extends StatelessWidget {
     return CustomCardSettingsPage(
       padingHorizental: 5,
       padingVeritical: 10,
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ContactUsScreen()),
+        );
+      },
       backgroundColor: context.theme.blue100_1.withOpacity(0.05),
       child: Row(
         children: [

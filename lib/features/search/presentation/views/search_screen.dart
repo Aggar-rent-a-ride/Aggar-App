@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_cubit.dart';
 import 'package:aggar/features/search/presentation/cubit/search_field/search_state.dart';
 import 'package:aggar/features/main_screen/widgets/filter_icon.dart';
@@ -42,12 +43,11 @@ class _SearchScreenState extends State<SearchScreen> {
       context.read<SearchCubit>().setAccessToken(token);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed to retrieve access token.',
-            style: TextStyle(color: context.theme.white100_1),
-          ),
-          backgroundColor: Colors.red,
+        customSnackBar(
+          context,
+          "Error",
+          'Failed to retrieve access token.',
+          SnackBarType.error,
         ),
       );
     }
