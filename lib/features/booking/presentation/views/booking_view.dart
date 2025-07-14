@@ -75,11 +75,11 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                 );
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => BookingDetailsScreenCustomer(
+                  MaterialPageRoute(builder: (context) {
+                    return BookingDetailsScreenCustomer(
                       booking: state.booking,
-                    ),
-                  ),
+                    );
+                  }),
                 );
               } else if (state is BookingCreateError) {
                 ScaffoldMessenger.of(context).showSnackBar(

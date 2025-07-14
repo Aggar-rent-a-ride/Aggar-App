@@ -22,14 +22,11 @@ class CustomContainer extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
         decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 3,
-              offset: Offset(0, 0),
-            )
-          ],
-          color: containerColor,
+          border: Border.all(
+            color: containerColor.withOpacity(0.15),
+            width: 1,
+          ),
+          color: containerColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(50),
         ),
         child: Text(

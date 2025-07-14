@@ -23,13 +23,20 @@ class CredentialsPage extends StatelessWidget {
 
   void _nextPage(BuildContext context) {
     final cubit = context.read<CredentialsCubit>();
-    if (cubit.state.validateEmail() &&
-        cubit.state.validatePassword() &&
-        cubit.state.validateConfirmPassword()) {
-      controller.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+    print('Validating form, email: ${cubit.emailController.text}, '
+        'password: ${cubit.passwordController.text}, '
+        'confirm: ${cubit.confirmPasswordController.text}'); // Debug
+
+    // Trigger validation for all fields
+    final formState = cubit.formKey.currentState;
+    if (formState != null) {
+      final isValid = formState.validate();
+      if (isValid) {
+        controller.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
@@ -38,6 +45,46 @@ class CredentialsPage extends StatelessWidget {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+
+  String? _validateEmail(String? value) {
+    print('Validating email: $value'); // Debug
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email (e.g., user@example.com)';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    print('Validating password: $value'); // Debug
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    if (!RegExp(
+            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$')
+        .hasMatch(value)) {
+      return 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value, String password) {
+    print('Validating confirm password: $value, password: $password'); // Debug
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (value != password) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
 
   @override
@@ -95,14 +142,7 @@ class CredentialsPage extends StatelessWidget {
                             hintText: "Enter your Email",
                             controller: cubit.emailController,
                             onChanged: cubit.updateEmail,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              } else if (!state.validateEmail()) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
+                            validator: _validateEmail,
                           ),
                           const Gap(15),
                           CustomTextField(
@@ -112,14 +152,7 @@ class CredentialsPage extends StatelessWidget {
                             hintText: "Enter password",
                             controller: cubit.passwordController,
                             onChanged: cubit.updatePassword,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a password';
-                              } else if (!state.validatePassword()) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
+                            validator: (value) => _validatePassword(value),
                             suffixIcon: Icon(
                               state.passwordVisible
                                   ? Icons.visibility
@@ -135,14 +168,8 @@ class CredentialsPage extends StatelessWidget {
                             hintText: "Enter your password again",
                             controller: cubit.confirmPasswordController,
                             onChanged: cubit.updateConfirmPassword,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please confirm your password';
-                              } else if (!state.validateConfirmPassword()) {
-                                return 'Passwords do not match';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                _validateConfirmPassword(value, state.password),
                             suffixIcon: Icon(
                               state.confirmPasswordVisible
                                   ? Icons.visibility
@@ -162,9 +189,7 @@ class CredentialsPage extends StatelessWidget {
                               const Gap(10),
                               Expanded(
                                 child: CustomElevatedButton(
-                                  onPressed: state.isFormValid
-                                      ? () => _nextPage(context)
-                                      : null,
+                                  onPressed: () => _nextPage(context),
                                   text: "Next",
                                 ),
                               ),

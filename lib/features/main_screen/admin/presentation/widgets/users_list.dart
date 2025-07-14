@@ -39,7 +39,7 @@ class UsersList extends StatelessWidget {
             accessToken: accessToken,
             onPressed: () {
               context.read<UserCubit>().getUserWithRole(accessToken, "Renter");
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => RoleUserScreen(
@@ -58,7 +58,7 @@ class UsersList extends StatelessWidget {
               context
                   .read<UserCubit>()
                   .getUserWithRole(accessToken, "Customer");
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => RoleUserScreen(
