@@ -1,5 +1,6 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/translations/l10n.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/custom_page_view.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/next_and_back_button_widget.dart';
 import 'package:aggar/features/onboarding/presentation/widgets/start_now_widget.dart';
@@ -70,11 +71,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                     : NextandBackButtonWidget(
                         label: localizations.translate('skip'),
                         onPressed: () {
-                          controller.previousPage(
-                            duration: const Duration(
-                              milliseconds: 400,
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignInView(),
                             ),
-                            curve: Curves.easeIn,
                           );
                         },
                       ),

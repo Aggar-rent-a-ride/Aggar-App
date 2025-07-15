@@ -2,7 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
     required this.labelText,
@@ -33,11 +33,39 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller != null) {
+      widget.controller!.addListener(_syncController);
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller != null) {
+      widget.controller!.removeListener(_syncController);
+    }
+    super.dispose();
+  }
+
+  void _syncController() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FormField<String>(
-      initialValue: initialValue ?? controller?.text,
-      validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      initialValue: widget.initialValue,
+      validator: (value) =>
+          widget.validator?.call(widget.controller?.text ?? value),
+      autovalidateMode: AutovalidateMode.disabled,
       builder: (FormFieldState<String> state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +73,7 @@ class CustomTextField extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                labelText,
+                widget.labelText,
                 style: AppStyles.medium20(context).copyWith(
                   color: context.theme.black100,
                 ),
@@ -67,17 +95,19 @@ class CustomTextField extends StatelessWidget {
                   color: context.theme.black100,
                 ),
                 textAlign: TextAlign.start,
-                keyboardType: inputType,
-                maxLines: obscureText ? 1 : maxLines,
-                onTap: onTap,
+                keyboardType: widget.inputType,
+                maxLines: widget.obscureText ? 1 : widget.maxLines,
+                onTap: widget.onTap,
                 onChanged: (value) {
-                  state.didChange(value);
-                  onChanged?.call(value);
+                  if (state.mounted) {
+                    state.didChange(value);
+                  }
+                  widget.onChanged?.call(value);
                 },
-                obscureText: obscureText,
-                controller: controller,
+                obscureText: widget.obscureText,
+                controller: widget.controller,
                 decoration: InputDecoration(
-                  hintText: hintText,
+                  hintText: widget.hintText,
                   hintStyle: AppStyles.regular16(context).copyWith(
                     color: context.theme.black50,
                   ),
@@ -109,11 +139,11 @@ class CustomTextField extends StatelessWidget {
                           )
                         : BorderSide.none,
                   ),
-                  suffixIcon: suffixIcon != null
+                  suffixIcon: widget.suffixIcon != null
                       ? IconButton(
                           color: context.theme.black50,
-                          icon: suffixIcon!,
-                          onPressed: onSuffixIconPressed,
+                          icon: widget.suffixIcon!,
+                          onPressed: widget.onSuffixIconPressed,
                         )
                       : null,
                 ),

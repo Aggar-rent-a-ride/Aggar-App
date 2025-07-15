@@ -248,11 +248,22 @@ class SavedVehicleSection extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Center(
-              child: Text(
-                'Error: ${state.errorMessage}',
-                style: AppStyles.medium16(context).copyWith(
-                  color: context.theme.black50,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 50,
+                    color: context.theme.blue100_2,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Something was wrong',
+                    style: AppStyles.medium16(context).copyWith(
+                      color: context.theme.black50,
+                    ),
+                  ),
+                ],
               ),
             ),
           );

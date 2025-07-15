@@ -152,6 +152,7 @@ class BookingDetailsScreenCustomer extends StatelessWidget {
               color: context.theme.black100,
             ),
             onPressed: () {
+              print(booking.vehicleImagePath);
               Navigator.pop(context);
             },
           ),

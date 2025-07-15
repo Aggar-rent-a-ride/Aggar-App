@@ -29,18 +29,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   late final TextEditingController _usernameController;
   late final TextEditingController _dateController;
 
-  bool _isFormValid = false;
-
   @override
   void initState() {
     super.initState();
 
     _nameController = TextEditingController(
         text: widget.initialData?['name'] as String? ?? '');
-
     _usernameController = TextEditingController(
         text: widget.initialData?['username'] as String? ?? '');
-
     _dateController = TextEditingController(
         text: widget.initialData?['dateOfBirth'] as String? ?? '');
 
@@ -59,12 +55,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     };
 
     widget.onFormDataChanged(formData);
-
-    setState(() {
-      _isFormValid = _nameController.text.isNotEmpty &&
-          _usernameController.text.isNotEmpty &&
-          _dateController.text.isNotEmpty;
-    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -78,19 +68,26 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       lastDate: DateTime.now(),
     );
     if (picked != null) {
+      final formattedDate =
+          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
       setState(() {
-        _dateController.text =
-            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+        _dateController.text = formattedDate;
+        _updateFormData();
       });
     }
   }
 
   void _nextPage() {
-    if (_formKey.currentState!.validate()) {
-      widget.controller.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+    // Trigger validation for all fields
+    final formState = _formKey.currentState;
+    if (formState != null) {
+      final isValid = formState.validate();
+      if (isValid) {
+        widget.controller.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
@@ -100,6 +97,57 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     _usernameController.dispose();
     _dateController.dispose();
     super.dispose();
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    if (value.length < 2 || value.length > 50) {
+      return 'Name must be between 2 and 50 characters';
+    }
+    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      return 'Name can only contain letters and spaces';
+    }
+    return null;
+  }
+
+  String? _validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a username';
+    }
+    if (value.length < 3 || value.length > 15) {
+      return 'Username must be between 3 and 15 characters';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
+      return 'Username can only contain letters and numbers';
+    }
+    return null;
+  }
+
+  String? _validateDateOfBirth(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select your date of birth';
+    }
+    try {
+      final date = DateTime.parse(value);
+      final now = DateTime.now();
+      final age = now.year -
+          date.year -
+          (now.month < date.month ||
+                  (now.month == date.month && now.day < date.day)
+              ? 1
+              : 0);
+      if (age < 13) {
+        return 'You must be at least 13 years old';
+      }
+      if (date.isAfter(now)) {
+        return 'Date of birth cannot be in the future';
+      }
+    } catch (e) {
+      return 'Invalid date format';
+    }
+    return null;
   }
 
   @override
@@ -129,12 +177,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       obscureText: false,
                       hintText: "Enter your name",
                       controller: _nameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      validator: _validateName,
                     ),
                     const Gap(15),
                     CustomTextField(
@@ -143,12 +186,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       obscureText: false,
                       hintText: "Enter name other users will see",
                       controller: _usernameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a username';
-                        }
-                        return null;
-                      },
+                      validator: _validateUsername,
                     ),
                     const Gap(15),
                     GestureDetector(
@@ -164,19 +202,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             Icons.calendar_today,
                             color: context.theme.black50,
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select your date of birth';
-                            }
-                            return null;
-                          },
+                          validator: _validateDateOfBirth,
                         ),
                       ),
                     ),
                     const Gap(30),
                     Center(
                       child: CustomElevatedButton(
-                        onPressed: _isFormValid ? _nextPage : null,
+                        onPressed: _nextPage, // Always allow validation to run
                         text: "Next",
                       ),
                     ),

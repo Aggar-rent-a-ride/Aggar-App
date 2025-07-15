@@ -10,6 +10,7 @@ import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/loading_main_screen.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/main_screen_body.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

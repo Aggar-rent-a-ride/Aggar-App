@@ -31,7 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String? userId = await context.read<LoginCubit>().getUserId();
     if (userId != null) {
       final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.getAccessToken();
+      final token = await tokenCubit.ensureValidToken();
+      ();
       if (token != null) {
         context.read<ProfileCubit>().fetchFavoriteVehicles(token);
         context.read<UserReviewCubit>().getUserReviews(userId, token);

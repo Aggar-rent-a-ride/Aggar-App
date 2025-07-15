@@ -7,6 +7,7 @@ import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/authorization/presentation/widget/custom_text_from_felid.dart';
 import 'package:aggar/features/profile/presentation/customer/presentation/widgets/pick_user_location.dart';
+import 'package:aggar/features/profile/presentation/widgets/date_of_birth_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -20,48 +21,6 @@ class EditUserInfoListField extends StatelessWidget {
   });
 
   final EditUserInfoCubit cubit;
-  String? _validateDateFormat(String? value) {
-    if (value == null) {
-      return 'Date of birth is required';
-    }
-
-    final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-    if (!dateRegex.hasMatch(value.trim())) {
-      return 'Date format must be YYYY-MM-DD (e.g., 1990-06-24)';
-    }
-
-    try {
-      final parts = value.trim().split('-');
-      final year = int.parse(parts[0]);
-      final month = int.parse(parts[1]);
-      final day = int.parse(parts[2]);
-
-      if (year < 1900 || year > 2025) {
-        return 'Please enter a valid year (1900-2025)';
-      }
-      if (month < 1 || month > 12) {
-        return 'Month must be between 01 and 12';
-      }
-      if (day < 1 || day > 31) {
-        return 'Day must be between 01 and 31';
-      }
-      final date = DateTime(year, month, day);
-
-      final maxDate = DateTime(2025, 1, 13);
-      if (date.isAfter(maxDate)) {
-        return 'Date of birth cannot be after January 13, 2025';
-      }
-
-      final minDate = maxDate.subtract(const Duration(days: 365 * 13));
-      if (date.isAfter(minDate)) {
-        return 'You must be at least 13 years old as of January 13, 2025';
-      }
-    } catch (e) {
-      return 'Please enter a valid date';
-    }
-
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +52,9 @@ class EditUserInfoListField extends StatelessWidget {
             obscureText: false,
             maxLines: 3,
           ),
-          CustomTextField(
+          DateOfBirthPicker(
             controller: cubit.dateOfBirthController,
-            hintText: "Enter your date of birth (YYYY-MM-DD)",
-            labelText: "Date of Birth",
-            inputType: TextInputType.datetime,
-            obscureText: false,
-            validator: _validateDateFormat,
+            onDateSelected: (selectedDate) {},
           ),
           BlocBuilder<EditUserInfoCubit, EditUserInfoState>(
             builder: (context, state) {
@@ -130,6 +85,7 @@ class EditUserInfoListField extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () async {
                 final cubit = context.read<EditUserInfoCubit>();
+
                 if (context
                         .read<EditUserInfoCubit>()
                         .formKey

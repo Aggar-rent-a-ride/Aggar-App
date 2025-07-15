@@ -55,28 +55,29 @@ class OverViewSection extends StatelessWidget {
           ),
         ),
         VehicleHealthWithStatusContainer(
-            carHealth: carHealth,
-            carHealthTextColor: carHealth == "excellent"
-                ? AppConstants.myGreen100_1
-                : carHealth == "good"
-                    ? AppConstants.myBlue100_1_1
-                    : carHealth == "not bad"
-                        ? AppConstants.myYellow100_1
-                        : AppConstants.myRed100_1,
-            carHealthContainerColor: carHealth == "excellent"
-                ? context.theme.green10_1
-                : carHealth == "good"
-                    ? context.theme.blue10_2
-                    : carHealth == "not bad"
-                        ? context.theme.yellow10_1
-                        : context.theme.red10_1,
-            carStatus: carStatus,
-            carStatusTextColor: carStatus == "active"
-                ? AppConstants.myGreen100_1
-                : AppConstants.myRed100_1,
-            carStatusContainerColor: carStatus == "active"
-                ? context.theme.green10_1
-                : context.theme.red10_1),
+          carHealth: carHealth,
+          carHealthTextColor: carHealth == "excellent"
+              ? AppConstants.myGreen100_1
+              : carHealth == "good"
+                  ? AppConstants.myBlue100_1_1
+                  : carHealth == "not bad"
+                      ? AppConstants.myYellow100_1
+                      : AppConstants.myRed100_1,
+          carHealthContainerColor: carHealth == "excellent"
+              ? AppConstants.myGreen100_1.withOpacity(0.1)
+              : carHealth == "good"
+                  ? AppConstants.myBlue100_1_1.withOpacity(0.1)
+                  : carHealth == "not bad"
+                      ? AppConstants.myYellow100_1.withOpacity(0.1)
+                      : AppConstants.myRed100_1.withOpacity(0.1),
+          carStatus: carStatus,
+          carStatusTextColor: carStatus == "active"
+              ? AppConstants.myGreen100_1
+              : AppConstants.myRed100_1,
+          carStatusContainerColor: carStatus == "active"
+              ? AppConstants.myGreen100_1.withOpacity(0.1)
+              : AppConstants.myRed100_1.withOpacity(0.1),
+        ),
       ],
     );
   }

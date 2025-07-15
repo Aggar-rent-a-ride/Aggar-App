@@ -5,11 +5,8 @@ import 'package:aggar/core/widgets/custom_elevated_button.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/authorization/data/cubit/Login/login_state.dart';
 import 'package:aggar/features/authorization/presentation/views/verification_view.dart';
-import 'package:aggar/features/authorization/presentation/widget/divider_with_text.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_do_not_have_an_account_section.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_email_and_password_fields.dart';
-import 'package:aggar/features/authorization/presentation/widget/sign_in_face_book_and_google_buttons.dart';
-import 'package:aggar/features/authorization/presentation/widget/sign_in_forget_password_button.dart';
 import 'package:aggar/features/authorization/presentation/widget/sign_in_image_with_text.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/admin_bottom_navigation_bar.dart';
 import 'package:aggar/features/main_screen/customer/presentation/views/customer_bottom_navigation_bar_views.dart';
@@ -126,8 +123,8 @@ class _SignInContent extends StatelessWidget {
                       togglePasswordVisibility:
                           loginCubit.togglePasswordVisibility,
                     ),
-                    const Gap(5),
-                    const SignInForgetPasswordButton(),
+                    // const Gap(5),
+                    // const SignInForgetPasswordButton(),
                     const Gap(20),
                     CustomElevatedButton(
                       onPressed: () {
@@ -138,9 +135,9 @@ class _SignInContent extends StatelessWidget {
                       isLoading: isLoading,
                     ),
                     const Gap(20),
-                    const DividerWithText(),
-                    const Gap(20),
-                    const SignInFaceBookAndGoogleButtons(),
+                    //const DividerWithText(),
+                    // const Gap(20),
+                    // const SignInFaceBookAndGoogleButtons(),
                     const Gap(10),
                     const SignInDoNotHaveAnAccountSection(),
                   ],
