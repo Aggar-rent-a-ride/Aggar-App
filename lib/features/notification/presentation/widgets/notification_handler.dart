@@ -127,7 +127,7 @@ class NotificationHandler {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                BookingDetailsScreenCustomer(booking: booking),
+                BookingDetailsScreenCustomer(bookingId: booking.id),
           ),
         );
       }
@@ -138,7 +138,8 @@ class NotificationHandler {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BookingDetailsScreenCustomer(booking: booking),
+          builder: (context) =>
+              BookingDetailsScreenCustomer(bookingId: booking.id),
         ),
       );
     }
