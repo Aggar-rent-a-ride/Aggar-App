@@ -7,6 +7,8 @@ import 'package:aggar/features/vehicles_details/presentation/widgets/custom_icon
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_image_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/owner_name_section.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,24 +86,44 @@ class RentPartnerSection extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PersonalChatView(
-                          messageList: const [],
-                          receiverId: renterId,
-                          receiverName: renterName,
-                          reciverImg: pfpImage,
-                          onMessagesUpdated: () {},
+                BlocListener<MessageCubit, MessageState>(
+                  listener: (context, state) {
+                    if (state is MessageSuccess) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PersonalChatView(
+                            messageList: state.messages!.data,
+                            receiverId: renterId,
+                            receiverName: renterName,
+                            reciverImg: pfpImage,
+                            onMessagesUpdated: () {},
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
-                  child: const CustomIconButton(
-                    imageIcon: AppAssets.assetsIconsChat,
-                    flag: false,
+                  child: GestureDetector(
+                    onTap: () async {
+                      final tokenCubit = context.read<TokenRefreshCubit>();
+                      final token = await tokenCubit.getAccessToken();
+                      if (token != null) {
+                        final messageCubit = context.read<MessageCubit>();
+                        await messageCubit.getMessages(
+                          userId: renterId.toString(),
+                          dateTime: DateTime.now().toUtc().toIso8601String(),
+                          pageSize: "20",
+                          dateFilter: "0",
+                          accessToken: token,
+                          receiverName: renterName,
+                          receiverImg: pfpImage,
+                        );
+                      }
+                    },
+                    child: const CustomIconButton(
+                      imageIcon: AppAssets.assetsIconsChat,
+                      flag: false,
+                    ),
                   ),
                 ),
               ],

@@ -4,8 +4,10 @@ import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
 import 'package:aggar/features/rent_history/presentation/views/scanner_qr_code_page.dart';
+import 'package:aggar/features/rent_history/presentation/views/create_review_screen.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
+import 'package:aggar/features/rent_history/data/cubit/create_review_cubit.dart';
 import 'package:aggar/features/rent_history/presentation/widgets/rental_details_rental_summary_section.dart';
 import 'package:aggar/features/rent_history/presentation/widgets/rental_history_vehicle_details_section.dart';
 import 'package:flutter/material.dart';
@@ -261,6 +263,32 @@ class RentalHistoryDetail extends StatelessWidget {
   bool _shouldShowActionButtons() {
     final status = rentalItem.rentalStatus.toLowerCase();
     return status != 'refunded' && status != 'confirmed';
+  }
+
+  bool _shouldShowReviewButton() {
+    final status = rentalItem.rentalStatus.toLowerCase();
+    return status == 'confirmed';
+  }
+
+  void _onCreateReview(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => CreateReviewCubit(),
+          child: CreateReviewScreen(
+            rentalItem: rentalItem,
+          ),
+        ),
+      ),
+    );
+
+    if (result == true) {
+      // Refresh the rental history to show the new review
+      if (context.mounted) {
+        context.read<RentalHistoryCubit>().refreshRentalHistory();
+      }
+    }
   }
 
   @override
@@ -580,6 +608,40 @@ class RentalHistoryDetail extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+              ],
+
+              // Review Button (only show when status is confirmed)
+              if (_shouldShowReviewButton()) ...[
+                const Gap(20),
+                Text(
+                  'Rate Your Experience',
+                  style: AppStyles.semiBold18(context).copyWith(
+                    color: context.theme.black100,
+                  ),
+                ),
+                const Gap(12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _onCreateReview(context),
+                    icon: const Icon(Icons.rate_review),
+                    label: Text(
+                      'Write Review',
+                      style: AppStyles.medium16(context).copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.theme.blue100_1,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 2,
+                    ),
+                  ),
                 ),
               ],
               const Gap(30),
