@@ -42,6 +42,7 @@ import 'package:aggar/features/new_vehicle/data/cubits/main_image_cubit/main_ima
 import 'package:aggar/features/new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
+import 'package:aggar/features/rent_history/data/cubit/create_review_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehicle_type/admin_vehicle_type_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/admin_vehilce_brand/admin_vehicle_brand_cubit.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_vehicle_brand/edit_vehicle_brand_cubit.dart';
@@ -265,6 +266,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ReportCreationCubit(),
+        ),
+        BlocProvider(
+          create: (context) => CreateReviewCubit(),
         ),
         BlocProvider(
           create: (context) => MainCubit(
