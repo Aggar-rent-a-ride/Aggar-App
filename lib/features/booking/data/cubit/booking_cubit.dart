@@ -71,7 +71,6 @@ class BookingCubit extends Cubit<BookingState> {
 
       final responseData = response as Map<String, dynamic>;
       final statusCode = _getStatusCode(responseData);
-
       if (statusCode == 200) {
         final bookingData = responseData['data'] ?? responseData;
         final booking =

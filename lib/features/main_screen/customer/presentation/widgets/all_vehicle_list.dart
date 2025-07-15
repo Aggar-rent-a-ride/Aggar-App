@@ -38,7 +38,7 @@ class AllVehicleList extends StatelessWidget {
                     title: 'Most Rented Vehicles',
                     vehicles: cubit.mostRentedVehicles,
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
@@ -53,7 +53,7 @@ class AllVehicleList extends StatelessWidget {
                     title: 'Popular Vehicles',
                     vehicles: cubit.popularVehicles,
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PopularVehiclesCategoryScreen(
@@ -67,7 +67,7 @@ class AllVehicleList extends StatelessWidget {
                     title: 'All Vehicles',
                     vehicles: cubit.allVehicles,
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => AllVehiclesCategoryScreen(

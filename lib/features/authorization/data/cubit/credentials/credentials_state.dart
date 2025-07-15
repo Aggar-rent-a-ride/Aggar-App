@@ -14,16 +14,19 @@ class CredentialsState {
   });
 
   bool validateEmail() {
-    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final emailRegExp =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return emailRegExp.hasMatch(email);
   }
 
   bool validatePassword() {
-    return password.length >= 6;
+    return password.length >= 8 &&
+        RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$')
+            .hasMatch(password);
   }
 
   bool validateConfirmPassword() {
-    return password == confirmPassword;
+    return password == confirmPassword && confirmPassword.isNotEmpty;
   }
 
   bool get isFormValid {

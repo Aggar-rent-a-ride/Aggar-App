@@ -52,6 +52,7 @@ class MainScreenSearchField extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
+                      context.read<SearchCubit>().fetchSearch(pageNo: 1);
                       return const SearchScreen();
                     },
                   ),

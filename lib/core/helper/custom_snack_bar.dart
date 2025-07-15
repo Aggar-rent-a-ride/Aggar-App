@@ -38,7 +38,7 @@ SnackBar customSnackBar(
     margin: const EdgeInsets.only(
       left: 16,
       right: 16,
-      bottom: 40,
+      bottom: 10,
     ),
     content: Row(
       children: [
