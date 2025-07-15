@@ -208,12 +208,11 @@ class _BookingHistoryListState extends State<BookingHistoryList> {
         }
       });
     } else {
-      final bookingModel = _convertToBookingModel(booking);
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => BookingDetailsScreenCustomer(
-            booking: bookingModel,
+            bookingId: booking.id,
           ),
         ),
       ).then((result) {

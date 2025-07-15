@@ -7,6 +7,7 @@ import 'package:aggar/features/booking/presentation/widgets/booking_details_rent
 import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_pricing_details_section.dart';
 import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_total_amout.dart';
 import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_vehicle_information_section.dart';
+import 'package:aggar/features/booking/presentation/widgets/booking_details_renter_customer_section.dart';
 import 'package:aggar/features/main_screen/renter/data/model/booking_item.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
@@ -15,6 +16,12 @@ import 'package:aggar/features/payment/presentation/views/connected_account_page
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:aggar/features/profile/presentation/views/show_profile_screen.dart';
+import 'package:aggar/features/main_screen/admin/model/user_model.dart';
+import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
+import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
+import 'package:aggar/core/cubit/refresh token/token_refresh_cubit.dart';
 
 class BookingDetailsScreenRenter extends StatefulWidget {
   final BookingItem booking;
@@ -149,6 +156,8 @@ class _BookingDetailsScreenRenterState
           } else if (state is BookingGetByIdSuccess) {
             BookingModel? bookingDataID;
             bookingDataID = state.booking;
+            final customerId = bookingDataID.customerId ?? 0;
+            final customerName = bookingDataID.customerName ?? 'Renter';
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Container(
@@ -172,6 +181,67 @@ class _BookingDetailsScreenRenterState
                     children: [
                       BookingDetailsRenterVehicleInformationSection(
                           bookingData: bookingDataID, widget: widget),
+                      BlocListener<MessageCubit, MessageState>(
+                        listener: (context, state) {
+                          if (state is MessageSuccess) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PersonalChatView(
+                                  messageList: state.messages!.data,
+                                  receiverId: customerId,
+                                  receiverName: customerName,
+                                  reciverImg: null,
+                                  onMessagesUpdated: () {},
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: BookingDetailsRenterCustomerSection(
+                          customerId: customerId,
+                          customerName: customerName,
+                          customerImage: null,
+                          onProfileTap: () async {
+                            final tokenCubit =
+                                context.read<TokenRefreshCubit>();
+                            final token = await tokenCubit.getAccessToken();
+                            if (token != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ShowProfileScreen(
+                                    user: UserModel(
+                                      id: customerId,
+                                      name: customerName,
+                                      username: '',
+                                      imagePath: null,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          onChat: () async {
+                            final tokenCubit =
+                                context.read<TokenRefreshCubit>();
+                            final token = await tokenCubit.getAccessToken();
+                            if (token != null) {
+                              final messageCubit = context.read<MessageCubit>();
+                              await messageCubit.getMessages(
+                                userId: customerId.toString(),
+                                dateTime:
+                                    DateTime.now().toUtc().toIso8601String(),
+                                pageSize: "20",
+                                dateFilter: "0",
+                                accessToken: token,
+                                receiverName: customerName,
+                                receiverImg: null,
+                              );
+                            }
+                          },
+                        ),
+                      ),
                       BookingDetailsRenterBookingPeriodWithTotalDurationSection(
                           bookingData: bookingDataID),
                       BookingDetailsRenterPricingDetailsSection(
@@ -208,6 +278,9 @@ class _BookingDetailsScreenRenterState
                           BookingDetailsRenterActionButtons(
                               bookingData: bookingDataID, widget: widget),
                         ],
+                      ] else if ((bookingDataID.status).toLowerCase() ==
+                          'confirmed') ...[
+                        const BookingDetailsRenterConfirmedBox(),
                       ] else ...[
                         Container(
                           width: double.infinity,

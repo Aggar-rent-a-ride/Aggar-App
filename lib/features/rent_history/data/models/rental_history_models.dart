@@ -79,8 +79,10 @@ class RentalHistoryItem extends Equatable {
   factory RentalHistoryItem.fromJson(Map<String, dynamic> json) {
     return RentalHistoryItem(
       id: json['id'] ?? 0,
-      startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-      endDate: DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
+      startDate:
+          DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
+      endDate:
+          DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
       totalDays: json['totalDays'] ?? 0,
       discount: (json['discount'] ?? 0.0).toDouble(),
       finalPrice: (json['finalPrice'] ?? 0.0).toDouble(),
@@ -139,7 +141,8 @@ class Review extends Equatable {
     return Review(
       id: json['id'] ?? 0,
       rentalId: json['rentalId'] ?? 0,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
       behavior: json['behavior'] ?? 0,
       punctuality: json['punctuality'] ?? 0,
       comments: json['comments'] ?? '',

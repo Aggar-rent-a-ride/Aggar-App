@@ -11,29 +11,27 @@ class CreateReviewCubit extends Cubit<CreateReviewState> {
   Future<void> createReview({
     required String accessToken,
     required int rentalId,
-    required int behavior,
-    required int punctuality,
+    required double behavior,
+    required double punctuality,
     required String comments,
-    int? care,
-    int? truthfulness,
+    double? care,
+    double? truthfulness,
   }) async {
     try {
       emit(CreateReviewLoading());
 
       final reviewData = {
         'rentalId': rentalId,
-        'behavior': behavior.toDouble(), // Convert to double as per API
-        'punctuality': punctuality.toDouble(), // Convert to double as per API
+        'behavior': behavior,
+        'punctuality': punctuality,
         'comments': comments,
       };
 
-      // Add care for renter review or truthfulness for customer review
       if (care != null) {
-        reviewData['care'] = care.toDouble(); // Convert to double as per API
+        reviewData['care'] = care;
       }
       if (truthfulness != null) {
-        reviewData['truthfulness'] =
-            truthfulness.toDouble(); // Convert to double as per API
+        reviewData['truthfulness'] = truthfulness;
       }
 
       final response = await dioConsumer.post(

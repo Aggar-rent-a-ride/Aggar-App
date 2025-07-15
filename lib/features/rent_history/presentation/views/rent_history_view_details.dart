@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RentalHistoryDetail extends StatelessWidget {
   final RentalHistoryItem rentalItem;
@@ -271,6 +272,8 @@ class RentalHistoryDetail extends StatelessWidget {
   }
 
   void _onCreateReview(BuildContext context) async {
+    const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+    final userRole = await secureStorage.read(key: 'userType');
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -278,6 +281,7 @@ class RentalHistoryDetail extends StatelessWidget {
           create: (context) => CreateReviewCubit(),
           child: CreateReviewScreen(
             rentalItem: rentalItem,
+            userRole: userRole,
           ),
         ),
       ),

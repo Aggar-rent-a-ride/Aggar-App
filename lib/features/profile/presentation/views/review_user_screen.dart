@@ -9,8 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 import '../../../../core/helper/custom_snack_bar.dart';
-import '../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
-import '../../../vehicle_details_after_add/presentation/cubit/review_cubit/review_state.dart';
+import '../../../../core/cubit/user_review_cubit/user_review_state.dart';
 
 class ReviewUserScreen extends StatefulWidget {
   const ReviewUserScreen({super.key, required this.userId});
@@ -73,9 +72,9 @@ class _ReviewUserScreenState extends State<ReviewUserScreen> {
         children: [
           const ReviewScreenHeader(),
           Expanded(
-            child: BlocConsumer<ReviewCubit, ReviewState>(
+            child: BlocConsumer<UserReviewCubit, UserReviewState>(
               listener: (context, state) {
-                if (state is ReviewFailure) {
+                if (state is UserReviewFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     customSnackBar(
                       context,
@@ -87,13 +86,16 @@ class _ReviewUserScreenState extends State<ReviewUserScreen> {
                 }
               },
               builder: (context, state) {
-                if (state is ReviewLoading) {
+                if (state is UserReviewLoading) {
                   return const LoadingAllVehicle();
                 }
-                if (state is ReviewSuccess || state is ReviewLoadingMore) {
-                  final reviews = _cubit.userReviews;
+                if (state is UserReviewSuccess ||
+                    state is UserReviewLoadingMore) {
+                  final reviews = state is UserReviewSuccess
+                      ? state.review!.data
+                      : _cubit.userReviews;
                   final canLoadMore = _cubit.canLoadMoreUserReviews;
-                  final isLoadingMore = state is ReviewLoadingMore;
+                  final isLoadingMore = state is UserReviewLoadingMore;
                   if (reviews.isEmpty && !isLoadingMore) {
                     return const NoReviewUser();
                   }

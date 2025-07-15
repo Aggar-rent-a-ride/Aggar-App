@@ -15,6 +15,8 @@ class BookingModel {
   final int vehicleId;
   final DateTime startDate;
   final DateTime endDate;
+  final int? customerId;
+  final String? customerName;
 
   BookingModel({
     required this.id,
@@ -31,6 +33,8 @@ class BookingModel {
     required this.vehicleId,
     required this.startDate,
     required this.endDate,
+    this.customerId,
+    this.customerName,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
@@ -49,6 +53,8 @@ class BookingModel {
       vehicleId: json['vehicleId'] ?? json['VehicleId'] ?? 0,
       startDate: DateTime.parse(json['startDate'] ?? json['StartDate']),
       endDate: DateTime.parse(json['endDate'] ?? json['EndDate']),
+      customerId: json['customerId'] ?? json['CustomerId'],
+      customerName: json['customerName'] ?? json['CustomerName'],
     );
   }
 
@@ -68,6 +74,8 @@ class BookingModel {
       'vehicleId': vehicleId,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
+      'customerId': customerId,
+      'customerName': customerName,
     };
   }
 
@@ -86,6 +94,8 @@ class BookingModel {
     int? vehicleId,
     DateTime? startDate,
     DateTime? endDate,
+    int? customerId,
+    String? customerName,
   }) {
     return BookingModel(
       id: id ?? this.id,
@@ -102,6 +112,8 @@ class BookingModel {
       vehicleId: vehicleId ?? this.vehicleId,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      customerId: customerId ?? this.customerId,
+      customerName: customerName ?? this.customerName,
     );
   }
 }

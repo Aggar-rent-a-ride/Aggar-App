@@ -15,10 +15,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CreateReviewScreen extends StatefulWidget {
   final RentalHistoryItem rentalItem;
+  final String? userRole;
 
   const CreateReviewScreen({
     super.key,
     required this.rentalItem,
+    this.userRole,
   });
 
   @override
@@ -28,18 +30,18 @@ class CreateReviewScreen extends StatefulWidget {
 class _CreateReviewScreenState extends State<CreateReviewScreen> {
   final TextEditingController _commentsController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
-  int _behaviorRating = 0;
-  int _punctualityRating = 0;
-  int _careOrTruthfulnessRating = 0;
-  String? _userRole;
-  bool _isRenterReview = false;
+  double _behaviorRating = 0;
+  double _punctualityRating = 0;
+  double _careOrTruthfulnessRating = 0;
+  late final String? _userRole;
+  late final bool _isRenterReview;
 
   @override
   void initState() {
     super.initState();
-    _checkUserRole();
+    _userRole = widget.userRole;
+    _isRenterReview = _userRole == 'Renter';
   }
 
   @override
@@ -48,23 +50,10 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
     super.dispose();
   }
 
-  Future<void> _checkUserRole() async {
-    try {
-      final role = await _secureStorage.read(key: 'role');
-      setState(() {
-        _userRole = role;
-        // Determine if this is a renter review based on role
-        _isRenterReview = role == 'Renter';
-      });
-    } catch (e) {
-      print('Error reading user role: $e');
-    }
-  }
-
   Widget _buildRatingSection({
     required String title,
-    required int rating,
-    required Function(int) onRatingChanged,
+    required double rating,
+    required Function(double) onRatingChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,13 +67,43 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
         const Gap(8),
         Row(
           children: List.generate(5, (index) {
-            return GestureDetector(
-              onTap: () => onRatingChanged(index + 1),
-              child: Icon(
-                index < rating ? Icons.star : Icons.star_border,
-                color: Colors.amber,
-                size: 32,
-              ),
+            final starPosition = index + 1;
+            return Stack(
+              children: [
+                const Icon(
+                  Icons.star_border_rounded,
+                  color: Colors.amber,
+                  size: 32,
+                ),
+                if (rating >= starPosition)
+                  const Icon(
+                    Icons.star_rounded,
+                    color: Colors.amber,
+                    size: 32,
+                  )
+                else if (rating > index && rating < starPosition)
+                  const Icon(
+                    Icons.star_half_rounded,
+                    color: Colors.amber,
+                    size: 32,
+                  ),
+                Positioned.fill(
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      onRatingChanged(index + 0.5);
+                    },
+                  ),
+                ),
+                Positioned.fill(
+                  left: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      onRatingChanged(starPosition.toDouble());
+                    },
+                  ),
+                ),
+              ],
             );
           }),
         ),
@@ -158,7 +177,9 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final careOrTruthfulnessTitle = _isRenterReview ? 'Care' : 'Truthfulness';
+    final isCustomerReview = _userRole == 'Customer';
+    final careOrTruthfulnessTitle =
+        _isRenterReview ? 'Care' : (isCustomerReview ? 'Truthfulness' : '');
     final reviewTarget =
         _isRenterReview ? widget.rentalItem.user.name : 'Vehicle';
 
@@ -272,18 +293,24 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                                   decoration: BoxDecoration(
                                     color: _isRenterReview
                                         ? Colors.blue.withOpacity(0.1)
-                                        : Colors.green.withOpacity(0.1),
+                                        : (isCustomerReview
+                                            ? Colors.green.withOpacity(0.1)
+                                            : Colors.grey.withOpacity(0.1)),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
                                     _isRenterReview
                                         ? 'Renter Review'
-                                        : 'Customer Review',
+                                        : (isCustomerReview
+                                            ? 'Customer Review'
+                                            : 'Review'),
                                     style:
                                         AppStyles.regular12(context).copyWith(
                                       color: _isRenterReview
                                           ? Colors.blue[700]
-                                          : Colors.green[700],
+                                          : (isCustomerReview
+                                              ? Colors.green[700]
+                                              : Colors.grey[700]),
                                     ),
                                   ),
                                 ),
@@ -316,15 +343,26 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                       },
                     ),
 
-                    _buildRatingSection(
-                      title: careOrTruthfulnessTitle,
-                      rating: _careOrTruthfulnessRating,
-                      onRatingChanged: (rating) {
-                        setState(() {
-                          _careOrTruthfulnessRating = rating;
-                        });
-                      },
-                    ),
+                    if (_isRenterReview)
+                      _buildRatingSection(
+                        title: 'Care',
+                        rating: _careOrTruthfulnessRating,
+                        onRatingChanged: (rating) {
+                          setState(() {
+                            _careOrTruthfulnessRating = rating;
+                          });
+                        },
+                      ),
+                    if (isCustomerReview)
+                      _buildRatingSection(
+                        title: 'Truthfulness',
+                        rating: _careOrTruthfulnessRating,
+                        onRatingChanged: (rating) {
+                          setState(() {
+                            _careOrTruthfulnessRating = rating;
+                          });
+                        },
+                      ),
 
                     // Comments section
                     Text(
@@ -360,9 +398,6 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Please provide your comments';
-                        }
-                        if (value.trim().length < 10) {
-                          return 'Comments must be at least 10 characters';
                         }
                         return null;
                       },
