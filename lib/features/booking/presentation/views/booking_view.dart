@@ -77,7 +77,7 @@ class _BookVehicleScreenState extends State<BookVehicleScreen> {
                   context,
                   MaterialPageRoute(builder: (context) {
                     return BookingDetailsScreenCustomer(
-                      booking: state.booking,
+                      bookingId: state.booking.id,
                     );
                   }),
                 );
