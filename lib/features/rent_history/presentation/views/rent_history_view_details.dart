@@ -303,9 +303,13 @@ class RentalHistoryDetail extends StatelessWidget {
               if (rentalItem.renterReview != null ||
                   rentalItem.customerReview != null) ...[
                 Card(
+                  color: Colors.transparent,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: statusColor.withOpacity(0.3),
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
@@ -317,12 +321,12 @@ class RentalHistoryDetail extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: Colors.amber.withOpacity(0.1),
+                                color: statusColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.star,
-                                color: Colors.amber,
+                                color: statusColor,
                                 size: 24,
                               ),
                             ),
@@ -334,14 +338,14 @@ class RentalHistoryDetail extends StatelessWidget {
                                   Text(
                                     'Reviews',
                                     style: AppStyles.bold20(context).copyWith(
-                                      color: Colors.amber[700],
+                                      color: statusColor,
                                     ),
                                   ),
                                   Text(
                                     'Customer feedback',
                                     style:
                                         AppStyles.regular14(context).copyWith(
-                                      color: Colors.grey[600],
+                                      color: context.theme.black50,
                                     ),
                                   ),
                                 ],
@@ -356,10 +360,10 @@ class RentalHistoryDetail extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.blue.withOpacity(0.05),
+                              color: statusColor.withOpacity(0.05),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: Colors.blue.withOpacity(0.1)),
+                                  color: statusColor.withOpacity(0.1)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -367,13 +371,14 @@ class RentalHistoryDetail extends StatelessWidget {
                                 Text(
                                   'Renter Review',
                                   style: AppStyles.semiBold16(context).copyWith(
-                                    color: Colors.blue[700],
+                                    color: statusColor,
                                   ),
                                 ),
                                 const Gap(12),
                                 Row(
                                   children: [
                                     CircleAvatar(
+                                      backgroundColor: context.theme.blue100_1,
                                       radius: 20,
                                       backgroundImage: rentalItem.renterReview!
                                                   .reviewer.imagePath !=
@@ -396,8 +401,10 @@ class RentalHistoryDetail extends StatelessWidget {
                                           Text(
                                             rentalItem
                                                 .renterReview!.reviewer.name,
-                                            style:
-                                                AppStyles.semiBold14(context),
+                                            style: AppStyles.semiBold14(context)
+                                                .copyWith(
+                                              color: context.theme.black100,
+                                            ),
                                           ),
                                           Text(
                                             DateFormat('dd MMM yyyy').format(
@@ -405,7 +412,7 @@ class RentalHistoryDetail extends StatelessWidget {
                                                     .renterReview!.createdAt),
                                             style: AppStyles.regular12(context)
                                                 .copyWith(
-                                              color: Colors.grey[600],
+                                              color: context.theme.black50,
                                             ),
                                           ),
                                         ],
@@ -416,18 +423,26 @@ class RentalHistoryDetail extends StatelessWidget {
                                 const Gap(12),
                                 Text(
                                   rentalItem.renterReview!.comments,
-                                  style: AppStyles.regular14(context),
+                                  style: AppStyles.regular14(context).copyWith(
+                                    color: context.theme.black100,
+                                  ),
                                 ),
                                 const Gap(12),
                                 Row(
                                   children: [
                                     Text('Behavior: ',
-                                        style: AppStyles.regular12(context)),
+                                        style: AppStyles.regular12(context)
+                                            .copyWith(
+                                          color: context.theme.black50,
+                                        )),
                                     _buildRatingStars(
                                         rentalItem.renterReview!.behavior),
                                     const SizedBox(width: 16),
                                     Text('Punctuality: ',
-                                        style: AppStyles.regular12(context)),
+                                        style: AppStyles.regular12(context)
+                                            .copyWith(
+                                          color: context.theme.black50,
+                                        )),
                                     _buildRatingStars(
                                         rentalItem.renterReview!.punctuality),
                                   ],

@@ -57,6 +57,7 @@ class ReviewUserSection extends StatelessWidget {
                   children: vehicles
                       .asMap()
                       .entries
+                      .take(vehicles.length > 6 ? 6 : vehicles.length)
                       .map(
                         (entry) => ReviewCard(
                           imageUrl: entry.value.reviewer.imagePath ?? "",
@@ -69,18 +70,19 @@ class ReviewUserSection extends StatelessWidget {
                       )
                       .toList(),
                 ),
-                SeeMoreButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ReviewUserScreen(
-                          userId: userId,
+                if (vehicles.length > 6)
+                  SeeMoreButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReviewUserScreen(
+                            userId: userId,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                )
+                      );
+                    },
+                  ),
               ],
             ),
           );

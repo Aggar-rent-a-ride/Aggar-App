@@ -71,7 +71,7 @@ class RenterVehicleCard extends StatelessWidget {
 
         try {
           final tokenCubit = context.read<TokenRefreshCubit>();
-          final token = await tokenCubit.getAccessToken();
+          final token = await tokenCubit.ensureValidToken();
           if (token != null) {
             await context
                 .read<AddVehicleCubit>()

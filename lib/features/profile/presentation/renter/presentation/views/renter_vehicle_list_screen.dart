@@ -62,7 +62,7 @@ class _RenterVehicleListScreenState extends State<RenterVehicleListScreen>
       _isFetching = true;
     });
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     if (token != null) {
       setState(() {
         tokenr = token;

@@ -294,7 +294,7 @@ class NotificationService {
         case 'Booking':
           title = notification.senderName != null
               ? '${notification.senderName} made a booking'
-              : 'New Booking';
+              : 'Booking';
           break;
         case 'Rental':
           title = notification.senderName != null

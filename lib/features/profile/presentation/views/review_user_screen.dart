@@ -43,7 +43,7 @@ class _ReviewUserScreenState extends State<ReviewUserScreen> {
 
   Future<void> _fetchInitialData() async {
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final tokenn = await tokenCubit.getAccessToken();
+    final tokenn = await tokenCubit.ensureValidToken();
     if (tokenn != null) {
       setState(() {
         token = tokenn;

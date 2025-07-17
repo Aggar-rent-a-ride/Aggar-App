@@ -25,7 +25,7 @@ class AddVehicleBrandScreen extends StatelessWidget {
       onPopInvoked: (didPop) async {
         if (didPop) {
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-          final token = await tokenRefreshCubit.getAccessToken();
+          final token = await tokenRefreshCubit.ensureValidToken();
           if (token != null) {
             await cubit.fetchVehicleBrands(token);
           }
@@ -75,7 +75,7 @@ class AddVehicleBrandScreen extends StatelessWidget {
                             final tokenRefreshCubit =
                                 context.read<TokenRefreshCubit>();
                             final token =
-                                await tokenRefreshCubit.getAccessToken();
+                                await tokenRefreshCubit.ensureValidToken();
                             if (token != null) {
                               await cubit.fetchVehicleBrands(token);
                             }
@@ -108,7 +108,7 @@ class AddVehicleBrandScreen extends StatelessWidget {
                             final tokenRefreshCubit =
                                 context.read<TokenRefreshCubit>();
                             final token =
-                                await tokenRefreshCubit.getAccessToken();
+                                await tokenRefreshCubit.ensureValidToken();
                             if (token != null) {
                               await cubit.fetchVehicleBrands(token);
                             }
@@ -132,7 +132,7 @@ class AddVehicleBrandScreen extends StatelessWidget {
             title: "Create Brand",
             onPressed: () async {
               final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-              final token = await tokenRefreshCubit.getAccessToken();
+              final token = await tokenRefreshCubit.ensureValidToken();
               if (token != null && cubit.formKey.currentState!.validate()) {
                 await cubit.createVehicleBrand(
                   token,

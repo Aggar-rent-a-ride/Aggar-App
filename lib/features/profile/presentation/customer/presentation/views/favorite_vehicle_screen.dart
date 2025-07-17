@@ -40,7 +40,7 @@ class _FavoriteVehicleScreenState extends State<FavoriteVehicleScreen> {
 
   Future<void> _fetchInitialData() async {
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     if (token != null) {
       setState(() {
         tokenr = token;

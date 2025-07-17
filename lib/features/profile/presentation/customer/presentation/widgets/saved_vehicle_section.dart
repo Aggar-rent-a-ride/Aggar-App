@@ -108,7 +108,7 @@ class SavedVehicleSection extends StatelessWidget {
                                     final tokenCubit =
                                         context.read<TokenRefreshCubit>();
                                     final token =
-                                        await tokenCubit.getAccessToken();
+                                        await tokenCubit.ensureValidToken();
                                     if (token != null) {
                                       await context
                                           .read<AddVehicleCubit>()

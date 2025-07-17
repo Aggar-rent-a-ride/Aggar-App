@@ -39,7 +39,7 @@ class EditVehicleTypeScreen extends StatelessWidget {
       onPopInvoked: (didPop) async {
         if (didPop) {
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-          final token = await tokenRefreshCubit.getAccessToken();
+          final token = await tokenRefreshCubit.ensureValidToken();
           if (token != null) {
             await adminCubit.fetchVehicleTypes(token);
           }
@@ -81,7 +81,7 @@ class EditVehicleTypeScreen extends StatelessWidget {
                       SnackBarType.success),
                 );
                 final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-                tokenRefreshCubit.getAccessToken().then((token) {
+                tokenRefreshCubit.ensureValidToken().then((token) {
                   if (token != null) {
                     adminCubit.fetchVehicleTypes(token);
                   }
@@ -124,7 +124,7 @@ class EditVehicleTypeScreen extends StatelessWidget {
                             final tokenRefreshCubit =
                                 context.read<TokenRefreshCubit>();
                             final token =
-                                await tokenRefreshCubit.getAccessToken();
+                                await tokenRefreshCubit.ensureValidToken();
                             if (token != null) {
                               await adminCubit.fetchVehicleTypes(token);
                             }
@@ -165,7 +165,7 @@ class EditVehicleTypeScreen extends StatelessWidget {
                                   final tokenCubit =
                                       context.read<TokenRefreshCubit>();
                                   final token =
-                                      await tokenCubit.getAccessToken();
+                                      await tokenCubit.ensureValidToken();
                                   if (token != null) {
                                     adminCubit.deleteVehicleType(token, typeId);
                                   }
@@ -194,7 +194,7 @@ class EditVehicleTypeScreen extends StatelessWidget {
             title: "Save Changes",
             onPressed: () async {
               final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-              final token = await tokenRefreshCubit.getAccessToken();
+              final token = await tokenRefreshCubit.ensureValidToken();
               if (token != null && editCubit.formKey.currentState!.validate()) {
                 await editCubit.updateVehicleType(
                   token,

@@ -25,7 +25,7 @@ class EditUserPhoto extends StatelessWidget {
     final editCubit = context.read<EditUserInfoCubit>();
     final userCubit = context.read<UserInfoCubit>();
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     await showModalBottomSheet(
       backgroundColor: context.theme.white100_1,
       shape: const RoundedRectangleBorder(

@@ -25,7 +25,7 @@ class VehicleDetailsMenuIconButton extends StatelessWidget {
         if (state is EditVehicleDeleted) {
           // Refresh the vehicle list in ProfileCubit
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-          final token = await tokenRefreshCubit.getAccessToken();
+          final token = await tokenRefreshCubit.ensureValidToken();
           if (token != null) {
             context.read<ProfileCubit>().fetchRenterVehicles(token);
           }
@@ -119,7 +119,7 @@ class VehicleDetailsMenuIconButton extends StatelessWidget {
                     if (value == "delete") {
                       final tokenRefreshCubit =
                           context.read<TokenRefreshCubit>();
-                      final token = await tokenRefreshCubit.getAccessToken();
+                      final token = await tokenRefreshCubit.ensureValidToken();
 
                       if (token != null) {
                         showDialog(
