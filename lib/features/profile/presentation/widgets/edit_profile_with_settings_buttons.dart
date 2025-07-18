@@ -67,7 +67,7 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SettingsScreen(
+                builder: (context) => ProfileAndSettingsScreen(
                   isRenter: isRenter,
                 ),
               ),
@@ -88,7 +88,7 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
             fixedSize: const Size(44, 44),
           ),
           child: Icon(
-            Icons.settings,
+            Icons.more_vert_outlined,
             color: context.theme.black50,
             size: 26,
           ),

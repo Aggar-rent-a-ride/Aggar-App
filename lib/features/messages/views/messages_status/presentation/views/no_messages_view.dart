@@ -34,7 +34,7 @@ class NoMessagesView extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 final tokenCubit = context.read<TokenRefreshCubit>();
-                final token = await tokenCubit.getAccessToken();
+                final token = await tokenCubit.ensureValidToken();
                 final messageCubit = context.read<MessageCubit>();
                 if (token != null) {
                   await messageCubit.getMyChat(token);

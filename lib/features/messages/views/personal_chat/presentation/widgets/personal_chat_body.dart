@@ -53,7 +53,7 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
         _isLoadingMore = true;
       });
       final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.getAccessToken();
+      final token = await tokenCubit.ensureValidToken();
       if (token != null) {
         realTimeCubit.loadMoreMessages(
           accessToken: token,

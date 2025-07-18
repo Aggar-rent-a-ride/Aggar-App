@@ -23,7 +23,7 @@ class PlatformBalanceCard extends StatelessWidget {
       padingVeritical: 10,
       onPressed: () async {
         final tokenCubit = context.read<TokenRefreshCubit>();
-        final token = await tokenCubit.getAccessToken();
+        final token = await tokenCubit.ensureValidToken();
         if (token != null) {
           context.read<PaymentCubit>().getPlatformBalance(token);
           Navigator.push(

@@ -46,11 +46,15 @@ class PaymentCubit extends Cubit<PaymentState> {
           'bankAccountRoutingNumber': bankAccountRoutingNumber,
         }),
       );
-      final connectedAccountModel =
-          ConnectedAccountModel.fromJson(response["data"]);
-      print(connectedAccountModel);
-      emit(PaymentConnectedAccountSuccess(
-          connectedAccountModel: connectedAccountModel));
+      print(response);
+      if (response["statusCode"] == 200) {
+        final connectedAccountModel =
+            ConnectedAccountModel.fromJson(response["data"]);
+        emit(PaymentConnectedAccountSuccess(
+            connectedAccountModel: connectedAccountModel));
+      } else {
+        emit(PaymentError(message: response["message"]));
+      }
     } catch (e) {
       emit(PaymentError(message: e.toString()));
     }

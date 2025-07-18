@@ -14,7 +14,7 @@ class HorizontalLine extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: padding ?? 15),
       child: Divider(
-        color: color ?? context.theme.black25,
+        color: color ?? context.theme.black10,
       ),
     );
   }

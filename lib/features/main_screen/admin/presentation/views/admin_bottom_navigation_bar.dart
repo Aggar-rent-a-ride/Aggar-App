@@ -5,7 +5,6 @@ import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:aggar/features/main_screen/admin/presentation/views/main_screen.dart';
 import 'package:aggar/features/main_screen/admin/presentation/widgets/custom_bottom_navigation_bar_admin.dart';
-import 'package:aggar/features/notification/presentation/views/notification_screen.dart';
 import 'package:aggar/features/profile/presentation/admin/presentation/views/admin_profile_screen.dart';
 import 'package:aggar/features/vehicle_brand_with_type/presentation/view/vehicle_brand_with_type_screen.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +67,6 @@ class _AdminBottomNavigationBarState extends State<AdminBottomNavigationBar>
       const MainScreen(),
       const VehicleBrandWithTypeScreen(),
       const MessagesView(),
-      const NotificationScreen(),
       const AdminProfileScreen()
     ];
 

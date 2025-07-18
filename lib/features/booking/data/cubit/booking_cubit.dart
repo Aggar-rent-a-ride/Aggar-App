@@ -376,7 +376,7 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
   Future<Options> _getAuthOptions() async {
-    final token = await tokenRefreshCubit.getAccessToken();
+    final token = await tokenRefreshCubit.ensureValidToken();
     print("CURRENT TOKEN: $token");
 
     return Options(

@@ -78,7 +78,7 @@ class NameAndRateSection extends StatelessWidget {
           key: iconButtonKey,
           onPressed: () async {
             final tokenCubit = context.read<TokenRefreshCubit>();
-            final token = await tokenCubit.getAccessToken();
+            final token = await tokenCubit.ensureValidToken();
             final RenderBox button = context.findRenderObject() as RenderBox;
             final RenderBox overlay =
                 Overlay.of(context).context.findRenderObject() as RenderBox;

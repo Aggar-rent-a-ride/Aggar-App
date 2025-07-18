@@ -1,3 +1,4 @@
+import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -21,7 +22,6 @@ import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
-import 'package:aggar/core/cubit/refresh token/token_refresh_cubit.dart';
 
 class BookingDetailsScreenRenter extends StatefulWidget {
   final BookingItem booking;
@@ -113,15 +113,13 @@ class _BookingDetailsScreenRenterState
                 state.isAccepted ? SnackBarType.success : SnackBarType.warning,
               ),
             );
-
+            // Pop the screen immediately after a successful acceptance
             Navigator.pop(context, state.isAccepted ? 'accepted' : 'rejected');
           }
-
           if (state is BookingResponseError) {
             setState(() {
               _isProcessingResponse = false;
             });
-
             // Check if the error is about needing a payment account
             if (state.message.toLowerCase().contains('payment account') ||
                 state.message
@@ -139,7 +137,6 @@ class _BookingDetailsScreenRenterState
               );
             }
           }
-
           if (state is BookingResponseLoading) {
             setState(() {
               _isProcessingResponse = true;
@@ -154,8 +151,7 @@ class _BookingDetailsScreenRenterState
               ),
             );
           } else if (state is BookingGetByIdSuccess) {
-            BookingModel? bookingDataID;
-            bookingDataID = state.booking;
+            BookingModel? bookingDataID = state.booking;
             final customerId = bookingDataID.customerId ?? 0;
             final customerName = bookingDataID.customerName ?? 'Renter';
             return Padding(
@@ -205,7 +201,7 @@ class _BookingDetailsScreenRenterState
                           onProfileTap: () async {
                             final tokenCubit =
                                 context.read<TokenRefreshCubit>();
-                            final token = await tokenCubit.getAccessToken();
+                            final token = await tokenCubit.ensureValidToken();
                             if (token != null) {
                               Navigator.push(
                                 context,
@@ -225,7 +221,7 @@ class _BookingDetailsScreenRenterState
                           onChat: () async {
                             final tokenCubit =
                                 context.read<TokenRefreshCubit>();
-                            final token = await tokenCubit.getAccessToken();
+                            final token = await tokenCubit.ensureValidToken();
                             if (token != null) {
                               final messageCubit = context.read<MessageCubit>();
                               await messageCubit.getMessages(
@@ -340,7 +336,7 @@ class _BookingDetailsScreenRenterState
                   ),
                   const Gap(8),
                   Text(
-                    "an Error has occured",
+                    "An error has occurred",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[500],
@@ -419,7 +415,6 @@ class _BookingDetailsScreenRenterState
     }
   }
 
-  // NEW METHOD: Show payment account required dialog
   void _showPaymentAccountRequiredDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -492,7 +487,6 @@ class _BookingDetailsScreenRenterState
     );
   }
 
-  // NEW METHOD: Navigate to ConnectedAccountPage
   void _navigateToConnectedAccountPage(BuildContext context) async {
     final result = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -500,10 +494,9 @@ class _BookingDetailsScreenRenterState
       ),
     );
 
-    // If the user successfully connected their account, you might want to refresh the booking
+    // If the user successfully connected their account, retry accepting the booking
     if (result == true) {
-      // Refresh the booking data or show a success message
-      context.read<BookingCubit>().getBookingById(widget.booking.id);
+      context.read<BookingCubit>().acceptBooking(widget.booking.id);
     }
   }
 }

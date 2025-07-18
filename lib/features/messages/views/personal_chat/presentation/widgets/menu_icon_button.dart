@@ -84,7 +84,7 @@ class MenuIconButton extends StatelessWidget {
             cubit.toggleSearchMode();
           } else if (value == "report") {
             final tokenCubit = context.read<TokenRefreshCubit>();
-            final token = await tokenCubit.getAccessToken();
+            final token = await tokenCubit.ensureValidToken();
             if (token != null) {
               showDialog(
                 context: context,

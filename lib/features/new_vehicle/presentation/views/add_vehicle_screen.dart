@@ -88,7 +88,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   Future<void> _loadToken() async {
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
 
     if (token != null) {
       setState(() {

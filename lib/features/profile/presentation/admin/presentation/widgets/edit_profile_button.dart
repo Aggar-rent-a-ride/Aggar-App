@@ -18,7 +18,7 @@ class EditProfileButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () async {
         final tokenCubit = context.read<TokenRefreshCubit>();
-        final token = await tokenCubit.getAccessToken();
+        final token = await tokenCubit.ensureValidToken();
         if (token != null) {
           String? userId = await context.read<LoginCubit>().getUserId();
           context.read<EditUserInfoCubit>().fetchUserInfo(userId!, token);
