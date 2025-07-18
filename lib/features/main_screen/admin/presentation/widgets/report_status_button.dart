@@ -90,7 +90,7 @@ class _ReportStatusButtonState extends State<ReportStatusButton> {
                     _selectedStatus = newValue;
                   });
                   final tokenCubit = context.read<TokenRefreshCubit>();
-                  final token = await tokenCubit.getAccessToken();
+                  final token = await tokenCubit.ensureValidToken();
                   if (token != null) {
                     final reportCubit = context.read<ReportCubit>();
                     await reportCubit.updateReportStatus(

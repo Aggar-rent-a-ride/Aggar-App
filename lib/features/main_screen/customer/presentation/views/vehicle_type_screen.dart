@@ -48,7 +48,7 @@ class _VehicleTypeScreenState extends State<VehicleTypeScreen> {
 
   Future<void> _initializeTokenAndFetchVehicles() async {
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     if (token != null) {
       setState(() {
         _accessToken = token;

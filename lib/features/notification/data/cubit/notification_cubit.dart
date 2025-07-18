@@ -246,7 +246,7 @@ class NotificationCubit extends Cubit<NotificationState> {
         return;
       }
 
-      final accessToken = await _tokenRefreshCubit.getAccessToken();
+      final accessToken = await _tokenRefreshCubit.ensureValidToken();
       if (accessToken == null) {
         emit(const NotificationError(
             'Authentication token expired. Please login again.',
@@ -489,7 +489,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     try {
       print('Attempting to reconnect');
-      final token = await _tokenRefreshCubit.getAccessToken();
+      final token = await _tokenRefreshCubit.ensureValidToken();
       if (token == null) {
         emit(const NotificationError(
             'Authentication expired. Please login again.',

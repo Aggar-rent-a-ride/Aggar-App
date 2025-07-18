@@ -2,6 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:aggar/features/payment/presentation/cubit/payment_state.dart';
+import 'package:aggar/features/settings/presentation/views/loading_renter_payout.dart';
 import 'package:aggar/features/settings/presentation/widgets/payment_details_balance_overview_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/payout_details_header_section.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,9 @@ class PayoutDetailsScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: BlocBuilder<PaymentCubit, PaymentState>(
                 builder: (context, state) {
-                  if (state is PaymentRenterPayoutDetialsSuccess) {
+                  if (state is PaymentLoading) {
+                    return const LoadingRenterPayout();
+                  } else if (state is PaymentRenterPayoutDetialsSuccess) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -48,8 +51,6 @@ class PayoutDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         const Gap(15),
-
-                        // Bank Account Card
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
@@ -99,7 +100,7 @@ class PayoutDetailsScreen extends StatelessWidget {
                                       ),
                                       const Gap(3),
                                       Text(
-                                        state.renterPayoutDetialsModel.last4,
+                                        "******${state.renterPayoutDetialsModel.last4}",
                                         style: AppStyles.medium14(context)
                                             .copyWith(
                                           color: context.theme.black50,
@@ -110,10 +111,8 @@ class PayoutDetailsScreen extends StatelessWidget {
                                 ],
                               ),
                               const Gap(20),
-
-                              // Account Details
                               _buildDetailRow(context, "Account Number",
-                                  state.renterPayoutDetialsModel.last4),
+                                  "******${state.renterPayoutDetialsModel.last4}"),
                               const Gap(12),
                               _buildDetailRow(
                                 context,

@@ -47,7 +47,7 @@ class OptionsButton extends StatelessWidget {
                   ));
             },
             icon: Icon(
-              Icons.more_vert_rounded,
+              Icons.more_vert_outlined,
               color: color ?? context.theme.black50,
               size: size ?? 25,
             ),

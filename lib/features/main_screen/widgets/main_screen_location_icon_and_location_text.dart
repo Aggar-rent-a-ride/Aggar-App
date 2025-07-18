@@ -81,7 +81,7 @@ class _MainScreenLocationIconAndLocationTextState
 
   Future<void> _fetchUserInfo() async {
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     if (token != null && mounted) {
       const secureStorage = FlutterSecureStorage();
       String? userIdStr = await secureStorage.read(key: 'userId');

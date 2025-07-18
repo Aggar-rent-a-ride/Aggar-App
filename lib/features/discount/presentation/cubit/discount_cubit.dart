@@ -20,7 +20,7 @@ class DiscountCubit extends Cubit<DiscountState> {
   void _setupDioInterceptors() {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final token = await tokenRefreshCubit.getAccessToken();
+        final token = await tokenRefreshCubit.ensureValidToken();
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         } else {

@@ -26,7 +26,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
 
   Future<void> refreshProfile() async {
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     if (token != null) {}
   }
 

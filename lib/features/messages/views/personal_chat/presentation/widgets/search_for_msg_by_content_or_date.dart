@@ -22,7 +22,7 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
               focusNode: FocusNode(),
               onSubmitted: (value) async {
                 final tokenCubit = context.read<TokenRefreshCubit>();
-                final token = await tokenCubit.getAccessToken();
+                final token = await tokenCubit.ensureValidToken();
                 if (token != null) {
                   cubit.filterMessages(token);
                 }

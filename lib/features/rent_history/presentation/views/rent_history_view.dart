@@ -29,6 +29,16 @@ class RentHistoryView extends StatelessWidget {
       appBar: AppBar(
         elevation: 1,
         shadowColor: Colors.grey[900],
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: context.theme.black100,
+            size: 23,
+          ),
+        ),
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
         backgroundColor: context.theme.white100_1,

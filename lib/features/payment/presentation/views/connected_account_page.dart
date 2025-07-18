@@ -39,10 +39,10 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
 
     try {
       final tokenCubit = context.read<TokenRefreshCubit>();
-      final accessToken = await tokenCubit.getAccessToken();
+      final accessToken = await tokenCubit.ensureValidToken();
 
       if (accessToken == null) {
-        _showErrorDialog('Authentication failed. Please login again.');
+        _showErrorSnackBar('Authentication failed. Please login again.');
         return;
       }
       context.read<PaymentCubit>().createConnectedAccount(
@@ -52,7 +52,7 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
             _routingNumberController.text,
           );
     } catch (e) {
-      _showErrorDialog('Failed to authenticate. Please try again.');
+      _showErrorSnackBar('Failed to authenticate. Please try again.');
     }
   }
 
@@ -64,6 +64,17 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
         "Success",
         'Account Connected Successfully!',
         SnackBarType.success,
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      customSnackBar(
+        context,
+        "Error",
+        message,
+        SnackBarType.error,
       ),
     );
   }
@@ -123,218 +134,214 @@ class _ConnectedAccountPageState extends State<ConnectedAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => PaymentCubit()),
-      ],
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: context.theme.white100_1,
+      appBar: AppBar(
+        elevation: 1,
+        shadowColor: Colors.grey[900],
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
         backgroundColor: context.theme.white100_1,
-        appBar: AppBar(
-          elevation: 1,
-          shadowColor: Colors.grey[900],
-          surfaceTintColor: Colors.transparent,
-          centerTitle: true,
-          backgroundColor: context.theme.white100_1,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: context.theme.black100,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: context.theme.black100,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          'Connect Bank Account',
+          style: AppStyles.semiBold24(context)
+              .copyWith(color: context.theme.black100),
+        ),
+      ),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<PaymentCubit, PaymentState>(
+            listener: (context, state) {
+              print('PaymentState: $state'); // Debug print
+              if (state is PaymentConnectedAccountSuccess) {
+                _showSuccessSnackBar(state.connectedAccountModel);
+              } else if (state is PaymentError) {
+                print('Error message: ${state.message}'); // Debug print
+                _showErrorSnackBar(state.message);
+              }
             },
           ),
-          title: Text(
-            'Connect Bank Account',
-            style: AppStyles.semiBold24(context)
-                .copyWith(color: context.theme.black100),
+          BlocListener<TokenRefreshCubit, TokenRefreshState>(
+            listener: (context, state) {
+              if (state is TokenRefreshFailure) {
+                _showErrorSnackBar('Session expired. Please login again.');
+              }
+            },
           ),
-        ),
-        body: MultiBlocListener(
-          listeners: [
-            BlocListener<PaymentCubit, PaymentState>(
-              listener: (context, state) {
-                if (state is PaymentConnectedAccountSuccess) {
-                  _showSuccessSnackBar(state.connectedAccountModel);
-                } else if (state is PaymentError) {
-                  _showErrorDialog(state.message);
-                }
-              },
-            ),
-            BlocListener<TokenRefreshCubit, TokenRefreshState>(
-              listener: (context, state) {
-                if (state is TokenRefreshFailure) {
-                  _showErrorDialog('Session expired. Please login again.');
-                }
-              },
-            ),
-          ],
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Header Section
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: context.theme.blue100_1.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: context.theme.blue100_1.withOpacity(0.5),
-                        ),
+        ],
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Header Section
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: context.theme.blue100_1.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: context.theme.blue100_1.withOpacity(0.5),
                       ),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.account_balance,
-                            size: 48,
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.account_balance,
+                          size: 48,
+                          color: context.theme.blue100_1,
+                        ),
+                        const Gap(12),
+                        Text(
+                          'Connect Account',
+                          style: AppStyles.bold20(context).copyWith(
                             color: context.theme.blue100_1,
                           ),
-                          const Gap(12),
-                          Text(
-                            'Connect Account',
-                            style: AppStyles.bold20(context).copyWith(
-                              color: context.theme.blue100_1,
-                            ),
-                          ),
-                          const Gap(8),
-                          Text(
-                            'Securely link your bank account to receive payments',
-                            style: AppStyles.regular14(context).copyWith(
-                              color: context.theme.blue100_1.withOpacity(0.7),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const Gap(32),
-
-                    _buildInputField(
-                      controller: _phoneController,
-                      label: 'Phone Number',
-                      hint: '+20 460 585 1234',
-                      icon: Icons.phone,
-                      keyboardType: TextInputType.phone,
-                      validator: _validatePhone,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'[\d+\-\s()]')),
-                      ],
-                    ),
-
-                    const Gap(20),
-
-                    _buildInputField(
-                      controller: _accountNumberController,
-                      label: 'Bank Account Number',
-                      hint: '000123456789',
-                      icon: Icons.account_balance_wallet,
-                      keyboardType: TextInputType.number,
-                      validator: _validateAccountNumber,
-                      obscureText: _obscureAccountNumber,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureAccountNumber
-                              ? Icons.visibility
-                              : Icons.visibility_off,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureAccountNumber = !_obscureAccountNumber;
-                          });
-                        },
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(17),
+                        const Gap(8),
+                        Text(
+                          'Securely link your bank account to receive payments',
+                          style: AppStyles.regular14(context).copyWith(
+                            color: context.theme.blue100_1.withOpacity(0.7),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
+                  ),
 
-                    const Gap(20),
+                  const Gap(32),
 
-                    _buildInputField(
-                      controller: _routingNumberController,
-                      label: 'Routing Number',
-                      hint: '110000000',
-                      icon: Icons.route,
-                      keyboardType: TextInputType.number,
-                      validator: _validateRoutingNumber,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(9),
-                      ],
-                    ),
+                  _buildInputField(
+                    controller: _phoneController,
+                    label: 'Phone Number',
+                    hint: '+20 460 585 1234',
+                    icon: Icons.phone,
+                    keyboardType: TextInputType.phone,
+                    validator: _validatePhone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d+\-\s()]')),
+                    ],
+                  ),
 
-                    const Gap(32),
+                  const Gap(20),
 
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: context.theme.green10_1,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: context.theme.green100_1.withOpacity(0.2)),
+                  _buildInputField(
+                    controller: _accountNumberController,
+                    label: 'Bank Account Number',
+                    hint: '000123456789',
+                    icon: Icons.account_balance_wallet,
+                    keyboardType: TextInputType.number,
+                    validator: _validateAccountNumber,
+                    obscureText: _obscureAccountNumber,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureAccountNumber
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.security, color: context.theme.green100_1),
-                          const Gap(12),
-                          Expanded(
-                            child: Text(
-                              'Your banking information is encrypted and secure',
-                              style: AppStyles.medium14(context).copyWith(
-                                color: context.theme.green100_1,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const Gap(24),
-
-                    BlocBuilder<PaymentCubit, PaymentState>(
-                      builder: (context, state) {
-                        final isLoading = state is PaymentLoading;
-
-                        return ElevatedButton(
-                          onPressed: isLoading ? null : _createConnectedAccount,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.theme.blue100_1,
-                            foregroundColor: context.theme.white100_1,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 2,
-                          ),
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  ),
-                                )
-                              : Text(
-                                  'Connect Account',
-                                  style: AppStyles.bold16(context).copyWith(
-                                    color: context.theme.white100_1,
-                                  ),
-                                ),
-                        );
+                      onPressed: () {
+                        setState(() {
+                          _obscureAccountNumber = !_obscureAccountNumber;
+                        });
                       },
                     ),
-                  ],
-                ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(17),
+                    ],
+                  ),
+
+                  const Gap(20),
+
+                  _buildInputField(
+                    controller: _routingNumberController,
+                    label: 'Routing Number',
+                    hint: '110000000',
+                    icon: Icons.route,
+                    keyboardType: TextInputType.number,
+                    validator: _validateRoutingNumber,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(9),
+                    ],
+                  ),
+
+                  const Gap(32),
+
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: context.theme.green10_1,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: context.theme.green100_1.withOpacity(0.2)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.security, color: context.theme.green100_1),
+                        const Gap(12),
+                        Expanded(
+                          child: Text(
+                            'Your banking information is encrypted and secure',
+                            style: AppStyles.medium14(context).copyWith(
+                              color: context.theme.green100_1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const Gap(24),
+
+                  BlocBuilder<PaymentCubit, PaymentState>(
+                    builder: (context, state) {
+                      final isLoading = state is PaymentLoading;
+
+                      return ElevatedButton(
+                        onPressed: isLoading ? null : _createConnectedAccount,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: context.theme.blue100_1,
+                          foregroundColor: context.theme.white100_1,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
+                            : Text(
+                                'Connect Account',
+                                style: AppStyles.bold16(context).copyWith(
+                                  color: context.theme.white100_1,
+                                ),
+                              ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),

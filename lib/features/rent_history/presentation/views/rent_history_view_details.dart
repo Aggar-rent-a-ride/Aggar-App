@@ -410,7 +410,7 @@ class RentalHistoryDetail extends StatelessWidget {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundColor: context.theme.blue100_1,
+                                      backgroundColor: context.theme.black10,
                                       radius: 20,
                                       backgroundImage: rentalItem.renterReview!
                                                   .reviewer.imagePath !=

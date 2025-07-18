@@ -41,7 +41,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenRefreshCubit.getAccessToken();
+      final token = await tokenRefreshCubit.ensureValidToken();
       if (token != null) {
         context
             .read<EditVehicleCubit>()
@@ -77,7 +77,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
         } else if (state is EditVehicleSuccess) {
           // Refresh the vehicle list in ProfileCubit
           final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-          final token = await tokenRefreshCubit.getAccessToken();
+          final token = await tokenRefreshCubit.ensureValidToken();
           if (token != null) {
             context.read<ProfileCubit>().fetchRenterVehicles(token);
           }
@@ -119,7 +119,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
                   return;
                 }
                 final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-                final token = await tokenRefreshCubit.getAccessToken();
+                final token = await tokenRefreshCubit.ensureValidToken();
 
                 if (token != null) {
                   await editVehicleCubit.updateVehicle(

@@ -72,10 +72,10 @@ class BookingDetailsRenterActionButtons extends StatelessWidget {
                   subtitle:
                       'Are you sure you want to accept this booking request? This action cannot be undone.',
                   onPressed: () async {
-                    Navigator.pop(context);
                     await context
                         .read<BookingCubit>()
                         .acceptBooking(bookingData?.id ?? widget.booking.id);
+                    Navigator.pop(context);
                   },
                 ),
               );

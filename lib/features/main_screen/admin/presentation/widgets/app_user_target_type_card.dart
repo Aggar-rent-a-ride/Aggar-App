@@ -30,7 +30,7 @@ class AppUserTargetTypeCard extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         final tokenCubit = context.read<TokenRefreshCubit>();
-        final token = await tokenCubit.getAccessToken();
+        final token = await tokenCubit.ensureValidToken();
         if (token != null) {
           context.read<UserInfoCubit>().fetchUserInfo(id.toString(), token);
           context.read<UserReviewCubit>().getUserReviews(id.toString(), token);
