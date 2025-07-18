@@ -35,7 +35,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     }
 
     try {
-      final accessToken = await tokenRefreshCubit.getAccessToken();
+      final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
         emit(RentalHistoryError(
@@ -140,7 +140,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
 
   Future<RentalHistoryItem?> getRentalById({required int rentalId}) async {
     try {
-      final accessToken = await tokenRefreshCubit.getAccessToken();
+      final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
         emit(RentalHistoryError(
@@ -204,7 +204,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     required String scannedQrCode,
   }) async {
     try {
-      final accessToken = await tokenRefreshCubit.getAccessToken();
+      final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
         emit(RentalHistoryError(
@@ -257,7 +257,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
     emit(RentalHistoryRefundLoading());
 
     try {
-      final accessToken = await tokenRefreshCubit.getAccessToken();
+      final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
         emit(RentalHistoryRefundError(
@@ -281,7 +281,7 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         // Emit success state
         emit(RentalHistoryRefundSuccess(
           message:
-              'Refund request submitted successfully. Processing time: 3-5 business days.',
+              'Refund request submitted successfully.\n Processing time: 3-5 business days.',
         ));
 
         // Refresh the rental history after successful refund

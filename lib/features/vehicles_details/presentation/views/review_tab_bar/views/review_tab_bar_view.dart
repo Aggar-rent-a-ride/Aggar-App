@@ -1,5 +1,3 @@
-import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/comment_section.dart';
 import 'package:aggar/core/widgets/text_with_arrow_back_button.dart';
 
@@ -37,13 +35,6 @@ class ReviewTabBarView extends StatelessWidget {
                 RatingAndReviewsSection(
                   vehicleRate: vehicleRate,
                 ),
-                if (reviews.isEmpty)
-                  Center(
-                      child: Text(
-                    'No reviews available',
-                    style: AppStyles.medium16(context)
-                        .copyWith(color: context.theme.black50),
-                  )),
                 ...reviews.take(10).map(
                       (review) => CommentSection(
                         imageUrl: review.reviewer.imagePath ?? "",

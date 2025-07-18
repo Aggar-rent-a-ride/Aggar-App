@@ -49,7 +49,7 @@ class RentPartnerSection extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     final tokenCubit = context.read<TokenRefreshCubit>();
-                    final token = await tokenCubit.getAccessToken();
+                    final token = await tokenCubit.ensureValidToken();
                     if (token != null) {
                       context
                           .read<UserInfoCubit>()

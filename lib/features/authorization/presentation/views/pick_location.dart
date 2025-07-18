@@ -149,7 +149,6 @@ class PickLocation extends StatelessWidget {
                               }
                               return null;
                             }, builder: (field) {
-                              print(state.latitude.isEmpty);
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

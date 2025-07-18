@@ -47,132 +47,124 @@ class PopularVehiclesCarCard extends StatelessWidget {
         }
 
         return GestureDetector(
-          onTap: isLoading
-              ? null
-              : () async {
-                  if (isLoading) return;
-                  isLoading = true;
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SpinKitThreeBounce(
-                              color: AppConstants.myWhite100_1,
-                              size: 30.0,
-                            ),
-                            const Gap(10),
-                            Text(
-                              "Loading vehicle details...",
-                              style: AppStyles.medium16(context).copyWith(
-                                color: AppConstants.myWhite100_1,
-                              ),
-                            ),
-                          ],
+          onTap: () async {
+            if (isLoading) return;
+            isLoading = true;
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SpinKitThreeBounce(
+                        color: AppConstants.myWhite100_1,
+                        size: 30.0,
+                      ),
+                      const Gap(10),
+                      Text(
+                        "Loading vehicle details...",
+                        style: AppStyles.medium16(context).copyWith(
+                          color: AppConstants.myWhite100_1,
                         ),
-                      );
-                    },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+
+            try {
+              await context
+                  .read<AddVehicleCubit>()
+                  .getData(vehicleId, state.accessToken)
+                  .timeout(const Duration(seconds: 5));
+
+              if (!context.mounted) return;
+              Navigator.of(context).pop();
+
+              final vehicleData = context.read<AddVehicleCubit>().vehicleData;
+              if (vehicleData != null) {
+                if (vehicleData.id.toString() == vehicleId.toString()) {
+                  context
+                      .read<ReviewCubit>()
+                      .getVehicleReviews(vehicleId, state.accessToken);
+                  context
+                      .read<ReviewCountCubit>()
+                      .getVehicleReviewsNumber(vehicleId, state.accessToken);
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VehiclesDetailsView(
+                        vehicleRate: vehicleData.rate,
+                        isFavorite: vehicleData.isFavorite,
+                        vehicleId: vehicleData.id,
+                        vehiceSeatsNo: vehicleData.numOfPassengers.toString(),
+                        renterName: vehicleData.renter?.name ?? "Unknown",
+                        renterId: vehicleData.renter!.id,
+                        yearOfManufaction: vehicleData.year,
+                        vehicleModel: vehicleData.model,
+                        vehicleRentPrice: vehicleData.pricePerDay,
+                        vehicleColor: vehicleData.color,
+                        vehicleOverView: vehicleData.extraDetails ?? "",
+                        images: vehicleData.vehicleImages,
+                        mainImage: vehicleData.mainImagePath,
+                        vehicleHealth: vehicleData.physicalStatus == "Excellent"
+                            ? "excellent"
+                            : vehicleData.physicalStatus == "Good"
+                                ? "good"
+                                : vehicleData.physicalStatus == "Scratched"
+                                    ? "minor dents"
+                                    : "not bad",
+                        vehicleStatus: vehicleData.status == "OutOfService"
+                            ? "out of stock"
+                            : "active",
+                        transmissionMode:
+                            vehicleData.transmission == "Automatic"
+                                ? 1
+                                : vehicleData.transmission == "None"
+                                    ? 0
+                                    : 2,
+                        vehicleType: vehicleData.vehicleType.name,
+                        vehicleBrand: vehicleData.vehicleBrand.name,
+                        vehicleAddress: vehicleData.address,
+                        vehicleLongitude:
+                            vehicleData.location.longitude as double,
+                        vehicleLatitude:
+                            vehicleData.location.latitude as double,
+                      ),
+                    ),
                   );
-
-                  try {
-                    await context
-                        .read<AddVehicleCubit>()
-                        .getData(vehicleId, state.accessToken)
-                        .timeout(const Duration(seconds: 5));
-
-                    if (!context.mounted) return;
-                    Navigator.of(context).pop();
-
-                    final vehicleData =
-                        context.read<AddVehicleCubit>().vehicleData;
-                    if (vehicleData != null) {
-                      if (vehicleData.id.toString() == vehicleId.toString()) {
-                        context
-                            .read<ReviewCubit>()
-                            .getVehicleReviews(vehicleId, state.accessToken);
-                        context
-                            .read<ReviewCountCubit>()
-                            .getVehicleReviewsNumber(
-                                vehicleId, state.accessToken);
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VehiclesDetailsView(
-                              vehicleRate: vehicleData.rate,
-                              isFavorite: vehicleData.isFavorite,
-                              vehicleId: vehicleData.id,
-                              vehiceSeatsNo:
-                                  vehicleData.numOfPassengers.toString(),
-                              renterName: vehicleData.renter?.name ?? "Unknown",
-                              renterId: vehicleData.renter!.id,
-                              yearOfManufaction: vehicleData.year,
-                              vehicleModel: vehicleData.model,
-                              vehicleRentPrice: vehicleData.pricePerDay,
-                              vehicleColor: vehicleData.color,
-                              vehicleOverView: vehicleData.extraDetails ?? "",
-                              images: vehicleData.vehicleImages,
-                              mainImage: vehicleData.mainImagePath,
-                              vehicleHealth:
-                                  vehicleData.physicalStatus == "Excellent"
-                                      ? "excellent"
-                                      : vehicleData.physicalStatus == "Good"
-                                          ? "good"
-                                          : vehicleData.physicalStatus ==
-                                                  "Scratched"
-                                              ? "minor dents"
-                                              : "not bad",
-                              vehicleStatus:
-                                  vehicleData.status == "OutOfService"
-                                      ? "out of stock"
-                                      : "active",
-                              transmissionMode:
-                                  vehicleData.transmission == "Automatic"
-                                      ? 1
-                                      : vehicleData.transmission == "None"
-                                          ? 0
-                                          : 2,
-                              vehicleType: vehicleData.vehicleType.name,
-                              vehicleBrand: vehicleData.vehicleBrand.name,
-                              vehicleAddress: vehicleData.address,
-                              vehicleLongitude:
-                                  vehicleData.location.longitude as double,
-                              vehicleLatitude:
-                                  vehicleData.location.latitude as double,
-                            ),
-                          ),
-                        );
-                      } else {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            customSnackBar(
-                              context,
-                              "Error",
-                              "Vehicle data not found",
-                              SnackBarType.error,
-                            ),
-                          );
-                        }
-                      }
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        customSnackBar(
-                          context,
-                          "Error",
-                          "Failed to load vehicle details: $e",
-                          SnackBarType.error,
-                        ),
-                      );
-                    }
-                  } finally {
-                    isLoading = false;
+                } else {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      customSnackBar(
+                        context,
+                        "Error",
+                        "Vehicle data not found",
+                        SnackBarType.error,
+                      ),
+                    );
                   }
-                },
+                }
+              }
+            } catch (e) {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(
+                    context,
+                    "Error",
+                    "Failed to load vehicle details: $e",
+                    SnackBarType.error,
+                  ),
+                );
+              }
+            } finally {
+              isLoading = false;
+            }
+          },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

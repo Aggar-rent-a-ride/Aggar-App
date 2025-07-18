@@ -93,7 +93,7 @@ class EditUserInfoListField extends StatelessWidget {
                         ?.validate() ??
                     false) {
                   final tokenCubit = context.read<TokenRefreshCubit>();
-                  final token = await tokenCubit.getAccessToken();
+                  final token = await tokenCubit.ensureValidToken();
                   if (token != null) {
                     await cubit.editProfile(token: token);
                     String? userId =

@@ -154,7 +154,7 @@ class _EditVehicleViewState extends State<EditVehicleView> {
               IconButton(
                 onPressed: () async {
                   final tokenRefreshCubit = context.read<TokenRefreshCubit>();
-                  final token = await tokenRefreshCubit.getAccessToken();
+                  final token = await tokenRefreshCubit.ensureValidToken();
 
                   if (token != null) {
                     showDialog(

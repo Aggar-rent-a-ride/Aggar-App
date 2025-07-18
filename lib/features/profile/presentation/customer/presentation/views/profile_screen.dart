@@ -81,7 +81,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const Gap(50),
             const NameWithUserName(),
-            const EditProfileWithSettingsButtons(),
+            const EditProfileWithSettingsButtons(
+              isRenter: false,
+            ),
             const ProfileTabBarSection(),
           ],
         ),

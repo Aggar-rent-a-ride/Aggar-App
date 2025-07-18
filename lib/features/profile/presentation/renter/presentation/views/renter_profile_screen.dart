@@ -31,7 +31,7 @@ class _RenterProfileScreenState extends State<RenterProfileScreen> {
     String? userId = await context.read<LoginCubit>().getUserId();
     if (userId != null) {
       final tokenCubit = context.read<TokenRefreshCubit>();
-      final token = await tokenCubit.getAccessToken();
+      final token = await tokenCubit.ensureValidToken();
       if (token != null) {
         context.read<UserInfoCubit>().fetchUserInfo(userId, token);
         context.read<ProfileCubit>().fetchRenterVehicles(token);
@@ -81,7 +81,9 @@ class _RenterProfileScreenState extends State<RenterProfileScreen> {
             ),
             const Gap(50),
             const NameWithUserName(),
-            const EditProfileWithSettingsButtons(),
+            const EditProfileWithSettingsButtons(
+              isRenter: true,
+            ),
             const Gap(15),
             const RenterProfileTabBarSection()
           ],

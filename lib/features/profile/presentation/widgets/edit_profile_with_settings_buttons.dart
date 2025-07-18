@@ -13,8 +13,9 @@ import '../../../settings/presentation/views/settings_screen.dart';
 class EditProfileWithSettingsButtons extends StatelessWidget {
   const EditProfileWithSettingsButtons({
     super.key,
+    required this.isRenter,
   });
-
+  final bool isRenter;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -24,18 +25,22 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
         ElevatedButton(
           onPressed: () async {
             final tokenCubit = context.read<TokenRefreshCubit>();
-            final token = await tokenCubit.getAccessToken();
+            final token = await tokenCubit.ensureValidToken();
             if (token != null) {
               String? userId = await context.read<LoginCubit>().getUserId();
-              context.read<EditUserInfoCubit>().fetchUserInfo(userId!, token);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditProfileScreen(
-                    userId: userId,
+              if (userId != null) {
+                await context
+                    .read<EditUserInfoCubit>()
+                    .fetchUserInfo(userId, token);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProfileScreen(
+                      userId: userId,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             }
           },
           style: ElevatedButton.styleFrom(
@@ -62,7 +67,9 @@ class EditProfileWithSettingsButtons extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const SettingsScreen(),
+                builder: (context) => SettingsScreen(
+                  isRenter: isRenter,
+                ),
               ),
             );
           },

@@ -205,7 +205,7 @@ class NotificationCubit extends Cubit<NotificationState> {
             title = 'New Review';
             break;
           case 'Booking':
-            title = 'New Booking';
+            title = 'Booking Update';
             break;
           case 'Rental':
             title = 'Rental Update';
@@ -538,5 +538,26 @@ class NotificationCubit extends Cubit<NotificationState> {
     _reconnectionTimer?.cancel();
     _notificationService.dispose();
     return super.close();
+  }
+
+  // New method to reset cubit state
+  void reset() {
+    print('Resetting NotificationCubit state');
+    _notifications = [];
+    _unreadCount = 0;
+    _isInitialized = false;
+    _shouldBeConnected = false;
+    _isReconnecting = false;
+    _reconnectionAttempt = 0;
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+    _notificationSubscription?.cancel();
+    _connectionSubscription?.cancel();
+    _unreadCountSubscription?.cancel();
+    _notificationSubscription = null;
+    _connectionSubscription = null;
+    _unreadCountSubscription = null;
+    _notificationService.disconnect();
+    emit(NotificationInitial());
   }
 }

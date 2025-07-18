@@ -58,7 +58,7 @@ class _RenterVehiclesListState extends State<RenterVehiclesList>
       isLoading = true;
     });
     final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.getAccessToken();
+    final token = await tokenCubit.ensureValidToken();
     if (token != null) {
       await context.read<ProfileCubit>().fetchRenterVehicles(token);
     } else {
@@ -164,7 +164,7 @@ class _RenterVehiclesListState extends State<RenterVehiclesList>
                                     final tokenCubit =
                                         context.read<TokenRefreshCubit>();
                                     final token =
-                                        await tokenCubit.getAccessToken();
+                                        await tokenCubit.ensureValidToken();
                                     if (token != null) {
                                       await context
                                           .read<AddVehicleCubit>()

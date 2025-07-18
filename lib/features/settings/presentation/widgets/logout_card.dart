@@ -1,13 +1,14 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
-import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_assets.dart';
 import 'package:aggar/core/widgets/custom_dialog.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
+import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_cubit.dart';
 import 'package:aggar/features/settings/Data/cubit/logout_state.dart';
+import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
+import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/features/settings/presentation/widgets/arrow_forward_icon_button.dart';
 import 'package:aggar/features/settings/presentation/widgets/custom_card_settings_page.dart';
-import 'package:aggar/features/authorization/presentation/views/sign_in_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -71,6 +72,7 @@ class LogoutCard extends StatelessWidget {
                             Navigator.of(dialogContext).pop();
                             context.read<LogoutCubit>().logout();
                             context.read<MessageCubit>().clearCache();
+                            context.read<NotificationCubit>().reset();
                           },
                         );
                       },

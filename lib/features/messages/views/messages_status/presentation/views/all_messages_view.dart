@@ -48,7 +48,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
 
   Future<void> _startPollingWithToken() async {
     if (!_isViewActive || !mounted) return;
-    final token = await _tokenRefreshCubit.getAccessToken();
+    final token = await _tokenRefreshCubit.ensureValidToken();
     if (token != null && mounted) {
       _messageCubit.startPolling(token, isViewActive: true);
     }
@@ -56,7 +56,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
 
   Future<void> _loadMoreChats() async {
     if (!mounted) return;
-    final token = await _tokenRefreshCubit.getAccessToken();
+    final token = await _tokenRefreshCubit.ensureValidToken();
     if (token != null) {
       await _messageCubit.getMyChat(token, loadMore: true);
     }
@@ -100,7 +100,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                   receiverName: state.receiverName,
                   onMessagesUpdated: () async {
                     if (!mounted) return;
-                    final token = await _tokenRefreshCubit.getAccessToken();
+                    final token = await _tokenRefreshCubit.ensureValidToken();
                     if (token != null) {
                       await _messageCubit.getMyChat(token);
                     }
@@ -113,7 +113,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
             _isViewActive = true;
             _messageCubit.stopPolling();
             await Future.delayed(const Duration(milliseconds: 100));
-            final token = await _tokenRefreshCubit.getAccessToken();
+            final token = await _tokenRefreshCubit.ensureValidToken();
             if (token != null && mounted) {
               await _messageCubit.getMyChat(token);
               _startPollingWithToken();
@@ -156,7 +156,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
           return RefreshIndicator(
             onRefresh: () async {
               if (!mounted) return;
-              final token = await _tokenRefreshCubit.getAccessToken();
+              final token = await _tokenRefreshCubit.ensureValidToken();
               if (token != null) {
                 await _messageCubit.getMyChat(token);
               }
@@ -193,7 +193,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                   onTap: () async {
                     if (!mounted) return;
                     final personalChatCubit = context.read<PersonalChatCubit>();
-                    final token = await _tokenRefreshCubit.getAccessToken();
+                    final token = await _tokenRefreshCubit.ensureValidToken();
                     if (token != null && mounted) {
                       await _messageCubit.getMyChat(token);
                       _messageCubit.stopPolling();
@@ -230,7 +230,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
           return RefreshIndicator(
             onRefresh: () async {
               if (!mounted) return;
-              final token = await _tokenRefreshCubit.getAccessToken();
+              final token = await _tokenRefreshCubit.ensureValidToken();
               if (token != null) {
                 await _messageCubit.getMyChat(token);
               }
@@ -266,7 +266,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                   onTap: () async {
                     if (!mounted) return;
                     final personalChatCubit = context.read<PersonalChatCubit>();
-                    final token = await _tokenRefreshCubit.getAccessToken();
+                    final token = await _tokenRefreshCubit.ensureValidToken();
                     if (token != null && mounted) {
                       await _messageCubit.getMyChat(token);
                       _messageCubit.stopPolling();
@@ -306,7 +306,7 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 ElevatedButton(
                   onPressed: () async {
                     if (!mounted) return;
-                    final token = await _tokenRefreshCubit.getAccessToken();
+                    final token = await _tokenRefreshCubit.ensureValidToken();
                     if (token != null) {
                       await _messageCubit.getMyChat(token);
                     }

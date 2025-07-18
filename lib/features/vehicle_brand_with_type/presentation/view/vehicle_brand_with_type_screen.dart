@@ -17,7 +17,7 @@ class VehicleBrandWithTypeScreen extends StatelessWidget {
       onRefresh: () async {
         context.read<AdminVehicleBrandCubit>().resetFields();
         final tokenCubit = context.read<TokenRefreshCubit>();
-        final token = await tokenCubit.getAccessToken();
+        final token = await tokenCubit.ensureValidToken();
         if (token != null) {
           await context.read<AdminVehicleTypeCubit>().fetchVehicleTypes(token);
           await context

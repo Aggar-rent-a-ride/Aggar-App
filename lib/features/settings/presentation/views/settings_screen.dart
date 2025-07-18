@@ -3,6 +3,7 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/core/widgets/horizontal_line.dart';
 import 'package:aggar/features/settings/presentation/widgets/logout_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/payment_card.dart';
+import 'package:aggar/features/settings/presentation/widgets/payout_details_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/rent_history_card.dart';
 import 'package:aggar/features/settings/presentation/widgets/settings_and_preferences_section.dart';
 import 'package:aggar/features/settings/presentation/widgets/support_section.dart';
@@ -10,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, required this.isRenter});
+  final bool isRenter;
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +37,50 @@ class SettingsScreen extends StatelessWidget {
               .copyWith(color: context.theme.black100),
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Gap(20),
-              PaymentCard(),
-              Gap(12),
-              RentHistoryCard(),
-              Gap(5),
-              HorizontalLine(),
-              Gap(5),
-              SettingsAndPreferencesSection(),
-              Gap(5),
-              SupportSection(),
-              Gap(5),
-              LogoutCard(),
-              Gap(50),
+              const Gap(20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Financial",
+                    style: AppStyles.bold18(context).copyWith(
+                      color: context.theme.blue100_1,
+                    ),
+                  ),
+                  const Gap(12),
+                  const PaymentCard(),
+                  const Gap(12),
+                  const PayoutDetailsCard(),
+                  const Gap(12),
+                  const RentHistoryCard(),
+                ],
+              ),
+              const Gap(5),
+              const HorizontalLine(),
+              const Gap(5),
+              const SettingsAndPreferencesSection(),
+              const Gap(5),
+              const SupportSection(),
+              const Gap(5),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Account",
+                    style: AppStyles.bold18(context).copyWith(
+                      color: context.theme.blue100_1,
+                    ),
+                  ),
+                  const Gap(12),
+                  const LogoutCard(),
+                ],
+              ),
+              const Gap(50),
             ],
           ),
         ),
