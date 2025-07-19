@@ -14,6 +14,7 @@ import '../../../../new_vehicle/data/cubits/main_image_cubit/main_image_cubit.da
 import '../../../../new_vehicle/data/cubits/map_location/map_location_cubit.dart';
 import '../../../../new_vehicle/presentation/views/add_vehicle_screen.dart';
 import 'package:aggar/core/services/signalr_service.dart';
+import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -33,6 +34,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeToken();
       _startSignalR();
+      context.read<NotificationCubit>().initialize();
     });
   }
 
