@@ -168,15 +168,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: personalChatCubit.isSearchActive
-                      ? IconButton(
-                          onPressed: () async {
-                            personalChatCubit.selectDate(context);
-                          },
-                          icon: Icon(
-                            color: context.theme.white100_2,
-                            Icons.date_range_outlined,
-                          ),
-                        )
+                      ? null // Remove the IconButton for date picker
                       : MenuIconButton(
                           cubit: personalChatCubit,
                           userId: widget.receiverId,
