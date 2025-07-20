@@ -1,6 +1,7 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
+import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/presentation/widgets/rent_history_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -150,7 +151,14 @@ class RentHistoryView extends StatelessWidget {
         ],
       ),
       backgroundColor: context.theme.white100_1,
-      body: const RentHistoryBody(),
+      body: BlocListener<RentalHistoryCubit, RentalHistoryState>(
+        listener: (context, state) {
+          if (state is RentalHistoryRefundSuccess) {
+            context.read<RentalHistoryCubit>().refreshRentalHistory();
+          }
+        },
+        child: const RentHistoryBody(),
+      ),
     );
   }
 }

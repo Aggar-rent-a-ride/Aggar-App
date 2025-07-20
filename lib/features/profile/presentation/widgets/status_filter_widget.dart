@@ -19,6 +19,7 @@ class StatusFilterWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: DropdownButtonFormField<BookingStatus?>(
         value: selectedStatus,
+        isExpanded: true,
         decoration: InputDecoration(
           labelText: 'Filter by Status',
           labelStyle: AppStyles.medium14(context).copyWith(
@@ -82,56 +83,24 @@ class StatusFilterWidget extends StatelessWidget {
         items: [
           DropdownMenuItem<BookingStatus?>(
             value: null,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: context.theme.black100.withOpacity(0.3),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'All Status',
-                    style: AppStyles.medium16(context).copyWith(
-                      color: context.theme.black100,
-                      fontWeight: selectedStatus == null
-                          ? FontWeight.w600
-                          : FontWeight.w500,
-                    ),
-                  ),
-                ],
+            child: Text(
+              'All Status',
+              style: AppStyles.medium16(context).copyWith(
+                color: context.theme.black100,
+                fontWeight:
+                    selectedStatus == null ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
           ),
           ...BookingStatus.values.map((status) => DropdownMenuItem(
                 value: status,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        status.value,
-                        style: AppStyles.medium16(context).copyWith(
-                          color: context.theme.black100,
-                          fontWeight: selectedStatus == status
-                              ? FontWeight.w600
-                              : FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                child: Text(
+                  status.value,
+                  style: AppStyles.medium16(context).copyWith(
+                    color: context.theme.black100,
+                    fontWeight: selectedStatus == status
+                        ? FontWeight.w600
+                        : FontWeight.w500,
                   ),
                 ),
               )),

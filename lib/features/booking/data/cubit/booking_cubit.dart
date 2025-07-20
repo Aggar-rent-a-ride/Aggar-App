@@ -308,6 +308,11 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
   Future<void> confirmBooking(int bookingId) async {
+    BookingModel? currentBooking;
+    final currentState = state;
+    if (currentState is BookingGetByIdSuccess) {
+      currentBooking = currentState.booking;
+    }
     emit(const BookingConfirmLoading());
 
     try {
@@ -328,18 +333,27 @@ class BookingCubit extends Cubit<BookingState> {
         final message = responseData['message']?.toString() ??
             'Payment session created successfully';
 
-        emit(BookingConfirmSuccess(
-          message: message,
-          bookingId: bookingId,
-          clientSecret: clientSecret,
-        ));
+        if (currentBooking != null) {
+          emit(BookingConfirmSuccess(
+            message: message,
+            bookingId: bookingId,
+            clientSecret: clientSecret,
+            booking: currentBooking,
+          ));
+        } else {
+          emit(const BookingConfirmError(
+            message: 'Booking data not available',
+          ));
+        }
       } else {
+        print('DEBUG: Emitting BookingConfirmError');
         emit(BookingConfirmError(
           message: responseData['message']?.toString() ??
               'Failed to confirm booking',
         ));
       }
     } catch (e) {
+      print('DEBUG: Error in confirmBooking: $e');
       _handleError(e, (message) => BookingConfirmError(message: message));
     }
   }
