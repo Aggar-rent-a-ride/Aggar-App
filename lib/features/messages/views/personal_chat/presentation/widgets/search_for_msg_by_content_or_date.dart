@@ -29,21 +29,21 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
               },
               controller: cubit.searchController,
               autofocus: true,
-              style: AppStyles.medium16(context).copyWith(
-                color: context.theme.white100_2,
-              ),
+              style: AppStyles.medium16(
+                context,
+              ).copyWith(color: context.theme.white100_2),
               decoration: InputDecoration(
                 hintText: "Search messages...",
-                hintStyle: AppStyles.medium16(context).copyWith(
-                  color: context.theme.white100_1.withOpacity(0.6),
-                ),
+                hintStyle: AppStyles.medium16(
+                  context,
+                ).copyWith(color: context.theme.white100_1.withOpacity(0.6)),
                 border: InputBorder.none,
                 suffixText: cubit.searchResultMessageIds.isNotEmpty
                     ? "${cubit.currentHighlightIndex + 1}/${cubit.searchResultMessageIds.length}"
                     : null,
-                suffixStyle: AppStyles.regular14(context).copyWith(
-                  color: context.theme.white100_1,
-                ),
+                suffixStyle: AppStyles.regular14(
+                  context,
+                ).copyWith(color: context.theme.white100_1),
               ),
               onChanged: (value) {
                 cubit.updateSearchQuery(value);
@@ -60,10 +60,7 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
                 cubit.goToPreviousSearchResult();
               },
               tooltip: 'Previous match',
-              constraints: const BoxConstraints(
-                minWidth: 36,
-                minHeight: 36,
-              ),
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               padding: const EdgeInsets.all(4),
             ),
             IconButton(
@@ -75,10 +72,7 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
                 cubit.goToNextSearchResult();
               },
               tooltip: 'Next match',
-              constraints: const BoxConstraints(
-                minWidth: 36,
-                minHeight: 36,
-              ),
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               padding: const EdgeInsets.all(4),
             ),
           ],

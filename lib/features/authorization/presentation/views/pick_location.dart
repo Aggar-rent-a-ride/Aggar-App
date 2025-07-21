@@ -19,7 +19,7 @@ import 'package:uuid/uuid.dart';
 import '../widget/custom_text_from_felid.dart';
 import 'verification_view.dart';
 
-class PickLocation extends StatelessWidget {
+class PickLocation extends StatefulWidget {
   final PageController? controller;
   final Function(Map<String, dynamic>)? onRegistrationSuccess;
   final VoidCallback onSubmit;
@@ -30,6 +30,15 @@ class PickLocation extends StatelessWidget {
     this.onRegistrationSuccess,
     required this.onSubmit,
   });
+
+  @override
+  State<PickLocation> createState() => _PickLocationState();
+}
+
+class _PickLocationState extends State<PickLocation> {
+  final String uniqueId = const Uuid().v4();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _hasShownSuccessSnackbar = false; // Add a flag to track snackbar
 
   String? _validateAddress(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -50,9 +59,6 @@ class PickLocation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String uniqueId = const Uuid().v4();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
     return BlocConsumer<PickLocationCubit, PickLocationState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -66,8 +72,8 @@ class PickLocation extends StatelessWidget {
           );
           context.read<PickLocationCubit>().resetError();
         }
-
-        if (state.isSuccess) {
+        if (state.isSuccess && !_hasShownSuccessSnackbar) {
+          _hasShownSuccessSnackbar = true;
           ScaffoldMessenger.of(context).showSnackBar(
             customSnackBar(
               context,
@@ -77,8 +83,8 @@ class PickLocation extends StatelessWidget {
             ),
           );
 
-          if (onRegistrationSuccess != null) {
-            onRegistrationSuccess!({
+          if (widget.onRegistrationSuccess != null) {
+            widget.onRegistrationSuccess!({
               ApiKey.message: 'Registration successful!',
             });
           }
@@ -97,6 +103,10 @@ class PickLocation extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        if (!state.isSuccess) {
+          _hasShownSuccessSnackbar = false;
+        }
+
         final cubit = context.read<PickLocationCubit>();
         return Scaffold(
           backgroundColor: context.theme.white100_1,
@@ -323,7 +333,7 @@ class PickLocation extends StatelessWidget {
                                         // Trigger form validation before registration
                                         if (formKey.currentState!.validate()) {
                                           cubit.register(context);
-                                          onSubmit();
+                                          widget.onSubmit();
                                         }
                                       },
                                       text: 'Register',
