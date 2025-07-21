@@ -102,7 +102,9 @@ class VehiclesDetailsView extends StatelessWidget {
                 builder: (context, state) {
                   bool isFav = state.isFavorite;
                   return VehicleDetailsMenuIcon(
-                      isFav: isFav, vehicleId: vehicleId);
+                    isFav: isFav,
+                    vehicleId: vehicleId,
+                  );
                 },
               ),
             ],
@@ -117,8 +119,9 @@ class VehiclesDetailsView extends StatelessWidget {
             ),
             title: Text(
               'Vehicle Details',
-              style: AppStyles.semiBold24(context)
-                  .copyWith(color: context.theme.black100),
+              style: AppStyles.semiBold24(
+                context,
+              ).copyWith(color: context.theme.black100),
             ),
           ),
           backgroundColor: context.theme.white100_1,
@@ -132,15 +135,14 @@ class VehiclesDetailsView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Gap(5),
-                      CustomImageCar(
-                        mainImage: mainImage,
-                      ),
+                      CustomImageCar(mainImage: mainImage),
                       CarNameWithTypeAndYearOfManifiction(
                         carName: '$vehicleBrand $vehicleModel',
                         manifactionYear: yearOfManufaction,
                         transmissionType: transmissionMode,
                       ),
                       TabBarSection(
+                        vehicleId: vehicleId.toString(),
                         vehilceType: vehicleType,
                         pfpImage: pfpImage,
                         renterName: renterName,
@@ -158,7 +160,7 @@ class VehiclesDetailsView extends StatelessWidget {
                         vehicleRate: vehicleRate,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -169,9 +171,7 @@ class VehiclesDetailsView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookVehicleScreen(
-                    vehicleId: vehicleId,
-                  ),
+                  builder: (context) => BookVehicleScreen(vehicleId: vehicleId),
                 ),
               );
             },

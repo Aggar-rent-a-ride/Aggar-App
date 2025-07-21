@@ -50,17 +50,19 @@ import 'package:aggar/features/vehicle_brand_with_type/presentation/cubit/edit_v
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/services/firebase_notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'core/services/local_notification_service.dart';
+import 'package:flutter/widgets.dart';
+
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,10 +91,7 @@ void main() async {
   });
 
   runApp(
-    MyApp(
-      secureStorage: secureStorage,
-      initialLanguageCubit: languageCubit,
-    ),
+    MyApp(secureStorage: secureStorage, initialLanguageCubit: languageCubit),
   );
 }
 
@@ -118,48 +117,22 @@ class MyApp extends StatelessWidget {
     final dio = Dio();
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ThemeCubit>(
-          create: (context) => ThemeCubit(),
-        ),
+        BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
         BlocProvider(
           create: (context) => initialLanguageCubit ?? LanguageCubit(),
         ),
-        BlocProvider(
-          create: (context) => MapLocationCubit(),
-        ),
-        BlocProvider(
-          create: (context) => VehicleTypeCubit(),
-        ),
-        BlocProvider(
-          create: (context) => VehicleBrandCubit(),
-        ),
-        BlocProvider(
-          create: (context) => AdminVehicleBrandCubit(),
-        ),
-        BlocProvider(
-          create: (context) => EditVehicleTypeCubit(),
-        ),
-        BlocProvider(
-          create: (context) => EditVehicleBrandCubit(),
-        ),
-        BlocProvider(
-          create: (context) => AdminVehicleTypeCubit(),
-        ),
-        BlocProvider(
-          create: (context) => AdditionalImageCubit(),
-        ),
-        BlocProvider(
-          create: (context) => VehicleCubit(),
-        ),
-        BlocProvider(
-          create: (context) => MainImageCubit(),
-        ),
-        BlocProvider(
-          create: (context) => UserReviewCubit(),
-        ),
-        BlocProvider(
-          create: (context) => PickLocationCubit(),
-        ),
+        BlocProvider(create: (context) => MapLocationCubit()),
+        BlocProvider(create: (context) => VehicleTypeCubit()),
+        BlocProvider(create: (context) => VehicleBrandCubit()),
+        BlocProvider(create: (context) => AdminVehicleBrandCubit()),
+        BlocProvider(create: (context) => EditVehicleTypeCubit()),
+        BlocProvider(create: (context) => EditVehicleBrandCubit()),
+        BlocProvider(create: (context) => AdminVehicleTypeCubit()),
+        BlocProvider(create: (context) => AdditionalImageCubit()),
+        BlocProvider(create: (context) => VehicleCubit()),
+        BlocProvider(create: (context) => MainImageCubit()),
+        BlocProvider(create: (context) => UserReviewCubit()),
+        BlocProvider(create: (context) => PickLocationCubit()),
         BlocProvider<TokenRefreshCubit>(
           create: (context) => TokenRefreshCubit(
             apiConsumer: DioConsumer(dio: dio),
@@ -176,7 +149,8 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => NotificationCubit(
-              tokenRefreshCubit: context.read<TokenRefreshCubit>()),
+            tokenRefreshCubit: context.read<TokenRefreshCubit>(),
+          ),
         ),
         BlocProvider(
           create: (context) => RentalHistoryCubit(
@@ -191,59 +165,27 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => MessageCubit(
-            dioConsumer: DioConsumer(dio: dio),
-          ),
+          create: (context) => MessageCubit(dioConsumer: DioConsumer(dio: dio)),
         ),
-        BlocProvider(
-          create: (context) => ReviewCubit(),
-        ),
-        BlocProvider(
-          create: (context) => SignUpCubit(),
-        ),
-        BlocProvider(
-          create: (context) => PersonalChatCubit(),
-        ),
+        BlocProvider(create: (context) => ReviewCubit()),
+        BlocProvider(create: (context) => SignUpCubit()),
+        BlocProvider(create: (context) => PersonalChatCubit()),
         BlocProvider(
           create: (context) => RealTimeChatCubit(
-            MessageCubit(
-              dioConsumer: DioConsumer(dio: dio),
-            ),
+            MessageCubit(dioConsumer: DioConsumer(dio: dio)),
           ),
         ),
-        BlocProvider(
-          create: (context) => ReportCubit(),
-        ),
-        BlocProvider(
-          create: (context) => UserCubit(),
-        ),
-        BlocProvider(
-          create: (context) => SearchCubit(),
-        ),
-        BlocProvider(
-          create: (context) => CredentialsCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ReportByIdCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ReviewCountCubit(),
-        ),
-        BlocProvider(
-          create: (context) => PaymentCubit(),
-        ),
-        BlocProvider(
-          create: (context) => ProfileCubit(),
-        ),
-        BlocProvider(
-          create: (context) => UserInfoCubit(),
-        ),
-        BlocProvider(
-          create: (context) => EditUserInfoCubit(),
-        ),
-        BlocProvider(
-          create: (context) => FilterCubit(),
-        ),
+        BlocProvider(create: (context) => ReportCubit()),
+        BlocProvider(create: (context) => UserCubit()),
+        BlocProvider(create: (context) => SearchCubit()),
+        BlocProvider(create: (context) => CredentialsCubit()),
+        BlocProvider(create: (context) => ReportByIdCubit()),
+        BlocProvider(create: (context) => ReviewCountCubit()),
+        BlocProvider(create: (context) => PaymentCubit()),
+        BlocProvider(create: (context) => ProfileCubit()),
+        BlocProvider(create: (context) => UserInfoCubit()),
+        BlocProvider(create: (context) => EditUserInfoCubit()),
+        BlocProvider(create: (context) => FilterCubit()),
         BlocProvider(
           create: (context) => BookingCubit(
             dioConsumer: DioConsumer(dio: dio),
@@ -264,12 +206,8 @@ class MyApp extends StatelessWidget {
             secureStorage: secureStorage,
           ),
         ),
-        BlocProvider(
-          create: (context) => ReportCreationCubit(),
-        ),
-        BlocProvider(
-          create: (context) => CreateReviewCubit(),
-        ),
+        BlocProvider(create: (context) => ReportCreationCubit()),
+        BlocProvider(create: (context) => CreateReviewCubit()),
         BlocProvider(
           create: (context) => MainCubit(
             tokenRefreshCubit: context.read<TokenRefreshCubit>(),
@@ -279,12 +217,8 @@ class MyApp extends StatelessWidget {
             userInfoCubit: context.read<UserInfoCubit>(),
           ),
         ),
-        BlocProvider(
-          create: (context) => StatisticsCubit(),
-        ),
-        BlocProvider(
-          create: (context) => UserStatisticsCubit(),
-        ),
+        BlocProvider(create: (context) => StatisticsCubit()),
+        BlocProvider(create: (context) => UserStatisticsCubit()),
         BlocProvider(
           create: (context) => AdminMainCubit(
             userInfoCubit: context.read<UserInfoCubit>(),
@@ -317,6 +251,7 @@ class MyApp extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 home: const SplashView(),
+                navigatorObservers: [routeObserver],
               );
             },
           );

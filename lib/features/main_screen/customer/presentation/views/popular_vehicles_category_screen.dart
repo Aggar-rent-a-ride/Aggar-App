@@ -72,7 +72,11 @@ class _PopularVehiclesCategoryScreenState
                 ),
               ),
               padding: const EdgeInsets.only(
-                  left: 12, right: 12, top: 55, bottom: 8),
+                left: 12,
+                right: 12,
+                top: 55,
+                bottom: 8,
+              ),
               child: Row(
                 children: [
                   IconButton(
@@ -87,9 +91,9 @@ class _PopularVehiclesCategoryScreenState
                   ),
                   Text(
                     "Popular Vehicles",
-                    style: AppStyles.bold20(context).copyWith(
-                      color: context.theme.white100_1,
-                    ),
+                    style: AppStyles.bold20(
+                      context,
+                    ).copyWith(color: context.theme.white100_1),
                   ),
                   const Spacer(),
                 ],
@@ -114,8 +118,10 @@ class _PopularVehiclesCategoryScreenState
 
                   if (state is VehicleLoading) {
                     return const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 15,
+                      ),
                       child: LoadingAllVehicle(),
                     );
                   }
@@ -129,19 +135,20 @@ class _PopularVehiclesCategoryScreenState
                     }
 
                     return PopularVehicleBody(
-                        cubit: cubit,
-                        widget: widget,
-                        scrollController: _scrollController,
-                        vehicles: vehicles,
-                        canLoadMore: canLoadMore,
-                        isLoadingMore: isLoadingMore);
+                      cubit: cubit,
+                      widget: widget,
+                      scrollController: _scrollController,
+                      vehicles: vehicles,
+                      canLoadMore: canLoadMore,
+                      isLoadingMore: isLoadingMore,
+                    );
                   }
 
                   if (state is VehicleError) {
                     return AllVehicleError(cubit: cubit);
                   }
 
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: LoadingAllVehicle());
                 },
               ),
             ),

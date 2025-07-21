@@ -23,6 +23,7 @@ class _SearchResultSectionState extends State<SearchResultSection> {
   @override
   void initState() {
     super.initState();
+    context.read<SearchCubit>().fetchSearch(pageNo: 1);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 900 &&
@@ -55,30 +56,6 @@ class _SearchResultSectionState extends State<SearchResultSection> {
             ),
           );
         }
-
-        if (state is SearchCubitError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 100, color: Colors.red),
-                const Gap(16),
-                Text(
-                  state.message,
-                  style:
-                      AppStyles.medium16(context).copyWith(color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-                const Gap(16),
-                ElevatedButton(
-                  onPressed: () => searchCubit.fetchSearch(pageNo: 1),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          );
-        }
-
         if (state is SearchCubitLoaded) {
           final vehicles = state.vehicles.data;
 
@@ -91,8 +68,9 @@ class _SearchResultSectionState extends State<SearchResultSection> {
                   const Gap(16),
                   Text(
                     'No vehicles found',
-                    style: AppStyles.medium16(context)
-                        .copyWith(color: Colors.grey),
+                    style: AppStyles.medium16(
+                      context,
+                    ).copyWith(color: Colors.grey),
                   ),
                 ],
               ),
@@ -142,8 +120,11 @@ class _SearchResultSectionState extends State<SearchResultSection> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.directions_car_outlined,
-                  size: 100, color: Colors.grey),
+              const Icon(
+                Icons.directions_car_outlined,
+                size: 100,
+                color: Colors.grey,
+              ),
               const Gap(16),
               Text(
                 'Search for vehicles',

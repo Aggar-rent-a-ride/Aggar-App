@@ -20,6 +20,7 @@ class NameAndRateSection extends StatelessWidget {
     required this.reviewId,
     required this.typeOfReport,
   });
+
   final String imageUrl;
   final String name;
   final double? rate;
@@ -43,13 +44,11 @@ class NameAndRateSection extends StatelessWidget {
                 offset: Offset(0, 0),
                 blurRadius: 4,
                 color: Colors.black12,
-              )
+              ),
             ],
           ),
           child: ClipRRect(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(30),
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(30)),
             child: Image.network(
               "${EndPoint.baseUrl}$imageUrl",
               height: 45,
@@ -68,50 +67,57 @@ class NameAndRateSection extends StatelessWidget {
           ),
         ),
         const Gap(15),
-        NameSection(
-          date: date,
-          name: name,
-          rating: rate,
-        ),
+        NameSection(date: date, name: name, rating: rate),
         const Spacer(),
         IconButton(
           key: iconButtonKey,
           onPressed: () async {
             final tokenCubit = context.read<TokenRefreshCubit>();
             final token = await tokenCubit.ensureValidToken();
-            final RenderBox button = context.findRenderObject() as RenderBox;
+            final RenderBox? button =
+                iconButtonKey.currentContext?.findRenderObject() as RenderBox?;
+            if (button == null) return;
+
             final RenderBox overlay =
                 Overlay.of(context).context.findRenderObject() as RenderBox;
             final RelativeRect position = RelativeRect.fromRect(
               Rect.fromPoints(
-                button.localToGlobal(Offset.zero, ancestor: overlay),
-                button.localToGlobal(button.size.bottomRight(Offset.zero),
-                    ancestor: overlay),
+                button.localToGlobal(const Offset(0, 10), ancestor: overlay),
+                button.localToGlobal(
+                  button.size.bottomRight(const Offset(0, 10)),
+                  ancestor: overlay,
+                ),
               ),
               Offset.zero & overlay.size,
             );
 
             showMenu(
-              elevation: 1,
-              color: context.theme.white100_2,
               context: context,
               position: position,
+              elevation: 4,
+              color: context.theme.white100_2,
+
               items: [
                 PopupMenuItem(
                   value: "create_report",
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Icon(
                         Icons.flag_outlined,
                         color: context.theme.black100,
+                        size: 20,
                       ),
                       const Gap(8),
                       Text(
                         "Create Report",
-                        style: AppStyles.medium16(context).copyWith(
-                          color: context.theme.black100,
-                        ),
+                        style: AppStyles.medium16(
+                          context,
+                        ).copyWith(color: context.theme.black100),
                       ),
                     ],
                   ),
@@ -140,6 +146,18 @@ class NameAndRateSection extends StatelessWidget {
                       },
                     ),
                   );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Unable to authenticate. Please try again.',
+                        style: AppStyles.medium14(
+                          context,
+                        ).copyWith(color: context.theme.white100_2),
+                      ),
+                      backgroundColor: context.theme.red100_1,
+                    ),
+                  );
                 }
               }
             });
@@ -147,6 +165,7 @@ class NameAndRateSection extends StatelessWidget {
           icon: Icon(
             Icons.more_vert_outlined,
             color: context.theme.black100,
+            size: 24, // Consistent icon size
           ),
         ),
       ],

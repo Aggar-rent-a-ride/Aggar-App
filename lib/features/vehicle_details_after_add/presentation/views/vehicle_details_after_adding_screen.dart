@@ -2,6 +2,7 @@ import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/pricing_and_discounts_section.dart';
 import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/vehicle_details_menu_icon_button.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/vehicle_review_list.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/about_tab_bar/widgets/location_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/gallary_section.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/properities_tab_bar/widgets/over_view_section.dart';
@@ -70,11 +71,7 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           centerTitle: true,
           backgroundColor: context.theme.white100_1,
-          actions: [
-            VehicleDetailsMenuIconButton(
-              vehicleId: vehicleId,
-            ),
-          ],
+          actions: [VehicleDetailsMenuIconButton(vehicleId: vehicleId)],
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
@@ -86,8 +83,9 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
           ),
           title: Text(
             'Vehicle Details',
-            style: AppStyles.semiBold24(context)
-                .copyWith(color: context.theme.black100),
+            style: AppStyles.semiBold24(
+              context,
+            ).copyWith(color: context.theme.black100),
           ),
         ),
         body: Padding(
@@ -97,9 +95,7 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(5),
-                CustomImageCar(
-                  mainImage: mainImage,
-                ),
+                CustomImageCar(mainImage: mainImage),
                 CarNameWithTypeAndYearOfManifiction(
                   carName: '$vehicleBrand $vehicleModel',
                   manifactionYear: yearOfManufaction,
@@ -108,14 +104,14 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
                 GallarySection(
                   images: images,
                   mainImage: mainImage,
-                  style: AppStyles.bold18(context).copyWith(
-                    color: context.theme.blue100_2,
-                  ),
+                  style: AppStyles.bold18(
+                    context,
+                  ).copyWith(color: context.theme.blue100_2),
                 ),
                 OverViewSection(
-                  style: AppStyles.bold18(context).copyWith(
-                    color: context.theme.blue100_2,
-                  ),
+                  style: AppStyles.bold18(
+                    context,
+                  ).copyWith(color: context.theme.blue100_2),
                   vehicleType: vehicleType,
                   color: vehicleColor,
                   seatsno: vehiceSeatsNo,
@@ -127,20 +123,21 @@ class VehicleDetailsAfterAddingScreen extends StatelessWidget {
                   vehicleAddress: vehicleAddress,
                   vehicleLongitude: vehicleLongitude,
                   vehicleLatitude: vehicleLatitude,
-                  style: AppStyles.bold18(context).copyWith(
-                    color: context.theme.blue100_2,
-                  ),
+                  style: AppStyles.bold18(
+                    context,
+                  ).copyWith(color: context.theme.blue100_2),
                 ),
                 RatingAndReviewsSection(
                   vehicleRate: vehicleRate,
-                  style: AppStyles.bold18(context).copyWith(
-                    color: context.theme.blue100_2,
-                  ),
+                  style: AppStyles.bold18(
+                    context,
+                  ).copyWith(color: context.theme.blue100_2),
                 ),
+                VehicleReviewList(vehicleId: vehicleId),
                 PricingAndDiscountsSection(
                   discountList: discountList ?? [],
                   price: vehicleRentPrice,
-                )
+                ),
               ],
             ),
           ),

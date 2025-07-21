@@ -9,9 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../authorization/data/cubit/Login/login_cubit.dart';
 
 class EditProfileButton extends StatelessWidget {
-  const EditProfileButton({
-    super.key,
-  });
+  const EditProfileButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +19,18 @@ class EditProfileButton extends StatelessWidget {
         final token = await tokenCubit.ensureValidToken();
         if (token != null) {
           String? userId = await context.read<LoginCubit>().getUserId();
-          context.read<EditUserInfoCubit>().fetchUserInfo(userId!, token);
-          Navigator.push(
+          if (userId != null) {
+            await context.read<EditUserInfoCubit>().fetchUserInfo(
+              userId,
+              token,
+            );
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EditProfileScreen(
-                  userId: userId,
-                ),
-              ));
+                builder: (context) => EditProfileScreen(userId: userId),
+              ),
+            );
+          }
         }
       },
       style: ElevatedButton.styleFrom(
@@ -36,17 +38,14 @@ class EditProfileButton extends StatelessWidget {
         backgroundColor: context.theme.white100_1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: context.theme.black25,
-            width: 1,
-          ),
+          side: BorderSide(color: context.theme.black25, width: 1),
         ),
       ),
       child: Text(
         'Edit Profile',
-        style: AppStyles.medium18(context).copyWith(
-          color: context.theme.black50,
-        ),
+        style: AppStyles.medium18(
+          context,
+        ).copyWith(color: context.theme.black50),
       ),
     );
   }

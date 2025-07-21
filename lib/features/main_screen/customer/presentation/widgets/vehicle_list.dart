@@ -1,7 +1,9 @@
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/core/widgets/see_more_button.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_cubit.dart';
 import 'package:aggar/features/main_screen/customer/presentation/cubit/vehicles/vehicle_state.dart';
+import 'package:aggar/features/main_screen/customer/presentation/views/all_vehicle_screen.dart';
 import 'package:aggar/features/main_screen/customer/presentation/widgets/popular_vehicles_car_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +11,7 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 class VehicleList extends StatelessWidget {
-  const VehicleList({
-    super.key,
-  });
+  const VehicleList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +38,9 @@ class VehicleList extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       'No vehicles available',
-                      style: AppStyles.medium16(context).copyWith(
-                        color: context.theme.black50,
-                      ),
+                      style: AppStyles.medium16(
+                        context,
+                      ).copyWith(color: context.theme.black50),
                     ),
                   ],
                 ),
@@ -69,6 +69,20 @@ class VehicleList extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: CircularProgressIndicator(
                     color: context.theme.blue100_5,
+                  ),
+                ),
+              if (vehicles.length >= 6)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SeeMoreButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AllVehicleScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ),
             ],
@@ -105,9 +119,9 @@ class VehicleList extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   'Failed to load vehicles',
-                  style: AppStyles.medium16(context).copyWith(
-                    color: context.theme.black50,
-                  ),
+                  style: AppStyles.medium16(
+                    context,
+                  ).copyWith(color: context.theme.black50),
                 ),
               ],
             ),

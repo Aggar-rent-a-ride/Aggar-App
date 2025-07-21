@@ -4,10 +4,7 @@ import 'package:aggar/features/messages/views/messages_status/presentation/widge
 import 'package:flutter/material.dart';
 
 class UserProfileWithImagePath extends StatelessWidget {
-  const UserProfileWithImagePath({
-    super.key,
-    required this.user,
-  });
+  const UserProfileWithImagePath({super.key, required this.user});
 
   final UserModel user;
 
@@ -22,10 +19,7 @@ class UserProfileWithImagePath extends StatelessWidget {
         radius: 50,
         child: CircleAvatar(
           radius: 45,
-          child: AvatarChatView(
-            image: user.imagePath,
-            size: 90,
-          ),
+          child: AvatarChatView(image: user.imagePath, size: 90),
         ),
       ),
     );
