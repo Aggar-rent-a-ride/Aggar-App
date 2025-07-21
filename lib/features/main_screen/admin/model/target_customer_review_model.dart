@@ -2,10 +2,10 @@ class TargetCustomerReviewModel {
   final int id;
   final int rentalId;
   final String createdAt;
-  final int behavior;
-  final int punctuality;
+  final num behavior;
+  final num punctuality;
   final String comments;
-  final int truthfulness;
+  final num truthfulness;
 
   TargetCustomerReviewModel({
     required this.id,

@@ -167,19 +167,19 @@ class _BookingDetailsScreenCustomerState
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Container(
                   decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0, 0),
-                          blurRadius: 4,
-                        )
-                      ],
-                      color: context.theme.white100_2,
-                      borderRadius: BorderRadius.circular(15)),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 0),
+                        blurRadius: 4,
+                      )
+                    ],
+                    color: context.theme.white100_2,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(20),
                     child: Column(
-                      spacing: 15,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BookingDetailsCustomerVehicleInformationSection(
@@ -219,13 +219,13 @@ class _BookingDetailsScreenCustomerState
     } else if (status == 'accepted') {
       final isCancelLoading = state is BookingCancelLoading;
       final isConfirmLoading = state is BookingConfirmLoading;
-
       return BookingDetailsCustomerAcceptedActionButtons(
-          isConfirmLoading: isConfirmLoading,
-          isCancelLoading: isCancelLoading,
-          booking: booking);
+        isConfirmLoading: isConfirmLoading,
+        isCancelLoading: isCancelLoading,
+        booking: booking,
+      );
     } else if (status == 'confirmed') {
-      return const BookingDetailsCustomerConirmedBox();
+      return const BookingDetailsCustomerConirmedBox(isRenter: false);
     }
     return const SizedBox.shrink();
   }

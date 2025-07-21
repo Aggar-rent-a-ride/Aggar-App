@@ -12,11 +12,9 @@ class StatisticsInitial extends StatisticsState {}
 class StatisticsLoading extends StatisticsState {}
 
 class StatisticsLoaded extends StatisticsState {
-  final Map<String, int> totalReportsByType;
+  final Map<String, dynamic> totalReportsByType;
 
-  const StatisticsLoaded({
-    required this.totalReportsByType,
-  });
+  const StatisticsLoaded({required this.totalReportsByType});
 
   @override
   List<Object?> get props => [totalReportsByType];

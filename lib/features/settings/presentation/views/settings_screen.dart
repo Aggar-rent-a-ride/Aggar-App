@@ -12,10 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class ProfileAndSettingsScreen extends StatelessWidget {
-  const ProfileAndSettingsScreen({
-    super.key,
-    required this.isRenter,
-  });
+  const ProfileAndSettingsScreen({super.key, required this.isRenter});
   final bool isRenter;
   @override
   Widget build(BuildContext context) {
@@ -36,8 +33,9 @@ class ProfileAndSettingsScreen extends StatelessWidget {
         backgroundColor: context.theme.white100_1,
         title: Text(
           'Profile & Settings',
-          style: AppStyles.semiBold24(context)
-              .copyWith(color: context.theme.black100),
+          style: AppStyles.semiBold24(
+            context,
+          ).copyWith(color: context.theme.black100),
         ),
       ),
       body: Padding(
@@ -51,9 +49,9 @@ class ProfileAndSettingsScreen extends StatelessWidget {
                 children: [
                   Text(
                     "Profile",
-                    style: AppStyles.bold18(context).copyWith(
-                      color: context.theme.blue100_1,
-                    ),
+                    style: AppStyles.bold18(
+                      context,
+                    ).copyWith(color: context.theme.blue100_1),
                   ),
                   const Gap(12),
                   const ProfileDetailsCard(),
@@ -66,16 +64,16 @@ class ProfileAndSettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Financial",
-                      style: AppStyles.bold18(context).copyWith(
-                        color: context.theme.blue100_1,
-                      ),
+                      style: AppStyles.bold18(
+                        context,
+                      ).copyWith(color: context.theme.blue100_1),
                     ),
                     const Gap(12),
                     const PaymentCard(),
                     const Gap(12),
                     const PayoutDetailsCard(),
                     const Gap(12),
-                    const RentHistoryCard(),
+                    const RentHistoryCard(isRenter: true),
                   ],
                 ),
               if (isRenter == false)
@@ -84,12 +82,12 @@ class ProfileAndSettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Financial",
-                      style: AppStyles.bold18(context).copyWith(
-                        color: context.theme.blue100_1,
-                      ),
+                      style: AppStyles.bold18(
+                        context,
+                      ).copyWith(color: context.theme.blue100_1),
                     ),
                     const Gap(12),
-                    const RentHistoryCard(),
+                    const RentHistoryCard(isRenter: false),
                   ],
                 ),
               const Gap(10),
@@ -104,9 +102,9 @@ class ProfileAndSettingsScreen extends StatelessWidget {
                 children: [
                   Text(
                     "Account",
-                    style: AppStyles.bold18(context).copyWith(
-                      color: context.theme.blue100_1,
-                    ),
+                    style: AppStyles.bold18(
+                      context,
+                    ).copyWith(color: context.theme.blue100_1),
                   ),
                   const Gap(12),
                   const LogoutCard(),
