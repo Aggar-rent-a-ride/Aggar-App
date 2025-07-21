@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentsCount extends StatelessWidget {
-  const CommentsCount({
-    super.key,
-  });
+  const CommentsCount({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +23,9 @@ class CommentsCount extends StatelessWidget {
               ),
               Text(
                 'Comments (${state.review})',
-                style: AppStyles.semiBold16(context).copyWith(
-                  color: context.theme.black100,
-                ),
+                style: AppStyles.semiBold16(
+                  context,
+                ).copyWith(color: context.theme.black100),
               ),
             ],
           );
@@ -42,9 +40,9 @@ class CommentsCount extends StatelessWidget {
               ),
               Text(
                 'Comments (0)',
-                style: AppStyles.semiBold16(context).copyWith(
-                  color: context.theme.black100,
-                ),
+                style: AppStyles.semiBold16(
+                  context,
+                ).copyWith(color: context.theme.black100),
               ),
             ],
           );

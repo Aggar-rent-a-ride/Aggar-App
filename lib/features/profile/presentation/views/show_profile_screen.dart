@@ -11,8 +11,11 @@ import '../../../main_screen/admin/model/user_model.dart';
 import '../widgets/reviews_tab_widget.dart';
 
 class ShowProfileScreen extends StatefulWidget {
-  const ShowProfileScreen(
-      {super.key, required this.user, this.isAdmin = false});
+  const ShowProfileScreen({
+    super.key,
+    required this.user,
+    this.isAdmin = false,
+  });
 
   final UserModel user;
   final bool isAdmin;
@@ -28,7 +31,6 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
 
   @override
   void initState() {
-    print(widget.user.imagePath);
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
@@ -94,9 +96,7 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(
-                          width: 43,
-                        )
+                        const SizedBox(width: 43),
                       ],
                     ),
                   ),
@@ -115,9 +115,7 @@ class _ShowProfileScreenState extends State<ShowProfileScreen>
             ShowProfileTabBar(tabController: _tabController),
             const Gap(20),
             _selectedTabIndex == 0
-                ? LocationTabWidget(
-                    user: widget.user,
-                  )
+                ? const LocationTabWidget()
                 : ReviewsTabWidget(
                     user: widget.user,
                     rate: widget.user.rate?.toDouble(),

@@ -28,9 +28,10 @@ class SearchResultSection extends StatelessWidget {
                 const Icon(Icons.error_outline, size: 100, color: Colors.red),
                 const Gap(16),
                 Text(
-                  state.message,
-                  style:
-                      AppStyles.medium16(context).copyWith(color: Colors.red),
+                  "Some error occurred while fetching users",
+                  style: AppStyles.medium16(
+                    context,
+                  ).copyWith(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -44,16 +45,20 @@ class SearchResultSection extends StatelessWidget {
           }
 
           return Padding(
-            padding:
-                const EdgeInsets.only(left: 25, right: 15, top: 16, bottom: 16),
+            padding: const EdgeInsets.only(
+              left: 25,
+              right: 15,
+              top: 16,
+              bottom: 16,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Search Results (${cubit.totalPages} users)',
-                  style: AppStyles.medium18(context).copyWith(
-                    color: context.theme.black100,
-                  ),
+                  style: AppStyles.medium18(
+                    context,
+                  ).copyWith(color: context.theme.black100),
                 ),
                 Expanded(
                   child: ListView.builder(

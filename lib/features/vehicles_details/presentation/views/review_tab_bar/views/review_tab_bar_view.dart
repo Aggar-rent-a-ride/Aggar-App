@@ -2,6 +2,7 @@ import 'package:aggar/core/widgets/comment_section.dart';
 import 'package:aggar/core/widgets/text_with_arrow_back_button.dart';
 
 import 'package:aggar/features/vehicle_details_after_add/presentation/cubit/review_cubit/review_cubit.dart';
+import 'package:aggar/features/vehicle_details_after_add/presentation/widgets/review_vehicle_screen.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/loading_review_and_rating.dart';
 import 'package:aggar/features/vehicles_details/presentation/views/review_tab_bar/widgets/rating_and_reviews_section.dart';
 
@@ -16,8 +17,10 @@ class ReviewTabBarView extends StatelessWidget {
   const ReviewTabBarView({
     super.key,
     this.vehicleRate,
+    required this.vehicleId,
   });
   final double? vehicleRate;
+  final String vehicleId;
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +35,17 @@ class ReviewTabBarView extends StatelessWidget {
             child: Column(
               spacing: 10,
               children: [
-                RatingAndReviewsSection(
-                  vehicleRate: vehicleRate,
-                ),
-                ...reviews.take(10).map(
+                RatingAndReviewsSection(vehicleRate: vehicleRate),
+                ...reviews
+                    .take(5)
+                    .map(
                       (review) => CommentSection(
                         imageUrl: review.reviewer.imagePath ?? "",
                         name: review.reviewer.name,
                         commentText: review.comments,
-                        date: DateFormat('dd/MM/yyyy')
-                            .format(DateTime.parse(review.createdAt)),
+                        date: DateFormat(
+                          'dd/MM/yyyy',
+                        ).format(DateTime.parse(review.createdAt)),
                         rate: review.rate,
                         id: review.id,
                         typeOfReport: "CustomerReview",
@@ -51,7 +55,15 @@ class ReviewTabBarView extends StatelessWidget {
                   TextWithArrowBackButton(
                     text: 'see all reviews',
                     onPressed: () {
-                      //TODO
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReviewVehicleScreen(
+                            vehicleId: vehicleId,
+                            type: "CustomerReview",
+                          ),
+                        ),
+                      );
                     },
                   ),
                 const Gap(25),

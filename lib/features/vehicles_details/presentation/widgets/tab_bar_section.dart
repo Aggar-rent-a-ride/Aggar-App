@@ -24,6 +24,7 @@ class TabBarSection extends StatefulWidget {
     required this.vehilceType,
     required this.renterId,
     this.vehicleRate,
+    required this.vehicleId,
   });
 
   final String vehicleColor;
@@ -41,6 +42,7 @@ class TabBarSection extends StatefulWidget {
   final String renterName;
   final int renterId;
   final double? vehicleRate;
+  final String vehicleId;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -78,21 +80,16 @@ class _TabBarSectionState extends State<TabBarSection>
           dividerColor: context.theme.black10,
           labelColor: context.theme.blue100_2,
           unselectedLabelColor: context.theme.black50,
-          labelStyle: AppStyles.bold18(context)
-              .copyWith(color: context.theme.blue100_2),
-          unselectedLabelStyle: AppStyles.bold18(context).copyWith(
-            color: context.theme.black25,
-          ),
+          labelStyle: AppStyles.bold18(
+            context,
+          ).copyWith(color: context.theme.blue100_2),
+          unselectedLabelStyle: AppStyles.bold18(
+            context,
+          ).copyWith(color: context.theme.black25),
           tabs: const [
-            Tab(
-              child: Text("About"),
-            ),
-            Tab(
-              child: Text("Properties"),
-            ),
-            Tab(
-              child: Text("Reviews"),
-            ),
+            Tab(child: Text("About")),
+            Tab(child: Text("Properties")),
+            Tab(child: Text("Reviews")),
           ],
           onTap: (index) {
             _pageController.jumpToPage(index);
@@ -121,6 +118,7 @@ class _TabBarSectionState extends State<TabBarSection>
             ),
             ReviewTabBarView(
               vehicleRate: widget.vehicleRate,
+              vehicleId: widget.vehicleId,
             ),
           ],
         ),

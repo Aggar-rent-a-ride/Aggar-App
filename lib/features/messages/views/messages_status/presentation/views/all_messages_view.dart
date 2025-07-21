@@ -1,5 +1,6 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
+import 'package:aggar/core/utils/app_constants.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_cubit.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/views/loading_message_view.dart';
@@ -9,6 +10,7 @@ import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_
 import 'package:aggar/features/messages/views/personal_chat/presentation/views/personal_chat_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AllMessagesView extends StatefulWidget {
   const AllMessagesView({super.key});
@@ -85,8 +87,8 @@ class _AllMessagesViewState extends State<AllMessagesView>
     super.build(context);
     return BlocConsumer<MessageCubit, MessageState>(
       listener: (context, state) {
-        // Only handle navigation-related states in listener
         if (state is MessageSuccess && mounted) {
+          Navigator.of(context, rootNavigator: true).pop();
           _isViewActive = false;
           Navigator.push(
             context,
@@ -172,15 +174,18 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 }
 
                 final chatData = chats.data[index];
-                DateTime messageTime =
-                    DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
+                DateTime messageTime = DateTime.parse(
+                  '${chatData.lastMessage.sentAt}Z',
+                ).toLocal();
                 String period = messageTime.hour >= 12 ? 'PM' : 'AM';
-                int hour12 =
-                    messageTime.hour % 12 == 0 ? 12 : messageTime.hour % 12;
+                int hour12 = messageTime.hour % 12 == 0
+                    ? 12
+                    : messageTime.hour % 12;
                 String hoursAndMinutes =
                     "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
 
-                final messageContent = chatData.lastMessage.content ??
+                final messageContent =
+                    chatData.lastMessage.content ??
                     chatData.lastMessage.filePath ??
                     "No message";
 
@@ -192,6 +197,23 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 return ChatPerson(
                   onTap: () async {
                     if (!mounted) return;
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SpinKitThreeBounce(
+                                color: AppConstants.myWhite100_1,
+                                size: 30.0,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
                     final personalChatCubit = context.read<PersonalChatCubit>();
                     final token = await _tokenRefreshCubit.ensureValidToken();
                     if (token != null && mounted) {
@@ -245,15 +267,18 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 }
 
                 final chatData = chats.data[index];
-                DateTime messageTime =
-                    DateTime.parse('${chatData.lastMessage.sentAt}Z').toLocal();
+                DateTime messageTime = DateTime.parse(
+                  '${chatData.lastMessage.sentAt}Z',
+                ).toLocal();
                 String period = messageTime.hour >= 12 ? 'PM' : 'AM';
-                int hour12 =
-                    messageTime.hour % 12 == 0 ? 12 : messageTime.hour % 12;
+                int hour12 = messageTime.hour % 12 == 0
+                    ? 12
+                    : messageTime.hour % 12;
                 String hoursAndMinutes =
                     "$hour12:${messageTime.minute.toString().padLeft(2, '0')} $period";
 
-                final messageContent = chatData.lastMessage.content ??
+                final messageContent =
+                    chatData.lastMessage.content ??
                     chatData.lastMessage.filePath ??
                     "No message";
 
@@ -265,6 +290,12 @@ class _AllMessagesViewState extends State<AllMessagesView>
                 return ChatPerson(
                   onTap: () async {
                     if (!mounted) return;
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) =>
+                          const Center(child: CircularProgressIndicator()),
+                    );
                     final personalChatCubit = context.read<PersonalChatCubit>();
                     final token = await _tokenRefreshCubit.ensureValidToken();
                     if (token != null && mounted) {

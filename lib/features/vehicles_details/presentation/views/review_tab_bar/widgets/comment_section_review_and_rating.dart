@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentSectionReviewAndRating extends StatelessWidget {
-  const CommentSectionReviewAndRating({
-    super.key,
-    required this.style,
-  });
+  const CommentSectionReviewAndRating({super.key, required this.style});
 
   final TextStyle? style;
 
@@ -20,18 +17,20 @@ class CommentSectionReviewAndRating extends StatelessWidget {
         if (state is ReviewVehicleSuccess) {
           return Text(
             "Comments (${state.review})",
-            style: style ??
-                AppStyles.bold18(context).copyWith(
-                  color: context.theme.black100,
-                ),
+            style:
+                style ??
+                AppStyles.bold18(
+                  context,
+                ).copyWith(color: context.theme.black100),
           );
         } else {
           return Text(
             "Comments (0)",
-            style: style ??
-                AppStyles.bold18(context).copyWith(
-                  color: context.theme.black100,
-                ),
+            style:
+                style ??
+                AppStyles.bold18(
+                  context,
+                ).copyWith(color: context.theme.black100),
           );
         }
       },

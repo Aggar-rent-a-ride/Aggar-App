@@ -24,8 +24,11 @@ class ReviewCubit extends Cubit<ReviewState> {
     _totalPagesVehicleReviews = totalPages;
   }
 
-  Future<void> getVehicleReviews(String vehicleId, String accessToken,
-      {bool isLoadMore = false}) async {
+  Future<void> getVehicleReviews(
+    String vehicleId,
+    String accessToken, {
+    bool isLoadMore = false,
+  }) async {
     if (isLoadMore &&
         (_isLoadingMore || _pageVehicleReviews >= _totalPagesVehicleReviews))
       return;
@@ -36,13 +39,15 @@ class ReviewCubit extends Cubit<ReviewState> {
         _resetList(_vehicleReviews, 1, 1);
       } else {
         _isLoadingMore = true;
-        emit(ReviewLoadingMore(
-          reviewModel: ListReviewModel(
-            data: _vehicleReviews,
-            totalPages: _totalPagesVehicleReviews,
-            pageNumber: _pageVehicleReviews,
+        emit(
+          ReviewLoadingMore(
+            reviewModel: ListReviewModel(
+              data: _vehicleReviews,
+              totalPages: _totalPagesVehicleReviews,
+              pageNumber: _pageVehicleReviews,
+            ),
           ),
-        ));
+        );
       }
 
       final response = await dioConsumer.get(
@@ -52,11 +57,7 @@ class ReviewCubit extends Cubit<ReviewState> {
           'pageNo': isLoadMore ? _pageVehicleReviews + 1 : 1,
           'pageSize': 10,
         },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
 
       final reviews = ListReviewModel.fromJson(response);
@@ -73,13 +74,15 @@ class ReviewCubit extends Cubit<ReviewState> {
       _pageVehicleReviews = isLoadMore ? _pageVehicleReviews + 1 : 1;
       _totalPagesVehicleReviews = reviews.totalPages;
 
-      emit(ReviewSuccess(
-        review: ListReviewModel(
-          data: _vehicleReviews,
-          totalPages: _totalPagesVehicleReviews,
-          pageNumber: _pageVehicleReviews,
+      emit(
+        ReviewSuccess(
+          review: ListReviewModel(
+            data: _vehicleReviews,
+            totalPages: _totalPagesVehicleReviews,
+            pageNumber: _pageVehicleReviews,
+          ),
         ),
-      ));
+      );
     } catch (e) {
       emit(ReviewFailure(e.toString()));
     } finally {

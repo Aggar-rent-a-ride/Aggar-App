@@ -13,8 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SenMessageWithOptionButtons extends StatelessWidget {
-  const SenMessageWithOptionButtons(
-      {super.key, required this.user, this.isAdmin = false});
+  const SenMessageWithOptionButtons({
+    super.key,
+    required this.user,
+    this.isAdmin = false,
+  });
   final UserModel user;
   final bool isAdmin;
 
@@ -65,17 +68,14 @@ class SenMessageWithOptionButtons extends StatelessWidget {
               backgroundColor: context.theme.white100_1,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: BorderSide(
-                  color: context.theme.black25,
-                  width: 1,
-                ),
+                side: BorderSide(color: context.theme.black25, width: 1),
               ),
             ),
             child: Text(
               'Send a Message',
-              style: AppStyles.medium18(context).copyWith(
-                color: context.theme.black50,
-              ),
+              style: AppStyles.medium18(
+                context,
+              ).copyWith(color: context.theme.black50),
             ),
           ),
         ),
@@ -86,24 +86,16 @@ class SenMessageWithOptionButtons extends StatelessWidget {
               final token = await tokenCubit.ensureValidToken();
               if (token != null) {
                 customShowModelBottmSheet(
-                    context,
-                    "Options",
-                    Column(
-                      children: [
-                        WarningListTileButton(
-                          user: user,
-                          accessToken: token,
-                        ),
-                        BanListTileButton(
-                          user: user,
-                          accessToken: token,
-                        ),
-                        DeleteListTileButton(
-                          user: user,
-                          accessToken: token,
-                        ),
-                      ],
-                    ));
+                  context,
+                  "Options",
+                  Column(
+                    children: [
+                      WarningListTileButton(user: user, accessToken: token),
+                      BanListTileButton(user: user, accessToken: token),
+                      DeleteListTileButton(user: user, accessToken: token),
+                    ],
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -114,10 +106,7 @@ class SenMessageWithOptionButtons extends StatelessWidget {
               backgroundColor: context.theme.white100_1,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: BorderSide(
-                  color: context.theme.black25,
-                  width: 1,
-                ),
+                side: BorderSide(color: context.theme.black25, width: 1),
               ),
               fixedSize: const Size(44, 44),
             ),

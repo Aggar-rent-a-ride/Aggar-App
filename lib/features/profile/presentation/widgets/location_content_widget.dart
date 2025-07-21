@@ -1,16 +1,16 @@
 import 'package:aggar/core/cubit/user_cubit/user_info_state.dart';
+import 'package:aggar/core/extensions/context_colors_extension.dart';
+import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/profile/presentation/widgets/address_card_widget.dart';
 import 'package:aggar/features/profile/presentation/widgets/current_location_with_icon.dart';
 import 'package:aggar/features/profile/presentation/widgets/map_section_widget.dart';
+import 'package:aggar/features/profile/presentation/widgets/personal_information_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:latlong2/latlong.dart';
 
 class LocationContentWidget extends StatelessWidget {
-  const LocationContentWidget({
-    super.key,
-    required this.state,
-  });
+  const LocationContentWidget({super.key, required this.state});
 
   final UserInfoSuccess state;
 
@@ -31,6 +31,24 @@ class LocationContentWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.attribution_outlined,
+                  size: 18,
+                  color: context.theme.blue100_2,
+                ),
+                const Gap(8),
+                Text(
+                  'Personal information',
+                  style: AppStyles.semiBold16(
+                    context,
+                  ).copyWith(color: context.theme.black100),
+                ),
+              ],
+            ),
+            PersonalInformationSection(state: state),
+            Gap(24),
             const CurrentLocationWithIcon(),
             const Gap(10),
             AddressCardWidget(addressComponents: addressComponents),
@@ -49,8 +67,9 @@ class LocationContentWidget extends StatelessWidget {
     final components = address.split(',').map((e) => e.trim()).toList();
     return {
       'city': components.isNotEmpty ? components.last : null,
-      'country':
-          components.length > 1 ? components[components.length - 2] : null,
+      'country': components.length > 1
+          ? components[components.length - 2]
+          : null,
     };
   }
 }

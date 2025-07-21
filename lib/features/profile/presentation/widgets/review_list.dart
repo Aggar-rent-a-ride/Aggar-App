@@ -25,9 +25,9 @@ class ReviewList extends StatelessWidget {
             return Center(
               child: Text(
                 'No reviews available',
-                style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.black50,
-                ),
+                style: AppStyles.medium14(
+                  context,
+                ).copyWith(color: context.theme.black50),
               ),
             );
           }
@@ -63,9 +63,7 @@ class ReviewList extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ReviewUserScreen(
-                          userId: userId,
-                        ),
+                        builder: (context) => ReviewUserScreen(userId: userId),
                       ),
                     );
                   },
@@ -80,16 +78,9 @@ class ReviewList extends StatelessWidget {
                 const Gap(16),
                 Text(
                   'No Reviews Yet',
-                  style: AppStyles.semiBold16(context).copyWith(
-                    color: context.theme.black50,
-                  ),
-                ),
-                const Gap(8),
-                Text(
-                  'Be the first to share your experience!',
-                  style: AppStyles.medium14(context).copyWith(
-                    color: context.theme.black50,
-                  ),
+                  style: AppStyles.semiBold16(
+                    context,
+                  ).copyWith(color: context.theme.black50),
                 ),
               ],
             ),

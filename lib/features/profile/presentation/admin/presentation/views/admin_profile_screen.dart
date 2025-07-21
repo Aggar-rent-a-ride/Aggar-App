@@ -1,7 +1,10 @@
+import 'package:aggar/core/cubit/user_review_cubit/user_review_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/utils/app_styles.dart';
+import 'package:aggar/features/authorization/data/cubit/Login/login_cubit.dart';
 import 'package:aggar/features/profile/presentation/admin/presentation/widgets/edit_profile_button.dart';
 import 'package:aggar/features/profile/presentation/admin/presentation/widgets/settings_list.dart';
+import 'package:aggar/features/profile/presentation/customer/presentation/cubit/profile/profile_cubit.dart';
 import 'package:aggar/features/profile/presentation/widgets/name_with_user_name.dart';
 import 'package:aggar/features/profile/presentation/widgets/user_photo.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
+import 'package:aggar/main.dart';
+import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 
 class AdminProfileScreen extends StatefulWidget {
   const AdminProfileScreen({super.key});
@@ -17,17 +22,44 @@ class AdminProfileScreen extends StatefulWidget {
   State<AdminProfileScreen> createState() => _AdminProfileScreenState();
 }
 
-class _AdminProfileScreenState extends State<AdminProfileScreen> {
+class _AdminProfileScreenState extends State<AdminProfileScreen>
+    with RouteAware {
   @override
   void initState() {
     refreshProfile();
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Called when coming back to this screen
+    refreshProfile();
+    super.didPopNext();
+  }
+
   Future<void> refreshProfile() async {
-    final tokenCubit = context.read<TokenRefreshCubit>();
-    final token = await tokenCubit.ensureValidToken();
-    if (token != null) {}
+    String? userId = await context.read<LoginCubit>().getUserId();
+    if (userId != null) {
+      final tokenCubit = context.read<TokenRefreshCubit>();
+      final token = await tokenCubit.ensureValidToken();
+      if (token != null) {
+        context.read<UserInfoCubit>().fetchUserInfo(userId, token);
+        context.read<ProfileCubit>().fetchFavoriteVehicles(token);
+        context.read<UserReviewCubit>().getUserReviews(userId, token);
+      }
+    }
   }
 
   @override
