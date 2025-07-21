@@ -9,11 +9,12 @@ class CustomerReviewTargetType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomerReviewTargetTypeCard(
-      behavior: state.report.targetCustomerReview!.behavior,
-      truthfulness: state.report.targetCustomerReview!.truthfulness,
+      behavior: (state.report.targetCustomerReview!.behavior).toDouble(),
+      truthfulness: (state.report.targetCustomerReview!.truthfulness)
+          .toDouble(),
       comments: state.report.targetCustomerReview!.comments,
       createdAt: state.report.targetCustomerReview!.createdAt,
-      punctuality: state.report.targetCustomerReview!.punctuality,
+      punctuality: (state.report.targetCustomerReview!.punctuality).toDouble(),
       rentalId: state.report.targetCustomerReview!.rentalId,
     );
   }

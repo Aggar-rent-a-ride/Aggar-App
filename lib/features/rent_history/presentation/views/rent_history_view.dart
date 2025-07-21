@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RentHistoryView extends StatelessWidget {
-  const RentHistoryView({super.key});
+  const RentHistoryView({super.key, required this.isRenter});
+  final bool isRenter;
 
   // Helper method to get color for rental status
   Color _getStatusColor(String status) {
@@ -44,8 +45,9 @@ class RentHistoryView extends StatelessWidget {
         backgroundColor: context.theme.white100_1,
         title: Text(
           'Rent History',
-          style: AppStyles.semiBold24(context)
-              .copyWith(color: context.theme.black100),
+          style: AppStyles.semiBold24(
+            context,
+          ).copyWith(color: context.theme.black100),
         ),
         actions: [
           Builder(
@@ -150,7 +152,7 @@ class RentHistoryView extends StatelessWidget {
         ],
       ),
       backgroundColor: context.theme.white100_1,
-      body: const RentHistoryBody(),
+      body: RentHistoryBody(isRenter: isRenter),
     );
   }
 }

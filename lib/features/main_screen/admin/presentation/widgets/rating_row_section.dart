@@ -10,9 +10,9 @@ class RatingRowSection extends StatelessWidget {
     required this.careOrtruthfulness,
   });
 
-  final int behavior;
-  final int punctuality;
-  final int careOrtruthfulness;
+  final double behavior;
+  final double punctuality;
+  final double careOrtruthfulness;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,9 @@ class RatingRowSection extends StatelessWidget {
           children: [
             Text(
               "Behavior",
-              style: AppStyles.medium14(context).copyWith(
-                color: context.theme.black50,
-              ),
+              style: AppStyles.medium14(
+                context,
+              ).copyWith(color: context.theme.black50),
             ),
             Row(
               children: List.generate(5, (index) {
@@ -44,9 +44,9 @@ class RatingRowSection extends StatelessWidget {
           children: [
             Text(
               "Punctuality",
-              style: AppStyles.medium14(context).copyWith(
-                color: context.theme.black50,
-              ),
+              style: AppStyles.medium14(
+                context,
+              ).copyWith(color: context.theme.black50),
             ),
             Row(
               children: List.generate(5, (index) {
@@ -64,16 +64,17 @@ class RatingRowSection extends StatelessWidget {
           children: [
             Text(
               "Care",
-              style: AppStyles.medium14(context).copyWith(
-                color: context.theme.black50,
-              ),
+              style: AppStyles.medium14(
+                context,
+              ).copyWith(color: context.theme.black50),
             ),
             Row(
               children: List.generate(5, (index) {
                 return Icon(
                   index < careOrtruthfulness ? Icons.star : Icons.star_border,
-                  color:
-                      index < careOrtruthfulness ? Colors.amber : Colors.grey,
+                  color: index < careOrtruthfulness
+                      ? Colors.amber
+                      : Colors.grey,
                   size: MediaQuery.sizeOf(context).width * 0.04,
                 );
               }),

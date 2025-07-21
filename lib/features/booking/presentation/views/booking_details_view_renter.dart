@@ -1,4 +1,5 @@
 import 'package:aggar/core/cubit/refresh%20token/token_refresh_cubit.dart';
+import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
 import 'package:aggar/core/helper/custom_snack_bar.dart';
 import 'package:aggar/core/utils/app_styles.dart';
@@ -26,10 +27,7 @@ import 'package:aggar/features/messages/views/messages_status/presentation/cubit
 class BookingDetailsScreenRenter extends StatefulWidget {
   final BookingItem booking;
 
-  const BookingDetailsScreenRenter({
-    super.key,
-    required this.booking,
-  });
+  const BookingDetailsScreenRenter({super.key, required this.booking});
 
   @override
   State<BookingDetailsScreenRenter> createState() =>
@@ -85,8 +83,9 @@ class _BookingDetailsScreenRenterState
         ),
         title: Text(
           'Booking Details',
-          style: AppStyles.semiBold24(context)
-              .copyWith(color: context.theme.black100),
+          style: AppStyles.semiBold24(
+            context,
+          ).copyWith(color: context.theme.black100),
         ),
       ),
       body: BlocConsumer<BookingCubit, BookingState>(
@@ -122,9 +121,9 @@ class _BookingDetailsScreenRenterState
             });
             // Check if the error is about needing a payment account
             if (state.message.toLowerCase().contains('payment account') ||
-                state.message
-                    .toLowerCase()
-                    .contains('create a payment account')) {
+                state.message.toLowerCase().contains(
+                  'create a payment account',
+                )) {
               _showPaymentAccountRequiredDialog(context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -146,9 +145,7 @@ class _BookingDetailsScreenRenterState
         builder: (context, state) {
           if (state is BookingGetByIdLoading) {
             return const Center(
-              child: CircularProgressIndicator(
-                color: Color(0xFF6B73FF),
-              ),
+              child: CircularProgressIndicator(color: Color(0xFF6B73FF)),
             );
           } else if (state is BookingGetByIdSuccess) {
             BookingModel? bookingDataID = state.booking;
@@ -164,7 +161,7 @@ class _BookingDetailsScreenRenterState
                       color: Colors.black12,
                       offset: Offset(0, 0),
                       blurRadius: 4,
-                    )
+                    ),
                   ],
                   color: context.theme.white100_2,
                   borderRadius: BorderRadius.circular(15),
@@ -176,7 +173,9 @@ class _BookingDetailsScreenRenterState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       BookingDetailsRenterVehicleInformationSection(
-                          bookingData: bookingDataID, widget: widget),
+                        bookingData: bookingDataID,
+                        widget: widget,
+                      ),
                       BlocListener<MessageCubit, MessageState>(
                         listener: (context, state) {
                           if (state is MessageSuccess) {
@@ -199,10 +198,14 @@ class _BookingDetailsScreenRenterState
                           customerName: customerName,
                           customerImage: null,
                           onProfileTap: () async {
-                            final tokenCubit =
-                                context.read<TokenRefreshCubit>();
+                            final tokenCubit = context
+                                .read<TokenRefreshCubit>();
                             final token = await tokenCubit.ensureValidToken();
                             if (token != null) {
+                              context.read<UserInfoCubit>().fetchUserInfo(
+                                customerId.toString(),
+                                token,
+                              );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -219,15 +222,16 @@ class _BookingDetailsScreenRenterState
                             }
                           },
                           onChat: () async {
-                            final tokenCubit =
-                                context.read<TokenRefreshCubit>();
+                            final tokenCubit = context
+                                .read<TokenRefreshCubit>();
                             final token = await tokenCubit.ensureValidToken();
                             if (token != null) {
                               final messageCubit = context.read<MessageCubit>();
                               await messageCubit.getMessages(
                                 userId: customerId.toString(),
-                                dateTime:
-                                    DateTime.now().toUtc().toIso8601String(),
+                                dateTime: DateTime.now()
+                                    .toUtc()
+                                    .toIso8601String(),
                                 pageSize: "20",
                                 dateFilter: "0",
                                 accessToken: token,
@@ -239,15 +243,19 @@ class _BookingDetailsScreenRenterState
                         ),
                       ),
                       BookingDetailsRenterBookingPeriodWithTotalDurationSection(
-                          bookingData: bookingDataID),
+                        bookingData: bookingDataID,
+                      ),
                       BookingDetailsRenterPricingDetailsSection(
-                          bookingData: bookingDataID),
+                        bookingData: bookingDataID,
+                      ),
                       if (bookingDataID.discount > 0)
                         BookingDetailsRenterDiscountRow(
-                            bookingData: bookingDataID),
+                          bookingData: bookingDataID,
+                        ),
                       const Divider(height: 24),
                       BookingDetailsRenterTotalAmout(
-                          bookingData: bookingDataID),
+                        bookingData: bookingDataID,
+                      ),
                       const Gap(24),
                       if ((bookingDataID.status).toLowerCase() ==
                           'pending') ...[
@@ -272,22 +280,26 @@ class _BookingDetailsScreenRenterState
                           ),
                         ] else ...[
                           BookingDetailsRenterActionButtons(
-                              bookingData: bookingDataID, widget: widget),
+                            bookingData: bookingDataID,
+                            widget: widget,
+                          ),
                         ],
                       ] else if ((bookingDataID.status).toLowerCase() ==
                           'confirmed') ...[
-                        const BookingDetailsRenterConfirmedBox(),
+                        const BookingDetailsRenterConfirmedBox(isRenter: true),
                       ] else ...[
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: _getStatusColor(bookingDataID.status)
-                                .withOpacity(0.1),
+                            color: _getStatusColor(
+                              bookingDataID.status,
+                            ).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: _getStatusColor(bookingDataID.status)
-                                  .withOpacity(0.3),
+                              color: _getStatusColor(
+                                bookingDataID.status,
+                              ).withOpacity(0.3),
                             ),
                           ),
                           child: Row(
@@ -301,8 +313,9 @@ class _BookingDetailsScreenRenterState
                                 child: Text(
                                   _getStatusMessage(bookingDataID.status),
                                   style: AppStyles.semiBold16(context).copyWith(
-                                    color:
-                                        _getStatusColor(bookingDataID.status),
+                                    color: _getStatusColor(
+                                      bookingDataID.status,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -321,34 +334,24 @@ class _BookingDetailsScreenRenterState
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
                   const Gap(16),
                   Text(
                     'Error loading booking details',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                   ),
                   const Gap(8),
                   Text(
                     "An error has occurred",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[500],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                     textAlign: TextAlign.center,
                   ),
                   const Gap(24),
                   ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<BookingCubit>()
-                          .getBookingById(widget.booking.id);
+                      context.read<BookingCubit>().getBookingById(
+                        widget.booking.id,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6B73FF),
@@ -424,17 +427,10 @@ class _BookingDetailsScreenRenterState
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          icon: Icon(
-            Icons.account_balance,
-            size: 48,
-            color: Colors.blue[600],
-          ),
+          icon: Icon(Icons.account_balance, size: 48, color: Colors.blue[600]),
           title: const Text(
             'Payment Account Required',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           content: const Column(
@@ -448,10 +444,7 @@ class _BookingDetailsScreenRenterState
               Gap(12),
               Text(
                 'This is a one-time setup that enables secure payment processing.',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -459,12 +452,7 @@ class _BookingDetailsScreenRenterState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                'Later',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
-              ),
+              child: Text('Later', style: TextStyle(color: Colors.grey[600])),
             ),
             ElevatedButton.icon(
               onPressed: () {
@@ -489,9 +477,7 @@ class _BookingDetailsScreenRenterState
 
   void _navigateToConnectedAccountPage(BuildContext context) async {
     final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ConnectedAccountPage(),
-      ),
+      MaterialPageRoute(builder: (context) => const ConnectedAccountPage()),
     );
 
     // If the user successfully connected their account, retry accepting the booking

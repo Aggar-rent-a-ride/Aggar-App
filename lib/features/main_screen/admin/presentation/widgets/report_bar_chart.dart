@@ -12,11 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class ReportBarChart extends StatelessWidget {
-  const ReportBarChart({
-    super.key,
-    this.selectedIndex,
-    required this.onBarTap,
-  });
+  const ReportBarChart({super.key, this.selectedIndex, required this.onBarTap});
 
   final int? selectedIndex;
   final void Function(int index, double value) onBarTap;
@@ -25,13 +21,14 @@ class ReportBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<StatisticsCubit, StatisticsState>(
       builder: (context, state) {
-        Map<String, int> totalReportsByType = {};
+        Map<String, dynamic> totalReportsByType = {};
         double maxY = 10;
 
         if (state is StatisticsLoaded) {
           totalReportsByType = state.totalReportsByType;
           if (totalReportsByType.isNotEmpty) {
-            maxY = totalReportsByType.values
+            maxY =
+                totalReportsByType.values
                     .reduce((a, b) => a > b ? a : b)
                     .toDouble() *
                 1.2;
@@ -47,9 +44,9 @@ class ReportBarChart extends StatelessWidget {
                   onPressed: () {
                     final mainState = context.read<AdminMainCubit>().state;
                     if (mainState is AdminMainConnected) {
-                      context
-                          .read<StatisticsCubit>()
-                          .fetchTotalReports(mainState.accessToken);
+                      context.read<StatisticsCubit>().fetchTotalReports(
+                        mainState.accessToken,
+                      );
                     }
                   },
                   child: const Text('Retry'),
@@ -59,27 +56,33 @@ class ReportBarChart extends StatelessWidget {
           );
         }
         final reportTypes = context.read<StatisticsCubit>().reportTypes;
-        final filteredReportTypes =
-            reportTypes.where((type) => type != 'None').toList();
+        final filteredReportTypes = reportTypes
+            .where((type) => type != 'None')
+            .toList();
 
-        List<BarChartGroupData> barGroups =
-            filteredReportTypes.asMap().entries.map((entry) {
-          final index = entry.key;
-          final type = entry.value;
-          final value = (totalReportsByType[type] ?? 0).toDouble();
-          return createBarGroup(
-            index,
-            value,
-            selectedIndex == index
-                ? AppConstants.myBlue100Colors[
-                        index % AppConstants.myBlue100Colors.length]
-                    .withOpacity(1)
-                : AppConstants.myBlue100Colors[
-                        index % AppConstants.myBlue100Colors.length]
-                    .withOpacity(0.5),
-            selectedIndex == index,
-          );
-        }).toList();
+        List<BarChartGroupData> barGroups = filteredReportTypes
+            .asMap()
+            .entries
+            .map((entry) {
+              final index = entry.key;
+              final type = entry.value;
+              final value = (totalReportsByType[type] ?? 0).toDouble();
+              return createBarGroup(
+                index,
+                value,
+                selectedIndex == index
+                    ? AppConstants
+                          .myBlue100Colors[index %
+                              AppConstants.myBlue100Colors.length]
+                          .withOpacity(1)
+                    : AppConstants
+                          .myBlue100Colors[index %
+                              AppConstants.myBlue100Colors.length]
+                          .withOpacity(0.5),
+                selectedIndex == index,
+              );
+            })
+            .toList();
 
         return SizedBox(
           height: 130,
@@ -98,9 +101,9 @@ class ReportBarChart extends StatelessWidget {
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
                     return BarTooltipItem(
                       rod.toY.toString(),
-                      AppStyles.regular15(context).copyWith(
-                        color: Colors.white,
-                      ),
+                      AppStyles.regular15(
+                        context,
+                      ).copyWith(color: Colors.white),
                     );
                   },
                 ),
@@ -116,10 +119,12 @@ class ReportBarChart extends StatelessWidget {
               ),
               titlesData: FlTitlesData(
                 show: true,
-                topTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
                 bottomTitles: const AxisTitles(
                   axisNameWidget: null,
                   sideTitles: SideTitles(showTitles: false),
@@ -139,9 +144,9 @@ class ReportBarChart extends StatelessWidget {
                           children: [
                             Text(
                               value.toInt().toString(),
-                              style: AppStyles.regular10(context).copyWith(
-                                color: context.theme.black100,
-                              ),
+                              style: AppStyles.regular10(
+                                context,
+                              ).copyWith(color: context.theme.black100),
                             ),
                             const Gap(5),
                             Container(

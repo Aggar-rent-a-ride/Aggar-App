@@ -46,14 +46,14 @@ class AdminMainCubit extends Cubit<AdminMainState> {
     required AdminVehicleTypeCubit vehicleTypeCubit,
     required AdminVehicleBrandCubit vehicleBrandCubit,
     required UserInfoCubit userInfoCubit,
-  })  : _tokenRefreshCubit = tokenRefreshCubit,
-        _reportCubit = reportCubit,
-        _userStatisticsCubit = userStatisticsCubit,
-        _statisticsCubit = statisticsCubit,
-        _vehicleTypeCubit = vehicleTypeCubit,
-        _vehicleBrandCubit = vehicleBrandCubit,
-        _userInfoCubit = userInfoCubit,
-        super(AdminMainInitial()) {
+  }) : _tokenRefreshCubit = tokenRefreshCubit,
+       _reportCubit = reportCubit,
+       _userStatisticsCubit = userStatisticsCubit,
+       _statisticsCubit = statisticsCubit,
+       _vehicleTypeCubit = vehicleTypeCubit,
+       _vehicleBrandCubit = vehicleBrandCubit,
+       _userInfoCubit = userInfoCubit,
+       super(AdminMainInitial()) {
     _setupInternetChecker();
     _observeDataStates();
     _setupSignalRListeners();
@@ -88,7 +88,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
           _updateConnectedState();
         } else if (statisticsState is StatisticsError) {
           _handleAuthError(
-              'Statistics fetch failed: ${statisticsState.message}');
+            'Statistics fetch failxxed: ${statisticsState.message}',
+          );
         }
       }
     });
@@ -132,7 +133,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
           _updateConnectedState();
         } else if (vehicleTypeState is AdminVehicleTypeError) {
           _handleAuthError(
-              'Vehicle types fetch failed: ${vehicleTypeState.message}');
+            'Vehicle types fetch failed: ${vehicleTypeState.message}',
+          );
         }
       }
     });
@@ -148,7 +150,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
           _updateConnectedState();
         } else if (vehicleBrandState is AdminVehicleBrandError) {
           _handleAuthError(
-              'Vehicle brands fetch failed: ${vehicleBrandState.message}');
+            'Vehicle brands fetch failed: ${vehicleBrandState.message}',
+          );
         }
       }
     });
@@ -171,7 +174,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
   void _updateConnectedState() {
     if (state is AdminMainConnected) {
       final currentState = state as AdminMainConnected;
-      emit(AdminMainConnected(
+      emit(
+        AdminMainConnected(
           accessToken: currentState.accessToken,
           isStatisticsLoaded: _isStatisticsLoaded,
           isReportsLoaded: _isReportsLoaded,
@@ -179,7 +183,9 @@ class AdminMainCubit extends Cubit<AdminMainState> {
           isVehicleTypesLoaded: _isVehicleTypesLoaded,
           isVehicleBrandsLoaded: _isVehicleBrandsLoaded,
           isSignalRConnected: _isSignalRConnected,
-          isUserInfoLoaded: _isUserInfoLoaded));
+          isUserInfoLoaded: _isUserInfoLoaded,
+        ),
+      );
     }
   }
 
@@ -249,7 +255,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         _isVehicleBrandsLoaded = false;
         _isSignalRConnected = false;
         _isUserInfoLoaded = false;
-        emit(AdminMainConnected(
+        emit(
+          AdminMainConnected(
             accessToken: token,
             isStatisticsLoaded: false,
             isReportsLoaded: false,
@@ -257,7 +264,9 @@ class AdminMainCubit extends Cubit<AdminMainState> {
             isVehicleTypesLoaded: false,
             isVehicleBrandsLoaded: false,
             isSignalRConnected: false,
-            isUserInfoLoaded: false));
+            isUserInfoLoaded: false,
+          ),
+        );
 
         _fetchData(token);
         if (userId != null) {
@@ -301,13 +310,7 @@ class AdminMainCubit extends Cubit<AdminMainState> {
 
   void _fetchData(String accessToken) {
     _statisticsCubit.fetchTotalReports(accessToken);
-    _reportCubit.fetchReports(
-      accessToken,
-      null,
-      null,
-      null,
-      null,
-    );
+    _reportCubit.fetchReports(accessToken, null, null, null, null);
     _userStatisticsCubit.fetchUserTotals(accessToken);
     _vehicleTypeCubit.fetchVehicleTypes(accessToken);
     _vehicleBrandCubit.fetchVehicleBrands(accessToken);
@@ -320,7 +323,8 @@ class AdminMainCubit extends Cubit<AdminMainState> {
   }
 
   void handleTokenRefreshSuccess(String accessToken) {
-    emit(AdminMainConnected(
+    emit(
+      AdminMainConnected(
         accessToken: accessToken,
         isStatisticsLoaded: false,
         isReportsLoaded: false,
@@ -328,7 +332,9 @@ class AdminMainCubit extends Cubit<AdminMainState> {
         isVehicleTypesLoaded: false,
         isVehicleBrandsLoaded: false,
         isSignalRConnected: _isSignalRConnected,
-        isUserInfoLoaded: false));
+        isUserInfoLoaded: false,
+      ),
+    );
     _fetchData(accessToken);
     if (!_signalRService.isConnected) {
       _secureStorage.read(key: 'userId').then((userIdStr) {

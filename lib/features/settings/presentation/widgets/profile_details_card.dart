@@ -1,3 +1,4 @@
+import 'package:aggar/core/api/end_points.dart';
 import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 import 'package:aggar/core/cubit/user_cubit/user_info_state.dart';
 import 'package:aggar/core/extensions/context_colors_extension.dart';
@@ -10,9 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class ProfileDetailsCard extends StatelessWidget {
-  const ProfileDetailsCard({
-    super.key,
-  });
+  const ProfileDetailsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +24,9 @@ class ProfileDetailsCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.theme.white100_1,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: context.theme.grey100_1,
-                width: 1,
-              ),
+              border: Border.all(color: context.theme.grey100_1, width: 1),
             ),
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: const Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -43,17 +37,12 @@ class ProfileDetailsCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.theme.white100_1,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: context.theme.grey100_1,
-                width: 1,
-              ),
+              border: Border.all(color: context.theme.grey100_1, width: 1),
             ),
             child: Center(
               child: Text(
                 'Error loading profile',
-                style: AppStyles.regular14(context).copyWith(
-                  color: Colors.red,
-                ),
+                style: AppStyles.regular14(context).copyWith(color: Colors.red),
               ),
             ),
           );
@@ -68,10 +57,7 @@ class ProfileDetailsCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.theme.white100_1,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: context.theme.grey100_1,
-                width: 1,
-              ),
+              border: Border.all(color: context.theme.grey100_1, width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +68,7 @@ class ProfileDetailsCard extends StatelessWidget {
                       radius: 30,
                       backgroundColor: context.theme.blue100_1,
                       backgroundImage: user.imageUrl != null
-                          ? NetworkImage(user.imageUrl!)
+                          ? NetworkImage(EndPoint.baseUrl + user.imageUrl!)
                           : null,
                       child: user.imageUrl == null
                           ? Icon(
@@ -99,16 +85,16 @@ class ProfileDetailsCard extends StatelessWidget {
                         children: [
                           Text(
                             user.name,
-                            style: AppStyles.semiBold18(context).copyWith(
-                              color: context.theme.black100,
-                            ),
+                            style: AppStyles.semiBold18(
+                              context,
+                            ).copyWith(color: context.theme.black100),
                           ),
                           const Gap(4),
                           Text(
                             user.userName,
-                            style: AppStyles.regular14(context).copyWith(
-                              color: context.theme.grey100_1,
-                            ),
+                            style: AppStyles.regular14(
+                              context,
+                            ).copyWith(color: context.theme.grey100_1),
                           ),
                         ],
                       ),
@@ -118,9 +104,8 @@ class ProfileDetailsCard extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(
-                              userId: user.id.toString(),
-                            ),
+                            builder: (context) =>
+                                EditProfileScreen(userId: user.id.toString()),
                           ),
                         );
                       },
@@ -171,17 +156,14 @@ class ProfileDetailsCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.theme.white100_1,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: context.theme.grey100_1,
-              width: 1,
-            ),
+            border: Border.all(color: context.theme.grey100_1, width: 1),
           ),
           child: Center(
             child: Text(
               'No profile data available',
-              style: AppStyles.regular14(context).copyWith(
-                color: context.theme.grey100_1,
-              ),
+              style: AppStyles.regular14(
+                context,
+              ).copyWith(color: context.theme.grey100_1),
             ),
           ),
         );

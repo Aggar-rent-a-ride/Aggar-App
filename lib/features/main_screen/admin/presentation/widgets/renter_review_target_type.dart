@@ -8,11 +8,11 @@ class RenterReviewTargetType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RenterReviewTargetTypeCard(
-      behavior: state.report.targetRenterReview!.behavior,
-      care: state.report.targetRenterReview!.care,
+      behavior: (state.report.targetRenterReview!.behavior).toDouble(),
+      care: (state.report.targetRenterReview!.care).toDouble(),
       comments: state.report.targetRenterReview!.comments,
       createdAt: state.report.targetRenterReview!.createdAt,
-      punctuality: state.report.targetRenterReview!.punctuality,
+      punctuality: (state.report.targetRenterReview!.punctuality).toDouble(),
       rentalId: state.report.targetRenterReview!.rentalId,
     );
   }

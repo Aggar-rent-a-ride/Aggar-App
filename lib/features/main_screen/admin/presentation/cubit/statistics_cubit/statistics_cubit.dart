@@ -16,12 +16,12 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     'AppUser',
     'Vehicle',
     'Booking',
-    'Rental'
+    'Rental',
   ];
   Future<void> fetchTotalReports(String accessToken) async {
     try {
       emit(StatisticsLoading());
-      final Map<String, int> totalReportsByType = {};
+      final Map<String, dynamic> totalReportsByType = {};
       for (String type in reportTypes) {
         final response = await dioConsumer.get(
           EndPoint.filterReport,
@@ -31,24 +31,19 @@ class StatisticsCubit extends Cubit<StatisticsState> {
             "targetType": type,
             "status": null,
             "date": null,
-            "sortingDirection": null
+            "sortingDirection": null,
           },
-          options: Options(
-            headers: {
-              'Authorization': 'Bearer $accessToken',
-            },
-          ),
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
         final reports = ListReportModel.fromJson(response);
         totalReportsByType[type] = reports.totalPages ?? 0;
       }
-      emit(StatisticsLoaded(
-        totalReportsByType: totalReportsByType,
-      ));
+      emit(StatisticsLoaded(totalReportsByType: totalReportsByType));
     } catch (error) {
       String errorMessage = handleError(error);
-      emit(StatisticsError(
-          message: 'An unexpected error occurred: $errorMessage'));
+      emit(
+        StatisticsError(message: 'An unexpected error occurred: $errorMessage'),
+      );
     }
   }
 }

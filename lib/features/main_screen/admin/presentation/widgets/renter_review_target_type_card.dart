@@ -18,10 +18,10 @@ class RenterReviewTargetTypeCard extends StatelessWidget {
 
   final int rentalId;
   final String createdAt;
-  final int behavior;
-  final int punctuality;
+  final double behavior;
+  final double punctuality;
   final String comments;
-  final int care;
+  final double care;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +33,7 @@ class RenterReviewTargetTypeCard extends StatelessWidget {
         color: context.theme.blue10_2,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 2,
-            offset: Offset(0, 0),
-          ),
+          BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 0)),
         ],
       ),
       child: Padding(
@@ -47,39 +43,40 @@ class RenterReviewTargetTypeCard extends StatelessWidget {
           children: [
             Text(
               "Rating",
-              style: AppStyles.bold20(context).copyWith(
-                color: context.theme.black100,
-              ),
+              style: AppStyles.bold20(
+                context,
+              ).copyWith(color: context.theme.black100),
             ),
             const Gap(5),
             RatingRowSection(
-                behavior: behavior,
-                punctuality: punctuality,
-                careOrtruthfulness: care),
+              behavior: behavior,
+              punctuality: punctuality,
+              careOrtruthfulness: care,
+            ),
             const Gap(16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Comments",
-                  style: AppStyles.bold20(context).copyWith(
-                    color: context.theme.black100,
-                  ),
+                  style: AppStyles.bold20(
+                    context,
+                  ).copyWith(color: context.theme.black100),
                 ),
                 Text(
                   comments,
-                  style: AppStyles.medium14(context).copyWith(
-                    color: context.theme.black50,
-                  ),
+                  style: AppStyles.medium14(
+                    context,
+                  ).copyWith(color: context.theme.black50),
                 ),
               ],
             ),
             const Gap(10),
             Text(
               formattedDate,
-              style: AppStyles.regular12(context).copyWith(
-                color: context.theme.black50,
-              ),
+              style: AppStyles.regular12(
+                context,
+              ).copyWith(color: context.theme.black50),
             ),
           ],
         ),

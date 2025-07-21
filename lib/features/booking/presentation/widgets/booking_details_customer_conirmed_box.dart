@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BookingDetailsCustomerConirmedBox extends StatelessWidget {
-  const BookingDetailsCustomerConirmedBox({
-    super.key,
-  });
+  const BookingDetailsCustomerConirmedBox({super.key, required this.isRenter});
+  final bool isRenter;
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +32,17 @@ class BookingDetailsCustomerConirmedBox extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Booking Confirmed!',
-                style: AppStyles.bold18(context).copyWith(
-                  color: context.theme.green100_1,
-                ),
+                style: AppStyles.bold18(
+                  context,
+                ).copyWith(color: context.theme.green100_1),
               ),
               const SizedBox(height: 4),
               Text(
                 'Your booking has been confirmed and payment processed successfully.',
                 textAlign: TextAlign.center,
-                style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.green100_1.withOpacity(0.8),
-                ),
+                style: AppStyles.medium14(
+                  context,
+                ).copyWith(color: context.theme.green100_1.withOpacity(0.8)),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -57,7 +56,7 @@ class BookingDetailsCustomerConirmedBox extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => BlocProvider.value(
                             value: context.read<RentalHistoryCubit>(),
-                            child: const RentHistoryView(),
+                            child: RentHistoryView(isRenter: isRenter),
                           ),
                         ),
                       );
@@ -89,9 +88,9 @@ class BookingDetailsCustomerConirmedBox extends StatelessWidget {
                       ),
                       Text(
                         'View in Rental History',
-                        style: AppStyles.semiBold16(context).copyWith(
-                          color: context.theme.white100_1,
-                        ),
+                        style: AppStyles.semiBold16(
+                          context,
+                        ).copyWith(color: context.theme.white100_1),
                       ),
                     ],
                   ),
@@ -104,9 +103,9 @@ class BookingDetailsCustomerConirmedBox extends StatelessWidget {
         Text(
           textAlign: TextAlign.center,
           'You can manage your rental (scan QR code, request refunds, etc.) from the Rental History section.',
-          style: AppStyles.medium13(context).copyWith(
-            color: context.theme.black50,
-          ),
+          style: AppStyles.medium13(
+            context,
+          ).copyWith(color: context.theme.black50),
         ),
         const SizedBox(height: 12),
       ],

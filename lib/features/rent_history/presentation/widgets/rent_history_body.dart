@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class RentHistoryBody extends StatefulWidget {
-  const RentHistoryBody({super.key});
-
+  const RentHistoryBody({super.key, required this.isRenter});
+  final bool isRenter;
   @override
   State<RentHistoryBody> createState() => _RentHistoryBodyState();
 }
@@ -96,16 +96,17 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                           state.activeFilter == 'all'
                               ? 'No rental history found'
                               : 'No ${state.activeFilter.toLowerCase()} rentals found',
-                          style: AppStyles.medium18(context)
-                              .copyWith(color: Colors.grey.shade600),
+                          style: AppStyles.medium18(
+                            context,
+                          ).copyWith(color: Colors.grey.shade600),
                         ),
                         if (state.activeFilter != 'all') ...[
                           const Gap(8),
                           TextButton(
                             onPressed: () {
-                              context
-                                  .read<RentalHistoryCubit>()
-                                  .filterRentals('all');
+                              context.read<RentalHistoryCubit>().filterRentals(
+                                'all',
+                              );
                             },
                             child: const Text('Show All Rentals'),
                           ),
@@ -166,7 +167,8 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                     Expanded(
                       child: ListView.separated(
                         controller: _scrollController,
-                        itemCount: rentals.length +
+                        itemCount:
+                            rentals.length +
                             (state.hasMoreData && state.activeFilter == 'all'
                                 ? 1
                                 : 0),
@@ -189,9 +191,11 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => RentalHistoryDetail(
+                                    isRenter: widget.isRenter,
                                     rentalItem: rental,
-                                    statusColor:
-                                        _getStatusColor(rental.rentalStatus),
+                                    statusColor: _getStatusColor(
+                                      rental.rentalStatus,
+                                    ),
                                   ),
                                 ),
                               );
@@ -220,8 +224,9 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                       const Gap(10),
                       Text(
                         state.message,
-                        style: AppStyles.regular16(context)
-                            .copyWith(color: Colors.red),
+                        style: AppStyles.regular16(
+                          context,
+                        ).copyWith(color: Colors.red),
                         textAlign: TextAlign.center,
                       ),
                       const Gap(20),

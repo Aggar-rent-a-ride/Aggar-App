@@ -63,8 +63,10 @@ class _BookingDetailsScreenCustomerState
               actions: [
                 Container(
                   margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: _getStatusColor(booking.status).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -90,23 +92,25 @@ class _BookingDetailsScreenCustomerState
               ),
               title: Text(
                 'Booking Details',
-                style: AppStyles.semiBold24(context)
-                    .copyWith(color: context.theme.black100),
+                style: AppStyles.semiBold24(
+                  context,
+                ).copyWith(color: context.theme.black100),
               ),
             ),
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Container(
                 decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 0),
-                        blurRadius: 4,
-                      )
-                    ],
-                    color: context.theme.white100_2,
-                    borderRadius: BorderRadius.circular(15)),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 0),
+                      blurRadius: 4,
+                    ),
+                  ],
+                  color: context.theme.white100_2,
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -114,11 +118,14 @@ class _BookingDetailsScreenCustomerState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       BookingDetailsCustomerVehicleInformationSection(
-                          booking: booking),
+                        booking: booking,
+                      ),
                       BookingDetailsCustomerBookingPeriodWithTotalDurationSection(
-                          booking: booking),
+                        booking: booking,
+                      ),
                       BookingDetailsCustomerPricingDetailsSection(
-                          booking: booking),
+                        booking: booking,
+                      ),
                       if (booking.discount > 0)
                         BookingDetailsCustomerDiscountRow(booking: booking),
                       const Divider(height: 24),
@@ -152,13 +159,14 @@ class _BookingDetailsScreenCustomerState
           final isConfirmLoading = state is BookingConfirmLoading;
 
           return BookingDetailsCustomerAcceptedActionButtons(
-              isConfirmLoading: isConfirmLoading,
-              isCancelLoading: isCancelLoading,
-              booking: booking);
+            isConfirmLoading: isConfirmLoading,
+            isCancelLoading: isCancelLoading,
+            booking: booking,
+          );
         },
       );
     } else if (status == 'confirmed') {
-      return const BookingDetailsCustomerConirmedBox();
+      return const BookingDetailsCustomerConirmedBox(isRenter: false);
     }
     return const SizedBox.shrink();
   }

@@ -13,32 +13,19 @@ import 'package:aggar/features/rent_history/presentation/widgets/rental_history_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RentalHistoryDetail extends StatelessWidget {
   final RentalHistoryItem rentalItem;
   final Color statusColor;
+  final bool isRenter;
 
   const RentalHistoryDetail({
     super.key,
     required this.rentalItem,
     required this.statusColor,
+    required this.isRenter,
   });
-
-  Widget _buildRatingStars(int rating) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(5, (index) {
-        return Icon(
-          index < rating ? Icons.star : Icons.star_border,
-          color: Colors.amber,
-          size: 18.0,
-        );
-      }),
-    );
-  }
-
   void _onScanQRCode(BuildContext context) async {
     try {
       final result = await Navigator.push(
@@ -581,7 +568,7 @@ class RentalHistoryDetail extends StatelessWidget {
               ],*/
 
               // Action Buttons
-              if (_shouldShowActionButtons()) ...[
+              if (_shouldShowActionButtons() && isRenter == false) ...[
                 Row(
                   children: [
                     Expanded(

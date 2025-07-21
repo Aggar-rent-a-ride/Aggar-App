@@ -9,9 +9,8 @@ import 'package:gap/gap.dart';
 import '../../../../core/utils/app_styles.dart';
 
 class RentHistoryCard extends StatelessWidget {
-  const RentHistoryCard({
-    super.key,
-  });
+  const RentHistoryCard({super.key, required this.isRenter});
+  final bool isRenter;
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +19,17 @@ class RentHistoryCard extends StatelessWidget {
       padingVeritical: 10,
       onPressed: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const RentHistoryView(),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => RentHistoryView(isRenter: isRenter),
+          ),
+        );
       },
       backgroundColor: context.theme.blue100_1.withOpacity(0.05),
       child: Row(
         children: [
           Image(
-            image: const AssetImage(
-              AppAssets.assetsIconsRentHistory,
-            ),
+            image: const AssetImage(AppAssets.assetsIconsRentHistory),
             color: context.theme.blue100_1,
             height: 25,
             width: 25,
@@ -39,9 +37,9 @@ class RentHistoryCard extends StatelessWidget {
           const Gap(10),
           Text(
             "Rent history",
-            style: AppStyles.bold16(context).copyWith(
-              color: context.theme.blue100_1,
-            ),
+            style: AppStyles.bold16(
+              context,
+            ).copyWith(color: context.theme.blue100_1),
           ),
           const Spacer(),
           const ArrowForwardIconButton(),

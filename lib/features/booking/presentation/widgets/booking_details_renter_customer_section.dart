@@ -6,7 +6,6 @@ import 'package:aggar/features/rent_history/data/cubit/rent_history_cubit.dart';
 import 'package:aggar/features/rent_history/presentation/views/rent_history_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 
 class BookingDetailsRenterCustomerSection extends StatelessWidget {
   final int customerId;
@@ -34,9 +33,7 @@ class BookingDetailsRenterCustomerSection extends StatelessWidget {
         children: [
           Text(
             'Customer',
-            style: AppStyles.bold18(context).copyWith(
-              color: theme.black100,
-            ),
+            style: AppStyles.bold18(context).copyWith(color: theme.black100),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -56,22 +53,20 @@ class BookingDetailsRenterCustomerSection extends StatelessWidget {
                               color: Colors.black12,
                               spreadRadius: 0,
                               blurRadius: 4,
-                            )
+                            ),
                           ],
                         ),
                         child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(50),
+                          ),
                           child: customerImage == null
                               ? Image.asset(
                                   AppAssets.assetsImagesDefaultPfp0,
                                   height: 45,
                                   color: theme.black50,
                                 )
-                              : Image.network(
-                                  customerImage!,
-                                  height: 45,
-                                ),
+                              : Image.network(customerImage!, height: 45),
                         ),
                       ),
                       Padding(
@@ -81,15 +76,15 @@ class BookingDetailsRenterCustomerSection extends StatelessWidget {
                           children: [
                             Text(
                               customerName,
-                              style: AppStyles.bold16(context).copyWith(
-                                color: theme.blue100_2,
-                              ),
+                              style: AppStyles.bold16(
+                                context,
+                              ).copyWith(color: theme.blue100_2),
                             ),
                             Text(
                               'Order this car',
-                              style: AppStyles.semiBold14(context).copyWith(
-                                color: theme.black50,
-                              ),
+                              style: AppStyles.semiBold14(
+                                context,
+                              ).copyWith(color: theme.black50),
                             ),
                           ],
                         ),
@@ -133,8 +128,8 @@ class BookingDetailsRenterCustomerSection extends StatelessWidget {
 }
 
 class BookingDetailsRenterConfirmedBox extends StatelessWidget {
-  const BookingDetailsRenterConfirmedBox({super.key});
-
+  const BookingDetailsRenterConfirmedBox({super.key, required this.isRenter});
+  final bool isRenter;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -157,17 +152,17 @@ class BookingDetailsRenterConfirmedBox extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Booking Confirmed!',
-                style: AppStyles.bold18(context).copyWith(
-                  color: context.theme.green100_1,
-                ),
+                style: AppStyles.bold18(
+                  context,
+                ).copyWith(color: context.theme.green100_1),
               ),
               const SizedBox(height: 4),
               Text(
                 'This booking has been confirmed and added to your rental history.',
                 textAlign: TextAlign.center,
-                style: AppStyles.medium14(context).copyWith(
-                  color: context.theme.green100_1.withOpacity(0.8),
-                ),
+                style: AppStyles.medium14(
+                  context,
+                ).copyWith(color: context.theme.green100_1.withOpacity(0.8)),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -181,7 +176,7 @@ class BookingDetailsRenterConfirmedBox extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => BlocProvider.value(
                             value: context.read<RentalHistoryCubit>(),
-                            child: const RentHistoryView(),
+                            child: RentHistoryView(isRenter: isRenter),
                           ),
                         ),
                       );
@@ -213,9 +208,9 @@ class BookingDetailsRenterConfirmedBox extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         'View in Rental History',
-                        style: AppStyles.semiBold16(context).copyWith(
-                          color: context.theme.white100_1,
-                        ),
+                        style: AppStyles.semiBold16(
+                          context,
+                        ).copyWith(color: context.theme.white100_1),
                       ),
                     ],
                   ),
@@ -228,9 +223,9 @@ class BookingDetailsRenterConfirmedBox extends StatelessWidget {
         Text(
           textAlign: TextAlign.center,
           'You can manage this rental from the Rental History section.',
-          style: AppStyles.medium13(context).copyWith(
-            color: context.theme.black50,
-          ),
+          style: AppStyles.medium13(
+            context,
+          ).copyWith(color: context.theme.black50),
         ),
         const SizedBox(height: 12),
       ],
