@@ -46,6 +46,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
   late final RealTimeChatCubit realTimeChatCubit;
   late final MessageCubit messageCubit;
   int senderId = 0;
+  late final ScrollController sharedScrollController;
 
   @override
   void initState() {
@@ -53,6 +54,11 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     messageCubit = MessageCubit(dioConsumer: DioConsumer(dio: Dio()));
     personalChatCubit = PersonalChatCubit();
     realTimeChatCubit = RealTimeChatCubit(messageCubit);
+
+    // Create a shared ScrollController and assign to both cubits
+    sharedScrollController = ScrollController();
+    personalChatCubit.scrollController = sharedScrollController;
+    realTimeChatCubit.scrollController = sharedScrollController;
 
     personalChatCubit.setMessages(widget.messageList);
     personalChatCubit.setReceiverId(widget.receiverId);
@@ -88,6 +94,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
     personalChatCubit.close();
     realTimeChatCubit.close();
     messageCubit.close();
+    sharedScrollController.dispose();
     super.dispose();
   }
 

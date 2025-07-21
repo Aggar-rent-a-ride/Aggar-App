@@ -4,6 +4,7 @@ import 'package:aggar/core/helper/get_formatted_date.dart';
 import 'package:aggar/core/utils/app_styles.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_cubit.dart';
+import 'package:aggar/features/messages/views/personal_chat/data/cubit/personal_chat/personal_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_cubit.dart';
 import 'package:aggar/features/messages/views/personal_chat/data/cubit/real%20time%20chat/real_time_chat_state.dart';
 import 'package:aggar/features/messages/views/personal_chat/presentation/model/message.dart';
@@ -33,16 +34,6 @@ class PersonalChatBody extends StatefulWidget {
 class _PersonalChatBodyState extends State<PersonalChatBody> {
   bool _isLoadingMore = false;
 
-  @override
-  void initState() {
-    super.initState();
-    final realTimeCubit = context.read<RealTimeChatCubit>();
-    realTimeCubit.scrollController.addListener(_scrollListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
-  }
-
   void _scrollListener() async {
     final realTimeCubit = context.read<RealTimeChatCubit>();
     if (realTimeCubit.scrollController.position.pixels >=
@@ -64,15 +55,33 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
     }
   }
 
-  void _scrollToBottom() {
+  void _scrollToBottomRobust({int retryCount = 0}) {
+    final personalCubit = context.read<PersonalChatCubit>();
+    const maxRetries = 8;
+    const retryDelay = Duration(milliseconds: 120);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (personalCubit.scrollController.hasClients) {
+        personalCubit.scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      } else if (retryCount < maxRetries) {
+        Future.delayed(retryDelay, () {
+          _scrollToBottomRobust(retryCount: retryCount + 1);
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
     final realTimeCubit = context.read<RealTimeChatCubit>();
-    if (realTimeCubit.scrollController.hasClients) {
-      realTimeCubit.scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    realTimeCubit.scrollController.addListener(_scrollListener);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottomRobust();
+    });
   }
 
   bool _shouldDisplayMessage(MessageModel message) {
@@ -90,7 +99,8 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
   }
 
   Map<String, List<MessageModel>> _groupMessagesByDate(
-      List<MessageModel> messages) {
+    List<MessageModel> messages,
+  ) {
     Map<String, List<MessageModel>> groupedMessages = {};
     for (var message in messages) {
       DateTime dateTime;
@@ -114,221 +124,238 @@ class _PersonalChatBodyState extends State<PersonalChatBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RealTimeChatCubit, RealTimeChatState>(
+    return BlocListener<PersonalChatCubit, PersonalChatState>(
       listener: (context, state) {
-        print("🎯 RealTime state: ${state.runtimeType}");
-        if (state is MessageAddedState ||
-            state is MessageUpdatedState ||
-            state is FileUploadComplete ||
-            state is MessageSentSuccessfully) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _scrollToBottom();
-          });
-        }
-        if (state is MessagesLoaded) {
-          setState(() {
-            _isLoadingMore = false;
-          });
-        }
-        if (state is RealTimeChatFailure) {
-          setState(() {
-            _isLoadingMore = false;
-          });
+        if (state is PersonalChatSuccess || state is PersonalChatInitial) {
+          _scrollToBottomRobust();
         }
       },
-      child: BlocBuilder<RealTimeChatCubit, RealTimeChatState>(
-        buildWhen: (previous, current) {
-          return true;
+      child: BlocListener<RealTimeChatCubit, RealTimeChatState>(
+        listener: (context, state) {
+          print("🎯 RealTime state: ${state.runtimeType}");
+          if (state is MessageAddedState ||
+              state is MessageUpdatedState ||
+              state is FileUploadComplete ||
+              state is MessageSentSuccessfully) {
+            _scrollToBottomRobust();
+          }
+          if (state is MessagesLoaded) {
+            setState(() {
+              _isLoadingMore = false;
+            });
+          }
+          if (state is RealTimeChatFailure) {
+            setState(() {
+              _isLoadingMore = false;
+            });
+          }
         },
-        builder: (context, state) {
-          final realTimeCubit = context.read<RealTimeChatCubit>();
-          final personalCubit = context.read<PersonalChatCubit>();
-          final List<MessageModel> messages = realTimeCubit.messages;
-          final filteredMessages = _getFilteredMessages(messages);
-          final groupedMessages = _groupMessagesByDate(filteredMessages);
-          List<String> sortedDates = groupedMessages.keys.toList()
-            ..sort((a, b) => DateTime.parse(b).compareTo(DateTime.parse(a)));
+        child: BlocBuilder<RealTimeChatCubit, RealTimeChatState>(
+          buildWhen: (previous, current) {
+            return true;
+          },
+          builder: (context, state) {
+            final realTimeCubit = context.read<RealTimeChatCubit>();
+            final personalCubit = context.read<PersonalChatCubit>();
+            final List<MessageModel> messages = realTimeCubit.messages;
+            final filteredMessages = _getFilteredMessages(messages);
+            final groupedMessages = _groupMessagesByDate(filteredMessages);
+            List<String> sortedDates = groupedMessages.keys.toList()
+              ..sort((a, b) => DateTime.parse(b).compareTo(DateTime.parse(a)));
 
-          return Column(
-            children: [
-              if (state is ConnectionStatusChanged && !state.isConnected)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  color: Colors.red.withOpacity(0.1),
-                  child: Text(
-                    "Disconnected from chat server",
-                    textAlign: TextAlign.center,
-                    style: AppStyles.medium12(context).copyWith(
-                      color: Colors.red,
+            return Column(
+              children: [
+                if (state is ConnectionStatusChanged && !state.isConnected)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    color: Colors.red.withOpacity(0.1),
+                    child: Text(
+                      "Disconnected from chat server",
+                      textAlign: TextAlign.center,
+                      style: AppStyles.medium12(
+                        context,
+                      ).copyWith(color: Colors.red),
                     ),
                   ),
-                ),
-              if (state is RealTimeChatLoading)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  color: context.theme.blue100_2.withOpacity(0.1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            context.theme.blue100_1,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Connecting...",
-                        style: AppStyles.medium12(context).copyWith(
-                          color: context.theme.blue100_1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              if (state is MessageAddedState)
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(4),
-                  color: Colors.green.withOpacity(0.1),
-                  child: Text(
-                    "New message received",
-                    textAlign: TextAlign.center,
-                    style: AppStyles.medium10(context).copyWith(
-                      color: Colors.green,
-                    ),
-                  ),
-                ),
-              Expanded(
-                child: ListView.builder(
-                  controller: realTimeCubit.scrollController,
-                  reverse: true,
-                  cacheExtent: 2000.0,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: sortedDates.length + (_isLoadingMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (_isLoadingMore && index == sortedDates.length) {
-                      return const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                if (state is RealTimeChatLoading)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    color: context.theme.blue100_2.withOpacity(0.1),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              context.theme.blue100_1,
                             ),
                           ),
                         ),
-                      );
-                    }
-
-                    String date = sortedDates[index];
-                    List<MessageModel> messagesForDate = groupedMessages[date]!;
-                    messagesForDate.sort((a, b) => DateTime.parse(a.sentAt)
-                        .compareTo(DateTime.parse(b.sentAt)));
-                    DateTime dateTime = DateTime.parse(date);
-                    String formattedDate = getFormattedDate(dateTime);
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Connecting...",
+                          style: AppStyles.medium12(
+                            context,
+                          ).copyWith(color: context.theme.blue100_1),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (state is MessageAddedState)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(4),
+                    color: Colors.green.withOpacity(0.1),
+                    child: Text(
+                      "New message received",
+                      textAlign: TextAlign.center,
+                      style: AppStyles.medium10(
+                        context,
+                      ).copyWith(color: Colors.green),
+                    ),
+                  ),
+                Expanded(
+                  child: ListView.builder(
+                    controller: personalCubit.scrollController,
+                    reverse: true,
+                    cacheExtent: 2000.0,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: sortedDates.length + (_isLoadingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (_isLoadingMore && index == sortedDates.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: context.theme.blue100_2.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                formattedDate,
-                                style: AppStyles.medium14(context).copyWith(
-                                  color: context.theme.blue100_1,
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        );
+                      }
+
+                      String date = sortedDates[index];
+                      List<MessageModel> messagesForDate =
+                          groupedMessages[date]!;
+                      messagesForDate.sort(
+                        (a, b) => DateTime.parse(
+                          a.sentAt,
+                        ).compareTo(DateTime.parse(b.sentAt)),
+                      );
+                      DateTime dateTime = DateTime.parse(date);
+                      String formattedDate = getFormattedDate(dateTime);
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: context.theme.blue100_2.withOpacity(
+                                    0.1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  formattedDate,
+                                  style: AppStyles.medium14(
+                                    context,
+                                  ).copyWith(color: context.theme.blue100_1),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        ...messagesForDate.map((message) {
-                          final messageId = message.id.toString();
-                          String sentAt = message.sentAt.endsWith('Z')
-                              ? message.sentAt
-                              : '${message.sentAt}Z';
-                          final dateTime = DateTime.parse(sentAt).toLocal();
-                          String period = dateTime.hour >= 12 ? 'PM' : 'AM';
-                          int hour12 =
-                              dateTime.hour % 12 == 0 ? 12 : dateTime.hour % 12;
-                          final hoursAndMinutes =
-                              "$hour12:${dateTime.minute.toString().padLeft(2, '0')} $period";
+                          ...messagesForDate.map((message) {
+                            final messageId = message.id.toString();
+                            String sentAt = message.sentAt.endsWith('Z')
+                                ? message.sentAt
+                                : '${message.sentAt}Z';
+                            final dateTime = DateTime.parse(sentAt).toLocal();
+                            String period = dateTime.hour >= 12 ? 'PM' : 'AM';
+                            int hour12 = dateTime.hour % 12 == 0
+                                ? 12
+                                : dateTime.hour % 12;
+                            final hoursAndMinutes =
+                                "$hour12:${dateTime.minute.toString().padLeft(2, '0')} $period";
 
-                          final isHighlighted =
-                              personalCubit.highlightedMessageId == messageId;
+                            // Register GlobalKey for each message in PersonalChatCubit
+                            if (!personalCubit.messageKeys.containsKey(
+                              messageId,
+                            )) {
+                              personalCubit.messageKeys[messageId] =
+                                  GlobalKey();
+                            }
 
-                          if (!personalCubit.messageKeys
-                              .containsKey(messageId)) {
-                            personalCubit.messageKeys[messageId] = GlobalKey();
-                          }
+                            final isHighlighted =
+                                personalCubit.highlightedMessageId == messageId;
 
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 500),
-                            key: personalCubit.messageKeys[messageId],
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            margin: const EdgeInsets.symmetric(vertical: 2),
-                            decoration: BoxDecoration(
-                              color: isHighlighted
-                                  ? context.theme.blue100_2.withOpacity(0.1)
-                                  : Colors.transparent,
-                              border: (state is MessageAddedState &&
-                                      state.message.id == message.id)
-                                  ? Border.all(
-                                      color: Colors.green.withOpacity(0.5),
-                                      width: 2)
-                                  : null,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: message.senderId == widget.currentUserId
-                                ? ChatBubbleForSender(
-                                    isfile: message.filePath != null,
-                                    message: Message(
-                                      message.content == null
-                                          ? message.filePath!
-                                          : message.content!,
-                                      messageId,
-                                      hoursAndMinutes,
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
+                              key: personalCubit.messageKeys[messageId],
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              margin: const EdgeInsets.symmetric(vertical: 2),
+                              decoration: BoxDecoration(
+                                color: isHighlighted
+                                    ? context.theme.blue100_1.withOpacity(0.3)
+                                    : Colors.transparent,
+                                border:
+                                    (state is MessageAddedState &&
+                                        state.message.id == message.id)
+                                    ? Border.all(
+                                        color: Colors.green.withOpacity(0.5),
+                                        width: 2,
+                                      )
+                                    : null,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: message.senderId == widget.currentUserId
+                                  ? ChatBubbleForSender(
+                                      isfile: message.filePath != null,
+                                      message: Message(
+                                        message.content == null
+                                            ? message.filePath!
+                                            : message.content!,
+                                        messageId,
+                                        hoursAndMinutes,
+                                      ),
+                                    )
+                                  : ChatBubbleForReciver(
+                                      reciverName: widget.reciverName,
+                                      isfile: message.filePath != null,
+                                      message: Message(
+                                        message.content == null
+                                            ? message.filePath!
+                                            : message.content!,
+                                        messageId,
+                                        hoursAndMinutes,
+                                      ),
                                     ),
-                                  )
-                                : ChatBubbleForReciver(
-                                    reciverName: widget.reciverName,
-                                    isfile: message.filePath != null,
-                                    message: Message(
-                                      message.content == null
-                                          ? message.filePath!
-                                          : message.content!,
-                                      messageId,
-                                      hoursAndMinutes,
-                                    ),
-                                  ),
-                          );
-                        }),
-                      ],
-                    );
-                  },
+                            );
+                          }),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SendMessagesWithAttachSection(),
-              const Gap(10)
-            ],
-          );
-        },
+                const SendMessagesWithAttachSection(),
+                const Gap(10),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

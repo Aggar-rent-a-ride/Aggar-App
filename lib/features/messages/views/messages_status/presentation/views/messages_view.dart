@@ -16,10 +16,12 @@ class MessagesView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
         backgroundColor: context.theme.white100_1,
+        automaticallyImplyLeading: false,
         title: Text(
           'Messages',
-          style: AppStyles.semiBold24(context)
-              .copyWith(color: context.theme.black100),
+          style: AppStyles.semiBold24(
+            context,
+          ).copyWith(color: context.theme.black100),
         ),
       ),
       backgroundColor: context.theme.white100_1,

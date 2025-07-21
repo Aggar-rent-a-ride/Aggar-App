@@ -59,6 +59,13 @@ class _TabBarSectionState extends State<TabBarSection>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _pageController = PageController();
+
+    _pageController.addListener(() {
+      final newPage = _pageController.page?.round();
+      if (newPage != null && _tabController.index != newPage) {
+        _tabController.animateTo(newPage);
+      }
+    });
   }
 
   @override

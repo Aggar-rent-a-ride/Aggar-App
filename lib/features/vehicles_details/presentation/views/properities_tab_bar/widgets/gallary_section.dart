@@ -29,10 +29,8 @@ class GallarySection extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PhotoScreen(
-          allImages: allImages,
-          initialIndex: initialIndex,
-        ),
+        builder: (context) =>
+            PhotoScreen(allImages: allImages, initialIndex: initialIndex),
       ),
     );
   }
@@ -40,8 +38,9 @@ class GallarySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if there are any valid additional images
-    final hasAdditionalImages =
-        images.any((img) => img != null && img.isNotEmpty);
+    final hasAdditionalImages = images.any(
+      (img) => img != null && img.isNotEmpty,
+    );
 
     // If no additional images and mainImage is empty/invalid, show only the placeholder
     if (!hasAdditionalImages && mainImage.isEmpty) {
@@ -52,10 +51,11 @@ class GallarySection extends StatelessWidget {
           children: [
             Text(
               "Gallery",
-              style: style ??
-                  AppStyles.bold18(context).copyWith(
-                    color: context.theme.black100,
-                  ),
+              style:
+                  style ??
+                  AppStyles.bold18(
+                    context,
+                  ).copyWith(color: context.theme.black100),
             ),
             const Gap(10),
             GestureDetector(
@@ -82,13 +82,15 @@ class GallarySection extends StatelessWidget {
         children: [
           Text(
             "Gallery",
-            style: style ??
-                AppStyles.bold18(context).copyWith(
-                  color: context.theme.black100,
-                ),
+            style:
+                style ??
+                AppStyles.bold18(
+                  context,
+                ).copyWith(color: context.theme.black100),
           ),
           const Gap(10),
           RawScrollbar(
+            controller: _scrollController,
             padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.sizeOf(context).width * 0.36,
             ),
@@ -105,7 +107,11 @@ class GallarySection extends StatelessWidget {
               controller: _scrollController,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    bottom: 15, top: 2, left: 2, right: 2),
+                  bottom: 15,
+                  top: 2,
+                  left: 2,
+                  right: 2,
+                ),
                 child: Row(
                   children: [
                     GestureDetector(
@@ -124,7 +130,8 @@ class GallarySection extends StatelessWidget {
                             child: Hero(
                               tag: "image_${index + 1}",
                               child: AdditionalImageCardNetwork(
-                                  image: images[index]!),
+                                image: images[index]!,
+                              ),
                             ),
                           );
                         } else {
