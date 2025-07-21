@@ -19,6 +19,8 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
+        // Force Kotlin compiler version
+        freeCompilerArgs += ["-Xjvm-default=all"]
     }
 
     defaultConfig {
@@ -34,9 +36,20 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            minifyEnabled false  
+            shrinkResources false  
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig = signingConfigs.debug
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlin:kotlin-stdlib:2.1.0'
+            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0'
+            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1'
         }
     }
 }
