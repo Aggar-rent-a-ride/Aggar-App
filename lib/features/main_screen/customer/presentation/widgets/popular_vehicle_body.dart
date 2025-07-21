@@ -30,42 +30,40 @@ class PopularVehicleBody extends StatelessWidget {
         cubit.fetchPopularVehicles(widget.accessToken);
       },
       color: context.theme.blue100_8,
-      child: Expanded(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: ListView.builder(
-            padding: const EdgeInsets.only(top: 10),
-            controller: _scrollController,
-            itemCount: vehicles.length + (canLoadMore || isLoadingMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == vehicles.length) {
-                if (isLoadingMore) {
-                  return Container(
-                    padding: const EdgeInsets.all(24),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: context.theme.blue100_8,
-                      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: ListView.builder(
+          padding: const EdgeInsets.only(top: 10),
+          controller: _scrollController,
+          itemCount: vehicles.length + (canLoadMore || isLoadingMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index == vehicles.length) {
+              if (isLoadingMore) {
+                return Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: context.theme.blue100_8,
                     ),
-                  );
-                }
-                return const SizedBox.shrink();
+                  ),
+                );
               }
+              return const SizedBox.shrink();
+            }
 
-              final vehicle = vehicles[index];
-              return Container(
-                margin: const EdgeInsets.only(bottom: 5),
-                child: PopularVehiclesCarCard(
-                  assetImagePath: vehicle.mainImagePath,
-                  carName: "${vehicle.brand} ${vehicle.model}",
-                  carType: vehicle.transmission,
-                  pricePerHour: vehicle.pricePerDay,
-                  vehicleId: vehicle.id.toString(),
-                  rating: vehicle.rate,
-                ),
-              );
-            },
-          ),
+            final vehicle = vehicles[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 5),
+              child: PopularVehiclesCarCard(
+                assetImagePath: vehicle.mainImagePath,
+                carName: "${vehicle.brand} ${vehicle.model}",
+                carType: vehicle.transmission,
+                pricePerHour: vehicle.pricePerDay,
+                vehicleId: vehicle.id.toString(),
+                rating: vehicle.rate,
+              ),
+            );
+          },
         ),
       ),
     );

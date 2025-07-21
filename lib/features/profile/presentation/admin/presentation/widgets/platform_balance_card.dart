@@ -12,9 +12,7 @@ import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 import '../../../../../payment/presentation/cubit/payment_cubit.dart';
 
 class PlatformBalanceCard extends StatelessWidget {
-  const PlatformBalanceCard({
-    super.key,
-  });
+  const PlatformBalanceCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +32,11 @@ class PlatformBalanceCard extends StatelessWidget {
           );
         }
       },
-      backgroundColor: context.theme.blue100_7,
+      backgroundColor: context.theme.blue100_1.withOpacity(0.05),
       child: Row(
         children: [
           Image(
-            image: const AssetImage(
-              AppAssets.assetsIconsBalance,
-            ),
+            image: const AssetImage(AppAssets.assetsIconsBalance),
             color: context.theme.blue100_1,
             height: 25,
             width: 25,
@@ -48,9 +44,9 @@ class PlatformBalanceCard extends StatelessWidget {
           const Gap(10),
           Text(
             "PlatForm Balance",
-            style: AppStyles.bold16(context).copyWith(
-              color: context.theme.blue100_1,
-            ),
+            style: AppStyles.bold16(
+              context,
+            ).copyWith(color: context.theme.blue100_1),
           ),
           const Spacer(),
           const ArrowForwardIconButton(),

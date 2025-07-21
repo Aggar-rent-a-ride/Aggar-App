@@ -3,10 +3,8 @@ import 'package:aggar/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class ShowProfileTabBar extends StatelessWidget {
-  const ShowProfileTabBar({
-    super.key,
-    required TabController tabController,
-  }) : _tabController = tabController;
+  const ShowProfileTabBar({super.key, required TabController tabController})
+    : _tabController = tabController;
 
   final TabController _tabController;
 
@@ -21,13 +19,14 @@ class ShowProfileTabBar extends StatelessWidget {
       dividerColor: context.theme.black10,
       labelColor: context.theme.blue100_1,
       unselectedLabelColor: context.theme.black50,
-      labelStyle:
-          AppStyles.bold18(context).copyWith(color: context.theme.blue100_1),
-      unselectedLabelStyle: AppStyles.bold18(context).copyWith(
-        color: context.theme.black25,
-      ),
+      labelStyle: AppStyles.bold18(
+        context,
+      ).copyWith(color: context.theme.blue100_1),
+      unselectedLabelStyle: AppStyles.bold18(
+        context,
+      ).copyWith(color: context.theme.black25),
       tabs: const [
-        Tab(text: 'Location'),
+        Tab(text: 'About'),
         Tab(text: 'Reviews'),
       ],
     );

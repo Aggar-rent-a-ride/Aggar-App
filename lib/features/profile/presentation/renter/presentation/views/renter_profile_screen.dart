@@ -12,6 +12,7 @@ import '../../../../../../core/cubit/user_cubit/user_info_cubit.dart';
 import '../../../../../../core/cubit/user_review_cubit/user_review_cubit.dart';
 import '../../../customer/presentation/cubit/profile/profile_cubit.dart';
 import '../widgets/profile_tab_bar.dart';
+import 'package:aggar/main.dart';
 
 class RenterProfileScreen extends StatefulWidget {
   const RenterProfileScreen({super.key});
@@ -20,11 +21,30 @@ class RenterProfileScreen extends StatefulWidget {
   State<RenterProfileScreen> createState() => _RenterProfileScreenState();
 }
 
-class _RenterProfileScreenState extends State<RenterProfileScreen> {
+class _RenterProfileScreenState extends State<RenterProfileScreen>
+    with RouteAware {
   @override
   void initState() {
     refreshProfile();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    refreshProfile();
+    super.didPopNext();
   }
 
   Future<void> refreshProfile() async {
@@ -81,11 +101,9 @@ class _RenterProfileScreenState extends State<RenterProfileScreen> {
             ),
             const Gap(50),
             const NameWithUserName(),
-            const EditProfileWithSettingsButtons(
-              isRenter: true,
-            ),
+            const EditProfileWithSettingsButtons(isRenter: true),
             const Gap(15),
-            const RenterProfileTabBarSection()
+            const RenterProfileTabBarSection(),
           ],
         ),
       ),

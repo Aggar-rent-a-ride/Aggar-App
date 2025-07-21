@@ -1,6 +1,5 @@
 import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 import 'package:aggar/core/cubit/user_cubit/user_info_state.dart';
-import 'package:aggar/features/main_screen/admin/model/user_model.dart';
 import 'package:aggar/features/profile/presentation/widgets/location_content_widget.dart';
 import 'package:aggar/features/profile/presentation/widgets/location_error_widget.dart';
 import 'package:aggar/features/profile/presentation/widgets/location_loading_widget.dart';
@@ -8,12 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LocationTabWidget extends StatelessWidget {
-  const LocationTabWidget({
-    super.key,
-    required this.user,
-  });
-
-  final UserModel user;
+  const LocationTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

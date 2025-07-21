@@ -41,18 +41,20 @@ class SplashCubit extends Cubit<SplashState> {
 
     final slidingAnimation =
         Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
+          CurvedAnimation(
+            parent: animationController,
+            curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
+          ),
+        );
+
+    emit(
+      state.copyWith(
+        animationController: animationController,
+        fadeInAnimation: fadeInAnimation,
+        scaleAnimation: scaleAnimation,
+        slidingAnimation: slidingAnimation,
       ),
     );
-
-    emit(state.copyWith(
-      animationController: animationController,
-      fadeInAnimation: fadeInAnimation,
-      scaleAnimation: scaleAnimation,
-      slidingAnimation: slidingAnimation,
-    ));
 
     animationController.forward();
   }
@@ -73,7 +75,7 @@ class SplashCubit extends Cubit<SplashState> {
           destination = const CustomerBottomNavigationBarViews();
         } else if (userType == "Renter") {
           destination = const RenterBottomNavigationBarView();
-        } else if (userType == "User") {
+        } else if (userType == "Admin") {
           destination = const AdminBottomNavigationBar();
         } else {
           destination = const SignInView();
@@ -113,8 +115,9 @@ class AuthService {
         return false;
       }
 
-      final tokenCreatedAtString =
-          await _secureStorage.read(key: 'tokenCreatedAt');
+      final tokenCreatedAtString = await _secureStorage.read(
+        key: 'tokenCreatedAt',
+      );
       if (tokenCreatedAtString != null) {
         final tokenCreatedAt = DateTime.parse(tokenCreatedAtString);
         final now = DateTime.now();

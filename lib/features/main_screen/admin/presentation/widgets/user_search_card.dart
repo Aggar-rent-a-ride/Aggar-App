@@ -14,10 +14,7 @@ import '../../../../profile/presentation/views/show_profile_screen.dart';
 import '../../../../vehicle_details_after_add/presentation/cubit/review_count/review_count_cubit.dart';
 
 class UserSearchCard extends StatelessWidget {
-  const UserSearchCard({
-    super.key,
-    required this.user,
-  });
+  const UserSearchCard({super.key, required this.user});
 
   final UserModel user;
 
@@ -26,24 +23,25 @@ class UserSearchCard extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         final tokenCubit = context.read<TokenRefreshCubit>();
-        final token = await tokenCubit.ensureValidToken();
+        final token = await tokenCubit.getAccessToken();
         if (token != null) {
-          context
-              .read<UserInfoCubit>()
-              .fetchUserInfo(user.id.toString(), token);
-          context
-              .read<UserReviewCubit>()
-              .getUserReviews(user.id.toString(), token);
-          context
-              .read<ReviewCountCubit>()
-              .getUserReviewsNumber(user.id.toString(), token);
+          context.read<UserInfoCubit>().fetchUserInfo(
+            user.id.toString(),
+            token,
+          );
+          context.read<UserReviewCubit>().getUserReviews(
+            user.id.toString(),
+            token,
+          );
+          context.read<ReviewCountCubit>().getUserReviewsNumber(
+            user.id.toString(),
+            token,
+          );
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ShowProfileScreen(
-                isAdmin: true,
-                user: user,
-              ),
+              builder: (context) =>
+                  ShowProfileScreen(isAdmin: true, user: user),
             ),
           );
         }
@@ -52,17 +50,13 @@ class UserSearchCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Row(
           children: [
-            Icon(
-              Icons.search_rounded,
-              color: context.theme.black100,
-              size: 26,
-            ),
+            Icon(Icons.search_rounded, color: context.theme.black100, size: 26),
             const Gap(5),
             Text(
               user.name,
-              style: AppStyles.semiBold18(context).copyWith(
-                color: context.theme.black100,
-              ),
+              style: AppStyles.semiBold18(
+                context,
+              ).copyWith(color: context.theme.black100),
             ),
             const Gap(5),
             Container(
@@ -76,13 +70,13 @@ class UserSearchCard extends StatelessWidget {
             const Gap(5),
             Text(
               user.username ?? "",
-              style: AppStyles.medium16(context).copyWith(
-                color: context.theme.black50,
-              ),
+              style: AppStyles.medium16(
+                context,
+              ).copyWith(color: context.theme.black50),
             ),
             const Spacer(),
             UserImage(user: user),
-            OptionsButton(user: user)
+            OptionsButton(user: user),
           ],
         ),
       ),

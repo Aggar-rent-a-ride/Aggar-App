@@ -35,7 +35,7 @@ class CommentSection extends StatelessWidget {
               offset: Offset(0, 0),
               color: Colors.black26,
               blurRadius: 2,
-            )
+            ),
           ],
         ),
         child: Padding(
@@ -44,21 +44,22 @@ class CommentSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NameAndRateSection(
-                  imageUrl: imageUrl,
-                  name: name,
-                  rate: rate,
-                  date: date,
-                  reviewId: id,
-                  typeOfReport: typeOfReport),
+                imageUrl: imageUrl,
+                name: name,
+                rate: 5,
+                date: date,
+                reviewId: id,
+                typeOfReport: typeOfReport,
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   commentText,
-                  style: AppStyles.medium14(context).copyWith(
-                    color: AppLightColors.myBlack50,
-                  ),
+                  style: AppStyles.medium14(
+                    context,
+                  ).copyWith(color: AppLightColors.myBlack50),
                 ),
-              )
+              ),
             ],
           ),
         ),

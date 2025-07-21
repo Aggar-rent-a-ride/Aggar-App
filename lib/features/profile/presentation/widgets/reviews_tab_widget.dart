@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class ReviewsTabWidget extends StatelessWidget {
-  const ReviewsTabWidget({
-    super.key,
-    required this.user,
-    this.rate,
-  });
+  const ReviewsTabWidget({super.key, required this.user, this.rate});
 
   final UserModel user;
   final double? rate;
@@ -34,9 +30,9 @@ class ReviewsTabWidget extends StatelessWidget {
                 const Gap(8),
                 Text(
                   'Review and Rating',
-                  style: AppStyles.semiBold16(context).copyWith(
-                    color: context.theme.black100,
-                  ),
+                  style: AppStyles.semiBold16(
+                    context,
+                  ).copyWith(color: context.theme.black100),
                 ),
               ],
             ),
@@ -45,22 +41,18 @@ class ReviewsTabWidget extends StatelessWidget {
               children: [
                 rate == null
                     ? const SizedBox()
-                    : RatingNumberSection(
-                        rating: rate,
-                      ),
+                    : RatingNumberSection(rating: rate),
                 Expanded(
                   child: Text(
                     "Rating and reviews are verified and are from people who rent the same type of vehicle that you rent",
-                    style: AppStyles.medium15(context).copyWith(
-                      color: context.theme.black50,
-                    ),
+                    style: AppStyles.medium15(
+                      context,
+                    ).copyWith(color: context.theme.black50),
                   ),
                 ),
               ],
             ),
-            ReviewList(
-              userId: user.id.toString(),
-            ),
+            ReviewList(userId: user.id.toString()),
             const Gap(20),
           ],
         ),

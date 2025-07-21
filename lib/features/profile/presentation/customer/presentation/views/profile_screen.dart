@@ -12,6 +12,8 @@ import 'package:gap/gap.dart';
 
 import '../../../../../../core/cubit/refresh token/token_refresh_cubit.dart';
 import '../../../../../authorization/data/cubit/Login/login_cubit.dart';
+import 'package:aggar/main.dart';
+import 'package:aggar/core/cubit/user_cubit/user_info_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,11 +22,29 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with RouteAware {
   @override
   void initState() {
     refreshProfile();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    refreshProfile();
+    super.didPopNext();
   }
 
   Future<void> refreshProfile() async {
@@ -32,8 +52,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (userId != null) {
       final tokenCubit = context.read<TokenRefreshCubit>();
       final token = await tokenCubit.ensureValidToken();
-      ();
       if (token != null) {
+        context.read<UserInfoCubit>().fetchUserInfo(userId, token);
         context.read<ProfileCubit>().fetchFavoriteVehicles(token);
         context.read<UserReviewCubit>().getUserReviews(userId, token);
       }
@@ -81,9 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const Gap(50),
             const NameWithUserName(),
-            const EditProfileWithSettingsButtons(
-              isRenter: false,
-            ),
+            const EditProfileWithSettingsButtons(isRenter: false),
             const ProfileTabBarSection(),
           ],
         ),

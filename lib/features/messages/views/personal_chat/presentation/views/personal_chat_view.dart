@@ -104,9 +104,7 @@ class _PersonalChatViewState extends State<PersonalChatView> {
           return Scaffold(
             appBar: AppBar(
               toolbarHeight: 70,
-              iconTheme: IconThemeData(
-                color: context.theme.white100_2,
-              ),
+              iconTheme: IconThemeData(color: context.theme.white100_2),
               elevation: 1,
               shadowColor: Colors.grey[900],
               centerTitle: false,
@@ -120,11 +118,17 @@ class _PersonalChatViewState extends State<PersonalChatView> {
                         final token = await tokenCubit.ensureValidToken();
                         if (token != null) {
                           context.read<UserInfoCubit>().fetchUserInfo(
-                              widget.receiverId.toString(), token);
+                            widget.receiverId.toString(),
+                            token,
+                          );
                           context.read<UserReviewCubit>().getUserReviews(
-                              widget.receiverId.toString(), token);
+                            widget.receiverId.toString(),
+                            token,
+                          );
                           context.read<ReviewCountCubit>().getUserReviewsNumber(
-                              widget.receiverId.toString(), token);
+                            widget.receiverId.toString(),
+                            token,
+                          );
                           Navigator.push(
                             context,
                             MaterialPageRoute(
