@@ -15,8 +15,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
   bool isSearchActive = false;
   final TextEditingController searchController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
-  bool dateSelected = false;
+  // Removed: final TextEditingController dateController = TextEditingController();
+  // Removed: bool dateSelected = false;
 
   String? highlightedMessageId;
   List<String> searchResultMessageIds = [];
@@ -149,9 +149,8 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         ApiKey.filterMsgPageNo: 1,
         ApiKey.filterMsgPageSize: 30,
       };
-      if (dateSelected && dateController.text.isNotEmpty) {
-        data[ApiKey.filterMsgDateTime] = dateController.text;
-      } else if (searchController.text.isNotEmpty) {
+      // Only content-based search
+      if (searchController.text.isNotEmpty) {
         data[ApiKey.filterMsgSearchContent] = searchController.text;
       }
       final response = await dioConsumer.get(
@@ -240,33 +239,13 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
     });
   }
 
-  Future<void> selectDate(BuildContext context) async {
-    searchController.clear();
-
-    final DateTime? picked = await showDatePicker(
-      builder: (context, child) {
-        return pickDateOfBirthTheme(context, child!);
-      },
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-
-    if (picked != null) {
-      dateController.text =
-          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
-      dateSelected = true;
-      searchController.text = dateController.text;
-      emit(DateSelectedState(dateController.text));
-    }
-  }
+  // Removed: Future<void> selectDate(BuildContext context)
 
   void clearSearch() {
     isSearchActive = false;
     searchController.clear();
-    dateController.clear();
-    dateSelected = false;
+    // Removed: dateController.clear();
+    // Removed: dateSelected = false;
     clearHighlights();
     searchResultMessageIds = [];
     currentHighlightIndex = -1;
@@ -312,7 +291,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   @override
   Future<void> close() {
     searchController.dispose();
-    dateController.dispose();
+    // Removed: dateController.dispose();
     scrollController.dispose();
     return super.close();
   }
