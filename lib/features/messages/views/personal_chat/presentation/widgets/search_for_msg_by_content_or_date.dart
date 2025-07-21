@@ -33,9 +33,7 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
                 color: context.theme.white100_2,
               ),
               decoration: InputDecoration(
-                hintText: cubit.dateSelected
-                    ? cubit.dateController.text
-                    : "Search messages...",
+                hintText: "Search messages...",
                 hintStyle: AppStyles.medium16(context).copyWith(
                   color: context.theme.white100_1.withOpacity(0.6),
                 ),
@@ -48,10 +46,6 @@ class SearchForMsgByContentOrDate extends StatelessWidget {
                 ),
               ),
               onChanged: (value) {
-                if (cubit.dateSelected) {
-                  cubit.dateSelected = false;
-                  cubit.dateController.clear();
-                }
                 cubit.updateSearchQuery(value);
               },
             ),

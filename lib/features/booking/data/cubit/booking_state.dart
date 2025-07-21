@@ -248,15 +248,17 @@ class BookingConfirmSuccess extends BookingState {
   final String message;
   final int bookingId;
   final String? clientSecret;
+  final BookingModel booking;
 
   const BookingConfirmSuccess({
     required this.message,
     required this.bookingId,
     this.clientSecret,
+    required this.booking,
   });
 
   @override
-  List<Object?> get props => [message, bookingId, clientSecret];
+  List<Object?> get props => [message, bookingId, clientSecret, booking];
 }
 
 class BookingConfirmError extends BookingState {

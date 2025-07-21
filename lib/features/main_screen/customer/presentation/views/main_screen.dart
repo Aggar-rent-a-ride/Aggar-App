@@ -12,6 +12,7 @@ import 'package:aggar/features/main_screen/customer/presentation/widgets/loading
 import 'package:aggar/features/main_screen/customer/presentation/widgets/main_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aggar/features/notification/data/cubit/notification_cubit.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -24,11 +25,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    // Remove the SignalR initialization from here
-    // Let MainCubit handle all initialization
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Only trigger the cubit initialization
       context.read<MainCubit>().initializeApp();
+      context.read<NotificationCubit>().initialize();
     });
   }
 

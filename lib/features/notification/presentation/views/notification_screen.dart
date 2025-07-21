@@ -40,7 +40,6 @@ class _NotificationScreenState extends State<NotificationScreen>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<NotificationCubit>().initialize();
       _fadeController.forward();
     });
   }

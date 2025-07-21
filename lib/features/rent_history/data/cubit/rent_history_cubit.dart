@@ -4,6 +4,7 @@ import 'package:aggar/features/rent_history/data/cubit/rent_history_state.dart';
 import 'package:aggar/features/rent_history/data/models/rental_history_models.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class RentalHistoryCubit extends Cubit<RentalHistoryState> {
   final Dio dio;
@@ -242,13 +243,69 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
               message: 'Session expired. Please login again.'));
         }
       } else {
-        emit(RentalHistoryError(
-            message:
-                'Failed to confirm rental: ${e.response?.data['message'] ?? e.toString()}'));
+        final errorMessage =
+            'Failed to confirm rental: ${e.response?.data['message'] ?? e.toString()}';
+        debugPrint('RentalHistoryCubit: Emitting error: $errorMessage');
+        debugPrint('RentalHistoryCubit: Response data: ${e.response?.data}');
+        debugPrint(
+            'RentalHistoryCubit: Status code: ${e.response?.statusCode}');
+        emit(RentalHistoryError(message: errorMessage));
       }
     } catch (e) {
       emit(RentalHistoryError(
           message: 'Failed to confirm rental: ${e.toString()}'));
+    }
+  }
+
+  void updateRentalStatusLocally(int rentalId, String newStatus) {
+    if (state is RentalHistoryLoaded) {
+      final currentState = state as RentalHistoryLoaded;
+      final updatedRentals = currentState.rentals.map((rental) {
+        if (rental.id == rentalId) {
+          return RentalHistoryItem(
+            id: rental.id,
+            startDate: rental.startDate,
+            endDate: rental.endDate,
+            totalDays: rental.totalDays,
+            discount: rental.discount,
+            finalPrice: rental.finalPrice,
+            rentalStatus: newStatus,
+            renterReview: rental.renterReview,
+            customerReview: rental.customerReview,
+            vehicle: rental.vehicle,
+            user: rental.user,
+          );
+        }
+        return rental;
+      }).toList();
+
+      final updatedDisplayedRentals =
+          currentState.displayedRentals?.map((rental) {
+        if (rental.id == rentalId) {
+          return RentalHistoryItem(
+            id: rental.id,
+            startDate: rental.startDate,
+            endDate: rental.endDate,
+            totalDays: rental.totalDays,
+            discount: rental.discount,
+            finalPrice: rental.finalPrice,
+            rentalStatus: newStatus,
+            renterReview: rental.renterReview,
+            customerReview: rental.customerReview,
+            vehicle: rental.vehicle,
+            user: rental.user,
+          );
+        }
+        return rental;
+      }).toList();
+
+      emit(RentalHistoryLoaded(
+        rentals: updatedRentals,
+        displayedRentals: updatedDisplayedRentals,
+        currentPage: currentState.currentPage,
+        hasMoreData: currentState.hasMoreData,
+        activeFilter: currentState.activeFilter,
+      ));
     }
   }
 
@@ -283,8 +340,9 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           message:
               'Refund request submitted successfully.\n Processing time: 3-5 business days.',
         ));
+        await Future.delayed(const Duration(milliseconds: 500));
+        updateRentalStatusLocally(rentalId, 'Refunded');
 
-        // Refresh the rental history after successful refund
         await getRentalHistory(pageNo: 1, refresh: true);
       } else {
         emit(RentalHistoryRefundError(

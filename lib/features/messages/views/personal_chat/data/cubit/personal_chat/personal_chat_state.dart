@@ -23,7 +23,7 @@ class PersonalChatLoading extends PersonalChatState {
 class PersonalChatSuccess extends PersonalChatState {
   final ListMessageModel messages;
   const PersonalChatSuccess(this.messages);
-  
+
   @override
   List<Object?> get props => [messages];
 }
@@ -31,7 +31,7 @@ class PersonalChatSuccess extends PersonalChatState {
 class PersonalChatFailure extends PersonalChatState {
   final String error;
   const PersonalChatFailure(this.error);
-  
+
   @override
   List<Object?> get props => [error];
 }
@@ -39,15 +39,7 @@ class PersonalChatFailure extends PersonalChatState {
 class MessageHighlightedState extends PersonalChatState {
   final String messageId;
   const MessageHighlightedState(this.messageId);
-  
+
   @override
   List<Object?> get props => [messageId];
-}
-
-class DateSelectedState extends PersonalChatState {
-  final String date;
-  const DateSelectedState(this.date);
-  
-  @override
-  List<Object?> get props => [date];
 }

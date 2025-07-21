@@ -48,7 +48,14 @@ class RentalHistoryDetail extends StatelessWidget {
           context.read<RentalHistoryCubit>().refreshRentalHistory();
           Navigator.pop(context, true);
         }
+      } else if (result == 'error') {
+        // QR scanner returned error - the scanner already showed the error message
+        // No need to show another snackbar here
+        if (context.mounted) {
+          debugPrint('QR scanner returned error - error message already shown');
+        }
       } else if (result == false) {
+        // User cancelled the QR scanner
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             customSnackBar(
@@ -101,6 +108,7 @@ class RentalHistoryDetail extends StatelessWidget {
                   ),
                 ),
               );
+              Navigator.of(context).pop(true); // true indicates refresh needed
             } else if (state is RentalHistoryRefundError) {
               Navigator.of(dialogContext).pop();
               ScaffoldMessenger.of(context).showSnackBar(

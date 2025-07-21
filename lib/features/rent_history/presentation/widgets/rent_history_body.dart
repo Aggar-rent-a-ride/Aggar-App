@@ -186,8 +186,8 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                           final rental = rentals[index];
                           return RentalCard(
                             rental: rental,
-                            onViewMore: () {
-                              Navigator.push(
+                            onViewMore: () async {
+                              final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => RentalHistoryDetail(
@@ -199,6 +199,13 @@ class _RentHistoryBodyState extends State<RentHistoryBody> {
                                   ),
                                 ),
                               );
+                              if (result == true) {
+                                if (context.mounted) {
+                                  context
+                                      .read<RentalHistoryCubit>()
+                                      .refreshRentalHistory();
+                                }
+                              }
                             },
                           );
                         },
