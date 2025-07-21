@@ -1,6 +1,5 @@
 import 'package:aggar/core/api/dio_consumer.dart';
 import 'package:aggar/core/api/end_points.dart';
-import 'package:aggar/core/helper/pick_date_of_birth_theme.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/list_message_model.dart';
 import 'package:aggar/features/messages/views/messages_status/data/model/message_model.dart';
 import 'package:aggar/features/messages/views/messages_status/presentation/cubit/message_cubit/message_state.dart';
@@ -15,8 +14,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   final DioConsumer dioConsumer = DioConsumer(dio: Dio());
   bool isSearchActive = false;
   final TextEditingController searchController = TextEditingController();
-  // Removed: final TextEditingController dateController = TextEditingController();
-  // Removed: bool dateSelected = false;
 
   String? highlightedMessageId;
   List<String> searchResultMessageIds = [];
@@ -43,19 +40,21 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
   void setMessages(List<MessageModel> messageList) {
     _messages = List<MessageModel>.from(messageList);
-    Future.delayed(const Duration(milliseconds: 100), () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
     });
   }
 
   void scrollToBottom() {
-    if (scrollController.hasClients) {
-      scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void setReceiverId(int id) {
@@ -101,7 +100,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
 
     currentHighlightIndex =
         (currentHighlightIndex - 1 + searchResultMessageIds.length) %
-            searchResultMessageIds.length;
+        searchResultMessageIds.length;
     final prevMessageId = searchResultMessageIds[currentHighlightIndex];
     highlightedMessageId = prevMessageId;
     scrollToMessage(prevMessageId);
@@ -156,19 +155,16 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       final response = await dioConsumer.get(
         data: data,
         EndPoint.filterMessages,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
       if (response == null) {
         emit(const PersonalChatFailure("No response received from server."));
         return;
       }
       final ListMessageModel messages = ListMessageModel.fromJson(response);
-      searchResultMessageIds =
-          messages.data.map((message) => message.id.toString()).toList();
+      searchResultMessageIds = messages.data
+          .map((message) => message.id.toString())
+          .toList();
       currentHighlightIndex = searchResultMessageIds.isEmpty ? -1 : 0;
 
       if (searchResultMessageIds.isNotEmpty) {
@@ -197,17 +193,26 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       if (messageKeys.containsKey(messageId) &&
           messageKeys[messageId]!.currentContext != null) {
         try {
-          final RenderObject renderObject =
-              messageKeys[messageId]!.currentContext!.findRenderObject()!;
-          final RenderAbstractViewport viewport =
-              RenderAbstractViewport.of(renderObject);
-          final RevealedOffset offset =
-              viewport.getOffsetToReveal(renderObject, 0.5);
-          scrollController.animateTo(
-            offset.offset.clamp(0.0, scrollController.position.maxScrollExtent),
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
+          final RenderObject renderObject = messageKeys[messageId]!
+              .currentContext!
+              .findRenderObject()!;
+          final RenderAbstractViewport viewport = RenderAbstractViewport.of(
+            renderObject,
           );
+          final RevealedOffset offset = viewport.getOffsetToReveal(
+            renderObject,
+            0.5,
+          );
+          if (scrollController.hasClients) {
+            scrollController.animateTo(
+              offset.offset.clamp(
+                0.0,
+                scrollController.position.maxScrollExtent,
+              ),
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          }
           if (searchResultMessageIds.length <= 1) {
             Future.delayed(const Duration(seconds: 2), () {
               clearHighlights();
@@ -222,15 +227,19 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         }
       } else {
         if (retryCount < maxRetries) {
-          double estimatedOffset =
-              scrollController.position.pixels + (retryCount + 1) * 500.0;
-          estimatedOffset = estimatedOffset.clamp(
-              0.0, scrollController.position.maxScrollExtent);
-          scrollController.animateTo(
-            estimatedOffset,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
+          if (scrollController.hasClients) {
+            double estimatedOffset =
+                scrollController.position.pixels + (retryCount + 1) * 500.0;
+            estimatedOffset = estimatedOffset.clamp(
+              0.0,
+              scrollController.position.maxScrollExtent,
+            );
+            scrollController.animateTo(
+              estimatedOffset,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          }
           Future.delayed(retryDelay, () {
             scrollToMessage(messageId, retryCount: retryCount + 1);
           });
@@ -261,9 +270,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
           formData.files.add(
             MapEntry(
               ApiKey.markAsSeenMsgId,
-              MultipartFile.fromString(
-                ids[i].toString(),
-              ),
+              MultipartFile.fromString(ids[i].toString()),
             ),
           );
         }
@@ -271,11 +278,7 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
       final response = await dioConsumer.put(
         EndPoint.markAsSeen,
         data: formData,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
       if (response.statusCode == 200) {
         emit(const PersonalChatInitial());
@@ -283,8 +286,11 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
         emit(const PersonalChatFailure("Failed to mark messages as seen"));
       }
     } catch (e) {
-      emit(PersonalChatFailure(
-          "Failed to mark messages as seen : ${e.toString()}"));
+      emit(
+        PersonalChatFailure(
+          "Failed to mark messages as seen : ${e.toString()}",
+        ),
+      );
     }
   }
 
@@ -292,7 +298,6 @@ class PersonalChatCubit extends Cubit<PersonalChatState> {
   Future<void> close() {
     searchController.dispose();
     // Removed: dateController.dispose();
-    scrollController.dispose();
     return super.close();
   }
 }

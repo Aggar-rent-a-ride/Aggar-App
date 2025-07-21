@@ -65,12 +65,14 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
     _messageSubscription = _signalRService.onMessageReceived.listen((message) {
       print(
-          "📩 RAW MESSAGE RECEIVED: ${message.content} from ${message.senderId}");
+        "📩 RAW MESSAGE RECEIVED: ${message.content} from ${message.senderId}",
+      );
       _handleIncomingMessage(message);
     });
 
-    _connectionStatusSubscription =
-        _signalRService.onConnectionChange.listen((isConnected) {
+    _connectionStatusSubscription = _signalRService.onConnectionChange.listen((
+      isConnected,
+    ) {
       print("🔗 Connection status changed: $isConnected");
       emit(ConnectionStatusChanged(isConnected));
 
@@ -81,20 +83,27 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
           _reconnectAttempts < _maxReconnectAttempts) {
         _attemptReconnection();
       } else if (_reconnectAttempts >= _maxReconnectAttempts) {
-        emit(const RealTimeChatFailure(
-            "Connection to chat server lost. Please reconnect manually."));
+        emit(
+          const RealTimeChatFailure(
+            "Connection to chat server lost. Please reconnect manually.",
+          ),
+        );
       }
     });
 
-    _uploadProgressSubscription =
-        _signalRService.onUploadProgress.listen((progress) {
+    _uploadProgressSubscription = _signalRService.onUploadProgress.listen((
+      progress,
+    ) {
       if (_fileUploadProgress.containsKey(progress.clientMessageId)) {
         _fileUploadProgress[progress.clientMessageId] =
             progress.progressPercentage;
-        emit(FileUploadInProgress(
+        emit(
+          FileUploadInProgress(
             progress.clientMessageId,
             _pendingUploads[progress.clientMessageId] ?? "Unknown file",
-            progress.progressPercentage));
+            progress.progressPercentage,
+          ),
+        );
       }
     });
 
@@ -121,15 +130,20 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
         }
 
         _messages.addAll(filteredNewMessages);
-        _messages.sort((a, b) =>
-            DateTime.parse(b.sentAt).compareTo(DateTime.parse(a.sentAt)));
+        _messages.sort(
+          (a, b) =>
+              DateTime.parse(b.sentAt).compareTo(DateTime.parse(a.sentAt)),
+        );
         _lastDateTime = _messages.last.sentAt;
         _processedServerMessageIds.addAll(filteredNewMessages.map((m) => m.id));
         emit(const MessagesLoaded());
         emit(const RealTimeChatInitial());
       } else if (state is MessageFailure) {
-        emit(RealTimeChatFailure(
-            "Failed to load more messages: ${state.errorMessage}"));
+        emit(
+          RealTimeChatFailure(
+            "Failed to load more messages: ${state.errorMessage}",
+          ),
+        );
       }
     });
   }
@@ -155,8 +169,11 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
         if (_reconnectAttempts < _maxReconnectAttempts) {
           _attemptReconnection();
         } else {
-          emit(const RealTimeChatFailure(
-              "Failed to reconnect after multiple attempts. Please try manually reconnecting."));
+          emit(
+            const RealTimeChatFailure(
+              "Failed to reconnect after multiple attempts. Please try manually reconnecting.",
+            ),
+          );
         }
       }
     } catch (e) {
@@ -173,9 +190,11 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
   void _handleIncomingMessage(ChatMessage message) {
     print(
-        "📨 PROCESSING MESSAGE: ${message.content} from ${message.senderId} to ${message.receiverId} with ID: ${message.id}");
+      "📨 PROCESSING MESSAGE: ${message.content} from ${message.senderId} to ${message.receiverId} with ID: ${message.id}",
+    );
     print(
-        "📨 Current conversation: senderId=$_senderId, receiverId=$_receiverId");
+      "📨 Current conversation: senderId=$_senderId, receiverId=$_receiverId",
+    );
 
     bool isForCurrentConversation = false;
 
@@ -188,7 +207,8 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
       isForCurrentConversation = isIncoming || isOutgoing;
 
       print(
-          "📨 CONVERSATION CHECK: isIncoming=$isIncoming, isOutgoing=$isOutgoing");
+        "📨 CONVERSATION CHECK: isIncoming=$isIncoming, isOutgoing=$isOutgoing",
+      );
     }
 
     if (!isForCurrentConversation) {
@@ -226,11 +246,13 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   }
 
   void _addIncomingMessage(MessageModel message) {
-    final existingIndex = _messages.indexWhere((m) =>
-        m.id == message.id &&
-        !m.isOptimistic &&
-        m.senderId == message.senderId &&
-        m.receiverId == message.receiverId);
+    final existingIndex = _messages.indexWhere(
+      (m) =>
+          m.id == message.id &&
+          !m.isOptimistic &&
+          m.senderId == message.senderId &&
+          m.receiverId == message.receiverId,
+    );
 
     if (existingIndex == -1) {
       _addNewMessage(message);
@@ -275,15 +297,17 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
     if (matchingPending != null && matchingClientId != null) {
       final index = _messages.indexWhere(
-          (m) => m.id == matchingPending!.message.id && m.isOptimistic);
+        (m) => m.id == matchingPending!.message.id && m.isOptimistic,
+      );
 
       if (index != -1) {
         _messages[index] = serverMessage;
         _pendingMessages.remove(matchingClientId);
         emit(MessageUpdatedState(serverMessage));
       } else {
-        final existingIndex = _messages
-            .indexWhere((m) => m.id == serverMessage.id && !m.isOptimistic);
+        final existingIndex = _messages.indexWhere(
+          (m) => m.id == serverMessage.id && !m.isOptimistic,
+        );
 
         if (existingIndex == -1) {
           _addNewMessage(serverMessage);
@@ -291,8 +315,9 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
         _pendingMessages.remove(matchingClientId);
       }
     } else {
-      final existingIndex = _messages
-          .indexWhere((m) => m.id == serverMessage.id && !m.isOptimistic);
+      final existingIndex = _messages.indexWhere(
+        (m) => m.id == serverMessage.id && !m.isOptimistic,
+      );
 
       if (existingIndex == -1) {
         _addNewMessage(serverMessage);
@@ -301,7 +326,8 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   }
 
   bool _messagesMatch(MessageModel msg1, MessageModel msg2) {
-    bool basicMatch = msg1.senderId == msg2.senderId &&
+    bool basicMatch =
+        msg1.senderId == msg2.senderId &&
         msg1.receiverId == msg2.receiverId &&
         msg1.content == msg2.content &&
         msg1.filePath == msg2.filePath;
@@ -334,10 +360,12 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
     // Sort messages to ensure oldest is last
     _messages.sort(
-        (a, b) => DateTime.parse(b.sentAt).compareTo(DateTime.parse(a.sentAt)));
+      (a, b) => DateTime.parse(b.sentAt).compareTo(DateTime.parse(a.sentAt)),
+    );
     _lastDateTime = _messages.isNotEmpty ? _messages.last.sentAt : null;
     print(
-        "📅 Set _lastDateTime to: $_lastDateTime (messages: ${_messages.length})");
+      "📅 Set _lastDateTime to: $_lastDateTime (messages: ${_messages.length})",
+    );
     _canLoadMore = true; // Reset canLoadMore
     _scrollToBottomImmediate();
   }
@@ -414,9 +442,11 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
       if (parsedId == 0) {
         final accessToken = await _secureStorage.read(key: 'accessToken');
         if (accessToken != null && accessToken.isNotEmpty) {
-          final Map<String, dynamic> decodedToken =
-              JwtDecoder.decode(accessToken);
-          final userId = decodedToken['sub'] ??
+          final Map<String, dynamic> decodedToken = JwtDecoder.decode(
+            accessToken,
+          );
+          final userId =
+              decodedToken['sub'] ??
               decodedToken['uid'] ??
               decodedToken['userId'];
 
@@ -428,7 +458,9 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
             }
             if (parsedId > 0) {
               await _secureStorage.write(
-                  key: 'userId', value: parsedId.toString());
+                key: 'userId',
+                value: parsedId.toString(),
+              );
             }
           }
         }
@@ -488,8 +520,10 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
     try {
       print("📤 Sending message: $messageContent");
-      final optimisticMessage =
-          _addOptimisticMessage(clientMessageId, messageContent);
+      final optimisticMessage = _addOptimisticMessage(
+        clientMessageId,
+        messageContent,
+      );
 
       _pendingMessages[clientMessageId] = PendingMessage(
         clientId: clientMessageId,
@@ -547,7 +581,8 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
     if (_pendingMessages.containsKey(clientMessageId)) {
       final pendingMessage = _pendingMessages[clientMessageId]!.message;
       _messages.removeWhere(
-          (msg) => msg.id == pendingMessage.id && msg.isOptimistic);
+        (msg) => msg.id == pendingMessage.id && msg.isOptimistic,
+      );
       _pendingMessages.remove(clientMessageId);
       emit(const RealTimeChatInitial());
     }
@@ -578,8 +613,9 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
           final bytes = await fileObj.readAsBytes();
 
           final fileName = path.basename(file.path!);
-          final fileExtension =
-              path.extension(file.path!).replaceFirst('.', '');
+          final fileExtension = path
+              .extension(file.path!)
+              .replaceFirst('.', '');
 
           await sendFile(fileName, bytes, fileName, fileExtension);
         } else if (file.bytes != null) {
@@ -597,10 +633,15 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
     }
   }
 
-  Future<void> sendFile(String filePath, List<int> fileBytes, String fileName,
-      String fileExtension) async {
+  Future<void> sendFile(
+    String filePath,
+    List<int> fileBytes,
+    String fileName,
+    String fileExtension,
+  ) async {
     print(
-        "sendFile called with fileName: $fileName, fileExtension: $fileExtension, fileBytes length: ${fileBytes.length}");
+      "sendFile called with fileName: $fileName, fileExtension: $fileExtension, fileBytes length: ${fileBytes.length}",
+    );
     if (_receiverId == null) {
       emit(const RealTimeChatFailure("Receiver ID is not set"));
       return;
@@ -613,8 +654,12 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
 
     _isUploadingFile = true;
     final clientMessageId = const Uuid().v4();
-    _addLocalFileMessage(clientMessageId, "uploading://$fileName", fileName,
-        isOptimistic: true);
+    _addLocalFileMessage(
+      clientMessageId,
+      "uploading://$fileName",
+      fileName,
+      isOptimistic: true,
+    );
 
     _pendingUploads[clientMessageId] = fileName;
     _fileUploadProgress[clientMessageId] = 0.0;
@@ -657,11 +702,12 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
         );
 
         totalBytesSent += chunk.length;
-        final localProgressPercent =
-            (totalBytesSent / fileBytes.length * 100).clamp(0.0, 100.0);
+        final localProgressPercent = (totalBytesSent / fileBytes.length * 100)
+            .clamp(0.0, 100.0);
         _fileUploadProgress[clientMessageId] = localProgressPercent;
-        emit(FileUploadInProgress(
-            clientMessageId, fileName, localProgressPercent));
+        emit(
+          FileUploadInProgress(clientMessageId, fileName, localProgressPercent),
+        );
       }
 
       await _signalRService.finishFileUpload(
@@ -686,8 +732,11 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   }
 
   void _addLocalFileMessage(
-      String clientMessageId, String filePath, String fileName,
-      {bool isOptimistic = false}) {
+    String clientMessageId,
+    String filePath,
+    String fileName, {
+    bool isOptimistic = false,
+  }) {
     if (_receiverId == null) return;
 
     final now = DateTime.now().toIso8601String();
@@ -710,10 +759,12 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
   }
 
   void _updateFileMessage(String clientMessageId, String serverFilePath) {
-    final index = _messages.indexWhere((msg) =>
-        msg.filePath != null &&
-        msg.filePath!.contains(clientMessageId) &&
-        msg.isOptimistic == true);
+    final index = _messages.indexWhere(
+      (msg) =>
+          msg.filePath != null &&
+          msg.filePath!.contains(clientMessageId) &&
+          msg.isOptimistic == true,
+    );
 
     if (index != -1) {
       final message = _messages[index];
@@ -751,8 +802,9 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
       if (_signalRService.isConnected) {
         emit(const RealTimeChatInitial());
       } else {
-        emit(const RealTimeChatFailure(
-            "Failed to reconnect. Please try again."));
+        emit(
+          const RealTimeChatFailure("Failed to reconnect. Please try again."),
+        );
       }
     } catch (e) {
       emit(RealTimeChatFailure("Reconnection error: ${e.toString()}"));
@@ -788,7 +840,6 @@ class RealTimeChatCubit extends Cubit<RealTimeChatState> {
     stopHeartbeat();
 
     messageController.dispose();
-    scrollController.dispose();
     return super.close();
   }
 }
