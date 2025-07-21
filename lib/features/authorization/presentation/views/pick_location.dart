@@ -60,7 +60,7 @@ class PickLocation extends StatelessWidget {
             customSnackBar(
               context,
               "Error",
-              "Sign Up Error: ${state.errorMessage!}",
+              "Sign Up Error: Point on Map is not Certified, Check App Permissions",
               SnackBarType.error,
             ),
           );
@@ -69,24 +69,29 @@ class PickLocation extends StatelessWidget {
 
         if (state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            customSnackBar(context, "Success", "Registration successful!",
-                SnackBarType.success),
+            customSnackBar(
+              context,
+              "Success",
+              "Registration successful!",
+              SnackBarType.success,
+            ),
           );
 
           if (onRegistrationSuccess != null) {
-            onRegistrationSuccess!(
-                {ApiKey.message: 'Registration successful!'});
+            onRegistrationSuccess!({
+              ApiKey.message: 'Registration successful!',
+            });
           }
 
-          final registrationResponse =
-              context.read<PickLocationCubit>().registrationResponse;
+          final registrationResponse = context
+              .read<PickLocationCubit>()
+              .registrationResponse;
 
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => VerificationView(
-                userData: registrationResponse,
-              ),
+              builder: (context) =>
+                  VerificationView(userData: registrationResponse),
             ),
           );
         }
@@ -107,9 +112,9 @@ class PickLocation extends StatelessWidget {
                       children: [
                         Text(
                           "Location and Address",
-                          style: AppStyles.medium20(context).copyWith(
-                            color: context.theme.black100,
-                          ),
+                          style: AppStyles.medium20(
+                            context,
+                          ).copyWith(color: context.theme.black100),
                         ),
                         const Gap(20),
                         CustomTextField(
@@ -129,85 +134,106 @@ class PickLocation extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Text(
                                 "Location",
-                                style: AppStyles.medium20(context).copyWith(
-                                  color: context.theme.black100,
-                                ),
+                                style: AppStyles.medium20(
+                                  context,
+                                ).copyWith(color: context.theme.black100),
                               ),
                             ),
-                            FormField<LatLng>(validator: (value) {
-                              if (state.latitude.isEmpty ||
-                                  state.longitude.isEmpty) {
-                                return 'Please select a location on the map';
-                              }
-                              final lat = double.tryParse(state.latitude);
-                              final lon = double.tryParse(state.longitude);
-                              if (lat == null || lat < -90 || lat > 90) {
-                                return 'Invalid latitude';
-                              }
-                              if (lon == null || lon < -180 || lon > 180) {
-                                return 'Invalid longitude';
-                              }
-                              return null;
-                            }, builder: (field) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (state.latitude.isEmpty &&
-                                      state.longitude.isEmpty)
-                                    PickLocationOnMapButton(
-                                      color: context.theme.black10,
-                                      textColor: context.theme.black100,
-                                      onPickLocation: (LatLng location,
-                                          String locationAddress) {
-                                        cubit.updateLatitude(
-                                            location.latitude.toString());
-                                        cubit.updateLongitude(
-                                            location.longitude.toString());
-                                        cubit.updateAddress(locationAddress);
-                                        field.didChange(location);
-                                      },
-                                    )
-                                  else
-                                    SelectedLocationMapContent(
-                                      location: LatLng(
-                                        double.tryParse(state.latitude) ?? 0.0,
-                                        double.tryParse(state.longitude) ?? 0.0,
+                            FormField<LatLng>(
+                              validator: (value) {
+                                if (state.latitude.isEmpty ||
+                                    state.longitude.isEmpty) {
+                                  return 'Please select a location on the map';
+                                }
+                                final lat = double.tryParse(state.latitude);
+                                final lon = double.tryParse(state.longitude);
+                                if (lat == null || lat < -90 || lat > 90) {
+                                  return 'Invalid latitude';
+                                }
+                                if (lon == null || lon < -180 || lon > 180) {
+                                  return 'Invalid longitude';
+                                }
+                                return null;
+                              },
+                              builder: (field) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (state.latitude.isEmpty &&
+                                        state.longitude.isEmpty)
+                                      PickLocationOnMapButton(
+                                        color: context.theme.black10,
+                                        textColor: context.theme.black100,
+                                        onPickLocation:
+                                            (
+                                              LatLng location,
+                                              String locationAddress,
+                                            ) {
+                                              cubit.updateLatitude(
+                                                location.latitude.toString(),
+                                              );
+                                              cubit.updateLongitude(
+                                                location.longitude.toString(),
+                                              );
+                                              cubit.updateAddress(
+                                                locationAddress,
+                                              );
+                                              field.didChange(location);
+                                            },
+                                      )
+                                    else
+                                      SelectedLocationMapContent(
+                                        location: LatLng(
+                                          double.tryParse(state.latitude) ??
+                                              0.0,
+                                          double.tryParse(state.longitude) ??
+                                              0.0,
+                                        ),
+                                        address: cubit.addressController.text,
+                                        onEditLocation:
+                                            (
+                                              LatLng location,
+                                              String locationAddress,
+                                            ) {
+                                              cubit.updateLatitude(
+                                                location.latitude.toString(),
+                                              );
+                                              cubit.updateLongitude(
+                                                location.longitude.toString(),
+                                              );
+                                              cubit.updateAddress(
+                                                locationAddress,
+                                              );
+                                              field.didChange(location);
+                                            },
+                                        uniqueId: uniqueId,
                                       ),
-                                      address: cubit.addressController.text,
-                                      onEditLocation: (LatLng location,
-                                          String locationAddress) {
-                                        cubit.updateLatitude(
-                                            location.latitude.toString());
-                                        cubit.updateLongitude(
-                                            location.longitude.toString());
-                                        cubit.updateAddress(locationAddress);
-                                        field.didChange(location);
-                                      },
-                                      uniqueId: uniqueId,
-                                    ),
-                                  if (field.hasError)
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0, left: 4.0),
-                                      child: Text(
-                                        field.errorText!,
-                                        style: AppStyles.regular14(context)
-                                            .copyWith(
-                                          color: context.theme.red100_1,
+                                    if (field.hasError)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 8.0,
+                                          left: 4.0,
+                                        ),
+                                        child: Text(
+                                          field.errorText!,
+                                          style: AppStyles.regular14(context)
+                                              .copyWith(
+                                                color: context.theme.red100_1,
+                                              ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              );
-                            }),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
                         const Gap(20),
                         Text(
                           "Choose type:",
-                          style: AppStyles.regular20(context).copyWith(
-                            color: context.theme.black100,
-                          ),
+                          style: AppStyles.regular20(
+                            context,
+                          ).copyWith(color: context.theme.black100),
                         ),
                         const Gap(10),
                         FormField<String>(
@@ -252,13 +278,14 @@ class PickLocation extends StatelessWidget {
                                 if (field.hasError)
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 8.0, left: 4.0),
+                                      top: 8.0,
+                                      left: 4.0,
+                                    ),
                                     child: Text(
                                       field.errorText!,
-                                      style:
-                                          AppStyles.regular14(context).copyWith(
-                                        color: context.theme.red100_1,
-                                      ),
+                                      style: AppStyles.regular14(
+                                        context,
+                                      ).copyWith(color: context.theme.red100_1),
                                     ),
                                   ),
                               ],
@@ -291,47 +318,45 @@ class PickLocation extends StatelessWidget {
                                       ),
                                     )
                                   : state.termsAccepted
-                                      ? CustomElevatedButton(
-                                          onPressed: () {
-                                            // Trigger form validation before registration
-                                            if (formKey.currentState!
-                                                .validate()) {
-                                              cubit.register(context);
-                                              onSubmit();
-                                            }
-                                          },
-                                          text: 'Register',
-                                        )
-                                      : Container(
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  0.85,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: ElevatedButton(
-                                            onPressed: null,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              shadowColor: Colors.transparent,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              'Register',
-                                              style: AppStyles.bold20(context)
-                                                  .copyWith(
-                                                color: Colors.grey.shade600,
-                                              ),
+                                  ? CustomElevatedButton(
+                                      onPressed: () {
+                                        // Trigger form validation before registration
+                                        if (formKey.currentState!.validate()) {
+                                          cubit.register(context);
+                                          onSubmit();
+                                        }
+                                      },
+                                      text: 'Register',
+                                    )
+                                  : Container(
+                                      width:
+                                          MediaQuery.sizeOf(context).width *
+                                          0.85,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ElevatedButton(
+                                        onPressed: null,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
                                             ),
                                           ),
                                         ),
+                                        child: Text(
+                                          'Register',
+                                          style: AppStyles.bold20(context)
+                                              .copyWith(
+                                                color: Colors.grey.shade600,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ],
                         ),

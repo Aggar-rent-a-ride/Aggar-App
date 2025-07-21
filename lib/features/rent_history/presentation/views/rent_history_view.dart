@@ -159,7 +159,7 @@ class RentHistoryView extends StatelessWidget {
             context.read<RentalHistoryCubit>().refreshRentalHistory();
           }
         },
-        child: const RentHistoryBody(),
+        child: RentHistoryBody(isRenter: isRenter),
       ),
     );
   }
