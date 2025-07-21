@@ -44,9 +44,7 @@ class RentalHistoryDetail extends StatelessWidget {
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => QRScannerPage(
-            rentalId: rentalItem.id,
-          ),
+          builder: (context) => QRScannerPage(rentalId: rentalItem.id),
         ),
       );
 
@@ -155,9 +153,9 @@ class RentalHistoryDetail extends StatelessWidget {
               backgroundColor: context.theme.white100_2,
               title: Text(
                 'Refund Request',
-                style: AppStyles.semiBold24(context).copyWith(
-                  color: context.theme.black100,
-                ),
+                style: AppStyles.semiBold24(
+                  context,
+                ).copyWith(color: context.theme.black100),
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -165,9 +163,9 @@ class RentalHistoryDetail extends StatelessWidget {
                 children: [
                   Text(
                     'Are you sure you want to request a refund for this rental?',
-                    style: AppStyles.medium18(context).copyWith(
-                      color: context.theme.black50,
-                    ),
+                    style: AppStyles.medium18(
+                      context,
+                    ).copyWith(color: context.theme.black50),
                   ),
                   const Gap(16),
                   Container(
@@ -182,15 +180,15 @@ class RentalHistoryDetail extends StatelessWidget {
                       children: [
                         Text(
                           'Refund Amount:',
-                          style: AppStyles.regular14(context).copyWith(
-                            color: Colors.grey[600],
-                          ),
+                          style: AppStyles.regular14(
+                            context,
+                          ).copyWith(color: Colors.grey[600]),
                         ),
                         Text(
                           '\$${rentalItem.finalPrice.toStringAsFixed(2)}',
-                          style: AppStyles.bold16(context).copyWith(
-                            color: Colors.green,
-                          ),
+                          style: AppStyles.bold16(
+                            context,
+                          ).copyWith(color: Colors.green),
                         ),
                       ],
                     ),
@@ -208,9 +206,9 @@ class RentalHistoryDetail extends StatelessWidget {
                         const Gap(12),
                         Text(
                           'Processing refund request...',
-                          style: AppStyles.medium18(context).copyWith(
-                            color: context.theme.black50,
-                          ),
+                          style: AppStyles.medium18(
+                            context,
+                          ).copyWith(color: context.theme.black50),
                         ),
                       ],
                     ),
@@ -241,8 +239,8 @@ class RentalHistoryDetail extends StatelessWidget {
                       ? null
                       : () {
                           context.read<RentalHistoryCubit>().refundRental(
-                                rentalId: rentalItem.id,
-                              );
+                            rentalId: rentalItem.id,
+                          );
                         },
                   child: isLoading
                       ? const SizedBox(
@@ -250,15 +248,16 @@ class RentalHistoryDetail extends StatelessWidget {
                           height: 16,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         )
                       : Text(
                           'Request Refund',
-                          style: AppStyles.semiBold15(context).copyWith(
-                            color: Colors.white,
-                          ),
+                          style: AppStyles.semiBold15(
+                            context,
+                          ).copyWith(color: Colors.white),
                         ),
                 ),
               ],
@@ -287,10 +286,7 @@ class RentalHistoryDetail extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => CreateReviewCubit(),
-          child: CreateReviewScreen(
-            rentalItem: rentalItem,
-            userRole: userRole,
-          ),
+          child: CreateReviewScreen(rentalItem: rentalItem, userRole: userRole),
         ),
       ),
     );
@@ -324,8 +320,9 @@ class RentalHistoryDetail extends StatelessWidget {
         ),
         title: Text(
           'Rental Details',
-          style: AppStyles.semiBold24(context)
-              .copyWith(color: context.theme.black100),
+          style: AppStyles.semiBold24(
+            context,
+          ).copyWith(color: context.theme.black100),
         ),
       ),
       body: SingleChildScrollView(
@@ -335,12 +332,16 @@ class RentalHistoryDetail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RentalHistoryVehicleDetailsSection(
-                  statusColor: statusColor, rentalItem: rentalItem),
+                statusColor: statusColor,
+                rentalItem: rentalItem,
+              ),
               const Gap(20),
               RentalDetailsRentalSummarySection(
-                  statusColor: statusColor, rentalItem: rentalItem),
+                statusColor: statusColor,
+                rentalItem: rentalItem,
+              ),
               const Gap(20),
-              if (rentalItem.renterReview != null ||
+              /*if (rentalItem.renterReview != null ||
                   rentalItem.customerReview != null) ...[
                 Card(
                   color: Colors.transparent,
@@ -585,7 +586,7 @@ class RentalHistoryDetail extends StatelessWidget {
                   ),
                 ),
                 const Gap(20),
-              ],
+              ],*/
 
               // Action Buttons
               if (_shouldShowActionButtons()) ...[
@@ -597,9 +598,9 @@ class RentalHistoryDetail extends StatelessWidget {
                         icon: const Icon(Icons.qr_code_scanner),
                         label: Text(
                           'Scan QR Code',
-                          style: AppStyles.medium16(context).copyWith(
-                            color: Colors.white,
-                          ),
+                          style: AppStyles.medium16(
+                            context,
+                          ).copyWith(color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2563EB),
@@ -619,9 +620,9 @@ class RentalHistoryDetail extends StatelessWidget {
                         icon: const Icon(Icons.refresh),
                         label: Text(
                           'Refund',
-                          style: AppStyles.medium16(context).copyWith(
-                            color: Colors.white,
-                          ),
+                          style: AppStyles.medium16(
+                            context,
+                          ).copyWith(color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
@@ -643,9 +644,9 @@ class RentalHistoryDetail extends StatelessWidget {
                 const Gap(20),
                 Text(
                   'Rate Your Experience',
-                  style: AppStyles.semiBold18(context).copyWith(
-                    color: context.theme.black100,
-                  ),
+                  style: AppStyles.semiBold18(
+                    context,
+                  ).copyWith(color: context.theme.black100),
                 ),
                 const Gap(12),
                 SizedBox(
@@ -655,9 +656,9 @@ class RentalHistoryDetail extends StatelessWidget {
                     icon: const Icon(Icons.rate_review),
                     label: Text(
                       'Write Review',
-                      style: AppStyles.medium16(context).copyWith(
-                        color: Colors.white,
-                      ),
+                      style: AppStyles.medium16(
+                        context,
+                      ).copyWith(color: Colors.white),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.theme.blue100_1,
