@@ -4,10 +4,7 @@ class RentalHistoryResponse extends Equatable {
   final RentalHistoryData data;
   final int statusCode;
 
-  const RentalHistoryResponse({
-    required this.data,
-    required this.statusCode,
-  });
+  const RentalHistoryResponse({required this.data, required this.statusCode});
 
   factory RentalHistoryResponse.fromJson(Map<String, dynamic> json) {
     return RentalHistoryResponse(
@@ -35,7 +32,8 @@ class RentalHistoryData extends Equatable {
 
   factory RentalHistoryData.fromJson(Map<String, dynamic> json) {
     return RentalHistoryData(
-      data: (json['data'] as List<dynamic>?)
+      data:
+          (json['data'] as List<dynamic>?)
               ?.map((item) => RentalHistoryItem.fromJson(item))
               .toList() ??
           [],
@@ -79,10 +77,12 @@ class RentalHistoryItem extends Equatable {
   factory RentalHistoryItem.fromJson(Map<String, dynamic> json) {
     return RentalHistoryItem(
       id: json['id'] ?? 0,
-      startDate:
-          DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-      endDate:
-          DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
+      startDate: DateTime.parse(
+        json['startDate'] ?? DateTime.now().toIso8601String(),
+      ),
+      endDate: DateTime.parse(
+        json['endDate'] ?? DateTime.now().toIso8601String(),
+      ),
       totalDays: json['totalDays'] ?? 0,
       discount: (json['discount'] ?? 0.0).toDouble(),
       finalPrice: (json['finalPrice'] ?? 0.0).toDouble(),
@@ -100,29 +100,29 @@ class RentalHistoryItem extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        startDate,
-        endDate,
-        totalDays,
-        discount,
-        finalPrice,
-        rentalStatus,
-        renterReview,
-        customerReview,
-        vehicle,
-        user,
-      ];
+    id,
+    startDate,
+    endDate,
+    totalDays,
+    discount,
+    finalPrice,
+    rentalStatus,
+    renterReview,
+    customerReview,
+    vehicle,
+    user,
+  ];
 }
 
 class Review extends Equatable {
   final int id;
   final int rentalId;
   final DateTime createdAt;
-  final int behavior;
-  final int punctuality;
+  final double behavior;
+  final double punctuality;
   final String comments;
-  final int? care; // Only in RenterReview
-  final int? truthfulness; // Only in CustomerReview
+  final double? care;
+  final double? truthfulness;
   final Reviewer reviewer;
 
   const Review({
@@ -141,29 +141,32 @@ class Review extends Equatable {
     return Review(
       id: json['id'] ?? 0,
       rentalId: json['rentalId'] ?? 0,
-      createdAt:
-          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      behavior: json['behavior'] ?? 0,
-      punctuality: json['punctuality'] ?? 0,
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      behavior: (json['behavior'] ?? 0).toDouble(),
+      punctuality: (json['punctuality'] ?? 0).toDouble(),
       comments: json['comments'] ?? '',
-      care: json['care'],
-      truthfulness: json['truthfulness'],
+      care: json['care'] != null ? (json['care'] as num).toDouble() : null,
+      truthfulness: json['truthfulness'] != null
+          ? (json['truthfulness'] as num).toDouble()
+          : null,
       reviewer: Reviewer.fromJson(json['reviewer'] ?? {}),
     );
   }
 
   @override
   List<Object?> get props => [
-        id,
-        rentalId,
-        createdAt,
-        behavior,
-        punctuality,
-        comments,
-        care,
-        truthfulness,
-        reviewer,
-      ];
+    id,
+    rentalId,
+    createdAt,
+    behavior,
+    punctuality,
+    comments,
+    care,
+    truthfulness,
+    reviewer,
+  ];
 }
 
 class Reviewer extends Equatable {
@@ -171,11 +174,7 @@ class Reviewer extends Equatable {
   final String name;
   final String? imagePath;
 
-  const Reviewer({
-    required this.id,
-    required this.name,
-    this.imagePath,
-  });
+  const Reviewer({required this.id, required this.name, this.imagePath});
 
   factory Reviewer.fromJson(Map<String, dynamic> json) {
     return Reviewer(
@@ -220,11 +219,7 @@ class User extends Equatable {
   final String name;
   final String? imagePath;
 
-  const User({
-    required this.id,
-    required this.name,
-    this.imagePath,
-  });
+  const User({required this.id, required this.name, this.imagePath});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
