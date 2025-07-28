@@ -11,15 +11,11 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:gap/gap.dart';
 import 'package:aggar/features/booking/data/cubit/booking_cubit.dart';
 import 'package:aggar/features/booking/data/cubit/booking_state.dart';
+import 'dart:async';
 
 class MainScreenBody extends StatefulWidget {
-  const MainScreenBody({
-    super.key,
-    required this.onRefresh,
-  });
-
+  const MainScreenBody({super.key, required this.onRefresh});
   final VoidCallback onRefresh;
-
   @override
   State<MainScreenBody> createState() => _MainScreenBodyState();
 }
@@ -28,40 +24,124 @@ class _MainScreenBodyState extends State<MainScreenBody> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
   List<BookingInterval> _bookingIntervals = [];
+
+  Timer? _refreshTimer;
+  static const Duration _refreshInterval = Duration(seconds: 30);
+
+  Timer? _debounceTimer;
+  bool _isLoadingPending = false;
+  bool _isLoadingIntervals = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDay = DateTime.now();
+    _initialLoad();
+    _startAutoRefresh();
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  void _initialLoad() {
     _loadPendingBookings();
-    _loadBookingIntervals();
+    _loadBookingIntervalsOnce();
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(_refreshInterval, (timer) {
+      if (mounted) {
+        _loadPendingBookings();
+      }
+    });
   }
 
   void _loadPendingBookings() {
-    context.read<BookingCubit>().getRenterPendingBookings();
+    if (_isLoadingPending) return;
+
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted && !_isLoadingPending) {
+        setState(() {
+          _isLoadingPending = true;
+        });
+        context
+            .read<BookingCubit>()
+            .getRenterPendingBookings()
+            .then((_) {
+              if (mounted) {
+                setState(() {
+                  _isLoadingPending = false;
+                });
+              }
+            })
+            .catchError((error) {
+              if (mounted) {
+                setState(() {
+                  _isLoadingPending = false;
+                });
+              }
+            });
+      }
+    });
   }
 
-  void _loadBookingIntervals() {
-    context.read<BookingCubit>().getBookingIntervals();
+  void _loadBookingIntervalsOnce() {
+    if (_isLoadingIntervals) return;
+
+    setState(() {
+      _isLoadingIntervals = true;
+    });
+
+    context
+        .read<BookingCubit>()
+        .getBookingIntervals()
+        .then((_) {
+          if (mounted) {
+            setState(() {
+              _isLoadingIntervals = false;
+            });
+          }
+        })
+        .catchError((error) {
+          if (mounted) {
+            setState(() {
+              _isLoadingIntervals = false;
+            });
+          }
+        });
+  }
+
+  void _forceRefreshIntervals() {
+    _loadBookingIntervalsOnce();
   }
 
   Future<void> _onRefresh() async {
     widget.onRefresh();
     _loadPendingBookings();
-    _loadBookingIntervals();
+    _loadBookingIntervalsOnce();
     await Future.delayed(const Duration(seconds: 1));
   }
 
   List<BookingInterval> _getBookingIntervalsForDate(DateTime date) {
     return _bookingIntervals.where((interval) {
-      final startDate = DateTime(interval.startDate.year,
-          interval.startDate.month, interval.startDate.day);
+      final startDate = DateTime(
+        interval.startDate.year,
+        interval.startDate.month,
+        interval.startDate.day,
+      );
       final endDate = DateTime(
-          interval.endDate.year, interval.endDate.month, interval.endDate.day);
+        interval.endDate.year,
+        interval.endDate.month,
+        interval.endDate.day,
+      );
       final checkDate = DateTime(date.year, date.month, date.day);
-
       return checkDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
           checkDate.isBefore(endDate.add(const Duration(days: 1)));
     }).toList();
@@ -106,10 +186,13 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                   ),
                 ),
                 padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 55, bottom: 20),
+                  left: 20,
+                  right: 20,
+                  top: 55,
+                  bottom: 20,
+                ),
                 child: const MainHeader(isRenter: true),
               ),
-
               // Calendar Section
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -130,7 +213,9 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                      horizontal: 15,
+                      vertical: 10,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -139,18 +224,29 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                           children: [
                             Text(
                               'Calendar',
-                              style: AppStyles.bold20(context).copyWith(
-                                color: context.theme.black100,
-                              ),
+                              style: AppStyles.bold20(
+                                context,
+                              ).copyWith(color: context.theme.black100),
                             ),
-                            // Add refresh button for calendar
+                            // Manual refresh button for calendar only
                             IconButton(
-                              onPressed: _loadBookingIntervals,
-                              icon: Icon(
-                                Icons.refresh,
-                                color: context.theme.blue100_1,
-                                size: 20,
-                              ),
+                              onPressed: _isLoadingIntervals
+                                  ? null
+                                  : _forceRefreshIntervals,
+                              icon: _isLoadingIntervals
+                                  ? SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: context.theme.blue100_1,
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.refresh,
+                                      color: context.theme.blue100_1,
+                                      size: 20,
+                                    ),
                             ),
                           ],
                         ),
@@ -171,12 +267,13 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                                 _selectedDay = selectedDay;
                                 _focusedDay = focusedDay;
                               });
-
                               final bookingsForDate =
                                   _getBookingIntervalsForDate(selectedDay);
                               if (bookingsForDate.isNotEmpty) {
                                 _showBookingDetailsForDate(
-                                    selectedDay, bookingsForDate);
+                                  selectedDay,
+                                  bookingsForDate,
+                                );
                               }
                             }
                           },
@@ -201,37 +298,32 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               Icons.chevron_right,
                               color: context.theme.grey100_1,
                             ),
-                            titleTextStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black100,
-                            ),
+                            titleTextStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.black100),
                           ),
                           calendarStyle: CalendarStyle(
                             outsideDaysVisible: false,
-                            weekendTextStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black100,
-                            ),
-                            holidayTextStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black100,
-                            ),
+                            weekendTextStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.black100),
+                            holidayTextStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.black100),
                             selectedDecoration: BoxDecoration(
                               color: context.theme.blue100_1,
                               shape: BoxShape.circle,
                             ),
-                            selectedTextStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.white100_1,
-                            ),
+                            selectedTextStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.white100_1),
                             todayDecoration: BoxDecoration(
                               color: context.theme.grey100_1,
                               shape: BoxShape.circle,
                             ),
-                            todayTextStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black100,
-                            ),
+                            todayTextStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.black100),
                             defaultTextStyle: TextStyle(
                               color: context.theme.black100,
                             ),
@@ -241,18 +333,17 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               shape: BoxShape.circle,
                             ),
                             markerSize: 6.0,
-                            markerMargin:
-                                const EdgeInsets.symmetric(horizontal: 1.0),
+                            markerMargin: const EdgeInsets.symmetric(
+                              horizontal: 1.0,
+                            ),
                           ),
                           daysOfWeekStyle: DaysOfWeekStyle(
-                            weekdayStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black50,
-                            ),
-                            weekendStyle:
-                                AppStyles.semiBold16(context).copyWith(
-                              color: context.theme.black50,
-                            ),
+                            weekdayStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.black50),
+                            weekendStyle: AppStyles.semiBold16(
+                              context,
+                            ).copyWith(color: context.theme.black50),
                           ),
                           calendarBuilders: CalendarBuilders(
                             markerBuilder: (context, date, events) {
@@ -273,7 +364,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                             },
                           ),
                         ),
-
                         // Add legend for calendar
                         const Gap(16),
                         Row(
@@ -324,24 +414,78 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'New Bookings',
-                            style: AppStyles.bold18(context).copyWith(
-                              color: context.theme.black100,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                'New Bookings',
+                                style: AppStyles.bold18(
+                                  context,
+                                ).copyWith(color: context.theme.black100),
+                              ),
+                              const Gap(8),
+                              // Auto-refresh indicator
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: context.theme.green100_1.withOpacity(
+                                    0.1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: context.theme.green100_1.withOpacity(
+                                      0.3,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.autorenew,
+                                      size: 12,
+                                      color: context.theme.green100_1,
+                                    ),
+                                    const Gap(4),
+                                    Text(
+                                      'Auto',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: context.theme.green100_1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                           IconButton(
-                            onPressed: _loadPendingBookings,
-                            icon: Icon(
-                              Icons.refresh,
-                              color: context.theme.blue100_1,
-                            ),
+                            onPressed: _isLoadingPending
+                                ? null
+                                : _loadPendingBookings,
+                            icon: _isLoadingPending
+                                ? SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: context.theme.blue100_1,
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.refresh,
+                                    color: context.theme.blue100_1,
+                                  ),
                           ),
                         ],
                       ),
                       BlocBuilder<BookingCubit, BookingState>(
                         builder: (context, state) {
-                          if (state is RenterPendingBookingsLoading) {
+                          if (state is RenterPendingBookingsLoading &&
+                              !_isLoadingPending) {
                             return Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -351,7 +495,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               ),
                             );
                           }
-
                           if (state is RenterPendingBookingsError) {
                             return Center(
                               child: Padding(
@@ -398,7 +541,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               ),
                             );
                           }
-
                           if (state is RenterPendingBookingsSuccess) {
                             if (state.bookings.isEmpty) {
                               return Center(
@@ -422,7 +564,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                                       ),
                                       const Gap(8),
                                       Text(
-                                        'New booking requests will appear here',
+                                        'New booking requests will appear here automatically',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 14,
@@ -444,7 +586,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               final displayName = vehicleName.isNotEmpty
                                   ? vehicleName
                                   : 'Unknown Vehicle';
-
                               return BookingItem(
                                 id: booking.id,
                                 name: displayName,
@@ -459,7 +600,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                                     : 'V',
                               );
                             }).toList();
-
                             return ListView.separated(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               shrinkWrap: true,
@@ -478,7 +618,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                               },
                             );
                           }
-
                           // Default empty state for initial load
                           return Center(
                             child: Padding(
@@ -501,7 +640,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                                   ),
                                   const Gap(8),
                                   Text(
-                                    'New booking requests will appear here',
+                                    'New booking requests will appear here automatically',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 14,
@@ -518,7 +657,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                   ),
                 ),
               ),
-
               const Gap(20),
             ],
           ),
@@ -534,24 +672,23 @@ class _MainScreenBodyState extends State<MainScreenBody> {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const Gap(4),
         Text(
           label,
-          style: AppStyles.semiBold12(context).copyWith(
-            color: context.theme.black50,
-          ),
+          style: AppStyles.semiBold12(
+            context,
+          ).copyWith(color: context.theme.black50),
         ),
       ],
     );
   }
 
   void _showBookingDetailsForDate(
-      DateTime selectedDate, List<BookingInterval> bookings) {
+    DateTime selectedDate,
+    List<BookingInterval> bookings,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -629,7 +766,6 @@ class _MainScreenBodyState extends State<MainScreenBody> {
         builder: (context) => BookingDetailsScreenRenter(booking: booking),
       ),
     );
-
     // Refresh bookings if action was taken
     if (result != null && (result == 'accepted' || result == 'rejected')) {
       _loadPendingBookings();
@@ -660,7 +796,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${months[dateTime.month - 1]} ${dateTime.day}';
   }
@@ -678,7 +814,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year}';
   }

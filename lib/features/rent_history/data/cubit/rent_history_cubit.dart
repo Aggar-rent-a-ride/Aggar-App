@@ -39,22 +39,18 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
-        emit(RentalHistoryError(
-            message: 'Authentication failed. Please login again.'));
+        emit(
+          RentalHistoryError(
+            message: 'Authentication failed. Please login again.',
+          ),
+        );
         return;
       }
 
       final response = await dio.get(
         EndPoint.rentalHistory,
-        queryParameters: {
-          'pageNo': pageNo,
-          'pageSize': pageSize,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        queryParameters: {'pageNo': pageNo, 'pageSize': pageSize},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
       List<RentalHistoryItem> rentals = [];
 
@@ -94,7 +90,8 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           }
         } else {
           throw Exception(
-              'Unexpected API response format: ${response.data.runtimeType}');
+            'Unexpected API response format: ${response.data.runtimeType}',
+          );
         }
       } catch (parseError) {
         throw Exception('Failed to parse rental data: $parseError');
@@ -112,13 +109,15 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         displayedRentals = _filterRentalsByStatus(_activeFilter!);
       }
 
-      emit(RentalHistoryLoaded(
-        rentals: _allRentals,
-        displayedRentals: displayedRentals,
-        currentPage: pageNo,
-        hasMoreData: rentals.length >= pageSize,
-        activeFilter: _activeFilter ?? 'all',
-      ));
+      emit(
+        RentalHistoryLoaded(
+          rentals: _allRentals,
+          displayedRentals: displayedRentals,
+          currentPage: pageNo,
+          hasMoreData: rentals.length >= pageSize,
+          activeFilter: _activeFilter ?? 'all',
+        ),
+      );
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
         try {
@@ -127,15 +126,19 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           // Retry the request
           return getRentalHistory(pageNo: pageNo, refresh: refresh);
         } catch (refreshError) {
-          emit(RentalHistoryError(
-              message: 'Session expired. Please login again.'));
+          emit(
+            RentalHistoryError(message: 'Session expired. Please login again.'),
+          );
         }
       } else {
         emit(RentalHistoryError(message: e.toString()));
       }
     } catch (e) {
-      emit(RentalHistoryError(
-          message: 'Failed to load rental history: ${e.toString()}'));
+      emit(
+        RentalHistoryError(
+          message: 'Failed to load rental history: ${e.toString()}',
+        ),
+      );
     }
   }
 
@@ -144,21 +147,18 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
-        emit(RentalHistoryError(
-            message: 'Authentication failed. Please login again.'));
+        emit(
+          RentalHistoryError(
+            message: 'Authentication failed. Please login again.',
+          ),
+        );
         return null;
       }
 
       final response = await dio.get(
         EndPoint.rental,
-        queryParameters: {
-          'id': rentalId,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        queryParameters: {'id': rentalId},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
 
       if (response.statusCode == 200) {
@@ -183,19 +183,26 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           await tokenRefreshCubit.refreshToken();
           return getRentalById(rentalId: rentalId);
         } catch (refreshError) {
-          emit(RentalHistoryError(
-              message: 'Session expired. Please login again.'));
+          emit(
+            RentalHistoryError(message: 'Session expired. Please login again.'),
+          );
           return null;
         }
       } else {
-        emit(RentalHistoryError(
+        emit(
+          RentalHistoryError(
             message:
-                'Failed to get rental details: ${e.response?.data['message'] ?? e.toString()}'));
+                'Failed to get rental details: ${e.response?.data['message'] ?? e.toString()}',
+          ),
+        );
         return null;
       }
     } catch (e) {
-      emit(RentalHistoryError(
-          message: 'Failed to get rental details: ${e.toString()}'));
+      emit(
+        RentalHistoryError(
+          message: 'Failed to get rental details: ${e.toString()}',
+        ),
+      );
       return null;
     }
   }
@@ -208,19 +215,18 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
-        emit(RentalHistoryError(
-            message: 'Authentication failed. Please login again.'));
+        emit(
+          RentalHistoryError(
+            message: 'Authentication failed. Please login again.',
+          ),
+        );
         return;
       }
 
       final response = await dio.post(
         EndPoint.confirmRental,
-        queryParameters: {
-          'rentalId': rentalId,
-        },
-        data: {
-          'scannedQrCode': scannedQrCode,
-        },
+        queryParameters: {'rentalId': rentalId},
+        data: {'scannedQrCode': scannedQrCode},
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',
@@ -237,10 +243,13 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         try {
           await tokenRefreshCubit.refreshToken();
           return confirmRental(
-              rentalId: rentalId, scannedQrCode: scannedQrCode);
+            rentalId: rentalId,
+            scannedQrCode: scannedQrCode,
+          );
         } catch (refreshError) {
-          emit(RentalHistoryError(
-              message: 'Session expired. Please login again.'));
+          emit(
+            RentalHistoryError(message: 'Session expired. Please login again.'),
+          );
         }
       } else {
         final errorMessage =
@@ -248,12 +257,16 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         debugPrint('RentalHistoryCubit: Emitting error: $errorMessage');
         debugPrint('RentalHistoryCubit: Response data: ${e.response?.data}');
         debugPrint(
-            'RentalHistoryCubit: Status code: ${e.response?.statusCode}');
+          'RentalHistoryCubit: Status code: ${e.response?.statusCode}',
+        );
         emit(RentalHistoryError(message: errorMessage));
       }
     } catch (e) {
-      emit(RentalHistoryError(
-          message: 'Failed to confirm rental: ${e.toString()}'));
+      emit(
+        RentalHistoryError(
+          message: 'Failed to confirm rental: ${e.toString()}',
+        ),
+      );
     }
   }
 
@@ -279,8 +292,9 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         return rental;
       }).toList();
 
-      final updatedDisplayedRentals =
-          currentState.displayedRentals?.map((rental) {
+      final updatedDisplayedRentals = currentState.displayedRentals?.map((
+        rental,
+      ) {
         if (rental.id == rentalId) {
           return RentalHistoryItem(
             id: rental.id,
@@ -299,13 +313,15 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         return rental;
       }).toList();
 
-      emit(RentalHistoryLoaded(
-        rentals: updatedRentals,
-        displayedRentals: updatedDisplayedRentals,
-        currentPage: currentState.currentPage,
-        hasMoreData: currentState.hasMoreData,
-        activeFilter: currentState.activeFilter,
-      ));
+      emit(
+        RentalHistoryLoaded(
+          rentals: updatedRentals,
+          displayedRentals: updatedDisplayedRentals,
+          currentPage: currentState.currentPage,
+          hasMoreData: currentState.hasMoreData,
+          activeFilter: currentState.activeFilter,
+        ),
+      );
     }
   }
 
@@ -317,37 +333,38 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
       final accessToken = await tokenRefreshCubit.ensureValidToken();
 
       if (accessToken == null) {
-        emit(RentalHistoryRefundError(
-            message: 'Authentication failed. Please login again.'));
+        emit(
+          RentalHistoryRefundError(
+            message: 'Authentication failed. Please login again.',
+          ),
+        );
         return;
       }
 
       final response = await dio.get(
         EndPoint.refundRental,
-        queryParameters: {
-          'id': rentalId,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
+        queryParameters: {'id': rentalId},
+        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
 
       if (response.statusCode == 200) {
         // Emit success state
-        emit(RentalHistoryRefundSuccess(
-          message:
-              'Refund request submitted successfully.\n Processing time: 3-5 business days.',
-        ));
+        emit(
+          RentalHistoryRefundSuccess(
+            message:
+                'Refund request submitted successfully.\n Processing time: 3-5 business days.',
+          ),
+        );
         await Future.delayed(const Duration(milliseconds: 500));
         updateRentalStatusLocally(rentalId, 'Refunded');
 
         await getRentalHistory(pageNo: 1, refresh: true);
       } else {
-        emit(RentalHistoryRefundError(
-          message: 'Failed to process refund request. Please try again.',
-        ));
+        emit(
+          RentalHistoryRefundError(
+            message: 'Failed to process refund request. Please try again.',
+          ),
+        );
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -355,17 +372,26 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
           await tokenRefreshCubit.refreshToken();
           return refundRental(rentalId: rentalId);
         } catch (refreshError) {
-          emit(RentalHistoryRefundError(
-              message: 'Session expired. Please login again.'));
+          emit(
+            RentalHistoryRefundError(
+              message: 'Session expired. Please login again.',
+            ),
+          );
         }
       } else {
-        emit(RentalHistoryRefundError(
+        emit(
+          RentalHistoryRefundError(
             message:
-                'Failed to refund rental: ${e.response?.data['message'] ?? e.toString()}'));
+                'Failed to refund rental: ${e.response?.data['message'] ?? e.toString()}',
+          ),
+        );
       }
     } catch (e) {
-      emit(RentalHistoryRefundError(
-          message: 'Failed to refund rental: ${e.toString()}'));
+      emit(
+        RentalHistoryRefundError(
+          message: 'Failed to refund rental: ${e.toString()}',
+        ),
+      );
     }
   }
 
@@ -397,28 +423,32 @@ class RentalHistoryCubit extends Cubit<RentalHistoryState> {
         displayedRentals = _filterRentalsByStatus(filter);
       }
 
-      emit(RentalHistoryLoaded(
-        rentals: currentState.rentals,
-        displayedRentals: displayedRentals,
-        currentPage: currentState.currentPage,
-        hasMoreData: currentState.hasMoreData,
-        activeFilter: filter,
-      ));
+      emit(
+        RentalHistoryLoaded(
+          rentals: currentState.rentals,
+          displayedRentals: displayedRentals,
+          currentPage: currentState.currentPage,
+          hasMoreData: currentState.hasMoreData,
+          activeFilter: filter,
+        ),
+      );
     }
   }
 
   // Helper method to filter rentals by status
   List<RentalHistoryItem> _filterRentalsByStatus(String status) {
     return _allRentals
-        .where((rental) =>
-            rental.rentalStatus.toLowerCase() == status.toLowerCase())
+        .where(
+          (rental) => rental.rentalStatus.toLowerCase() == status.toLowerCase(),
+        )
         .toList();
   }
 
   List<RentalHistoryItem> getRentalsByStatus(String status) {
     return _allRentals
-        .where((rental) =>
-            rental.rentalStatus.toLowerCase() == status.toLowerCase())
+        .where(
+          (rental) => rental.rentalStatus.toLowerCase() == status.toLowerCase(),
+        )
         .toList();
   }
 
